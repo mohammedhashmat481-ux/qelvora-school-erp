@@ -1,0 +1,11 @@
+{
+  "watch": ["server.js", "src/routes/", "src/middleware/", "src/config/"],
+  "ignore": [
+    "src/db/*.json",
+    "scripts/*",
+    "*.xlsx",
+    "*.csv",
+    "*.log"
+  ],
+  "ext": "js,mjs,json"
+}

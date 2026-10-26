@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# Environment
+.env
+.env.local
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+app.log
+
+# Temp & Database
+tmp/
+temp/
+.vercel
+.postgres-data/
+.postgres-school-data/
+**/.postgres-data/
+**/.postgres-school-data/
+*.xlsx
+data/
+backend/data/
+
+# Uploaded dynamic assets
+services/gateway/uploads/resources/[0-9]*
+services/gateway/uploads/study-materials/*
+

@@ -1,0 +1,13 @@
+{
+  "ignore": [
+    "node_modules",
+    ".venv",
+    ".git",
+    "pip-cache",
+    "pip_cache",
+    "pip_tmp",
+    "public/assets",
+    "data"
+  ],
+  "ext": "js,json,ejs,env"
+}

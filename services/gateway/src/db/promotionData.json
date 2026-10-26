@@ -1,0 +1,1582 @@
+{
+  "settings": {
+    "currentAcademicYear": "2026-2027",
+    "nextAcademicYear": "2027-2028",
+    "academicYears": [
+      "2024-2025",
+      "2025-2026",
+      "2026-2027",
+      "2027-2028",
+      "2028-2029"
+    ],
+    "standardsList": [
+      "Nursery",
+      "LKG",
+      "UKG",
+      "1st",
+      "2nd",
+      "3rd",
+      "4th",
+      "5th",
+      "6th",
+      "7th",
+      "8th",
+      "9th",
+      "10th"
+    ],
+    "terminalStandard": "10th",
+    "allowRepeat": true,
+    "autoAssignRollNumber": true
+  },
+  "enrollmentHistory": {
+    "81ec2800-b048-49eb-9587-8bab02d18303": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "101",
+        "status": "Graduated",
+        "assignedAt": "2026-10-09T05:25:12.112Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Class 10th Completion (Alumni)",
+        "promotedAt": "2026-10-09T08:27:47.468Z",
+        "promotedBy": "Admin User"
+      }
+    ],
+    "02026acd-e1df-4d28-ab6e-5e216cf9612d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "102",
+        "status": "Graduated",
+        "assignedAt": "2026-10-09T05:25:12.132Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Class 10th Completion (Alumni)",
+        "promotedAt": "2026-10-09T08:27:47.468Z",
+        "promotedBy": "Admin User"
+      }
+    ],
+    "d7892168-c962-44b5-a8c8-04876929e917": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "103",
+        "status": "Graduated",
+        "assignedAt": "2026-10-09T05:25:12.146Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Class 10th Completion (Alumni)",
+        "promotedAt": "2026-10-09T08:27:47.468Z",
+        "promotedBy": "Admin User"
+      }
+    ],
+    "97ad03dc-097c-422e-85ac-95e40a060aff": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "104",
+        "status": "Graduated",
+        "assignedAt": "2026-10-09T05:25:12.160Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Class 10th Completion (Alumni)",
+        "promotedAt": "2026-10-09T08:27:47.468Z",
+        "promotedBy": "Admin User"
+      }
+    ],
+    "081dfed9-f111-4cab-a10f-0894990c188c": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "401",
+        "status": "Active",
+        "assignedAt": "2026-10-09T05:25:12.213Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "35079459-803f-46a5-adc9-6d3ee8aa3159": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "301",
+        "status": "Promoted",
+        "assignedAt": "2026-10-09T05:25:12.199Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Promoted to Class 9th",
+        "promotedAt": "2026-10-09T08:27:25.225Z",
+        "promotedBy": "Admin User"
+      },
+      {
+        "academicYear": "2027-2028",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "301",
+        "status": "Active",
+        "assignedAt": "2026-10-09T08:27:25.225Z",
+        "assignedBy": "Admin User",
+        "remarks": "Promoted from 8th-A (2026-2027)"
+      }
+    ],
+    "4985ad6f-bc19-434a-8dc2-6d911bbb8ade": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "202",
+        "status": "Active",
+        "assignedAt": "2026-10-09T05:25:12.186Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "6f50dcb2-80f0-47f0-8bf7-d69f3b1ce0d2": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "201",
+        "status": "Active",
+        "assignedAt": "2026-10-09T05:25:12.173Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "e61a34d4-57a4-4904-b460-e050eba7d1dd": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "101",
+        "status": "Graduated",
+        "assignedAt": "2026-10-10T04:50:28.699Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Class 10th Completion (Alumni)",
+        "promotedAt": "2026-10-10T07:44:08.082Z",
+        "promotedBy": "Admin User"
+      }
+    ],
+    "6b61c807-ea92-4d66-8d9a-f4079e79b7e2": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "102",
+        "status": "Graduated",
+        "assignedAt": "2026-10-10T04:50:28.720Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Class 10th Completion (Alumni)",
+        "promotedAt": "2026-10-10T07:44:08.082Z",
+        "promotedBy": "Admin User"
+      }
+    ],
+    "dc2e6c27-bfeb-42c7-ab0f-fbdcffd1c74d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "103",
+        "status": "Graduated",
+        "assignedAt": "2026-10-10T04:50:28.743Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Class 10th Completion (Alumni)",
+        "promotedAt": "2026-10-10T07:44:08.082Z",
+        "promotedBy": "Admin User"
+      }
+    ],
+    "2103e2dd-2d7d-4d2c-9317-d89e640d4c1f": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "104",
+        "status": "Graduated",
+        "assignedAt": "2026-10-10T04:50:28.756Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Class 10th Completion (Alumni)",
+        "promotedAt": "2026-10-10T07:44:08.082Z",
+        "promotedBy": "Admin User"
+      }
+    ],
+    "1d4ba950-c732-4693-8bb8-fced08dfc7c6": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "401",
+        "status": "Active",
+        "assignedAt": "2026-10-10T04:50:28.811Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "5b13eb80-ad19-4199-b3af-b26576a1d268": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "301",
+        "status": "Active",
+        "assignedAt": "2026-10-10T04:50:28.798Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "a95760a0-e415-4d1e-90bf-b46c86b53210": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "202",
+        "status": "Promoted",
+        "assignedAt": "2026-10-10T04:50:28.784Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Promoted to Class 10th",
+        "promotedAt": "2026-10-10T07:44:24.095Z",
+        "promotedBy": "Admin User"
+      },
+      {
+        "academicYear": "2027-2028",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "202",
+        "status": "Active",
+        "assignedAt": "2026-10-10T07:44:24.095Z",
+        "assignedBy": "Admin User",
+        "remarks": "Promoted from 9th-A (2026-2027)"
+      }
+    ],
+    "dee5491b-8507-4849-8bb4-a94a82acaefb": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "201",
+        "status": "Promoted",
+        "assignedAt": "2026-10-10T04:50:28.770Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Promoted to Class 10th",
+        "promotedAt": "2026-10-10T07:44:24.095Z",
+        "promotedBy": "Admin User"
+      },
+      {
+        "academicYear": "2027-2028",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "201",
+        "status": "Active",
+        "assignedAt": "2026-10-10T07:44:24.095Z",
+        "assignedBy": "Admin User",
+        "remarks": "Promoted from 9th-A (2026-2027)"
+      }
+    ],
+    "fc46f870-3573-4dcb-a430-1f22969cf100": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "99",
+        "status": "Active",
+        "assignedAt": "2026-10-19T04:30:23.338Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "8129c3c6-d23b-4f03-8425-b743cc94ad32": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "102",
+        "status": "Active",
+        "assignedAt": "2026-10-19T04:13:52.040Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "24fcbc28-81b3-4c12-acd6-81feff2cbf78": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "103",
+        "status": "Active",
+        "assignedAt": "2026-10-19T04:13:52.046Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "6207852c-5ea8-49e7-8a17-6f75cfec2f64": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "104",
+        "status": "Active",
+        "assignedAt": "2026-10-19T04:13:52.052Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "e33a669c-cc58-4a5a-b0d5-acd838383cab": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "101",
+        "status": "Active",
+        "assignedAt": "2026-10-19T04:13:52.031Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "25bc17b3-ff0d-4487-a2e8-d0e2045c5752": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "B",
+        "rollNumber": "99",
+        "status": "Active",
+        "assignedAt": "2026-10-19T04:30:23.348Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-B"
+      }
+    ],
+    "ec537d3c-3167-42e8-a53f-ffc0d3870ba9": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "401",
+        "status": "Active",
+        "assignedAt": "2026-10-19T04:13:52.073Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "2f6b1e19-9517-47ad-b527-3c3238d9b1d1": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "301",
+        "status": "Active",
+        "assignedAt": "2026-10-19T04:13:52.068Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "becde70f-14f6-4373-9a5d-0237de623b10": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "202",
+        "status": "Active",
+        "assignedAt": "2026-10-19T04:13:52.063Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "804f5f07-777c-457a-b44e-a0bd6e5cf3e4": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "201",
+        "status": "Active",
+        "assignedAt": "2026-10-19T04:13:52.058Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "6e97d256-14c6-4fa2-8164-a3d869966456": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "101",
+        "status": "Active",
+        "assignedAt": "2026-10-19T06:34:40.272Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "11c01d63-d1de-4436-aa88-ecb8572b8606": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "102",
+        "status": "Active",
+        "assignedAt": "2026-10-19T06:34:40.299Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "e8251baa-0771-4cd6-80c3-7590bbba7f29": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "103",
+        "status": "Active",
+        "assignedAt": "2026-10-19T06:34:40.314Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "7b48581b-6f67-4af9-9cfb-3073c21c77fe": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "104",
+        "status": "Active",
+        "assignedAt": "2026-10-19T06:34:40.332Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "9c73377d-15ff-4757-9b52-ee854b1660f7": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "401",
+        "status": "Active",
+        "assignedAt": "2026-10-19T06:34:40.396Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "3c7b5591-fe62-47d9-82bf-03dd72225d0c": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "301",
+        "status": "Active",
+        "assignedAt": "2026-10-19T06:34:40.381Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "0b374798-2361-4aa0-8385-66cd3d634068": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "202",
+        "status": "Active",
+        "assignedAt": "2026-10-19T06:34:40.365Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "ca63cbeb-5178-45ef-bb53-7bcef98eb194": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "201",
+        "status": "Active",
+        "assignedAt": "2026-10-19T06:34:40.347Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "7c683a2c-1056-41aa-bc80-051d7334d737": [
+      {
+        "academicYear": "2025-2026",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "35",
+        "status": "Promoted",
+        "assignedAt": "2026-10-21T06:36:49.051Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Cleared 9th Annual Exam with distinction",
+        "promotedAt": "2026-10-21T06:36:49.106Z",
+        "promotedBy": "Admin User"
+      },
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "35",
+        "status": "Active",
+        "assignedAt": "2026-10-21T06:36:49.106Z",
+        "assignedBy": "Admin User",
+        "remarks": "Promoted from 9th-A (2025-2026)"
+      }
+    ],
+    "8c8ef68c-5de0-4dba-ac51-72d1533ed0e8": [
+      {
+        "academicYear": "2025-2026",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "35",
+        "status": "Promoted",
+        "assignedAt": "2026-10-21T06:37:09.811Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Cleared 9th Annual Exam with distinction",
+        "promotedAt": "2026-10-21T06:37:09.846Z",
+        "promotedBy": "Admin User"
+      },
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "35",
+        "status": "Active",
+        "assignedAt": "2026-10-21T06:37:09.846Z",
+        "assignedBy": "Admin User",
+        "remarks": "Promoted from 9th-A (2025-2026)"
+      }
+    ],
+    "02682ae4-ead8-45c8-af25-bb606f2077c8": [
+      {
+        "academicYear": "2025-2026",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "35",
+        "status": "Promoted",
+        "assignedAt": "2026-10-21T06:37:42.542Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Cleared 9th Annual Exam with distinction",
+        "promotedAt": "2026-10-21T06:37:42.581Z",
+        "promotedBy": "Admin User"
+      },
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "35",
+        "status": "Active",
+        "assignedAt": "2026-10-21T06:37:42.581Z",
+        "assignedBy": "Admin User",
+        "remarks": "Promoted from 9th-A (2025-2026)"
+      }
+    ],
+    "d3ad9dc3-5759-480e-89d8-ccc1d2fbc88a": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "101",
+        "status": "Active",
+        "assignedAt": "2026-10-21T04:36:15.727Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "2ce60e4c-3f13-4220-a16e-8118a50433ef": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "102",
+        "status": "Active",
+        "assignedAt": "2026-10-21T04:36:15.746Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "229f53f9-8403-496f-afcf-fe6e02d03ec4": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "103",
+        "status": "Active",
+        "assignedAt": "2026-10-21T04:36:15.760Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "478455e4-3270-4fa6-9af9-1e058e8372d8": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "104",
+        "status": "Active",
+        "assignedAt": "2026-10-21T04:36:15.774Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "cf266ca6-3f1c-4eb5-bb2b-a4f59850d008": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "401",
+        "status": "Active",
+        "assignedAt": "2026-10-21T04:36:15.829Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "a09012b5-d062-436d-ba94-4fc4041aa688": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "301",
+        "status": "Active",
+        "assignedAt": "2026-10-21T04:36:15.816Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "a574bc1d-7579-4f0a-8247-7c66ab38a348": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "201",
+        "status": "Active",
+        "assignedAt": "2026-10-21T04:36:15.788Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "ebcae1fa-b439-4ac4-81e9-79af82abf59a": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "202",
+        "status": "Active",
+        "assignedAt": "2026-10-21T04:36:15.802Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "aecf4d6a-ed04-4fe7-ab1b-ee01a3c4dc16": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "R-3681",
+        "status": "Active",
+        "assignedAt": "2026-10-21T07:33:23.736Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "3f79e467-0700-4d61-81d2-1f1ba5fb77de": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "R-0157",
+        "status": "Promoted",
+        "assignedAt": "2026-10-21T07:35:00.212Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Promoted to 10th-A",
+        "promotedAt": "2026-10-21T07:35:00.554Z",
+        "promotedBy": "Admin User"
+      }
+    ],
+    "b66d0add-4028-4d88-ba76-4997a033028a": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "R-4713",
+        "status": "Promoted",
+        "assignedAt": "2026-10-21T07:36:14.774Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Promoted to 10th-A",
+        "promotedAt": "2026-10-21T07:36:15.117Z",
+        "promotedBy": "Admin User"
+      }
+    ],
+    "3fb0bdac-4da5-45e0-9917-647c73ee243f": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "R-9220",
+        "status": "Promoted",
+        "assignedAt": "2026-10-21T07:36:59.279Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Promoted to 10th-A",
+        "promotedAt": "2026-10-21T07:36:59.600Z",
+        "promotedBy": "Admin User"
+      }
+    ],
+    "42e3468e-d039-4d79-8cf4-f442fbc352e0": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-21T08:54:44.648Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "6d8ee698-b159-4af6-b3ac-02f1c8d1c251": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-21T08:54:44.653Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "5860b012-597f-43c1-bf2a-9becab704d18": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-21T08:54:44.657Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "21dab9f9-910c-464a-93c4-45fce98a80fb": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-21T08:54:44.661Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "e922d453-fa93-4805-bcf5-353d90745c84": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-21T08:54:44.664Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "da66e06c-9e9c-489c-835c-14ce12a47b7d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "R-3837",
+        "status": "Promoted",
+        "assignedAt": "2026-10-21T08:58:33.876Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Promoted to 10th-A",
+        "promotedAt": "2026-10-21T08:58:34.170Z",
+        "promotedBy": "Admin User"
+      }
+    ],
+    "d954a439-8a20-48ee-ba75-ec7408850094": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "101",
+        "status": "Active",
+        "assignedAt": "2026-10-22T14:42:21.569Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "146504d0-0385-4822-84e2-8bf9d4c7b645": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "102",
+        "status": "Active",
+        "assignedAt": "2026-10-22T14:42:21.595Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "8adc5ef1-ea3e-48df-9323-98b7588c2c2d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "103",
+        "status": "Active",
+        "assignedAt": "2026-10-22T14:42:21.616Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "4d2dbb70-dc69-432b-ac64-7140044b47eb": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "104",
+        "status": "Active",
+        "assignedAt": "2026-10-22T14:42:21.635Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "9d8365af-1bc8-4b27-b829-ce28828c2df5": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "401",
+        "status": "Active",
+        "assignedAt": "2026-10-22T14:42:21.709Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "c84e6f78-05f7-403a-a54f-b67d2ef205bf": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "301",
+        "status": "Promoted",
+        "assignedAt": "2026-10-22T14:42:21.690Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Promoted to Class 9th",
+        "promotedAt": "2026-10-22T14:56:22.039Z",
+        "promotedBy": "Admin User"
+      },
+      {
+        "academicYear": "2027-2028",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "301",
+        "status": "Active",
+        "assignedAt": "2026-10-22T14:56:22.039Z",
+        "assignedBy": "Admin User",
+        "remarks": "Promoted from 8th-A (2026-2027)"
+      }
+    ],
+    "83510085-a44c-4f8c-b7c4-7f2f1b856768": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "202",
+        "status": "Active",
+        "assignedAt": "2026-10-22T14:42:21.672Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "e5c8dad1-3d4a-4e03-9d0f-7b670148efbd": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "201",
+        "status": "Active",
+        "assignedAt": "2026-10-22T14:42:21.654Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "788a30d7-a902-41dc-9cab-a7b5f0157173": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "201",
+        "status": "Active",
+        "assignedAt": "2026-10-23T04:48:31.015Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "2f22088f-91fc-4d18-9163-841970c7f38c": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "202",
+        "status": "Active",
+        "assignedAt": "2026-10-23T04:48:31.031Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "4474c2d3-f55d-4607-8dd1-633df490f9f6": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "101",
+        "status": "Active",
+        "assignedAt": "2026-10-23T04:48:30.945Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "825e8507-fd2d-4b26-9dca-1844f16f3b9e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "102",
+        "status": "Active",
+        "assignedAt": "2026-10-23T04:48:30.966Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "ad5c286c-e624-4624-9974-1706b20f66aa": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "103",
+        "status": "Active",
+        "assignedAt": "2026-10-23T04:48:30.982Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "bf91dbc8-472a-4866-b349-b4b244b30ef0": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "104",
+        "status": "Active",
+        "assignedAt": "2026-10-23T04:48:30.998Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "53444773-12d4-477f-aa27-dd1d8a752f3d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "401",
+        "status": "Active",
+        "assignedAt": "2026-10-23T04:48:31.064Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "c22fe297-2764-4733-a273-26025d7e988b": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "301",
+        "status": "Active",
+        "assignedAt": "2026-10-23T04:48:31.048Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ]
+  },
+  "alumniRecords": [
+    {
+      "id": "alumni-1791534467486-STU-10th-A-101",
+      "studentId": "81ec2800-b048-49eb-9587-8bab02d18303",
+      "admissionNumber": "STU-10th-A-101",
+      "name": "Rahul Student",
+      "gender": "Male",
+      "dob": "",
+      "lastStudiedClass": "10th",
+      "lastStudiedSection": "A",
+      "rollNumber": "101",
+      "academicYearCompleted": "2026-2027",
+      "graduationDate": "2026-10-09",
+      "admissionDate": "",
+      "contactDetails": {
+        "parentName": "Mr. & Mrs. Sharma",
+        "parentPhone": "+91 98765 43210",
+        "parentEmail": "",
+        "address": ""
+      },
+      "status": "Graduated",
+      "certificateNumber": "TC/2026/2027/001",
+      "remarks": "Class 10th Completion (Alumni)"
+    },
+    {
+      "id": "alumni-1791534467489-STU-10th-A-102",
+      "studentId": "02026acd-e1df-4d28-ab6e-5e216cf9612d",
+      "admissionNumber": "STU-10th-A-102",
+      "name": "Aarav Sharma",
+      "gender": "Male",
+      "dob": "",
+      "lastStudiedClass": "10th",
+      "lastStudiedSection": "A",
+      "rollNumber": "102",
+      "academicYearCompleted": "2026-2027",
+      "graduationDate": "2026-10-09",
+      "admissionDate": "",
+      "contactDetails": {
+        "parentName": "Mr. Alok Sharma",
+        "parentPhone": "+91 98765 43211",
+        "parentEmail": "",
+        "address": ""
+      },
+      "status": "Graduated",
+      "certificateNumber": "TC/2026/2027/002",
+      "remarks": "Class 10th Completion (Alumni)"
+    },
+    {
+      "id": "alumni-1791534467491-STU-10th-A-103",
+      "studentId": "d7892168-c962-44b5-a8c8-04876929e917",
+      "admissionNumber": "STU-10th-A-103",
+      "name": "Ananya Roy",
+      "gender": "Male",
+      "dob": "",
+      "lastStudiedClass": "10th",
+      "lastStudiedSection": "A",
+      "rollNumber": "103",
+      "academicYearCompleted": "2026-2027",
+      "graduationDate": "2026-10-09",
+      "admissionDate": "",
+      "contactDetails": {
+        "parentName": "Dr. B. Roy",
+        "parentPhone": "+91 98765 43212",
+        "parentEmail": "",
+        "address": ""
+      },
+      "status": "Graduated",
+      "certificateNumber": "TC/2026/2027/003",
+      "remarks": "Class 10th Completion (Alumni)"
+    },
+    {
+      "id": "alumni-1791534467493-STU-10th-A-104",
+      "studentId": "97ad03dc-097c-422e-85ac-95e40a060aff",
+      "admissionNumber": "STU-10th-A-104",
+      "name": "Vihaan Patel",
+      "gender": "Male",
+      "dob": "",
+      "lastStudiedClass": "10th",
+      "lastStudiedSection": "A",
+      "rollNumber": "104",
+      "academicYearCompleted": "2026-2027",
+      "graduationDate": "2026-10-09",
+      "admissionDate": "",
+      "contactDetails": {
+        "parentName": "Mr. Kirit Patel",
+        "parentPhone": "+91 98765 43213",
+        "parentEmail": "",
+        "address": ""
+      },
+      "status": "Graduated",
+      "certificateNumber": "TC/2026/2027/004",
+      "remarks": "Class 10th Completion (Alumni)"
+    },
+    {
+      "id": "alumni-1791618248102-STU-10th-A-101",
+      "studentId": "e61a34d4-57a4-4904-b460-e050eba7d1dd",
+      "admissionNumber": "STU-10th-A-101",
+      "name": "Rahul Student",
+      "gender": "Male",
+      "dob": "",
+      "lastStudiedClass": "10th",
+      "lastStudiedSection": "A",
+      "rollNumber": "101",
+      "academicYearCompleted": "2026-2027",
+      "graduationDate": "2026-10-10",
+      "admissionDate": "",
+      "contactDetails": {
+        "parentName": "Mr. & Mrs. Sharma",
+        "parentPhone": "+91 98765 43210",
+        "parentEmail": "",
+        "address": ""
+      },
+      "status": "Graduated",
+      "certificateNumber": "TC/2026/2027/005",
+      "remarks": "Class 10th Completion (Alumni)"
+    },
+    {
+      "id": "alumni-1791618248105-STU-10th-A-102",
+      "studentId": "6b61c807-ea92-4d66-8d9a-f4079e79b7e2",
+      "admissionNumber": "STU-10th-A-102",
+      "name": "Aarav Sharma",
+      "gender": "Male",
+      "dob": "",
+      "lastStudiedClass": "10th",
+      "lastStudiedSection": "A",
+      "rollNumber": "102",
+      "academicYearCompleted": "2026-2027",
+      "graduationDate": "2026-10-10",
+      "admissionDate": "",
+      "contactDetails": {
+        "parentName": "Mr. Alok Sharma",
+        "parentPhone": "+91 98765 43211",
+        "parentEmail": "",
+        "address": ""
+      },
+      "status": "Graduated",
+      "certificateNumber": "TC/2026/2027/006",
+      "remarks": "Class 10th Completion (Alumni)"
+    },
+    {
+      "id": "alumni-1791618248107-STU-10th-A-103",
+      "studentId": "dc2e6c27-bfeb-42c7-ab0f-fbdcffd1c74d",
+      "admissionNumber": "STU-10th-A-103",
+      "name": "Ananya Roy",
+      "gender": "Male",
+      "dob": "",
+      "lastStudiedClass": "10th",
+      "lastStudiedSection": "A",
+      "rollNumber": "103",
+      "academicYearCompleted": "2026-2027",
+      "graduationDate": "2026-10-10",
+      "admissionDate": "",
+      "contactDetails": {
+        "parentName": "Dr. B. Roy",
+        "parentPhone": "+91 98765 43212",
+        "parentEmail": "",
+        "address": ""
+      },
+      "status": "Graduated",
+      "certificateNumber": "TC/2026/2027/007",
+      "remarks": "Class 10th Completion (Alumni)"
+    },
+    {
+      "id": "alumni-1791618248110-STU-10th-A-104",
+      "studentId": "2103e2dd-2d7d-4d2c-9317-d89e640d4c1f",
+      "admissionNumber": "STU-10th-A-104",
+      "name": "Vihaan Patel",
+      "gender": "Male",
+      "dob": "",
+      "lastStudiedClass": "10th",
+      "lastStudiedSection": "A",
+      "rollNumber": "104",
+      "academicYearCompleted": "2026-2027",
+      "graduationDate": "2026-10-10",
+      "admissionDate": "",
+      "contactDetails": {
+        "parentName": "Mr. Kirit Patel",
+        "parentPhone": "+91 98765 43213",
+        "parentEmail": "",
+        "address": ""
+      },
+      "status": "Graduated",
+      "certificateNumber": "TC/2026/2027/008",
+      "remarks": "Class 10th Completion (Alumni)"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "promo-batch-1792680982039",
+      "timestamp": "2026-10-22T14:56:22.039Z",
+      "adminUser": "Admin User",
+      "fromAcademicYear": "2026-2027",
+      "toAcademicYear": "2027-2028",
+      "summary": {
+        "totalProcessed": 1,
+        "promotedCount": 1,
+        "graduatedCount": 0,
+        "repeatedCount": 0,
+        "reviewCount": 0
+      },
+      "students": [
+        {
+          "studentId": "c84e6f78-05f7-403a-a54f-b67d2ef205bf",
+          "admissionNumber": "STU-8th-A-301",
+          "name": "Kyra Joshi",
+          "fromStandard": "8th",
+          "fromSection": "A",
+          "toStandard": "9th",
+          "toSection": "A",
+          "action": "promote",
+          "status": "Success"
+        }
+      ]
+    },
+    {
+      "id": "promo-batch-1792573114170",
+      "timestamp": "2026-10-21T08:58:34.170Z",
+      "adminUser": "Admin User",
+      "fromAcademicYear": "2026-2027",
+      "toAcademicYear": "2027-2028",
+      "summary": {
+        "totalProcessed": 1,
+        "promotedCount": 0,
+        "graduatedCount": 0,
+        "repeatedCount": 0,
+        "reviewCount": 1
+      },
+      "students": [
+        {
+          "studentId": "da66e06c-9e9c-489c-835c-14ce12a47b7d",
+          "admissionNumber": "ADM-R-3837",
+          "name": "Test Candidate R-3837",
+          "fromStandard": "10th",
+          "fromSection": "A",
+          "toStandard": "10th",
+          "toSection": "A",
+          "action": "PROMOTE",
+          "status": "Success"
+        }
+      ]
+    },
+    {
+      "id": "promo-batch-1792568219600",
+      "timestamp": "2026-10-21T07:36:59.600Z",
+      "adminUser": "Admin User",
+      "fromAcademicYear": "2026-2027",
+      "toAcademicYear": "2027-2028",
+      "summary": {
+        "totalProcessed": 1,
+        "promotedCount": 0,
+        "graduatedCount": 0,
+        "repeatedCount": 0,
+        "reviewCount": 1
+      },
+      "students": [
+        {
+          "studentId": "3fb0bdac-4da5-45e0-9917-647c73ee243f",
+          "admissionNumber": "ADM-R-9220",
+          "name": "Test Candidate R-9220",
+          "fromStandard": "10th",
+          "fromSection": "A",
+          "toStandard": "10th",
+          "toSection": "A",
+          "action": "PROMOTE",
+          "status": "Success"
+        }
+      ]
+    },
+    {
+      "id": "promo-batch-1792568175117",
+      "timestamp": "2026-10-21T07:36:15.117Z",
+      "adminUser": "Admin User",
+      "fromAcademicYear": "2026-2027",
+      "toAcademicYear": "2027-2028",
+      "summary": {
+        "totalProcessed": 1,
+        "promotedCount": 0,
+        "graduatedCount": 0,
+        "repeatedCount": 0,
+        "reviewCount": 1
+      },
+      "students": [
+        {
+          "studentId": "b66d0add-4028-4d88-ba76-4997a033028a",
+          "admissionNumber": "ADM-R-4713",
+          "name": "Test Candidate R-4713",
+          "fromStandard": "10th",
+          "fromSection": "A",
+          "toStandard": "10th",
+          "toSection": "A",
+          "action": "PROMOTE",
+          "status": "Success"
+        }
+      ]
+    },
+    {
+      "id": "promo-batch-1792568100554",
+      "timestamp": "2026-10-21T07:35:00.554Z",
+      "adminUser": "Admin User",
+      "fromAcademicYear": "2026-2027",
+      "toAcademicYear": "2027-2028",
+      "summary": {
+        "totalProcessed": 1,
+        "promotedCount": 0,
+        "graduatedCount": 0,
+        "repeatedCount": 0,
+        "reviewCount": 1
+      },
+      "students": [
+        {
+          "studentId": "3f79e467-0700-4d61-81d2-1f1ba5fb77de",
+          "admissionNumber": "ADM-R-0157",
+          "name": "Test Candidate R-0157",
+          "fromStandard": "10th",
+          "fromSection": "A",
+          "toStandard": "10th",
+          "toSection": "A",
+          "action": "PROMOTE",
+          "status": "Success"
+        }
+      ]
+    },
+    {
+      "id": "promo-batch-1792564662581",
+      "timestamp": "2026-10-21T06:37:42.581Z",
+      "adminUser": "Admin User",
+      "fromAcademicYear": "2025-2026",
+      "toAcademicYear": "2026-2027",
+      "summary": {
+        "totalProcessed": 1,
+        "promotedCount": 1,
+        "graduatedCount": 0,
+        "repeatedCount": 0,
+        "reviewCount": 0
+      },
+      "students": [
+        {
+          "studentId": "02682ae4-ead8-45c8-af25-bb606f2077c8",
+          "admissionNumber": "ADM-2026-2442",
+          "name": "Aaradhya Deshmukh",
+          "fromStandard": "9th",
+          "fromSection": "A",
+          "toStandard": "10th",
+          "toSection": "A",
+          "action": "promote",
+          "status": "Success"
+        }
+      ]
+    },
+    {
+      "id": "promo-batch-1792564629846",
+      "timestamp": "2026-10-21T06:37:09.846Z",
+      "adminUser": "Admin User",
+      "fromAcademicYear": "2025-2026",
+      "toAcademicYear": "2026-2027",
+      "summary": {
+        "totalProcessed": 1,
+        "promotedCount": 1,
+        "graduatedCount": 0,
+        "repeatedCount": 0,
+        "reviewCount": 0
+      },
+      "students": [
+        {
+          "studentId": "8c8ef68c-5de0-4dba-ac51-72d1533ed0e8",
+          "admissionNumber": "ADM-2026-9721",
+          "name": "Aaradhya Deshmukh",
+          "fromStandard": "9th",
+          "fromSection": "A",
+          "toStandard": "10th",
+          "toSection": "A",
+          "action": "promote",
+          "status": "Success"
+        }
+      ]
+    },
+    {
+      "id": "promo-batch-1792564609106",
+      "timestamp": "2026-10-21T06:36:49.106Z",
+      "adminUser": "Admin User",
+      "fromAcademicYear": "2025-2026",
+      "toAcademicYear": "2026-2027",
+      "summary": {
+        "totalProcessed": 1,
+        "promotedCount": 1,
+        "graduatedCount": 0,
+        "repeatedCount": 0,
+        "reviewCount": 0
+      },
+      "students": [
+        {
+          "studentId": "7c683a2c-1056-41aa-bc80-051d7334d737",
+          "admissionNumber": "ADM-2026-9016",
+          "name": "Aaradhya Deshmukh",
+          "fromStandard": "9th",
+          "fromSection": "A",
+          "toStandard": "10th",
+          "toSection": "A",
+          "action": "promote",
+          "status": "Success"
+        }
+      ]
+    },
+    {
+      "id": "promo-batch-1791618264095",
+      "timestamp": "2026-10-10T07:44:24.095Z",
+      "adminUser": "Admin User",
+      "fromAcademicYear": "2026-2027",
+      "toAcademicYear": "2027-2028",
+      "summary": {
+        "totalProcessed": 2,
+        "promotedCount": 2,
+        "graduatedCount": 0,
+        "repeatedCount": 0,
+        "reviewCount": 0
+      },
+      "students": [
+        {
+          "studentId": "dee5491b-8507-4849-8bb4-a94a82acaefb",
+          "admissionNumber": "STU-9th-A-201",
+          "name": "Diya Iyer",
+          "fromStandard": "9th",
+          "fromSection": "A",
+          "toStandard": "10th",
+          "toSection": "A",
+          "action": "promote",
+          "status": "Success"
+        },
+        {
+          "studentId": "a95760a0-e415-4d1e-90bf-b46c86b53210",
+          "admissionNumber": "STU-9th-A-202",
+          "name": "Rohan Das",
+          "fromStandard": "9th",
+          "fromSection": "A",
+          "toStandard": "10th",
+          "toSection": "A",
+          "action": "promote",
+          "status": "Success"
+        }
+      ]
+    },
+    {
+      "id": "promo-batch-1791618248082",
+      "timestamp": "2026-10-10T07:44:08.082Z",
+      "adminUser": "Admin User",
+      "fromAcademicYear": "2026-2027",
+      "toAcademicYear": "2027-2028",
+      "summary": {
+        "totalProcessed": 4,
+        "promotedCount": 0,
+        "graduatedCount": 4,
+        "repeatedCount": 0,
+        "reviewCount": 0
+      },
+      "students": [
+        {
+          "studentId": "e61a34d4-57a4-4904-b460-e050eba7d1dd",
+          "admissionNumber": "STU-10th-A-101",
+          "name": "Rahul Student",
+          "fromStandard": "10th",
+          "fromSection": "A",
+          "toStandard": "Alumni",
+          "toSection": "A",
+          "action": "graduate",
+          "status": "Success"
+        },
+        {
+          "studentId": "6b61c807-ea92-4d66-8d9a-f4079e79b7e2",
+          "admissionNumber": "STU-10th-A-102",
+          "name": "Aarav Sharma",
+          "fromStandard": "10th",
+          "fromSection": "A",
+          "toStandard": "Alumni",
+          "toSection": "A",
+          "action": "graduate",
+          "status": "Success"
+        },
+        {
+          "studentId": "dc2e6c27-bfeb-42c7-ab0f-fbdcffd1c74d",
+          "admissionNumber": "STU-10th-A-103",
+          "name": "Ananya Roy",
+          "fromStandard": "10th",
+          "fromSection": "A",
+          "toStandard": "Alumni",
+          "toSection": "A",
+          "action": "graduate",
+          "status": "Success"
+        },
+        {
+          "studentId": "2103e2dd-2d7d-4d2c-9317-d89e640d4c1f",
+          "admissionNumber": "STU-10th-A-104",
+          "name": "Vihaan Patel",
+          "fromStandard": "10th",
+          "fromSection": "A",
+          "toStandard": "Alumni",
+          "toSection": "A",
+          "action": "graduate",
+          "status": "Success"
+        }
+      ]
+    },
+    {
+      "id": "promo-batch-1791534467468",
+      "timestamp": "2026-10-09T08:27:47.468Z",
+      "adminUser": "Admin User",
+      "fromAcademicYear": "2026-2027",
+      "toAcademicYear": "2027-2028",
+      "summary": {
+        "totalProcessed": 4,
+        "promotedCount": 0,
+        "graduatedCount": 4,
+        "repeatedCount": 0,
+        "reviewCount": 0
+      },
+      "students": [
+        {
+          "studentId": "81ec2800-b048-49eb-9587-8bab02d18303",
+          "admissionNumber": "STU-10th-A-101",
+          "name": "Rahul Student",
+          "fromStandard": "10th",
+          "fromSection": "A",
+          "toStandard": "Alumni",
+          "toSection": "A",
+          "action": "graduate",
+          "status": "Success"
+        },
+        {
+          "studentId": "02026acd-e1df-4d28-ab6e-5e216cf9612d",
+          "admissionNumber": "STU-10th-A-102",
+          "name": "Aarav Sharma",
+          "fromStandard": "10th",
+          "fromSection": "A",
+          "toStandard": "Alumni",
+          "toSection": "A",
+          "action": "graduate",
+          "status": "Success"
+        },
+        {
+          "studentId": "d7892168-c962-44b5-a8c8-04876929e917",
+          "admissionNumber": "STU-10th-A-103",
+          "name": "Ananya Roy",
+          "fromStandard": "10th",
+          "fromSection": "A",
+          "toStandard": "Alumni",
+          "toSection": "A",
+          "action": "graduate",
+          "status": "Success"
+        },
+        {
+          "studentId": "97ad03dc-097c-422e-85ac-95e40a060aff",
+          "admissionNumber": "STU-10th-A-104",
+          "name": "Vihaan Patel",
+          "fromStandard": "10th",
+          "fromSection": "A",
+          "toStandard": "Alumni",
+          "toSection": "A",
+          "action": "graduate",
+          "status": "Success"
+        }
+      ]
+    },
+    {
+      "id": "promo-batch-1791534445225",
+      "timestamp": "2026-10-09T08:27:25.225Z",
+      "adminUser": "Admin User",
+      "fromAcademicYear": "2026-2027",
+      "toAcademicYear": "2027-2028",
+      "summary": {
+        "totalProcessed": 1,
+        "promotedCount": 1,
+        "graduatedCount": 0,
+        "repeatedCount": 0,
+        "reviewCount": 0
+      },
+      "students": [
+        {
+          "studentId": "35079459-803f-46a5-adc9-6d3ee8aa3159",
+          "admissionNumber": "STU-8th-A-301",
+          "name": "Kyra Joshi",
+          "fromStandard": "8th",
+          "fromSection": "A",
+          "toStandard": "9th",
+          "toSection": "A",
+          "action": "promote",
+          "status": "Success"
+        }
+      ]
+    }
+  ]
+}

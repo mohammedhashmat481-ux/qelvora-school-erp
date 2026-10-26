@@ -1,0 +1,81 @@
+[
+  {
+    "id": "pb-1001",
+    "studentId": "std-rahul-01",
+    "studentName": "Rahul Verma",
+    "rollNumber": "1001",
+    "admissionNumber": "ADM-2023-089",
+    "standard": "10th",
+    "section": "A",
+    "academicYear": "2026–2027",
+    "previousYear": "2025–2026",
+    "openingBalance": 12500,
+    "paidAmount": 4500,
+    "outstanding": 8000,
+    "status": "Partial",
+    "remarks": "Previous year Term 2 tuition & exam fees balance",
+    "payments": [
+      {
+        "paymentId": "RCP-PB-901",
+        "amount": 4500,
+        "paymentDate": "2026-06-10T11:30:00.000Z",
+        "paymentMode": "UPI",
+        "transactionRef": "UPI/29384712093",
+        "receiptNumber": "PB-2026-001",
+        "collectedBy": "Accounts Office",
+        "remarks": "Paid ₹4,500 via PhonePe"
+      }
+    ],
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-06-10T11:30:00.000Z"
+  },
+  {
+    "id": "pb-1002",
+    "studentId": "std-ananya-02",
+    "studentName": "Ananya Sharma",
+    "rollNumber": "901",
+    "admissionNumber": "ADM-2024-112",
+    "standard": "9th",
+    "section": "A",
+    "academicYear": "2026–2027",
+    "previousYear": "2025–2026",
+    "openingBalance": 6800,
+    "paidAmount": 0,
+    "outstanding": 6800,
+    "status": "Pending",
+    "remarks": "Outstanding 8th standard annual development charges",
+    "payments": [],
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "pb-1003",
+    "studentId": "std-vikram-03",
+    "studentName": "Vikram Singh",
+    "rollNumber": "802",
+    "admissionNumber": "ADM-2024-145",
+    "standard": "8th",
+    "section": "A",
+    "academicYear": "2026–2027",
+    "previousYear": "2025–2026",
+    "openingBalance": 5000,
+    "paidAmount": 5000,
+    "outstanding": 0,
+    "status": "Paid",
+    "remarks": "7th standard library and sports dues (Fully Cleared)",
+    "payments": [
+      {
+        "paymentId": "RCP-PB-902",
+        "amount": 5000,
+        "paymentDate": "2026-05-18T14:15:00.000Z",
+        "paymentMode": "Cash",
+        "transactionRef": "CASH-REC-108",
+        "receiptNumber": "PB-2026-002",
+        "collectedBy": "Accounts Office",
+        "remarks": "Full settlement in cash"
+      }
+    ],
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-05-18T14:15:00.000Z"
+  }
+]

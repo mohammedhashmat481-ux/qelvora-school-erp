@@ -1,0 +1,477 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Navy Blue + White Professional SaaS Color Palette ── */
+:root {
+  /* Sidebar */
+  --sidebar-bg: #172B4D;
+  --sidebar-hover: #29456D;
+  --menu-active-bg: #DBEAFE;
+  --menu-active-text: #172B4D;
+  --sidebar-text: #F3F6FC;
+
+  /* Main Canvas & Content */
+  --page-bg: #F7F9FC;
+  --card-bg: #FFFFFF;
+  --border-color: #E2E8F0;
+
+  /* Buttons */
+  --primary-btn: #29456D;
+  --primary-btn-hover: #172B4D;
+
+  /* Typography */
+  --heading-text: #172B4D;
+  --body-text: #334155;
+  --secondary-text: #64748B;
+
+  /* Forms & Tables */
+  --input-bg: #FFFFFF;
+  --input-border: #CBD5E1;
+  --table-header-bg: #EFF4FA;
+  --table-row-hover: #F1F6FD;
+  --focus-ring: #93C5FD;
+
+  /* Header & Footer Theme */
+  --header-bg: #172B4D;
+  --header-text: #FFFFFF;
+  --header-logo: #FFFFFF;
+  --header-icons: #F3F6FC;
+  --header-hover-bg: #29456D;
+  --header-hover-text: #DBEAFE;
+  --header-border: #29456D;
+  --sticky-header-bg: #172B4D;
+  --dropdown-bg: #FFFFFF;
+  --dropdown-text: #172B4D;
+  --dropdown-hover-bg: #DBEAFE;
+
+  --footer-bg: #172B4D;
+  --footer-headings: #FFFFFF;
+  --footer-text: #CBD5E1;
+  --footer-links: #F3F6FC;
+  --footer-link-hover: #93C5FD;
+  --footer-border: #29456D;
+  --footer-accent: #29456D;
+
+  /* Velzon mapping for compatibility */
+  --velzon-bg: #F7F9FC;
+  --velzon-card: #FFFFFF;
+  --velzon-primary: #29456D;
+  --velzon-primary-hover: #172B4D;
+  --velzon-secondary: #172B4D;
+  --velzon-secondary-hover: #29456D;
+  --velzon-text-body: #334155;
+  --velzon-text-muted: #64748B;
+  --velzon-sidebar-bg: #172B4D;
+  --velzon-border: #E2E8F0;
+  --velzon-shadow: 0 1px 3px rgba(23, 43, 77, 0.08), 0 1px 2px rgba(23, 43, 77, 0.06);
+  
+  /* Fallbacks for backward compatibility */
+  --gold-50: #F7F9FC;
+  --gold-100: #EFF4FA;
+  --gold-250: #29456D;
+  --gold-500: #172B4D;
+  --gold-600: #29456D;
+  --gold-700: #172B4D;
+  --gold-800: #172B4D;
+}
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, sans-serif;
+  min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background-color: #F7F9FC;
+  color: #334155;
+}
+
+/* ── Navy Blue + White SaaS Element Defaults ── */
+h1, h2, h3, h4, h5, h6 {
+  color: #172B4D;
+}
+
+/* Table header & row hover */
+table thead th {
+  background-color: #EFF4FA;
+  color: #172B4D;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+table tbody tr:hover {
+  background-color: #F1F6FD;
+}
+
+/* Input, select, textarea styling */
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="file"]):not([type="range"]),
+select,
+textarea {
+  background-color: #FFFFFF;
+  border-color: #CBD5E1;
+  color: #334155;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="file"]):not([type="range"]):focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #93C5FD;
+  box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.45);
+}
+
+/* ── Header & Sticky Header Standards ── */
+header, .app-header {
+  background-color: #172B4D;
+  color: #FFFFFF;
+  border-bottom: 1px solid #29456D;
+}
+
+header.sticky, .sticky-header {
+  background-color: #172B4D !important;
+}
+
+header h1, header h2, header h3, header h4, header h5, header h6,
+.app-header h1, .app-header h2, .app-header h3, .app-header h4, .app-header h5, .app-header h6 {
+  color: #FFFFFF !important;
+}
+
+header a, .app-header a {
+  color: #FFFFFF;
+}
+
+header a:hover, .app-header a:hover {
+  color: #DBEAFE;
+}
+
+header svg, .app-header svg {
+  color: #F3F6FC;
+}
+
+/* Header Dropdowns */
+header select, .app-header select,
+header [role="menu"], .app-header [role="menu"] {
+  background-color: #FFFFFF !important;
+  color: #172B4D !important;
+  border-color: #29456D !important;
+}
+
+header select option, .app-header select option {
+  background-color: #FFFFFF !important;
+  color: #172B4D !important;
+}
+
+header select option:hover, header select option:focus,
+header .dropdown-item:hover, .app-header .dropdown-item:hover {
+  background-color: #DBEAFE !important;
+  color: #172B4D !important;
+}
+
+/* ── Footer Standards ── */
+footer, .app-footer {
+  background-color: #172B4D !important;
+  color: #CBD5E1 !important;
+  border-top: 1px solid #29456D !important;
+}
+
+footer h1, footer h2, footer h3, footer h4, footer h5, footer h6,
+.app-footer h1, .app-footer h2, .app-footer h3, .app-footer h4, .app-footer h5, .app-footer h6 {
+  color: #FFFFFF !important;
+}
+
+footer p, footer span, .app-footer p, .app-footer span {
+  color: #CBD5E1;
+}
+
+footer a, .app-footer a {
+  color: #F3F6FC !important;
+  transition: color 0.15s ease-in-out;
+}
+
+footer a:hover, .app-footer a:hover {
+  color: #93C5FD !important;
+}
+
+footer hr, footer .divider, footer .border-t, footer .border-b,
+.app-footer hr, .app-footer .divider, .app-footer .border-t, .app-footer .border-b {
+  border-color: #29456D !important;
+}
+
+/* Prevent tap-highlight flash on mobile */
+button, a, input, select, textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ensure inputs are at least 16px to prevent iOS zoom */
+input, select, textarea {
+  font-size: 16px;
+}
+
+@media (min-width: 640px) {
+  input, select, textarea {
+    font-size: 14px;
+  }
+}
+
+/* Custom scrollbar — sleek dark/gray */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Camera feed styling */
+.camera-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
+.face-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 220px;
+  height: 280px;
+  border: 3px dashed rgba(37, 99, 235, 0.7);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+.face-overlay.verified {
+  border-color: #2563eb;
+  border-style: solid;
+  box-shadow: 0 0 30px rgba(37, 99, 235, 0.4);
+}
+
+.face-overlay.failed {
+  border-color: #ef4444;
+  border-style: solid;
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
+}
+
+/* Registration scan line — sapphire blue */
+.scan-line {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #2563eb, transparent);
+  animation: scan 2s ease-in-out infinite;
+}
+
+@keyframes scan {
+  0%, 100% { top: 20%; }
+  50% { top: 80%; }
+}
+
+/* Real-time verification scan line — sapphire navy */
+.scan-line-realtime {
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #2563eb, #1e3a8a, #2563eb, transparent);
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.6), 0 0 20px rgba(30, 58, 138, 0.3);
+  animation: scanRealtime 1.8s ease-in-out infinite;
+}
+
+@keyframes scanRealtime {
+  0% { top: 15%; opacity: 0; }
+  10% { opacity: 1; }
+  50% { top: 80%; opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 15%; opacity: 0; }
+}
+
+/* QR Scanner scan line */
+.animate-scanLine {
+  animation: scanLine 2.5s ease-in-out infinite;
+}
+
+@keyframes scanLine {
+  0%, 100% { top: 0%; }
+  50% { top: 100%; }
+}
+
+/* Popup animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes popIn {
+  0% { 
+    opacity: 0; 
+    transform: scale(0.5); 
+  }
+  60% { 
+    transform: scale(1.1); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+.popup-icon-success {
+  animation: popIn 0.5s ease-out;
+}
+
+.popup-icon-fail {
+  animation: popIn 0.4s ease-out;
+}
+
+/* Live indicator pulse */
+.live-indicator {
+  animation: livePulse 2s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* Responsive webcam */
+.webcam-video {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  border-radius: 1rem;
+  transform: scaleX(-1);
+}
+
+/* Loading spinner */
+.spinner {
+  border: 3px solid rgba(10, 179, 156, 0.2);
+  border-top: 3px solid #1E3A8A;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ── Location map markers ── */
+@keyframes locationPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.user-location-marker,
+.registered-location-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Leaflet popup overrides */
+.leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+}
+
+.leaflet-popup-tip {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* ── Velzon shadows and borders ── */
+.velzon-card {
+  background: var(--velzon-card);
+  border: 1px solid var(--velzon-border);
+  border-radius: 0.25rem;
+  box-shadow: var(--velzon-shadow);
+}
+
+.golden-glow {
+  box-shadow: var(--velzon-shadow);
+}
+
+.golden-border {
+  border: 1px solid var(--velzon-border);
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ── Examination Question Paper Print Styling ── */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12pt !important;
+  }
+  .no-print,
+  nav,
+  aside,
+  header,
+  footer,
+  button {
+    display: none !important;
+  }
+  #printable-paper-sheet {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  .break-inside-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 15mm 15mm 15mm 15mm;
+  }
+}

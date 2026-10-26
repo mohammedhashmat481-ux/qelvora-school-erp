@@ -1,0 +1,961 @@
+/**
+ * Authentication API service functions.
+ * Wraps all auth-related HTTP calls.
+ */
+import api from './api';
+
+/**
+ * Register a new user with face images.
+ * @param {Object} data - { name, email, phone, password, face_images: [base64...] }
+ * @returns {Promise} API response
+ */
+export const registerUser = async (data) => {
+  try {
+    const response = await api.post('/auth/register', data);
+    return response.data;
+  } catch (err) {
+    if (err.response && err.response.data) {
+      return err.response.data; // Return { status: false, message: '...' }
+    }
+    throw err;
+  }
+};
+
+/**
+ * Check if a user is already registered.
+ * @param {string} email
+ * @param {string} phone
+ * @returns {Promise} API response
+ */
+export const checkUser = async (email, phone) => {
+  try {
+    const response = await api.post('/auth/check-user', { email, phone });
+    return response.data;
+  } catch (err) {
+    const detail = err.response?.data?.detail;
+    const message = Array.isArray(detail)
+      ? detail.map((e) => e.msg).join(', ')
+      : detail || err.response?.data?.message || 'Server connection error';
+    return { status: false, message: message };
+  }
+};
+
+/**
+ * Login with email and password.
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise} API response with tokens
+ */
+export const loginWithPassword = async (email, password, location, offlineMode = false) => {
+  const payload = { email, password, location, offlineMode };
+  const response = await api.post('/auth/login', payload);
+  return response.data;
+};
+
+/**
+ * Securely change password for the authenticated user.
+ * @param {string} oldPassword
+ * @param {string} newPassword
+ * @returns {Promise} API response
+ */
+export const changePassword = async (oldPassword, newPassword) => {
+  const response = await api.post('/auth/change-password', { old_password: oldPassword, new_password: newPassword });
+  return response.data;
+};
+
+/**
+ * Get login/logout history for the authenticated user.
+ * Admin can pass search query to filter by employee name/id.
+ * @param {string} search - optional search query
+ * @returns {Promise} API response with history array
+ */
+export const getLoginHistory = async (search = '') => {
+  const params = search ? { search } : {};
+  const response = await api.get('/auth/login-history', { params });
+  return response.data;
+};
+
+/**
+ * Verify face against stored embeddings.
+ * @param {string} userId
+ * @param {string} faceImage - Base64-encoded face image
+ * @returns {Promise} Verification result
+ */
+export const verifyFace = async (userId, faceImage, challengeFrame = null, location = null, offlineMode = false) => {
+  const payload = {
+    user_id: userId,
+    face_image: faceImage,
+    location: location,
+    offlineMode: offlineMode
+  };
+  if (challengeFrame) {
+    payload.challenge_frame = challengeFrame;
+  }
+  const response = await api.post('/auth/verify-face', payload);
+  return response.data;
+};
+
+/**
+ * Login using face recognition.
+ * @param {string} userId
+ * @param {string} faceImage - Base64-encoded face image
+ * @returns {Promise} API response with tokens
+ */
+export const faceLogin = async (userId, faceImage, location, challengeFrame = null, offlineMode = false) => {
+  try {
+    const payload = {
+      user_id: userId,
+      face_image: faceImage,
+      location: location,
+      offlineMode: offlineMode
+    };
+    if (challengeFrame) {
+      payload.challenge_frame = challengeFrame;
+    }
+    const response = await api.post('/auth/face-login', payload);
+    return response.data;
+  } catch (err) {
+    const detail = err.response?.data?.detail;
+    const message = Array.isArray(detail)
+      ? detail.map((e) => e.msg).join(', ')
+      : detail || 'Face login failed';
+    return { status: false, message, confidence: null };
+  }
+};
+
+/**
+ * Get current user's profile.
+ * @returns {Promise} User profile data
+ */
+export const getProfile = async () => {
+  const response = await api.get('/auth/profile');
+  return response.data;
+};
+
+/**
+ * Health check.
+ * @returns {Promise}
+ */
+export const healthCheck = async () => {
+  const response = await api.get('/auth/health');
+  return response.data;
+};
+
+/**
+ * Add or update face data for the authenticated user.
+ * @param {string[]} faceImages - Array of 4 base64-encoded face images
+ * @returns {Promise} API response
+ */
+export const updateFaceData = async (faceImages) => {
+  const response = await api.put('/auth/update-face', { face_images: faceImages });
+  return response.data;
+};
+
+/**
+ * Update the profile photo for the authenticated user.
+ * @param {string} profilePhoto - Base64 encoded image string
+ * @returns {Promise} API response
+ */
+export const updateProfilePhoto = async (profilePhoto) => {
+  const response = await api.put('/auth/profile-photo', { profile_photo: profilePhoto });
+  return response.data;
+};
+
+/**
+ * Logout — records logout time in the database.
+ * @param {Object} location - { latitude, longitude }
+ * @returns {Promise} API response
+ */
+export const logoutUser = async (location = null) => {
+  try {
+    const response = await api.post('/auth/logout', { location });
+    return response.data;
+  } catch {
+    // Silently fail — user is logging out anyway
+    return { status: false };
+  }
+};
+
+/**
+ * Reverse-geocode latitude/longitude to human-readable address.
+ * @param {number} latitude
+ * @param {number} longitude
+ * @returns {Promise} { area, city, state, country, pincode, display_name }
+ */
+export const geocodeLocation = async (latitude, longitude) => {
+  const response = await api.post('/auth/geocode', { latitude, longitude });
+  return response.data;
+};
+
+export const getCompanySettings = async () => {
+  const response = await api.get('/auth/settings');
+  return response.data;
+};
+
+export const updateCompanySettings = async (settings) => {
+  try {
+    const response = await api.post('/auth/settings', settings);
+    return response.data;
+  } catch (err) {
+    const detail = err.response?.data?.detail;
+    if (detail) throw new Error(Array.isArray(detail) ? detail.map(e => e.msg).join(', ') : detail);
+    throw new Error(err.response?.data?.message || 'Failed to update company settings');
+  }
+};
+
+export const getAttendanceLogs = async () => {
+  const response = await api.get('/auth/attendance');
+  return response.data;
+};
+
+export const punchIn = async (employee_id, face_image = null, challenge_frame = null, location = null) => {
+  const response = await api.post('/auth/attendance/punch-in', { 
+    employee_id,
+    face_image,
+    challenge_frame,
+    location
+  });
+  return response.data;
+};
+
+export const punchOut = async (employee_id) => {
+  const response = await api.post('/auth/attendance/punch-out', { employee_id });
+  return response.data;
+};
+
+export const verifyLogout = async (employee_id, face_image = null, challenge_frame = null, location = null) => {
+  const response = await api.post('/auth/attendance/verify-logout', {
+    employee_id,
+    face_image,
+    challenge_frame,
+    location
+  });
+  return response.data;
+};
+
+export const getAttendanceStatus = async (employee_id) => {
+  const response = await api.get(`/auth/attendance/status/${employee_id}`);
+  return response.data;
+};
+
+export const kioskGetEmployee = async (employee_id) => {
+  const response = await api.get(`/auth/kiosk/${employee_id}`);
+  return response.data;
+};
+
+export const kioskLogoutEmployee = async (employee_id, login_time, duration_minutes, face_image = null, challenge_frame = null, location = null) => {
+  const response = await api.post('/auth/kiosk/logout', { 
+    employee_id, 
+    login_time, 
+    duration_minutes,
+    face_image,
+    challenge_frame,
+    location
+  });
+  return response.data;
+};
+
+export const getConsolidatedReport = async (month, year, department = '') => {
+  const params = {};
+  if (month) params.month = month;
+  if (year) params.year = year;
+  if (department) params.department = department;
+  const response = await api.get('/auth/attendance/report/consolidated', { params });
+  return response.data;
+};
+
+export const getDetailsReport = async (month, year, employee_id = '', department = '') => {
+  const params = {};
+  if (month) params.month = month;
+  if (year) params.year = year;
+  if (employee_id) params.employee_id = employee_id;
+  if (department) params.department = department;
+  const response = await api.get('/auth/attendance/report/details', { params });
+  return response.data;
+};
+
+export const updateAttendanceStatus = async ({ employeeId, date, status, reason, remarks }) => {
+  const response = await api.post('/auth/attendance/update-status', {
+    employeeId,
+    date,
+    status,
+    reason,
+    remarks
+  });
+  return response.data;
+};
+
+// ── Admin Employee Management ──
+
+export const getAdminEmployees = async () => {
+  const response = await api.get('/auth/admin/employees');
+  return response.data;
+};
+
+export const updateEmployeeSettings = async (employeeId, settings) => {
+  const response = await api.put(`/auth/admin/employee/${employeeId}/settings`, settings);
+  return response.data;
+};
+
+export const deleteEmployee = async (employeeId) => {
+  const response = await api.delete(`/auth/admin/employee/${employeeId}`);
+  return response.data;
+};
+
+export const resetEmployeePassword = async (employeeId, newPassword) => {
+  const response = await api.post(`/auth/admin/employee/${employeeId}/reset-password`, { new_password: newPassword });
+  return response.data;
+};
+
+export const exportAttendanceExcel = async (reportType = 'consolidated', month, year, department = '', employeeId = '') => {
+  const params = { report_type: reportType };
+  if (month) params.month = month;
+  if (year) params.year = year;
+  if (department) params.department = department;
+  if (employeeId) params.employee_id = employeeId;
+  const response = await api.get('/auth/attendance/export', { params, responseType: 'blob' });
+  
+  if (response.data && response.data.type === 'application/json') {
+    const text = await response.data.text();
+    const json = JSON.parse(text);
+    throw new Error(json.message || json.detail || 'Export failed');
+  }
+
+  const blob = new Blob([response.data], { 
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+  });
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  const filterSuffix = department ? `_${department.trim().replace(/[^a-zA-Z0-9]/g, '_')}` : '';
+  link.setAttribute('download', `attendance_${reportType}_${year}_${String(month).padStart(2,'0')}${filterSuffix}.xlsx`);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
+};
+
+export const getDailyStatus = async (dateStr = '') => {
+  const params = dateStr ? { date_str: dateStr } : {};
+  const response = await api.get('/auth/attendance/daily-status', { params });
+  return response.data;
+};
+
+export const uploadEmployeeDocument = async (employeeId, documentType, file) => {
+  const formData = new FormData();
+  formData.append('document_type', documentType);
+  formData.append('file', file);
+  const response = await api.post(`/auth/admin/employee/${employeeId}/upload-document`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+export const downloadEmployeeDocument = async (employeeId, documentType, filename) => {
+  const response = await api.get(`/auth/admin/employee/${employeeId}/download-document/${documentType}`, {
+    responseType: 'blob',
+  });
+  const url = window.URL.createObjectURL(new Blob([response.data]));
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
+};
+
+// ── Customers ──
+
+export const getCustomers = async () => {
+  const response = await api.get('/customers');
+  return response.data;
+};
+
+export const createCustomer = async (data) => {
+  const response = await api.post('/customers', data);
+  return response.data;
+};
+
+export const updateCustomer = async (customerId, data) => {
+  const response = await api.put(`/customers/${customerId}`, data);
+  return response.data;
+};
+
+// ── Inventory ──
+
+export const getInventory = async () => {
+  const response = await api.get('/inventory');
+  return response.data;
+};
+
+export const createInventory = async (data) => {
+  const response = await api.post('/inventory', data);
+  return response.data;
+};
+
+export const updateInventory = async (productId, data) => {
+  const response = await api.put(`/inventory/${productId}`, data);
+  return response.data;
+};
+
+// ── Measurements ──
+
+export const getMeasurements = async () => {
+  const response = await api.get('/measurements');
+  return response.data;
+};
+
+export const createMeasurement = async (data) => {
+  const response = await api.post('/measurements', data);
+  return response.data;
+};
+
+export const updateMeasurement = async (id, data) => {
+  const response = await api.put(`/measurements/${id}`, data);
+  return response.data;
+};
+
+export const deleteMeasurement = async (id) => {
+  const response = await api.delete(`/measurements/${id}`);
+  return response.data;
+};
+
+// ── Orders ──
+
+export const getOrders = async () => {
+  const response = await api.get('/orders');
+  return response.data;
+};
+
+export const createOrder = async (data) => {
+  const response = await api.post('/orders', data);
+  return response.data;
+};
+
+export const updateOrder = async (id, data) => {
+  const response = await api.put(`/orders/${id}`, data);
+  return response.data;
+};
+
+export const deleteOrder = async (id) => {
+  const response = await api.delete(`/orders/${id}`);
+  return response.data;
+};
+
+// ── Roles ──
+
+export const getRoles = async () => {
+  const response = await api.get('/roles');
+  return response.data;
+};
+
+export const createRole = async (data) => {
+  const response = await api.post('/roles', data);
+  return response.data;
+};
+
+export const updateRole = async (id, data) => {
+  const response = await api.put(`/roles/${id}`, data);
+  return response.data;
+};
+
+export const deleteRole = async (id) => {
+  const response = await api.delete(`/roles/${id}`);
+  return response.data;
+};
+
+// ── Additional Deletions ──
+
+export const deleteCustomer = async (id) => {
+  const response = await api.delete(`/customers/${id}`);
+  return response.data;
+};
+
+export const deleteInventory = async (id) => {
+  const response = await api.delete(`/inventory/${id}`);
+  return response.data;
+};
+
+// ── School Management APIs ──
+
+// Classes
+export const getClasses = async () => {
+  const response = await api.get('/classes');
+  return response.data;
+};
+
+export const createClass = async (data) => {
+  const response = await api.post('/classes', data);
+  return response.data;
+};
+
+export const deleteClass = async (id) => {
+  const response = await api.delete(`/classes/${id}`);
+  return response.data;
+};
+
+export const updateClass = async (id, data) => {
+  const response = await api.put(`/classes/${id}`, data);
+  return response.data;
+};
+
+// Subjects
+export const getSubjects = async (params) => {
+  const response = await api.get('/subjects', { params });
+  return response.data;
+};
+
+export const createSubject = async (data) => {
+  const response = await api.post('/subjects', data);
+  return response.data;
+};
+
+export const updateSubject = async (id, data) => {
+  const response = await api.put(`/subjects/${id}`, data);
+  return response.data;
+};
+
+export const deleteSubject = async (id) => {
+  const response = await api.delete(`/subjects/${id}`);
+  return response.data;
+};
+
+// Subject Teacher Mappings
+export const getMappings = async () => {
+  const response = await api.get('/subjects/mappings');
+  return response.data;
+};
+
+export const createMapping = async (data) => {
+  const response = await api.post('/subjects/mappings', data);
+  return response.data;
+};
+
+export const updateMapping = async (id, data) => {
+  const response = await api.put(`/subjects/mappings/${id}`, data);
+  return response.data;
+};
+
+export const deleteMapping = async (id) => {
+  const response = await api.delete(`/subjects/mappings/${id}`);
+  return response.data;
+};
+
+// Faculty Adding
+export const addTeacher = async (data) => {
+  const response = await api.post('/faculty/teacher', data);
+  return response.data;
+};
+
+export const addNonTeachingStaff = async (data) => {
+  const response = await api.post('/faculty/non-teaching', data);
+  return response.data;
+};
+
+// Timetable
+export const getTimetables = async (params = {}) => {
+  const response = await api.get('/timetables', { params });
+  return response.data;
+};
+
+export const createTimetableEntry = async (data) => {
+  const response = await api.post('/timetables', data);
+  return response.data;
+};
+
+export const saveTeacherTimetableBulk = async (teacherId, slots, date) => {
+  const response = await api.post('/timetables/bulk', { teacherId, slots, date });
+  return response.data;
+};
+
+export const deleteTimetableEntry = async (id) => {
+  const response = await api.delete(`/timetables/${id}`);
+  return response.data;
+};
+
+// Leaves & Substitutes
+export const requestLeave = async (leaveDate, reason) => {
+  const response = await api.post('/leaves/request', { leaveDate, reason });
+  return response.data;
+};
+
+export const getLeaveRequests = async () => {
+  const response = await api.get('/leaves/requests');
+  return response.data;
+};
+
+export const getSubstituteSuggestions = async (teacherId, date) => {
+  const response = await api.get('/leaves/substitute-suggestions', {
+    params: { teacherId, date }
+  });
+  return response.data;
+};
+
+export const approveLeave = async (id, status, substituteAllocations) => {
+  const response = await api.post(`/leaves/approve/${id}`, { status, substituteAllocations });
+  return response.data;
+};
+
+export const assignSubstituteDirectly = async (data) => {
+  const response = await api.post('/leaves/assign-substitute-directly', data);
+  return response.data;
+};
+
+export const getMyLeaveRequests = async () => {
+  const response = await api.get('/leaves/my-requests');
+  return response.data;
+};
+
+// Student Attendance
+export const getStudentAttendance = async (standard, section, date, classId = null) => {
+  const params = {};
+  if (standard) params.standard = standard;
+  if (section) params.section = section;
+  if (date) params.date = date;
+  if (classId) params.classId = classId;
+  const response = await api.get('/attendance/students', { params });
+  return response.data;
+};
+
+export const markStudentAttendance = async (data) => {
+  const response = await api.post('/attendance/students', data);
+  return response.data;
+};
+
+// Dashboards
+export const getTeacherDashboard = async () => {
+  const response = await api.get('/dashboard/teacher');
+  return response.data;
+};
+
+export const getAdminDashboard = async () => {
+  const response = await api.get('/dashboard/admin');
+  return response.data;
+};
+
+export const classLogin = async (classId, period, subjectId, location, teacherId = null) => {
+  const response = await api.post('/attendance/class-login', { classId, period, subjectId, location, teacherId });
+  return response.data;
+};
+
+export const classLogout = async (classId, period, location, teacherId = null) => {
+  const response = await api.post('/attendance/class-logout', { classId, period, location, teacherId });
+  return response.data;
+};
+
+export const createTeacherSchedule = async (data) => {
+  const response = await api.post('/timetables/teacher-schedule', data);
+  return response.data;
+};
+
+// ── Dashboard Stats ──
+
+export const getConsolidatedDashboardStats = async () => {
+  const response = await api.get('/dashboard/consolidated-stats');
+  return response.data;
+};
+
+export const getIndividualDashboardStats = async (teacherId) => {
+  const response = await api.get(`/dashboard/individual-stats/${teacherId}`);
+  return response.data;
+};
+
+export const updateTeacherProfile = async (data) => {
+  const response = await api.put('/auth/teacher/profile', data);
+  return response.data;
+};
+
+// ── Student & Parent Profile Services ──
+export const getStudentMe = async () => {
+  const response = await api.get('/students/me');
+  return response.data;
+};
+
+export const addStudent = async (data) => {
+  const response = await api.post('/students', data);
+  return response.data;
+};
+
+// ── Classroom Videos / Recording Services ──
+export const getVideos = async () => {
+  const response = await api.get('/videos');
+  return response.data;
+};
+
+export const uploadVideo = async (formData) => {
+  const response = await api.post('/videos', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+export const deleteVideo = async (id) => {
+  const response = await api.delete(`/videos/${id}`);
+  return response.data;
+};
+
+// ── Feedback & Ratings Services ──
+export const submitFeedback = async (data, profileRole = 'parent') => {
+  const response = await api.post('/feedback', data, {
+    headers: {
+      'x-profile-role': profileRole,
+    },
+  });
+  return response.data;
+};
+
+export const updateFeedback = async (id, data, profileRole = 'parent') => {
+  const response = await api.put(`/feedback/${id}`, data, {
+    headers: {
+      'x-profile-role': profileRole,
+    },
+  });
+  return response.data;
+};
+
+export const deleteFeedback = async (id, profileRole = 'parent') => {
+  const response = await api.delete(`/feedback/${id}`, {
+    headers: {
+      'x-profile-role': profileRole,
+    },
+  });
+  return response.data;
+};
+
+export const getVideoFeedback = async (videoId) => {
+  const response = await api.get(`/feedback/video/${videoId}`);
+  return response.data;
+};
+
+export const getTeacherFeedbackAnalytics = async () => {
+  const response = await api.get('/feedback/teacher/analytics');
+  return response.data;
+};
+
+export const getAdminFeedbackAll = async (params = {}) => {
+  const response = await api.get('/feedback/admin/all', { params });
+  return response.data;
+};
+
+export const getStudentsList = async (params = {}) => {
+  const response = await api.get('/students', { params });
+  return response.data;
+};
+
+export const getNextAdmissionNumber = async () => {
+  const response = await api.get('/students/next-admission-number');
+  return response.data;
+};
+
+export const bulkUploadStudents = async (formDataOrData) => {
+  if (formDataOrData instanceof FormData) {
+    const response = await api.post('/students/bulk-upload', formDataOrData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  }
+  const response = await api.post('/students/bulk-upload', formDataOrData);
+  return response.data;
+};
+
+export const downloadStudentTemplate = async (format = 'xlsx') => {
+  const response = await api.get('/students/bulk-template', {
+    params: { format },
+    responseType: 'blob',
+  });
+  const blob = new Blob([response.data], {
+    type: format === 'csv' ? 'text/csv' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  });
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', `Students_Bulk_Upload_Template.${format}`);
+  document.body.appendChild(link);
+  link.click();
+  link.parentNode.removeChild(link);
+  window.URL.revokeObjectURL(url);
+  return true;
+};
+
+
+export const updateStudent = async (id, data) => {
+  const response = await api.put(`/students/${id}`, data);
+  return response.data;
+};
+
+export const deleteStudent = async (id) => {
+  const response = await api.delete(`/students/${id}`);
+  return response.data;
+};
+
+export const getClassSessions = async () => {
+  const response = await api.get('/attendance/class-sessions');
+  return response.data;
+};
+
+export const createClassSession = async (data) => {
+  const response = await api.post('/attendance/class-sessions', data);
+  return response.data;
+};
+
+export const concludeClassSession = async (id) => {
+  const response = await api.put(`/attendance/class-sessions/${id}/conclude`);
+  return response.data;
+};
+
+export const sendLateNotice = async (data) => {
+  const response = await api.post('/attendance/send-late-notice', data);
+  return response.data;
+};
+
+export const directLoginAsUser = async (data) => {
+  const response = await api.post('/auth/admin/direct-login', data);
+  return response.data;
+};
+
+// ─────────────────────────────────────────────────────────────
+// EXAMINATION MODULE API METHODS
+// ─────────────────────────────────────────────────────────────
+export const getExamTypes = async (academicYear = '2026-2027') => {
+  const response = await api.get(`/examination/types?academicYear=${academicYear}`);
+  return response.data;
+};
+
+export const createExamType = async (data) => {
+  const response = await api.post('/examination/types', data);
+  return response.data;
+};
+
+export const updateExamType = async (id, data) => {
+  const response = await api.put(`/examination/types/${id}`, data);
+  return response.data;
+};
+
+export const deleteExamType = async (id) => {
+  const response = await api.delete(`/examination/types/${id}`);
+  return response.data;
+};
+
+export const getExamNames = async (academicYear = '2026-2027') => {
+  const response = await api.get(`/examination/names?academicYear=${academicYear}`);
+  return response.data;
+};
+
+export const createExamName = async (data) => {
+  const response = await api.post('/examination/names', data);
+  return response.data;
+};
+
+export const updateExamName = async (id, data) => {
+  const response = await api.put(`/examination/names/${id}`, data);
+  return response.data;
+};
+
+export const deleteExamName = async (id) => {
+  const response = await api.delete(`/examination/names/${id}`);
+  return response.data;
+};
+
+export const createExamSchedule = async (data) => {
+  const response = await api.post('/examination/schedules', data);
+  return response.data;
+};
+
+export const getExamAllocations = async (params = {}) => {
+  const response = await api.get('/examination/allocations', { params });
+  return response.data;
+};
+
+export const createExamAllocation = async (data) => {
+  const response = await api.post('/examination/allocations', data);
+  return response.data;
+};
+
+export const deleteExamAllocation = async (id) => {
+  const response = await api.delete(`/examination/allocations/${id}`);
+  return response.data;
+};
+
+export const getExamMarksRoster = async (params = {}) => {
+  const response = await api.get('/examination/marks', { params });
+  return response.data;
+};
+
+export const saveExamMarksBulk = async (data) => {
+  const response = await api.post('/examination/marks/bulk', data);
+  return response.data;
+};
+
+export const modifyExamMarksAudit = async (id, data) => {
+  const response = await api.put(`/examination/marks/modify/${id}`, data);
+  return response.data;
+};
+
+export const getExamAuditLogs = async () => {
+  const response = await api.get('/examination/audit-logs');
+  return response.data;
+};
+
+export const toggleExamLock = async (data) => {
+  const response = await api.post('/examination/toggle-lock', data);
+  return response.data;
+};
+
+export const toggleExamPublish = async (data) => {
+  const response = await api.post('/examination/toggle-publish', data);
+  return response.data;
+};
+
+export const getReportCardsData = async (params = {}) => {
+  const response = await api.get('/examination/report-cards', { params });
+  return response.data;
+};
+
+export const getCCESkills = async () => {
+  const response = await api.get('/examination/cce-skills');
+  return response.data;
+};
+
+export const createCCESkill = async (data) => {
+  const response = await api.post('/examination/cce-skills', data);
+  return response.data;
+};
+
+export const getCCETestTypes = async () => {
+  const response = await api.get('/examination/cce-test-types');
+  return response.data;
+};
+
+export const saveCCEGradesBulk = async (data) => {
+  const response = await api.post('/examination/cce-grades/bulk', data);
+  return response.data;
+};
+
+export const getExamAnalytics = async (params = {}) => {
+  const response = await api.get('/examination/analytics', { params });
+  return response.data;
+};
+
+export const getGradeScales = async () => {
+  const response = await api.get('/examination/grades');
+  return response.data;
+};
+
+export const saveGradeScale = async (data) => {
+  const response = await api.post('/examination/grades', data);
+  return response.data;
+};
+
+export const getMyStudentMarks = async (studentId = null) => {
+  const url = studentId ? `/examination/my-marks?studentId=${studentId}` : '/examination/my-marks';
+  const response = await api.get(url);
+  return response.data;
+};
+

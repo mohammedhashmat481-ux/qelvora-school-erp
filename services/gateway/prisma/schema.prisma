@@ -1,0 +1,957 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+model User {
+  id                 String   @id @default(uuid())
+  name               String
+  email              String   @unique
+  phone              String?  @unique
+  password_hash      String
+  face_embeddings    String[] @default([])
+  registeredLat     Float?
+  registeredLng     Float?
+  skip_location      Boolean  @default(false)
+  skip_face          Boolean  @default(false)
+  role               String   @default("teacher")
+  isActive           Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  students           Student[]
+  teachers           Teacher[]
+
+  @@index([email])
+  @@index([role, isActive])
+}
+
+model Student {
+  id                 String   @id @default(uuid())
+  userId             String?
+  studentId          String   @unique
+  name               String
+  email              String?
+  phone              String?
+  dob                String?
+  gender             String?  @default("Male")
+  standard           String
+  section            String
+  rollNumber         String?
+  admissionDate      String?
+  parentName         String?
+  parentPhone        String?
+  parentEmail        String?
+  address            String?
+  photoUrl           String?
+  leftSchoolStatus   Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user               User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  pickupAuthorizations PickupAuthorization[]
+
+  @@index([standard, section])
+  @@index([name])
+  @@index([parentEmail])
+}
+
+model Teacher {
+  id                 String   @id @default(uuid())
+  userId             String?
+  employeeId         String   @unique
+  name               String
+  email              String   @unique
+  phone              String?
+  department         String?
+  qualification      String?
+  designation        String?
+  assignedClass      String?
+  assignedSection    String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user               User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([name])
+  @@index([department])
+}
+
+model NonTeachingStaff {
+  id                 String   @id @default(uuid())
+  employeeId         String   @unique
+  name               String
+  role               String
+  phone              String?
+  email              String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Role {
+  id                  String   @id @default(uuid())
+  roleCode            String   @default("")
+  rolename            String   @default("")
+  grantAdminPrivilege Boolean  @default(false)
+  createdBy           String   @default("Admin")
+  status              String   @default("Active")
+  isActive            Boolean  @default(true)
+  isEnabled           Boolean  @default(true)
+  name                String?
+  permissions         String[] @default([])
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Class {
+  id                 String   @id @default(uuid())
+  standard           String
+  section            String
+  board              String   @default("CBSE")
+  classTeacherId     String?
+  classTeacherName   String?
+  strength           Int      @default(0)
+  roomNumber         String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  studentAttendances StudentAttendance[]
+  @@unique([standard, section])
+}
+
+model Subject {
+  id                 String   @id @default(uuid())
+  name               String
+  code               String?
+  standard           String?
+  section            String?
+  board              String?  @default("CBSE")
+  classId            String?
+  className          String?
+  type               String?  @default("Core")
+  weeklyHours        Int?     @default(4)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  materials          Material[]
+
+  @@index([standard, section])
+}
+
+model Material {
+  id                 String   @id @default(uuid())
+  subjectId          String
+  title              String
+  fileUrl            String
+  fileType           String   @default("pdf")
+  uploadedBy         String?
+  createdAt          DateTime @default(now())
+
+  subject            Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@index([subjectId])
+}
+
+model StudentAttendance {
+  id                 String   @id @default(uuid())
+  date               String
+  classId            String
+  studentId          String?  @default("")
+  studentName        String
+  rollNumber         String   @default("")
+  status             String   @default("Present")
+  academicYear       String   @default("2026-2027")
+  session            String   @default("FULL_DAY")
+  method             String   @default("MANUAL")
+  checkInTime        String   @default("")
+  checkOutTime       String   @default("")
+  markedTime         String   @default("")
+  remarks            String?  @default("")
+  markedBy           String?  @default("")
+  markedByRole       String?  @default("")
+  confidence         Float?
+  deviceInfo         String?  @default("")
+  notificationStatus String   @default("NONE")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  class              Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@unique([date, classId, studentName, session])
+  @@index([date, classId])
+  @@index([classId, date])
+  @@index([studentId, date])
+  @@index([date, status])
+}
+
+model TeacherAttendance {
+  id                 String   @id @default(uuid())
+  date               String
+  teacherName        String
+  status             String   @default("Present")
+  markedTime         String   @default("")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@unique([date, teacherName])
+  @@index([date])
+  @@index([teacherName, date])
+}
+
+model Timetable {
+  id                 String   @id @default(uuid())
+  classId            String?
+  standard           String
+  section            String
+  board              String?  @default("CBSE")
+  day                String
+  period             Int
+  subjectId          String?
+  subject            String
+  subjectCode        String?
+  teacherId          String?
+  teacher            String
+  employeeId         String?
+  room               String?
+  startTime          String?
+  endTime            String?
+  timeSlot           String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now()) @updatedAt
+
+  @@index([teacherId, day])
+  @@index([standard, section, day])
+  @@index([day])
+}
+
+model ClassroomVideo {
+  id                 String   @id @default(uuid())
+  title              String
+  url                String
+  standard           String
+  subject            String
+  description        String?
+  createdAt          DateTime @default(now())
+
+  @@index([standard])
+}
+
+model ClassSession {
+  id                 String   @id @default(uuid())
+  standard           String
+  section            String
+  subject            String
+  teacher            String
+  status             String   @default("scheduled")
+  startTime          DateTime?
+  endTime            DateTime?
+  createdAt          DateTime @default(now())
+
+  @@index([standard, section, status])
+}
+
+model LeaveRequest {
+  id                 String   @id @default(uuid())
+  applicantName      String
+  applicantRole      String
+  reason             String
+  startDate          String
+  endDate            String
+  status             String   @default("Pending")
+  createdAt          DateTime @default(now())
+
+  @@index([applicantRole, status])
+  @@index([status])
+}
+
+model Notification {
+  id                 String   @id @default(uuid())
+  recipientRole      String
+  title              String
+  message            String
+  isRead             Boolean  @default(false)
+  createdAt          DateTime @default(now())
+
+  @@index([recipientRole, isRead])
+  @@index([createdAt])
+}
+
+model Paper {
+  id                 String   @id @default(uuid())
+  userId             String?
+  provider           String?  @default("gemini")
+  model              String?  @default("")
+  title              String
+  paper              String
+  answerKey          String   @default("")
+  markingScheme      String   @default("")
+  structuredData     Json?
+  request            Json
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now()) @updatedAt
+
+  @@index([userId])
+}
+
+model TopicSummary {
+  id                  String   @id @default(uuid())
+  userId              String?
+  schoolId            String?
+  standard            String
+  board               String   @default("CBSE")
+  subject             String
+  topic               String
+  style               String   @default("Standard Notes") // quick_revision, standard_notes, detailed_notes, exam_oriented
+  title               String
+  summary             String   @db.Text
+  keyPoints           Json     @default("[]")
+  teacherInstructions String?  @db.Text
+  sourcesUsed         Json     @default("[]")
+  provider            String?  @default("gemini")
+  model               String?  @default("")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @default(now()) @updatedAt
+
+  @@index([userId])
+  @@index([standard, subject, topic])
+}
+
+model QuestionPaperResource {
+  id            String   @id @default(uuid())
+  schoolId      String?
+  uploadedBy    String?
+  uploaderName  String?
+  title         String
+  board         String   @default("CBSE")
+  academicYear  String?  @default("2024-2025")
+  standard      String
+  subject       String
+  chapters      String[] @default([])
+  documentType  String   // textbook, chapter_pdf, syllabus, previous_year_paper, sample_paper, marking_scheme, notes
+  fileName      String
+  filePath      String
+  fileSize      Int      @default(0)
+  fileHash      String?  @default("")
+  status        String   @default("processed") // processing, processed, failed
+  errorMessage  String?
+  extractedText String?  @db.Text
+  chunks        Json     @default("[]")
+  metadata      Json     @default("{}")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([board, standard, subject])
+  @@index([documentType])
+  @@index([status])
+  @@index([fileHash])
+}
+
+model SchoolSettings {
+  id                    String   @id @default(uuid())
+  schoolName            String   @default("Golden Valley Academy")
+  schoolLogo            String   @default("")
+  logoSubtext           String   @default("Empowering Educational Excellence")
+  schoolType            String   @default("Co-Educational")
+  board                 String   @default("CBSE")
+  boardsList            String[] @default(["CBSE", "STATE", "ICSE"])
+  standardsList         String[] @default(["Nursery", "LKG", "UKG", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"])
+  face_auth_enabled     Boolean  @default(true)
+  location_auth_enabled Boolean  @default(true)
+  academicYear          String   @default("2026-2027")
+  timings               Json     @default("{\"start\":\"09:00\",\"end\":\"16:00\",\"gracePeriod\":30}")
+  hours_per_subject     Int      @default(1)
+  period_duration_mins  Int      @default(45)
+  game_period_mins      Int      @default(45)
+  lunch_break_mins      Int      @default(45)
+  lunch_break_start     String   @default("12:00")
+  small_break_mins      Int      @default(15)
+  small_break_start     String   @default("10:30")
+  hours_per_day         Int      @default(8)
+  hours_per_week        Int      @default(40)
+  hours_per_month       Int      @default(160)
+  hours_per_year        Int      @default(1920)
+  weekly_off            String   @default("Sunday")
+  standardsConfig       Json     @default("[]")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model SubstituteAssignment {
+  id                 String   @id @default(uuid())
+  date               String
+  period             Int
+  standard           String
+  section            String
+  absentTeacher      String
+  substituteTeacher  String
+  status             String   @default("Assigned")
+  createdAt          DateTime @default(now())
+
+  @@index([date])
+  @@index([standard, section, date])
+}
+
+model TeacherClassSubjectMapping {
+  id                 String   @id @default(uuid())
+  teacherId          String?
+  teacherName        String
+  employeeId         String?
+  classId            String?
+  standard           String
+  section            String
+  board              String?  @default("CBSE")
+  subjectId          String?
+  subject            String
+  subjectCode        String?
+  roomNumber         String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now()) @updatedAt
+
+  @@index([teacherId])
+  @@index([standard, section])
+}
+
+model TeacherFeedback {
+  id                 String   @id @default(uuid())
+  teacherName        String
+  feedback           String
+  rating             Int      @default(5)
+  createdAt          DateTime @default(now())
+
+  @@index([teacherName])
+}
+
+model PickupAuthorization {
+  id                   String   @id @default(uuid())
+  studentId            String
+  authorizedPersonName String
+  authorizedPersonPhone String
+  otpCode              String
+  photoUrl             String?
+  status               String   @default("Active")
+  expiresAt            DateTime
+  createdAt            DateTime @default(now())
+
+  student              Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId, status])
+}
+
+model SecurityAuditLog {
+  id         String   @id @default(uuid())
+  userOrRole String
+  action     String
+  details    String?
+  ipAddress  String?
+  timestamp  DateTime @default(now())
+
+  @@index([userOrRole, timestamp])
+  @@index([timestamp])
+}
+
+// ─────────────────────────────────────────────────────────────
+// EXAMINATION MODULE DATA MODELS
+// ─────────────────────────────────────────────────────────────
+
+model ExamType {
+  id            String   @id @default(uuid())
+  name          String   // e.g. "FA1", "FA2", "Mid Term", "FA3", "FA4", "Final"
+  fullMarks     Float    @default(100)
+  minPassMarks  Float    @default(35)
+  type          String   @default("Term/Semester") // "Term/Semester" | "CCE"
+  weightage     Float    @default(0) // Percentage weightage (e.g., 20, 40)
+  sequence      Int      @default(1)
+  isActive      Boolean  @default(true)
+  academicYear  String   @default("2026-2027")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  examNames     ExamName[]
+  examMarks     ExamMarks[]
+
+  @@unique([name, academicYear])
+  @@index([academicYear, isActive])
+}
+
+model ExamName {
+  id            String    @id @default(uuid())
+  examTypeId    String
+  name          String    // e.g. "Mid Term Examination 2026-27"
+  description   String?
+  academicYear  String    @default("2026-2027")
+  startDate     String?   // YYYY-MM-DD
+  endDate       String?   // YYYY-MM-DD
+  isPublished   Boolean   @default(false)
+  isLocked      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  examType      ExamType  @relation(fields: [examTypeId], references: [id], onDelete: Cascade)
+  schedules     ExamSchedule[]
+  allocations   ExamAllocation[]
+  examMarks     ExamMarks[]
+
+  @@unique([name, academicYear])
+  @@index([academicYear, isPublished])
+}
+
+model ExamSchedule {
+  id            String    @id @default(uuid())
+  examNameId    String
+  standard      String
+  section       String
+  subjectId     String?
+  subjectName   String
+  examDate      String?
+  startTime     String?
+  endTime       String?
+  roomNumber    String?
+  maxMarks      Float     @default(100)
+  minPassMarks  Float     @default(35)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  examName      ExamName  @relation(fields: [examNameId], references: [id], onDelete: Cascade)
+
+  @@index([examNameId, standard, section])
+}
+
+model ExamAllocation {
+  id            String    @id @default(uuid())
+  examNameId    String
+  standard      String
+  section       String
+  subjectId     String?
+  subjectName   String
+  teacherId     String?
+  teacherName   String?
+  employeeId    String?
+  sequence      Int       @default(1)
+  isLocked      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  examName      ExamName  @relation(fields: [examNameId], references: [id], onDelete: Cascade)
+
+  @@unique([examNameId, standard, section, subjectName])
+  @@index([teacherId, examNameId])
+}
+
+model ExamMarks {
+  id            String    @id @default(uuid())
+  examNameId    String
+  examTypeId    String?
+  studentId     String
+  rollNumber    String?
+  studentName   String
+  standard      String
+  section       String
+  subjectId     String?
+  subjectName   String
+  maxMarks      Float     @default(100)
+  minMarks      Float     @default(35)
+  marksObtained Float     @default(0)
+  isAbsent      Boolean   @default(false)
+  isPassed      Boolean   @default(true)
+  grade         String?
+  gradePoint    Float?
+  remarks       String?
+  isLocked      Boolean   @default(false)
+  enteredBy     String?
+  enteredOn     DateTime  @default(now())
+  modifiedBy    String?
+  modifiedOn    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  examName      ExamName  @relation(fields: [examNameId], references: [id], onDelete: Cascade)
+  examType      ExamType? @relation(fields: [examTypeId], references: [id], onDelete: SetNull)
+
+  @@unique([studentId, examNameId, subjectName])
+  @@index([standard, section, examNameId])
+  @@index([studentId, examNameId])
+  @@index([studentId])
+}
+
+model GradeScale {
+  id            String    @id @default(uuid())
+  grade         String    // "A+", "A", "B+", "B", "C", "D", "F"
+  minPercent    Float
+  maxPercent    Float
+  gradePoint    Float     @default(0)
+  remark        String?   // "Outstanding", "Excellent", etc.
+  sequence      Int       @default(1)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([grade])
+}
+
+model ExamWeightage {
+  id            String    @id @default(uuid())
+  academicYear  String    @default("2026-2027")
+  examTypeName  String    // e.g. "FA1", "FA2", "Mid Term", "FA3", "FA4", "Final"
+  weightPercent Float     @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([academicYear, examTypeName])
+}
+
+model CCESkill {
+  id            String    @id @default(uuid())
+  skillName     String    // "Communication", "Creativity", "Discipline", "Teamwork", "Art", "Sports"
+  category      String    @default("Co-Scholastic") // "Life Skills", "Work Education", "Visual/Performing Arts", "Attitudes & Values"
+  description   String?
+  sequence      Int       @default(1)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([skillName])
+}
+
+model CCETestType {
+  id            String    @id @default(uuid())
+  testTypeName  String    // "Oral", "Written", "Project", "Practical", "Class Assignment"
+  description   String?
+  sequence      Int       @default(1)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([testTypeName])
+}
+
+model StudentCCEGrade {
+  id            String    @id @default(uuid())
+  studentId     String
+  studentName   String
+  standard      String
+  section       String
+  academicYear  String    @default("2026-2027")
+  term          String    @default("Term 1") // "Term 1" | "Term 2"
+  skillId       String
+  skillName     String
+  grade         String    // "A", "B", "C", "D" or "5", "4", "3", "2", "1"
+  remarks       String?
+  assessedBy    String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([studentId, academicYear, term, skillName])
+  @@index([standard, section, academicYear])
+  @@index([studentId, academicYear])
+}
+
+model ExamAuditLog {
+  id            String    @id @default(uuid())
+  examMarksId   String?
+  studentId     String?
+  studentName   String?
+  subjectName   String?
+  examName      String?
+  oldMarks      Float?
+  newMarks      Float?
+  oldIsAbsent   Boolean?
+  newIsAbsent   Boolean?
+  changedBy     String    // Name or Email of user
+  role          String?   // "Admin" | "Teacher"
+  reason        String    // Mandatory reason for modifying marks
+  timestamp     DateTime  @default(now())
+
+  @@index([studentId, timestamp])
+  @@index([timestamp])
+}
+
+// =========================================================================
+// MCQ ONLINE EXAMINATION MODULE MODELS
+// =========================================================================
+
+model OnlineQuestion {
+  id               String                 @id @default(uuid())
+  institutionId    String                 @default("default-inst")
+  subject          String
+  chapter          String?
+  topic            String?
+  difficulty       String                 @default("MEDIUM") // EASY, MEDIUM, HARD
+  type             String                 @default("SINGLE_CHOICE") // SINGLE_CHOICE, MULTIPLE_CHOICE
+  questionText     String                 // Rich text / HTML
+  questionImage    String?
+  marks            Float                  @default(1.0)
+  negativeMarks    Float                  @default(0.0)
+  explanation      String?
+  explanationImage String?
+  language         String                 @default("en")
+  tags             String[]               @default([])
+  status           String                 @default("ACTIVE") // DRAFT, ACTIVE, ARCHIVED
+  createdBy        String?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  options          OnlineQuestionOption[]
+  examQuestions    OnlineExamQuestion[]
+
+  @@index([subject, difficulty])
+  @@index([institutionId, status])
+}
+
+model OnlineQuestionOption {
+  id          String         @id @default(uuid())
+  questionId  String
+  optionKey   String         // "A", "B", "C", "D"
+  optionText  String
+  optionImage String?
+  isCorrect   Boolean        @default(false)
+  orderIndex  Int            @default(0)
+
+  question    OnlineQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+}
+
+model OnlineExam {
+  id                         String                 @id @default(uuid())
+  institutionId              String                 @default("default-inst")
+  examCode                   String                 @unique
+  title                      String
+  description                String?
+  instructions               String?
+  academicYear               String                 @default("2026-2027")
+  standard                   String                 // e.g. "10th" or "All"
+  section                    String?                // e.g. "A" or "All"
+  subject                    String
+  durationMinutes            Int                    @default(60)
+  totalMarks                 Float                  @default(100.0)
+  passingMarks               Float                  @default(35.0)
+  negativeMarking            Boolean                @default(false)
+  negativeMarkValue          Float                  @default(0.25)
+  allowPartialCredit         Boolean                @default(false)
+  maxAttempts                Int                    @default(1)
+  shuffleQuestions           Boolean                @default(true)
+  shuffleOptions             Boolean                @default(true)
+  enableQuestionRandomization Boolean               @default(false)
+  randomPoolConfig           Json?
+  navigationMode             String                 @default("FREE") // FREE, FORWARD_ONLY
+  layoutMode                 String                 @default("PAGINATED") // PAGINATED, ALL_QUESTIONS
+  resultReleaseMode          String                 @default("IMMEDIATE") // IMMEDIATE, SCHEDULED, MANUAL
+  resultReleaseTime          DateTime?
+  answerKeyReleaseMode       String                 @default("WITH_RESULTS") // WITH_RESULTS, AFTER_EXAM_END, NEVER
+  enableIntegrityShield      Boolean                @default(true)
+  maxIntegrityViolations     Int                    @default(5)
+  status                     String                 @default("DRAFT") // DRAFT, PUBLISHED, ACTIVE, COMPLETED, ARCHIVED
+  version                    Int                    @default(1)
+  isVersionLocked            Boolean                @default(false)
+  questionPaperUrl           String?
+  questionPaperName          String?
+  questionPaperSize          Int?
+  startDateTime              DateTime
+  endDateTime                DateTime
+  createdBy                  String?
+  createdAt                  DateTime               @default(now())
+  updatedAt                  DateTime               @updatedAt
+
+  questions                  OnlineExamQuestion[]
+  assignments                OnlineExamAssignment[]
+  attempts                   OnlineExamAttempt[]
+
+  @@index([institutionId, status])
+  @@index([academicYear, standard])
+  @@index([startDateTime, endDateTime])
+}
+
+model OnlineExamQuestion {
+  id               String         @id @default(uuid())
+  examId           String
+  questionId       String
+  orderIndex       Int            @default(0)
+  marks            Float?
+  negativeMarks    Float?
+  questionSnapshot Json           // Immutable snapshot of question + options + correct key
+
+  exam             OnlineExam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+  question         OnlineQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([examId, questionId])
+  @@index([examId, orderIndex])
+}
+
+model OnlineExamAssignment {
+  id         String     @id @default(uuid())
+  examId     String
+  standard   String?
+  section    String?
+  studentId  String?
+  createdAt  DateTime   @default(now())
+
+  exam       OnlineExam @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  @@index([examId])
+  @@index([standard, section])
+  @@index([studentId])
+}
+
+model OnlineExamAttempt {
+  id                      String                     @id @default(uuid())
+  examId                  String
+  studentId               String
+  studentName             String
+  standard                String
+  section                 String
+  rollNumber              String?
+  attemptNumber           Int                        @default(1)
+  status                  String                     @default("NOT_STARTED") // NOT_STARTED, IN_PROGRESS, SUBMITTED, AUTO_SUBMITTED, EVALUATED, INVALIDATED
+  startTime               DateTime?
+  deadlineTime            DateTime?
+  submitTime              DateTime?
+  timeSpentSeconds        Int                        @default(0)
+  shuffledQuestionOrder   Json?
+  shuffledOptionOrders    Json?
+  totalQuestions          Int                        @default(0)
+  answeredCount           Int                        @default(0)
+  markedReviewCount       Int                        @default(0)
+  correctCount            Int                        @default(0)
+  incorrectCount          Int                        @default(0)
+  unansweredCount         Int                        @default(0)
+  scoreObtained           Float                      @default(0.0)
+  totalPossibleScore      Float                      @default(0.0)
+  percentage              Float                      @default(0.0)
+  isPassed                Boolean                    @default(false)
+  integrityViolationsCount Int                       @default(0)
+  invalidationReason      String?
+  reEvaluationHistory     Json?
+  createdAt               DateTime                   @default(now())
+  updatedAt               DateTime                   @updatedAt
+
+  exam                    OnlineExam                 @relation(fields: [examId], references: [id], onDelete: Cascade)
+  answers                 OnlineAttemptAnswer[]
+  integrityLogs           OnlineExamIntegrityLog[]
+
+  @@index([examId, studentId])
+  @@index([studentId, status])
+  @@index([status])
+}
+
+model OnlineAttemptAnswer {
+  id                 String            @id @default(uuid())
+  attemptId          String
+  questionId         String
+  selectedOptionKeys String[]          @default([])
+  isMarkedForReview  Boolean           @default(false)
+  isAnswered         Boolean           @default(false)
+  isCorrect          Boolean?
+  marksAwarded       Float             @default(0.0)
+  evaluatedAt        DateTime?
+  lastSavedAt        DateTime          @default(now())
+
+  attempt            OnlineExamAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  @@unique([attemptId, questionId])
+  @@index([attemptId])
+}
+
+model OnlineExamIntegrityLog {
+  id        String            @id @default(uuid())
+  attemptId String
+  eventType String            // "TAB_SWITCH", "FULLSCREEN_EXIT", "WINDOW_BLUR"
+  details   String?
+  timestamp DateTime          @default(now())
+
+  attempt   OnlineExamAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  @@index([attemptId])
+}
+
+model OnlineExamAuditLog {
+  id            String   @id @default(uuid())
+  institutionId String   @default("default-inst")
+  examId        String?
+  action        String
+  actorId       String?
+  actorName     String?
+  actorRole     String?
+  details       Json?
+  timestamp     DateTime @default(now())
+
+  @@index([institutionId, action])
+  @@index([examId])
+}
+
+model StudentBiometric {
+  id                 String   @id @default(uuid())
+  studentId          String   @unique
+  consentStatus      String   @default("CONSENT_PENDING") // "CONSENT_GRANTED", "CONSENT_DECLINED", "REVOKED"
+  guardianName       String?  @default("")
+  guardianPhone      String?  @default("")
+  guardianRelation   String?  @default("Parent")
+  consentDate        String?  @default("")
+  faceTemplate       String?  // Base64 feature vector / embedding JSON
+  photoThumbnail     String?  // Thumbnail preview
+  enrolledBy         String?  @default("")
+  enrolledAt         DateTime?
+  isActive           Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([consentStatus])
+  @@index([studentId])
+}
+
+model AttendanceNotificationLog {
+  id                 String   @id @default(uuid())
+  attendanceId       String?  @default("")
+  studentId          String
+  studentName        String
+  parentPhone        String?  @default("")
+  parentEmail        String?  @default("")
+  channel            String   // "SMS", "EMAIL", "WHATSAPP"
+  triggerStatus      String   // "Absent", "Late", "Present"
+  message            String
+  status             String   @default("QUEUED") // "SENT", "DELIVERED", "FAILED", "QUEUED", "NOT_CONFIGURED"
+  providerResponse   String?  @default("")
+  errorMessage       String?  @default("")
+  sentAt             DateTime @default(now())
+  retries            Int      @default(0)
+
+  @@index([studentId, sentAt])
+  @@index([channel, status])
+}
+
+model AttendanceRuleSettings {
+  id                     String   @id @default(uuid())
+  academicYear           String   @default("2026-2027")
+  lateThresholdTime      String   @default("08:45 AM")
+  halfDayThresholdTime   String   @default("11:30 AM")
+  checkOutEnabled        Boolean  @default(true)
+  lowAttendanceThreshold Float    @default(75.0)
+  faceConfidenceThreshold Float   @default(80.0)
+  allowManualOverride    Boolean  @default(true)
+  smsEnabled             Boolean  @default(false)
+  emailEnabled           Boolean  @default(true)
+  whatsappEnabled        Boolean  @default(false)
+  notifyOnAbsent         Boolean  @default(true)
+  notifyOnLate           Boolean  @default(true)
+  notifyOnPresent        Boolean  @default(false)
+  smsTemplate            String   @default("Dear Parent, your child {studentName} of Class {class} was marked {status} on {date} at {time}. - {schoolName}")
+  emailTemplate          String   @default("Dear Parent/Guardian, This is to inform you that your child {studentName} (Roll: {rollNumber}) of Class {class} has been marked {status} on {date} at {time}. Please contact school administration if you have questions. - {schoolName}")
+  whatsappTemplate       String   @default("Dear Parent, your child *{studentName}* of Class *{class}* is marked *{status}* on {date} at {time}. - {schoolName}")
+  updatedAt              DateTime @updatedAt
+}
+
+model AttendanceAuditLog {
+  id                 String   @id @default(uuid())
+  date               String
+  classId            String?  @default("")
+  studentName        String?  @default("")
+  action             String   // "CREATED", "UPDATED", "OVERRIDDEN", "BULK_MARKED", "DELETED"
+  performedBy        String
+  performedByRole    String
+  details            String   // JSON string description
+  timestamp          DateTime @default(now())
+
+  @@index([date, action])
+}

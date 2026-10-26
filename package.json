@@ -1,0 +1,24 @@
+{
+  "name": "qelvora-school-crm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Qelvora School CRM - Unified Monorepo (Web, Gateway, AI Microservice)",
+  "workspaces": [
+    "apps/*",
+    "services/gateway"
+  ],
+  "scripts": {
+    "start": "concurrently -n \"DB,GATEWAY,WEB\" -c \"magenta,blue,green\" \"node services/gateway/scripts/startPostgresDb.js --daemon\" \"npm run dev --workspace=services/gateway\" \"npm run dev --workspace=apps/web\"",
+    "dev": "concurrently -n \"DB,GATEWAY,WEB\" -c \"magenta,blue,green\" \"node services/gateway/scripts/startPostgresDb.js --daemon\" \"npm run dev --workspace=services/gateway\" \"npm run dev --workspace=apps/web\"",
+    "dev:db": "node services/gateway/scripts/startPostgresDb.js --daemon",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "dev:gateway": "npm run dev --workspace=services/gateway",
+    "dev:ai": "cd services/ai && .venv\\Scripts\\python.exe -m uvicorn main:app --reload --port 5010",
+    "build": "npm run build --workspaces",
+    "db:migrate": "npm run prisma:migrate --workspace=services/gateway",
+    "db:seed": "npm run seed --workspace=services/gateway"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
