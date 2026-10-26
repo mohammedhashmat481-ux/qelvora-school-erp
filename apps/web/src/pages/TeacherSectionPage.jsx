@@ -836,7 +836,7 @@ const TeacherSectionPage = () => {
                   {/* Sri Chaitanya Style Header Banner */}
                   <div className="bg-[#1e2229] text-white p-6 rounded-t-xl border-b-2 border-[#29456D] mb-6 shadow-sm">
                     <h2 className="text-center font-black text-lg tracking-wider uppercase mb-3 text-white">
-                      SRI CHAITANYA TECHNO SCHOOL-HEGDE NAGAR
+                      QELVORA SENIOR SECONDARY SCHOOL
                     </h2>
                     <div className="flex flex-col sm:flex-row justify-between text-xs font-bold px-4 text-stone-300">
                       <div>

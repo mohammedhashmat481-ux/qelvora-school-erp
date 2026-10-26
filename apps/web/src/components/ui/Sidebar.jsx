@@ -549,6 +549,15 @@ const Sidebar = () => {
                 </Link>
 
                 <Link
+                  to="/admin?tab=students_mgt"
+                  onClick={handleLinkClick}
+                  className={getSubLinkClass('students_mgt')}
+                >
+                  <GraduationCap className="w-3.5 h-3.5 shrink-0" />
+                  <span>Student & Parent Management</span>
+                </Link>
+
+                <Link
                   to="/admin?tab=subjects"
                   onClick={handleLinkClick}
                   className={getSubLinkClass('subjects')}
@@ -564,15 +573,6 @@ const Sidebar = () => {
                 >
                   <School className="w-3.5 h-3.5 shrink-0" />
                   <span>{t('class_management') || 'Class Management'}</span>
-                </Link>
-
-                <Link
-                  to="/admin?tab=students_mgt"
-                  onClick={handleLinkClick}
-                  className={getSubLinkClass('students_mgt')}
-                >
-                  <GraduationCap className="w-3.5 h-3.5 shrink-0" />
-                  <span>{t('student_management') || 'Student Management'}</span>
                 </Link>
 
                 <Link

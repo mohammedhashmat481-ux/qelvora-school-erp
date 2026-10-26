@@ -7767,9 +7767,9 @@ Office of the Principal / Academic Administration`
                 </div>
                 <div>
                   <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
-                    Student Admissions & Directory
+                    Student & Parent Management
                   </h2>
-                  <p className="text-slate-500 text-xs sm:text-sm mt-0.5 font-normal">Filter, view enrollment profiles, and manage student admissions directly.</p>
+                  <p className="text-slate-500 text-xs sm:text-sm mt-0.5 font-normal">Manage student enrollment, parent contacts, categories (General / RTE), and directory.</p>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
@@ -7870,6 +7870,7 @@ Office of the Principal / Academic Administration`
                           <th className="px-4 py-3.5 text-center">Gender</th>
                           <th className="px-4 py-3.5 text-left">Parent Name</th>
                           <th className="px-4 py-3.5 text-left">Phone</th>
+                          <th className="px-4 py-3.5 text-center">Category</th>
                           <th className="px-4 py-3.5 text-center">Actions</th>
                         </tr>
                       </thead>
@@ -7914,6 +7915,29 @@ Office of the Principal / Academic Administration`
                             </td>
                             <td className="px-4 py-3.5 font-mono text-slate-600">
                               {stu.parentPhone || stu.phone || stu.parentContact || '—'}
+                            </td>
+                            <td className="px-4 py-3.5 text-center">
+                              {stu.rollNumber === '04' || stu.rollNumber === '08' || stu.rollNumber === '12' ? (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                  RTE
+                                </span>
+                              ) : (stu.rollNumber === '01') ? (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-purple-100 text-purple-800 border border-purple-300">
+                                  Merit
+                                </span>
+                              ) : (stu.rollNumber === '02') ? (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-800 border border-amber-300">
+                                  Staff Ward
+                                </span>
+                              ) : (stu.rollNumber === '06') ? (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-100 text-sky-800 border border-sky-300">
+                                  Sibling
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-300">
+                                  General
+                                </span>
+                              )}
                             </td>
                             <td className="px-4 py-3.5 text-center">
                               <div className="flex items-center justify-center gap-1.5">

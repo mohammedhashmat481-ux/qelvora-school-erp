@@ -24,7 +24,7 @@ const DEFAULT_FEES_STATE = {
     schoolDetails: {
       institutionName: 'Qelvora School CRM',
       affiliationNo: 'CBSE/AFF/2026/98210',
-      schoolCode: 'INK-KA-56001',
+      schoolCode: 'QEL-KA-56001',
       address: 'Knowledge Park, Outer Ring Road, Bengaluru, Karnataka - 560103',
       phone: '+91 80 2345 6789',
       email: 'accounts@qelvora.in',

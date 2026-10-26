@@ -304,10 +304,10 @@ async function getEnrichedUserProfile(user) {
   ];
 
   const defaultExp = teacher ? [
-    { role: teacher.designation || 'Senior Faculty', institution: 'INK International School', duration: '2020 - Present' },
+    { role: teacher.designation || 'Senior Faculty', institution: 'Qelvora International School', duration: '2020 - Present' },
     { role: 'Assistant Teacher', institution: 'National Public School', duration: '2016 - 2020' }
   ] : [
-    { role: 'Teacher', institution: 'INK International School', duration: '2020 - Present' }
+    { role: 'Teacher', institution: 'Qelvora International School', duration: '2020 - Present' }
   ];
 
   const ext = TEACHER_EXTENDED_PROFILES.get(user.email) || TEACHER_EXTENDED_PROFILES.get(user.id) || {

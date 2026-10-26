@@ -143,7 +143,9 @@ export default function StudentExaminationPage() {
                   {percentage}%
                 </div>
                 <p className="text-xs text-slate-500 font-semibold">
-                  Distinction Performance (Rank #{currentRank})
+                  {overallSummary?.evaluationMode === 'GRADE_ONLY' || !overallSummary?.rank
+                    ? 'Grade-Based Evaluation (Class ≤ 5)'
+                    : `Class Standing (Rank #${currentRank})`}
                 </p>
               </div>
 

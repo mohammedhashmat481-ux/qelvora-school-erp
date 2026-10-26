@@ -501,7 +501,9 @@ router.post('/scan-qr', protect, async (req, res) => {
 
     // Parse student ID from QR code
     let parsedStudentId = qrCode.trim();
-    if (parsedStudentId.startsWith('INK-ATT-')) {
+    if (parsedStudentId.startsWith('QEL-ATT-')) {
+      parsedStudentId = parsedStudentId.replace('QEL-ATT-', '');
+    } else if (parsedStudentId.startsWith('INK-ATT-')) {
       parsedStudentId = parsedStudentId.replace('INK-ATT-', '');
     } else if (parsedStudentId.startsWith('{')) {
       try {
@@ -1083,7 +1085,7 @@ router.get('/id-cards', protect, async (req, res) => {
       parentPhone: s.parentPhone || '+91 98765 43210',
       address: s.address || 'Civil Lines, Hyderabad, India',
       photoUrl: s.photoUrl || '',
-      qrPayload: `INK-ATT-${s.studentId}`,
+      qrPayload: `QEL-ATT-${s.studentId}`,
       schoolName: 'QELVORA SCHOOL CRM',
       academicYear: '2026-2027',
       emergencyContact: s.parentPhone || '+91 98765 43210'

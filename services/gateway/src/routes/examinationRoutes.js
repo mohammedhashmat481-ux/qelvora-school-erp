@@ -87,6 +87,22 @@ export function getStandardVariants(std) {
   return Array.from(variants);
 }
 
+/**
+ * Evaluates whether a class standard follows Grade-Only evaluation (<= Class 5)
+ * or Rank + Grade evaluation (Class 6 and above).
+ */
+export function isGradeOnlyStandard(standard) {
+  if (!standard) return false;
+  const s = String(standard).trim().toLowerCase();
+  if (['nursery', 'lkg', 'ukg', 'pre-kg', 'kg'].includes(s)) return true;
+  const numMatch = s.match(/^(\d+)/);
+  if (numMatch) {
+    const num = parseInt(numMatch[1], 10);
+    return num <= 5;
+  }
+  return false;
+}
+
 
 // ─────────────────────────────────────────────────────────────
 // STUDENT / PARENT READ-ONLY ENDPOINT (INDIVIDUAL MARKS ONLY)
@@ -242,6 +258,11 @@ router.get('/my-marks', protect, async (req, res) => {
       }
     }
 
+    const isGradeOnly = isGradeOnlyStandard(student?.standard);
+    const evaluationMode = isGradeOnly ? 'GRADE_ONLY' : 'RANK_AND_GRADE';
+    const displayRank = isGradeOnly ? null : classRank;
+    const rankRemark = isGradeOnly ? 'Grade-Based Evaluation (Class ≤ 5)' : `Rank #${classRank} in Class`;
+
     res.json({
       status: true,
       success: true,
@@ -256,7 +277,9 @@ router.get('/my-marks', protect, async (req, res) => {
           grade: overallGradeInfo.grade,
           gradePoint: overallGradeInfo.gradePoint,
           remark: overallGradeInfo.remark,
-          rank: classRank,
+          rank: displayRank,
+          evaluationMode,
+          rankRemark,
           totalStudents: totalClassmates,
           finalResult: examsList.every(e => e.isPassed) ? 'PASS' : 'FAIL',
         }
@@ -1027,10 +1050,19 @@ router.get('/report-cards', async (req, res) => {
       };
     });
 
-    // Compute ranks
+    // Compute ranks or grade-only evaluation
     studentReports.sort((a, b) => b.percentage - a.percentage);
     studentReports.forEach((rep, idx) => {
-      rep.rank = idx + 1;
+      const isGradeOnly = isGradeOnlyStandard(rep.student?.class || rep.student?.standard);
+      if (isGradeOnly) {
+        rep.rank = null;
+        rep.evaluationMode = 'GRADE_ONLY';
+        rep.rankRemark = 'Grade-Based Evaluation (Class ≤ 5)';
+      } else {
+        rep.rank = idx + 1;
+        rep.evaluationMode = 'RANK_AND_GRADE';
+        rep.rankRemark = `Rank #${idx + 1} in Class`;
+      }
     });
 
     res.json({

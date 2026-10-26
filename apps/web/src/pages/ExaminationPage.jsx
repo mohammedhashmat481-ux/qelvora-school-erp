@@ -1753,7 +1753,7 @@ const ExaminationPage = () => {
                     <div className="text-center border-b-2 border-blue-900 pb-4 space-y-1">
                       <div className="flex items-center justify-center gap-3">
                         <div className="w-12 h-12 bg-blue-900 text-white rounded-xl flex items-center justify-center font-black text-xl">
-                          INK
+                          Q
                         </div>
                         <div className="text-left">
                           <h1 className="text-xl font-black text-blue-950 uppercase tracking-wide">
@@ -1853,8 +1853,17 @@ const ExaminationPage = () => {
                         <div className="text-xl font-black text-blue-950 mt-0.5">{selectedStudentCard.percentage}%</div>
                       </div>
                       <div>
-                        <span className="text-[11px] font-extrabold text-slate-600 uppercase">Class Rank</span>
-                        <div className="text-xl font-black text-blue-950 mt-0.5">#{selectedStudentCard.rank || '1'} in Class</div>
+                        {selectedStudentCard.evaluationMode === 'GRADE_ONLY' || !selectedStudentCard.rank ? (
+                          <>
+                            <span className="text-[11px] font-extrabold text-emerald-700 uppercase">Evaluation Scheme</span>
+                            <div className="text-sm sm:text-base font-black text-emerald-800 mt-1">Grade-Based (Class ≤ 5)</div>
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-[11px] font-extrabold text-slate-600 uppercase">Class Rank</span>
+                            <div className="text-xl font-black text-blue-950 mt-0.5">#{selectedStudentCard.rank} in Class</div>
+                          </>
+                        )}
                       </div>
                       <div>
                         <span className="text-[11px] font-extrabold text-slate-600 uppercase">Performance Grade</span>
