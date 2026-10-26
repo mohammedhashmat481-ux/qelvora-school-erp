@@ -302,16 +302,27 @@ const Sidebar = () => {
 
   // ── ROLE DEFINITIONS ──
   const userRoleLower = user?.role?.toLowerCase() || '';
-  const isAdmin = userRoleLower === 'admin' || userRoleLower === 'super_admin' || userRoleLower === 'principal' || Boolean(user?.isAdmin);
-  const isTeacher = userRoleLower === 'teacher' || userRoleLower.includes('teacher') || userRoleLower.includes('educator') || userRoleLower.includes('faculty') || userRoleLower === 'department head' || userRoleLower === 'hod';
+  const isAdmin =
+    userRoleLower.includes('admin') ||
+    userRoleLower === 'principal' ||
+    Boolean(user?.isAdmin);
+  const isTeacher =
+    !isAdmin &&
+    (userRoleLower === 'teacher' ||
+      userRoleLower.includes('teacher') ||
+      userRoleLower.includes('educator') ||
+      userRoleLower.includes('faculty') ||
+      userRoleLower === 'department head' ||
+      userRoleLower === 'hod');
   const isParentOrStudent =
-    userRoleLower === 'parent' ||
-    userRoleLower === 'student' ||
-    selectedProfile === 'parent' ||
-    selectedProfile === 'student' ||
-    location.pathname.startsWith('/student') ||
-    location.pathname === '/parent' ||
-    location.pathname === '/safe-pickup';
+    !isAdmin &&
+    !isTeacher &&
+    (userRoleLower === 'parent' ||
+      userRoleLower === 'student' ||
+      userRoleLower.includes('parent') ||
+      userRoleLower.includes('student') ||
+      selectedProfile === 'parent' ||
+      selectedProfile === 'student');
 
   // ── REUSABLE NAVIGATION LIST (STRICTLY ROLE-ISOLATED) ──
   const renderNavList = () => {
@@ -342,15 +353,6 @@ const Sidebar = () => {
               >
                 <ClipboardCheck className={`w-4 h-4 shrink-0 ${location.pathname === '/attendance' ? 'text-blue-400' : 'text-slate-500'}`} />
                 <span>{t('attendance') || 'Attendance System'}</span>
-              </Link>
-
-              <Link
-                to="/logout-kiosk"
-                onClick={handleLinkClick}
-                className={getLinkClass('/logout-kiosk')}
-              >
-                <LogOut className={`w-4 h-4 shrink-0 ${location.pathname === '/logout-kiosk' ? 'text-blue-400' : 'text-slate-500'}`} />
-                <span>{t('kiosk') || 'Logout Kiosk'}</span>
               </Link>
             </>
           )}
@@ -536,7 +538,7 @@ const Sidebar = () => {
                   className={getSubLinkClass('roles')}
                 >
                   <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-                  <span>Role Management</span>
+                  <span>Access Privilege & Roles</span>
                 </Link>
 
                 <Link
@@ -612,6 +614,16 @@ const Sidebar = () => {
                 </Link>
               </div>
             )}
+
+            {/* Dedicated Access Privilege Menu below Admin Panel */}
+            <Link
+              to="/admin?tab=roles"
+              onClick={handleLinkClick}
+              className={getLinkClass('/admin?tab=roles', location.pathname === '/admin' && tab === 'roles')}
+            >
+              <ShieldCheck className={`w-4 h-4 shrink-0 ${location.pathname === '/admin' && tab === 'roles' ? 'text-blue-400' : 'text-slate-400'}`} />
+              <span>Access Privilege</span>
+            </Link>
 
             {/* Student Attendance Management Module Dropdown */}
             <div className="space-y-1">
@@ -952,8 +964,8 @@ const Sidebar = () => {
           </div>
         )}
 
-        {/* ── STUDENT & PARENT PORTAL LINKS ── */}
-        {isParentOrStudent && (
+        {/* ── STUDENT & PARENT PORTAL LINKS (NEVER VISIBLE IN ADMIN OR TEACHER PANEL) ── */}
+        {!isAdmin && !isTeacher && isParentOrStudent && (
           <div className="space-y-1 pt-2 border-t border-[#29456D]">
             <span className="text-[10px] font-black text-[#93C5FD] uppercase tracking-widest block px-3 mb-2 opacity-90">
               STUDENT & PARENTS PORTAL
@@ -1277,8 +1289,8 @@ const Sidebar = () => {
           </>
         )}
 
-        {/* Parent / Student Specific Bottom Links */}
-        {isParentOrStudent && (
+        {/* Parent / Student Specific Bottom Links (NEVER VISIBLE IN ADMIN OR TEACHER PANEL) */}
+        {!isAdmin && !isTeacher && isParentOrStudent && (
           <>
             <Link
               to="/student/profile"

@@ -339,6 +339,8 @@ router.get('/admin', protect, async (req, res) => {
         weeklyTimetable,
         allTodayPeriods: todayPeriods,
         currentPeriod,
+        todayAttendances: todayTeacherAtt,
+        populatedSessions: activeSessions,
         totalTeachers: teachers.length,
         presentTeachers: effectivePresent,
         absentTeachers: effectiveAbsent,

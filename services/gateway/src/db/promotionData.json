@@ -22,9 +22,11 @@
       "7th",
       "8th",
       "9th",
-      "10th"
+      "10th",
+      "11th",
+      "12th"
     ],
-    "terminalStandard": "10th",
+    "terminalStandard": "12th",
     "allowRepeat": true,
     "autoAssignRollNumber": true
   },
@@ -987,6 +989,2814 @@
         "assignedAt": "2026-10-23T04:48:31.048Z",
         "assignedBy": "System Baseline",
         "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "78a18e47-3ecc-4d0d-b138-0c7c21ee9baa": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.927Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "d026cce0-be3c-4a9d-99e6-5f6b2e2041a9": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.896Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "426bb217-ff4f-4ea3-9f1d-3b3e200a095d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.867Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "0cae57ce-e745-4e20-9f14-71c88403cebd": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.836Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "9f19aae8-208a-47d8-92d7-e7dc2372a5c4": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.805Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "af8a6a6f-2320-4f0a-8f61-c3ecb1c7af2b": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.774Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "41664420-0059-45a5-9cb7-8e8cce03032b": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.741Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "dc34af92-dedb-4908-ade8-3b939169462e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.709Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "dc15b067-c9a1-4137-8b58-0c694bc99ccf": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.677Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "ce1752c0-9025-4e57-b8c1-c0199131adb2": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.646Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "ee54a975-c9d0-436d-971d-069bdfa9abfa": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.615Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "c9b2dde6-7ee8-43c6-8648-b78c04b5e469": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.584Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "252f3da1-2ddc-458c-9364-ead9ef9bf821": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.552Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-A"
+      }
+    ],
+    "8e35a3d6-dc51-4af4-83a4-04db9575f9a0": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "B",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.961Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-B"
+      }
+    ],
+    "63a9b374-1fbf-42d4-8f42-7ae769540729": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "B",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.995Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-B"
+      }
+    ],
+    "ca4b2db3-67fe-4c15-bf9e-2cceab482ef6": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "B",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.025Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-B"
+      }
+    ],
+    "417cb321-9af4-4e14-a738-6aa319ccf779": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "B",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.055Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-B"
+      }
+    ],
+    "b1076281-ad5c-4557-b99c-dff5838921af": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "B",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.087Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-B"
+      }
+    ],
+    "3d4f41f7-8883-4580-bdd1-dec8de61ab8f": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "B",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.118Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-B"
+      }
+    ],
+    "e507b59c-e019-41da-b126-6d6f21d64377": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "B",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.152Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-B"
+      }
+    ],
+    "99d79abe-eb92-456e-910c-2470ec16d725": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "B",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.185Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-B"
+      }
+    ],
+    "63ef52b2-5200-403c-8a8f-2a52799cea73": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "B",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.219Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-B"
+      }
+    ],
+    "4b7e5410-b9c4-43f0-bd86-09d88e53b3d0": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "B",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.250Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-B"
+      }
+    ],
+    "1624ca03-99f6-4dba-8e42-e4aa3c7aab0f": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "B",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.281Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-B"
+      }
+    ],
+    "c5c2a8b3-3d53-41a0-9e7f-79498c757db6": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "B",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.314Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-B"
+      }
+    ],
+    "112a709d-b995-41df-b3e9-e54a4350a1f5": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "10th",
+        "section": "B",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.344Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 10th-B"
+      }
+    ],
+    "160fcb54-8d42-47bf-bead-ab271a881207": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.739Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-A"
+      }
+    ],
+    "bcf5dcd1-7d24-441e-bacb-90f2876a335b": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.771Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-A"
+      }
+    ],
+    "88f1ef4c-0c2a-4766-8db6-0cc5ce4cdb98": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.802Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-A"
+      }
+    ],
+    "f010a9b7-301c-4e42-a065-e10e5a565ceb": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.831Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-A"
+      }
+    ],
+    "a6c9c858-6552-43fa-98f5-7bf8e35fa99e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.862Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-A"
+      }
+    ],
+    "abf0d91d-f4e0-49fc-9ea9-005dc85e8e0b": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.892Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-A"
+      }
+    ],
+    "24412ca7-dc40-4526-af7b-c786e4a4f43e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.925Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-A"
+      }
+    ],
+    "6542374c-c19c-41e0-a189-2d31ae5eb1db": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.957Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-A"
+      }
+    ],
+    "b03db331-9e99-4b17-a13e-0cb3b72754e4": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.989Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-A"
+      }
+    ],
+    "c4b51a44-935e-4217-8623-ea270aae8c55": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.021Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-A"
+      }
+    ],
+    "741cf27a-6a75-47c5-8a9d-ae6c0aba906b": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.052Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-A"
+      }
+    ],
+    "a1dab82a-1784-4ace-a811-70af8dbc65d8": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.083Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-A"
+      }
+    ],
+    "9eddb9a7-bc96-48d2-9334-ec63d0ffbe16": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.114Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-A"
+      }
+    ],
+    "4b2374a4-33a4-4175-b6d4-acb5d617df0e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "B",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.146Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-B"
+      }
+    ],
+    "f890a007-da50-40e8-a763-a58dd397fc4e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "B",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.179Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-B"
+      }
+    ],
+    "8e720e43-5e0b-4a3d-a9c7-0a1694eeece1": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "B",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.210Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-B"
+      }
+    ],
+    "0463d76d-04d1-4463-92f5-2960bb11506d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "B",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.240Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-B"
+      }
+    ],
+    "0ff2fa69-a0ff-4aea-b3fe-e77f3a487eff": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "B",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.270Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-B"
+      }
+    ],
+    "f1fb72c7-1da2-40bb-a025-e85d72d420a5": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "B",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.301Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-B"
+      }
+    ],
+    "2853fbd5-8a1f-4ad3-b445-0f093357c243": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "B",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.334Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-B"
+      }
+    ],
+    "f20f8079-f0e7-4b74-ba94-b1a5490abbbc": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "B",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.366Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-B"
+      }
+    ],
+    "283f2a94-9c25-4615-8554-ea2eb6cf6a6d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "B",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.399Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-B"
+      }
+    ],
+    "1dac5547-40dd-4eb3-857c-9c1d21a905c9": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "B",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.429Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-B"
+      }
+    ],
+    "ab4422f2-59d2-437c-a7ea-7275c903d212": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "B",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.459Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-B"
+      }
+    ],
+    "43feec19-162c-488c-8649-c541bcf5d5e8": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "B",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.490Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-B"
+      }
+    ],
+    "f14b7cda-eec6-44d8-8922-86ac2f6febae": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "11th",
+        "section": "B",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:32.521Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 11th-B"
+      }
+    ],
+    "5ec80f57-9ad5-42f1-af93-e65c1a2c2037": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:30.953Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-A"
+      }
+    ],
+    "b1f00fc2-7c5c-4f61-aa70-93ae0462a93a": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:30.987Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-A"
+      }
+    ],
+    "14f98c92-4701-4fe9-a8a3-414dafbd6d11": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.020Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-A"
+      }
+    ],
+    "2d9ac96c-992b-490b-bdc5-bdbcf18f974e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.051Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-A"
+      }
+    ],
+    "74c50bef-3191-444f-b4d7-8d735dc2ef42": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.081Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-A"
+      }
+    ],
+    "fc297410-4f6b-4551-beb5-55a36e5b7c24": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.114Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-A"
+      }
+    ],
+    "54686345-20b1-4afa-bfc1-974d55a4554c": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.147Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-A"
+      }
+    ],
+    "e61ca504-d937-4e74-8a1e-3f20f12d0065": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.180Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-A"
+      }
+    ],
+    "73ebf186-7b70-49fd-9362-15021f32f2b8": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:30.906Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-A"
+      }
+    ],
+    "1b7b96d4-102d-4c2c-832f-3e00ce5709f6": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.210Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-A"
+      }
+    ],
+    "0b285fe8-f33d-43c8-94e1-dfb1c8cb2615": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.242Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-A"
+      }
+    ],
+    "3c4839d2-8bec-4137-9c74-d839de89da5e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.273Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-A"
+      }
+    ],
+    "54a1d347-514c-47ae-88a6-c4759334bc56": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.303Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-A"
+      }
+    ],
+    "c7cbd418-5e84-46be-9122-24b8fcd6cc9f": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "B",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.461Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-B"
+      }
+    ],
+    "e493794b-889c-4e28-a122-d6fb9b891275": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "B",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.336Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-B"
+      }
+    ],
+    "edeb9e54-784c-41d0-9727-01cd9e0bc28e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "B",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.367Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-B"
+      }
+    ],
+    "148b7812-c75a-4c05-9fa4-ba47913c2496": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "B",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.397Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-B"
+      }
+    ],
+    "17e7f202-4898-4bb3-8e89-a094dcd956d5": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "B",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.428Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-B"
+      }
+    ],
+    "1b924746-348b-458c-8fac-216de8cbbb64": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "B",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.491Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-B"
+      }
+    ],
+    "e7809719-e494-4ff0-b92e-98a204d7004f": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "B",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.524Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-B"
+      }
+    ],
+    "61c9948f-1ccf-4528-bcfc-01c004592daa": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "B",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.555Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-B"
+      }
+    ],
+    "8753e52e-f10f-4ab9-9485-429326bebff9": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "B",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.588Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-B"
+      }
+    ],
+    "1931cafd-51e3-4067-a46d-180f32db542f": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "B",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.617Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-B"
+      }
+    ],
+    "0d522941-1b39-438c-8efd-a583ceba93dc": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "B",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.648Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-B"
+      }
+    ],
+    "7561027e-cb94-4c44-ac33-c8cad9520936": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "B",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.677Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-B"
+      }
+    ],
+    "8ed96dae-e5a4-4171-9df3-16a08c820ca1": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "12th",
+        "section": "B",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:31.708Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 12th-B"
+      }
+    ],
+    "d1796f3e-61c1-4054-9c22-f0ab82748b6b": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "1st",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.176Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 1st-A"
+      }
+    ],
+    "3cf17bca-6444-4526-9c02-6d586d3fde56": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "1st",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.143Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 1st-A"
+      }
+    ],
+    "e904d753-4104-4fe1-8d79-22252c9d8553": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "1st",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.111Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 1st-A"
+      }
+    ],
+    "88225079-c2ac-43b6-9071-7d9c456be33c": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "1st",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.078Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 1st-A"
+      }
+    ],
+    "d2db9f0c-c216-4f5d-826a-dc313b732ae6": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "1st",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.047Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 1st-A"
+      }
+    ],
+    "3b774169-7f2f-4687-939e-d148c3b6952c": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "1st",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.013Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 1st-A"
+      }
+    ],
+    "66055ff6-0ac5-4d4d-bd3d-f127dea48891": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "1st",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.979Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 1st-A"
+      }
+    ],
+    "e4ef113a-d457-42e0-bb01-4a5c744058fa": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "1st",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.944Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 1st-A"
+      }
+    ],
+    "e1978b44-61e2-4a07-ba0f-ae71f08af75c": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "1st",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.912Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 1st-A"
+      }
+    ],
+    "e17073d9-a065-4c61-9f08-26440304d8d1": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "1st",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.882Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 1st-A"
+      }
+    ],
+    "7341845f-68a5-4762-9306-44a7aff4aeaa": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "1st",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.850Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 1st-A"
+      }
+    ],
+    "825bf09b-f427-422f-9fe6-a631b70470de": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "1st",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.816Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 1st-A"
+      }
+    ],
+    "1b85d9f9-9c2f-459d-8151-9996ff42c5bd": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "1st",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.782Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 1st-A"
+      }
+    ],
+    "e6c39928-f15a-4378-a5c4-6705d14fef8d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "2nd",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.749Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 2nd-A"
+      }
+    ],
+    "26712aef-a2f5-41b8-96a2-632b8f0daada": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "2nd",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.717Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 2nd-A"
+      }
+    ],
+    "ecdd8b88-c66d-4ce6-bbb2-8ed3c15e3bed": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "2nd",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.684Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 2nd-A"
+      }
+    ],
+    "fe047ae0-fce4-4bcd-8c28-bb47ef86ce2d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "2nd",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.651Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 2nd-A"
+      }
+    ],
+    "716807aa-faaa-4cf4-acba-50ef348ff110": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "2nd",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.618Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 2nd-A"
+      }
+    ],
+    "0bc00ee0-1c3d-49a7-87b2-8c31f5549936": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "2nd",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.585Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 2nd-A"
+      }
+    ],
+    "b59e94b6-ede6-4da7-9194-a744263d3c66": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "2nd",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.551Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 2nd-A"
+      }
+    ],
+    "e185f1a5-e62f-44ea-ae1b-9c793ec6c5fd": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "2nd",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.516Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 2nd-A"
+      }
+    ],
+    "4c5be6e8-ee37-452d-b855-d4c6daa9f5e3": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "2nd",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.484Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 2nd-A"
+      }
+    ],
+    "38e44447-085a-449c-835c-ab0287a3e7f3": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "2nd",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.453Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 2nd-A"
+      }
+    ],
+    "44f3ee60-0689-4a66-95f0-b949d5752051": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "2nd",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.421Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 2nd-A"
+      }
+    ],
+    "29093d74-b9ae-42c9-96c3-d8b4b1c8e6fc": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "2nd",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.389Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 2nd-A"
+      }
+    ],
+    "757a95e3-097b-4661-be71-d4f25b2a7c4e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "2nd",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.355Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 2nd-A"
+      }
+    ],
+    "f497eb0a-5eeb-4439-9571-01a1868b71e8": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "3rd",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.320Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 3rd-A"
+      }
+    ],
+    "3f69ad92-55b4-469e-9a0e-b80bf64b2edc": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "3rd",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.287Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 3rd-A"
+      }
+    ],
+    "f68ed6d2-13ea-4bfa-b61f-fc1b4fbaf539": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "3rd",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.254Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 3rd-A"
+      }
+    ],
+    "e5a3a7ec-af83-46dd-b26a-752dc5b7c42f": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "3rd",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.221Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 3rd-A"
+      }
+    ],
+    "3386ccd8-2de2-4fe1-a72c-aa5a2ee766cb": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "3rd",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.188Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 3rd-A"
+      }
+    ],
+    "b9787868-41f0-40de-b40f-e51da50fb030": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "3rd",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.152Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 3rd-A"
+      }
+    ],
+    "3108a0fd-0d78-4f11-bbfd-bab911866e68": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "3rd",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.116Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 3rd-A"
+      }
+    ],
+    "4f4a2e81-13bd-43a5-be53-073ee456440d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "3rd",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.081Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 3rd-A"
+      }
+    ],
+    "c7f69cee-716c-4ebb-ac86-3eb6c3f4f521": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "3rd",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.050Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 3rd-A"
+      }
+    ],
+    "1e799ced-dba4-4b7d-bee2-421a7bf0ea31": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "3rd",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:36.018Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 3rd-A"
+      }
+    ],
+    "f6d68a41-d96a-4241-b600-d23620876d67": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "3rd",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.986Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 3rd-A"
+      }
+    ],
+    "56643984-b832-4dcb-afc3-2c4913b0a654": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "3rd",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.954Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 3rd-A"
+      }
+    ],
+    "e9c108eb-2393-49a3-9515-90d43cd854e4": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "3rd",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.919Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 3rd-A"
+      }
+    ],
+    "2f74266d-e42e-45d2-b748-9455d081110f": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "4th",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.495Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 4th-A"
+      }
+    ],
+    "8c63ca0a-b08c-4827-9d14-8d7c91fcc46a": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "4th",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.886Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 4th-A"
+      }
+    ],
+    "0d397869-4bd6-41ce-a599-e7dcae7ce658": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "4th",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.854Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 4th-A"
+      }
+    ],
+    "8f877a44-0e2e-4148-815e-1fee480dea27": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "4th",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.822Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 4th-A"
+      }
+    ],
+    "32e9bdcd-7327-4964-bd56-9ec0aa7e260d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "4th",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.789Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 4th-A"
+      }
+    ],
+    "20966738-85fe-4edb-bd92-ceb901aeed2d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "4th",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.758Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 4th-A"
+      }
+    ],
+    "30ba1c6c-f88f-49fb-b3f6-bc393c4a1671": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "4th",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.724Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 4th-A"
+      }
+    ],
+    "dcc0d503-5307-411c-83a5-e0088f986111": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "4th",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.691Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 4th-A"
+      }
+    ],
+    "62e49623-beb0-47a4-8c96-8caa5a064e93": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "4th",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.658Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 4th-A"
+      }
+    ],
+    "879e70bd-37b3-478d-a887-a3ac5955983d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "4th",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.626Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 4th-A"
+      }
+    ],
+    "7f371def-9c05-47b8-b817-ffde972b7926": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "4th",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.593Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 4th-A"
+      }
+    ],
+    "0895be61-196e-4e76-8cfc-29bca0846177": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "4th",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.562Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 4th-A"
+      }
+    ],
+    "c6f84867-f461-4ae3-a565-113cffe32140": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "4th",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.530Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 4th-A"
+      }
+    ],
+    "a3dfa9e5-351a-41a9-8335-7d3a70053089": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "5th",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.068Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 5th-A"
+      }
+    ],
+    "3f15e3f3-c8b4-4845-8b77-edc6f0c58fc1": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "5th",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.102Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 5th-A"
+      }
+    ],
+    "6f42afd0-a0ce-4056-963f-ec8751688060": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "5th",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.134Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 5th-A"
+      }
+    ],
+    "21cad69c-6dc0-4feb-8aee-57adb5146eeb": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "5th",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.165Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 5th-A"
+      }
+    ],
+    "7af20b5b-c5be-4be0-8921-e837e49a1715": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "5th",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.197Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 5th-A"
+      }
+    ],
+    "0981e213-4195-4eca-83c6-025ce6711c52": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "5th",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.229Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 5th-A"
+      }
+    ],
+    "ab24d2a1-b732-484b-ae4f-95f3cb478dd1": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "5th",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.263Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 5th-A"
+      }
+    ],
+    "1afe3173-9de8-4795-9cd6-90accbd7d2db": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "5th",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.299Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 5th-A"
+      }
+    ],
+    "ebf53e88-0331-4b77-b719-a35153531cb3": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "5th",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.334Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 5th-A"
+      }
+    ],
+    "a17631f9-0a87-4dc4-95ba-b71112254b3e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "5th",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.366Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 5th-A"
+      }
+    ],
+    "50e977f4-81e7-4555-a2f6-799175b3b4e7": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "5th",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.397Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 5th-A"
+      }
+    ],
+    "5ff3c51f-7c2e-46eb-a426-a18bb9c018b6": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "5th",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.429Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 5th-A"
+      }
+    ],
+    "ab17ef6c-95fa-4582-9214-48022e1c8244": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "5th",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.461Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 5th-A"
+      }
+    ],
+    "5d72d0a7-3ff4-4d6a-9f55-4039c1d62e59": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "6th",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.632Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 6th-A"
+      }
+    ],
+    "de0baaeb-3e12-4ed5-be14-098bcbcc0471": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "6th",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.666Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 6th-A"
+      }
+    ],
+    "b2a576b8-9dd6-4941-aa9c-b04092bec180": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "6th",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.718Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 6th-A"
+      }
+    ],
+    "f11861a8-6d41-439d-97f2-64b535fd874a": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "6th",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.749Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 6th-A"
+      }
+    ],
+    "a42bbe29-32aa-4135-bde9-2eb883c5b0a3": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "6th",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.780Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 6th-A"
+      }
+    ],
+    "fa977857-cc66-4461-b4d0-fcde4b3b3460": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "6th",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.811Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 6th-A"
+      }
+    ],
+    "7217ec3d-5810-4f1b-8a34-603906626376": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "6th",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.844Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 6th-A"
+      }
+    ],
+    "5d5febc8-191b-42d6-a7cb-1332453e3938": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "6th",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.877Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 6th-A"
+      }
+    ],
+    "295f18c9-7f2b-4f80-b0be-6d081a60c629": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "6th",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.910Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 6th-A"
+      }
+    ],
+    "138215fd-ee76-4ac1-a32d-2b384bd328ed": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "6th",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.942Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 6th-A"
+      }
+    ],
+    "a06543d1-cc94-45d5-9a26-e70bb90eacfe": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "6th",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.973Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 6th-A"
+      }
+    ],
+    "738f137e-3a0f-46fb-930c-1dbc48e4a1b1": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "6th",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.004Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 6th-A"
+      }
+    ],
+    "c7a0a430-fa43-44b0-baf3-72fac901c641": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "6th",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:35.035Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 6th-A"
+      }
+    ],
+    "9352816d-0614-4a7b-8475-35b983390a20": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.568Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "9585392c-e6a4-4bfd-baff-1effb4942ccf": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.536Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "89d4c29d-eb47-4998-8033-7b7a8b4158d7": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.504Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "56f527c4-bd14-48dc-9a28-a2b76841157e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.472Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "e90fc830-381e-4078-bd1a-7c4f30ba82c4": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.439Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "6f7d5c77-cc15-4632-9d03-8dd7342654eb": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.406Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "14e8f082-8292-400e-8e00-3d47f605fc77": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.598Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "a4530cea-18fa-44a8-8115-ceee9a16fa0c": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.373Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "1507f844-8e49-46d5-b2fc-6186325c2914": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.342Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "ab9078cd-f297-4f7e-9159-927d1437a636": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.310Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "88f9658d-ee13-4ce2-a5e1-20de5fc805ff": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.277Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "b1e90976-fc1d-49fb-9ba9-dad1f9c708c4": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.245Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "e11837de-6128-4cf1-95ee-6eafdb77205a": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "7th",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.213Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 7th-A"
+      }
+    ],
+    "e68e36bf-023e-4dc1-842b-5144b32b479c": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.180Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "6aa7748d-3c22-495f-823f-00c48b9f28c6": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.149Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "b26f1ec2-3b0f-4fcf-b747-8d5810172b9f": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.118Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "c8d05202-6614-4247-986f-0ffb475765ad": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.086Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "e1705b29-d9e4-43f4-8290-d3577ec47cf4": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.054Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "70dd567e-207e-4797-be18-373fb0522273": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:34.021Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "f3792bc5-028d-4b7e-8e2e-c8d78640af7a": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.987Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "0c722520-201d-43bc-b79e-b030db166cbc": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.951Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "76bb87f4-cb31-421b-b438-ed98c7aa9dcd": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.920Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "fccacf87-6c96-40cb-ba18-99016ed4acf9": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.889Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "dc77b868-c90e-4cff-882f-7ab80cb3d04e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.859Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "f7734524-4207-457f-8ef2-db8792cb4af9": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.827Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "2a672aa8-f48c-47f7-9681-dd6023021484": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "8th",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.794Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 8th-A"
+      }
+    ],
+    "c5789654-6d61-4ba8-b760-6244a3ba93d9": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.571Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "d1d84ca4-82f7-4d60-9485-00edd938c2bf": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.761Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "28a40741-c828-445e-9aaa-4a144367dc63": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.730Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "812f78c1-6a0a-4937-9cbd-d83f141bbb27": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.699Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "d8a183a7-d3eb-4f36-a855-b61bc8a47cc5": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.669Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "b02eade4-3d81-4ff7-863b-824fcac88f0d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.638Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "9d01c006-e5aa-4472-8135-b4c3ba8be1e5": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.604Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "f2b25e63-f032-404c-93cf-536d94987625": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.538Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "a7795e74-a8a2-4f32-9dcd-ed48cdbdbeeb": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.507Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "7ef129ef-86ae-495a-a49d-8af26b055f04": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.475Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "6875b72e-d0f4-49f9-9361-49f1de44f013": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.443Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "681e69e9-a82e-4779-ba8f-ecb2fa0c3171": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.412Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "39747b37-56c1-41f3-9093-db1c4bcbb136": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "9th",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:33.378Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class 9th-A"
+      }
+    ],
+    "37853578-04c6-4497-8306-122380cec8eb": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "LKG",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.656Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class LKG-A"
+      }
+    ],
+    "7d0cef55-a417-496a-a56a-207b315a561c": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "LKG",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.060Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class LKG-A"
+      }
+    ],
+    "4d932613-4204-4a85-8396-566fd2bf95b7": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "LKG",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.028Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class LKG-A"
+      }
+    ],
+    "be8b6940-0b09-462e-8609-b8fb368d4a7c": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "LKG",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.995Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class LKG-A"
+      }
+    ],
+    "9a1a9119-52c0-4941-8b27-aa6ac8bc4fdf": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "LKG",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.962Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class LKG-A"
+      }
+    ],
+    "926328f5-3e63-41b2-b116-b68e464d8749": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "LKG",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.929Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class LKG-A"
+      }
+    ],
+    "8ddd103f-d25e-4e23-b5f2-bfb80d7ff4fb": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "LKG",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.894Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class LKG-A"
+      }
+    ],
+    "fcaf8149-26dd-4d94-9352-cd97ba32d7e1": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "LKG",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.860Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class LKG-A"
+      }
+    ],
+    "3e82f08a-7f7b-44f1-8583-7a2e940b5a72": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "LKG",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.825Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class LKG-A"
+      }
+    ],
+    "bad6a29b-dbc9-4a09-ac59-71b25816705c": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "LKG",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.791Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class LKG-A"
+      }
+    ],
+    "77ce5eff-cb91-4cba-90b8-928ba989dd4e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "LKG",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.757Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class LKG-A"
+      }
+    ],
+    "c6fbd592-d6d5-4007-8a94-5ff82a1f62dc": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "LKG",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.724Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class LKG-A"
+      }
+    ],
+    "1e3076c4-eae8-474a-8b55-c633e7ed8a73": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "LKG",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.691Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class LKG-A"
+      }
+    ],
+    "374a8555-0871-4537-a292-7c6756504ac6": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "Nursery",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.521Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class Nursery-A"
+      }
+    ],
+    "c9aad56a-6259-4a60-8ee5-3b4dfd956052": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "Nursery",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.095Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class Nursery-A"
+      }
+    ],
+    "8dd8d692-1d1e-40b3-9467-39cb3f38d361": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "Nursery",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.157Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class Nursery-A"
+      }
+    ],
+    "99a0301e-af7b-4c9c-ad94-4fe1659c1a16": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "Nursery",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.190Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class Nursery-A"
+      }
+    ],
+    "9e04ccaa-8055-40d3-ab95-55c5e84bfd1d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "Nursery",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.223Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class Nursery-A"
+      }
+    ],
+    "9c6cbaab-4154-4cbc-bec0-da61eb6b6a4e": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "Nursery",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.254Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class Nursery-A"
+      }
+    ],
+    "f69b25fe-51e2-4d97-9d08-b6d5874652e3": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "Nursery",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.287Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class Nursery-A"
+      }
+    ],
+    "b3a65e14-2589-49a7-8496-c544ba634f95": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "Nursery",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.321Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class Nursery-A"
+      }
+    ],
+    "73607fbb-1e31-4f0f-89d5-5714068e97d2": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "Nursery",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.356Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class Nursery-A"
+      }
+    ],
+    "c570751d-e570-4121-be34-25974a47036c": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "Nursery",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.391Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class Nursery-A"
+      }
+    ],
+    "14019406-2a48-488a-81a3-b3939c48ba25": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "Nursery",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.424Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class Nursery-A"
+      }
+    ],
+    "af79a9fb-1e28-43e0-af7d-70498b9bedb7": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "Nursery",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.456Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class Nursery-A"
+      }
+    ],
+    "a6246d1a-be89-450d-b056-b01dffc029be": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "Nursery",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:38.488Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class Nursery-A"
+      }
+    ],
+    "0f4abfb4-4de4-4f79-8030-12a36bf8ee61": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "UKG",
+        "section": "A",
+        "rollNumber": "01",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.211Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class UKG-A"
+      }
+    ],
+    "295b6f83-02c0-40c5-9741-1cc68f3f0e00": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "UKG",
+        "section": "A",
+        "rollNumber": "13",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.623Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class UKG-A"
+      }
+    ],
+    "4bf8073a-a887-4667-9cc2-75c187395dc1": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "UKG",
+        "section": "A",
+        "rollNumber": "12",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.590Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class UKG-A"
+      }
+    ],
+    "9ed8cc91-2f28-4ee9-b4f9-1a041843a8d9": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "UKG",
+        "section": "A",
+        "rollNumber": "11",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.558Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class UKG-A"
+      }
+    ],
+    "83db676f-ce41-4bcd-92e8-eb34370be1c5": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "UKG",
+        "section": "A",
+        "rollNumber": "10",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.520Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class UKG-A"
+      }
+    ],
+    "00c01db3-3cc7-42f0-9100-cb5a8df8bbfb": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "UKG",
+        "section": "A",
+        "rollNumber": "09",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.483Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class UKG-A"
+      }
+    ],
+    "2ca20ac2-d1b9-4938-afe5-1c53c149ce78": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "UKG",
+        "section": "A",
+        "rollNumber": "08",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.447Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class UKG-A"
+      }
+    ],
+    "8b2014ca-5f64-47f5-a75d-d7ba9000315b": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "UKG",
+        "section": "A",
+        "rollNumber": "07",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.411Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class UKG-A"
+      }
+    ],
+    "50f85286-a8d2-4c87-ae39-d3f6bb46b60b": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "UKG",
+        "section": "A",
+        "rollNumber": "06",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.376Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class UKG-A"
+      }
+    ],
+    "4b649c5c-adf7-4b8e-a01b-0011bbd1476f": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "UKG",
+        "section": "A",
+        "rollNumber": "05",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.344Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class UKG-A"
+      }
+    ],
+    "385be491-a3b6-42d8-b15f-6123e3316dfb": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "UKG",
+        "section": "A",
+        "rollNumber": "04",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.311Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class UKG-A"
+      }
+    ],
+    "1e1ffa84-0a0f-45f5-87a1-7df4b273f794": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "UKG",
+        "section": "A",
+        "rollNumber": "03",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.279Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class UKG-A"
+      }
+    ],
+    "9c17c17b-644e-4707-8003-1483b3f1be3d": [
+      {
+        "academicYear": "2026-2027",
+        "standard": "UKG",
+        "section": "A",
+        "rollNumber": "02",
+        "status": "Active",
+        "assignedAt": "2026-10-26T06:30:37.246Z",
+        "assignedBy": "System Baseline",
+        "remarks": "Enrolled in Class UKG-A"
       }
     ]
   },

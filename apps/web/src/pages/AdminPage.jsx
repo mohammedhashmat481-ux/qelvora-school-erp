@@ -404,7 +404,19 @@ const AdminPage = () => {
     return ['A', 'B', 'C', 'D'];
   }, [classStandardSectionsMap, studentForm.standard]);
 
-  // Roles Management
+  // Roles Management & Menu Access Privileges
+  const MENU_PRIVILEGES = [
+    { key: 'dashboard', label: 'Dashboard', icon: '📊', desc: 'KPI metrics, daily schedule, running classes, and substitute allocations' },
+    { key: 'attendance', label: 'Attendance System', icon: '🕒', desc: 'Faculty & employee biometric punch attendance and geofence tracking' },
+    { key: 'admin_panel', label: 'Admin Panel', icon: '⚙️', desc: 'Master school settings, roles, employees, classes, subjects, and timetables' },
+    { key: 'student_attendance', label: 'Student Attendance', icon: '📅', desc: 'Classroom roll-call, session attendance, absent alerts, and registers' },
+    { key: 'fees_management', label: 'Fees Management', icon: '💳', desc: 'Fee structures, concessions, student invoicing, and payment receipts' },
+    { key: 'student_promotion', label: 'Student Promotion', icon: '📈', desc: 'Academic year student advancement, section reallocation, and alumni graduation' },
+    { key: 'examination', label: 'Examination System', icon: '🎖️', desc: 'Exam schedules, marks entry, grading schemes, and report card generation' },
+    { key: 'online_exam', label: 'Online Exam', icon: '📺', desc: 'Digital quiz creator, question bank, live timed test lobby, and auto-evaluation' },
+    { key: 'safe_pickup', label: 'Safe Pickup', icon: '🛡️', desc: 'Secure student dismissal, guardian QR/OTP badges, and campus departure logs' }
+  ];
+
   const [roles, setRoles] = useState([]);
   const [rolesLoading, setRolesLoading] = useState(false);
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
@@ -413,7 +425,19 @@ const AdminPage = () => {
   const [roleForm, setRoleForm] = useState({
     RoleCode: 'AUTO-GENERATED',
     Rolename: '',
-    GantAdminPrevillage: false
+    GantAdminPrevillage: false,
+    permissions: [
+      'dashboard',
+      'attendance',
+      'admin_panel',
+      'student_attendance',
+      'fees_management',
+      'student_promotion',
+      'examination',
+      'online_exam',
+      'safe_pickup'
+    ],
+    isActive: true
   });
 
   // Timetable Tab States
@@ -4983,7 +5007,13 @@ Office of the Principal / Academic Administration`
                 <button
                   onClick={() => {
                     setEditingRole(null);
-                    setRoleForm({ RoleCode: 'AUTO-GENERATED', Rolename: '', GantAdminPrevillage: false });
+                    setRoleForm({
+                      RoleCode: 'AUTO-GENERATED',
+                      Rolename: '',
+                      GantAdminPrevillage: false,
+                      permissions: MENU_PRIVILEGES.map(m => m.key),
+                      isActive: true
+                    });
                     setIsRoleModalOpen(true);
                   }}
                   className="px-4 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer active:scale-95 shrink-0"
@@ -5024,6 +5054,7 @@ Office of the Principal / Academic Administration`
                         <th className="px-5 py-3.5">Role Name</th>
                         <th className="px-5 py-3.5 text-center">Status</th>
                         <th className="px-5 py-3.5">Grant Admin Privilege</th>
+                        <th className="px-5 py-3.5">Menu Access Privileges</th>
                         <th className="px-5 py-3.5">Created By</th>
                         {isAdminUser && <th className="px-5 py-3.5 text-right">Actions</th>}
                       </tr>
@@ -5076,6 +5107,19 @@ Office of the Principal / Academic Administration`
                                 )}
                               </span>
                             </td>
+                            <td className="px-5 py-4">
+                              {r.permissions && r.permissions.length === MENU_PRIVILEGES.length ? (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200" title="Full unrestricted access to all 10 modules">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                                  <span>All Menus ({MENU_PRIVILEGES.length})</span>
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 text-[#172B4D] border border-blue-200" title={`Granted menus: ${(r.permissions || ['dashboard']).join(', ')}`}>
+                                  <ShieldCheck className="w-3.5 h-3.5 text-[#172B4D]" />
+                                  <span>{(r.permissions?.length) || (r.GantAdminPrevillage ? MENU_PRIVILEGES.length : 1)} / {MENU_PRIVILEGES.length} Menus</span>
+                                </span>
+                              )}
+                            </td>
                             <td className="px-5 py-4 text-slate-500 font-medium text-xs">{r.CreatedBy || 'Admin'}</td>
                             {isAdminUser && (
                               <td className="px-5 py-4 text-right">
@@ -5088,6 +5132,9 @@ Office of the Principal / Academic Administration`
                                         RoleCode: r.RoleCode,
                                         Rolename: r.Rolename,
                                         GantAdminPrevillage: !!r.GantAdminPrevillage,
+                                        permissions: Array.isArray(r.permissions) && r.permissions.length > 0
+                                          ? r.permissions
+                                          : (r.GantAdminPrevillage ? MENU_PRIVILEGES.map(m => m.key) : ['dashboard']),
                                         isActive: r.isActive !== false
                                       });
                                       setIsRoleModalOpen(true);
@@ -9723,56 +9770,69 @@ Office of the Principal / Academic Administration`
       {/* Roles Modal */}
       {isRoleModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white border border-gray-200 rounded-3xl shadow-2xl p-8 w-full max-w-md relative overflow-y-auto max-h-[90vh]">
+          <div className="bg-white border border-gray-200 rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-2xl relative overflow-y-auto max-h-[92vh]">
             <button
               onClick={() => setIsRoleModalOpen(false)}
-              className="absolute top-6 right-6 text-gray-500 hover:text-gray-900 bg-gray-100 rounded-full p-1 transition-colors"
+              className="absolute top-6 right-6 text-gray-500 hover:text-gray-900 bg-gray-100 rounded-full p-1.5 transition-colors"
             >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
 
-            <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2.5">
+            <h3 className="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2.5">
               <ShieldCheck className="w-5 h-5 text-[#172B4D]" />
-              <span>{editingRole ? 'Edit Role Permissions' : 'Create New Institutional Role'}</span>
+              <span>{editingRole ? 'Edit Role & Menu Access Privileges' : 'Create New Institutional Role'}</span>
             </h3>
+            <p className="text-xs text-slate-500 mb-6 font-normal">
+              Define the security scope and grant granular access privileges for each system menu and module.
+            </p>
 
             <form onSubmit={handleRoleSubmit} className="space-y-5 text-gray-900">
-              <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Role Code *</label>
-                <input
-                  type="text"
-                  required
-                  value={editingRole ? roleForm.RoleCode : 'AUTO-GENERATED'}
-                  className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl text-gray-500 focus:ring-2 focus:ring-1 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all cursor-not-allowed"
-                  disabled={true}
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Role Code *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingRole ? roleForm.RoleCode : 'AUTO-GENERATED'}
+                    className="w-full px-4 py-2.5 bg-gray-100 border border-gray-300 rounded-xl text-gray-500 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all cursor-not-allowed font-mono text-xs"
+                    disabled={true}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Role Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={roleForm.Rolename}
+                    onChange={(e) => setRoleForm({ ...roleForm, Rolename: e.target.value })}
+                    placeholder="e.g. Academic Supervisor"
+                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all text-xs sm:text-sm font-semibold"
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Role Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={roleForm.Rolename}
-                  onChange={(e) => setRoleForm({ ...roleForm, Rolename: e.target.value })}
-                  placeholder="e.g. Sales Manager"
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-1 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all"
-                />
-              </div>
-
-              <div className="bg-gray-50 p-4 rounded-2xl border border-gray-200">
+              {/* Admin Privilege Toggle */}
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                 <div className="flex items-center justify-between">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">Grant Admin Privilege</label>
-                    <p className="text-xs text-gray-500">Gives administrative read/write settings rights</p>
+                    <label className="block text-sm font-bold text-gray-800 mb-0.5">Grant Admin Privilege</label>
+                    <p className="text-xs text-gray-500">Unlocks administrative configurations, settings, and full system management rights</p>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
+                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
                     <input
                       type="checkbox"
                       checked={roleForm.GantAdminPrevillage}
-                      onChange={(e) => setRoleForm({ ...roleForm, GantAdminPrevillage: e.target.checked })}
+                      onChange={(e) => {
+                        const isChecked = e.target.checked;
+                        setRoleForm({
+                          ...roleForm,
+                          GantAdminPrevillage: isChecked,
+                          permissions: isChecked ? MENU_PRIVILEGES.map(m => m.key) : roleForm.permissions
+                        });
+                      }}
                       className="sr-only peer"
                     />
                     <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#29456D]"></div>
@@ -9780,13 +9840,88 @@ Office of the Principal / Academic Administration`
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-4 rounded-2xl border border-gray-200">
+              {/* Menu Access Privileges Multi-select Section */}
+              <div className="bg-slate-50/70 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <Layers className="w-4 h-4 text-[#29456D]" />
+                      <label className="block text-sm font-bold text-gray-900">Menu Access Privileges</label>
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-[#172B4D]">
+                        {(roleForm.permissions || []).length} of {MENU_PRIVILEGES.length} Granted
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Select which navigation menus and functional modules users with this role can access.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setRoleForm({ ...roleForm, permissions: MENU_PRIVILEGES.map(m => m.key) })}
+                      className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 transition-colors"
+                    >
+                      Grant All Menus
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setRoleForm({ ...roleForm, permissions: ['dashboard'] })}
+                      className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-slate-500 hover:bg-slate-100 transition-colors"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[38vh] overflow-y-auto pr-1">
+                  {MENU_PRIVILEGES.map(menu => {
+                    const isChecked = (roleForm.permissions || []).includes(menu.key);
+                    return (
+                      <div
+                        key={menu.key}
+                        onClick={() => {
+                          const current = roleForm.permissions || [];
+                          const updated = current.includes(menu.key)
+                            ? current.filter(k => k !== menu.key)
+                            : [...current, menu.key];
+                          setRoleForm({ ...roleForm, permissions: updated });
+                        }}
+                        className={`flex items-start gap-3 p-3 rounded-xl border text-left cursor-pointer transition-all select-none ${
+                          isChecked
+                            ? 'bg-blue-50/70 border-blue-300 shadow-2xs'
+                            : 'bg-white border-slate-200 hover:border-slate-300 opacity-80 hover:opacity-100'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => {}} // Handled by parent div
+                          className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#29456D] focus:ring-[#93C5FD] pointer-events-none"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-base shrink-0">{menu.icon}</span>
+                            <span className="text-xs font-bold text-slate-900 truncate">{menu.label}</span>
+                          </div>
+                          <p className="text-[11px] text-slate-500 leading-snug mt-0.5 line-clamp-2">
+                            {menu.desc}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Active Toggle */}
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                 <div className="flex items-center justify-between">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">Enable Role (Active Status)</label>
-                    <p className="text-xs text-gray-500">Enable or disable this role across the platform</p>
+                    <label className="block text-sm font-bold text-gray-800 mb-0.5">Enable Role (Active Status)</label>
+                    <p className="text-xs text-gray-500">Enable or disable this role across employee assignments and the platform</p>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
+                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
                     <input
                       type="checkbox"
                       checked={roleForm.isActive !== false}
@@ -9802,13 +9937,13 @@ Office of the Principal / Academic Administration`
                 <button
                   type="button"
                   onClick={() => setIsRoleModalOpen(false)}
-                  className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-xl text-gray-700 font-bold transition-all active:scale-95 text-center"
+                  className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-xl text-gray-700 font-bold transition-all active:scale-95 text-center text-xs sm:text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold shadow-sm font-bold rounded-xl shadow-lg transition-all active:scale-95 text-center"
+                  className="flex-1 py-3 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold rounded-xl shadow-md transition-all active:scale-95 text-center text-xs sm:text-sm"
                 >
                   {editingRole ? 'Save Changes' : 'Create Role'}
                 </button>

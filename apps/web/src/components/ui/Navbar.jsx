@@ -422,10 +422,6 @@ const Navbar = () => {
                   <HistoryIcon className="w-4 h-4 shrink-0 text-current" />
                   <span>{t('history')}</span>
                 </Link>
-                <Link to="/logout-kiosk" className={desktopLink('/logout-kiosk')}>
-                  <LogOut className="w-4 h-4 shrink-0 text-current" />
-                  <span>{t('kiosk')}</span>
-                </Link>
                  {(user?.role?.toLowerCase() === 'teacher' || user?.role?.toLowerCase() === 'principal') && (
                   <>
                     <Link to="/qelvora-ai" className={desktopLink('/qelvora-ai')}>
@@ -573,10 +569,6 @@ const Navbar = () => {
               <Link to="/login-history" onClick={closeMobile} className={`${mobileLink('/login-history')} flex items-center gap-2`}>
                 <HistoryIcon className="w-4 h-4 text-[#F3F6FC]" />
                 <span>{t('history')}</span>
-              </Link>
-              <Link to="/logout-kiosk" onClick={closeMobile} className={`${mobileLink('/logout-kiosk')} flex items-center gap-2`}>
-                <LogOut className="w-4 h-4 text-[#F3F6FC]" />
-                <span>{t('kiosk')}</span>
               </Link>
               {(user?.role?.toLowerCase() === 'teacher' || user?.role?.toLowerCase() === 'principal') && (
                 <>

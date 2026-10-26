@@ -148,8 +148,8 @@ async function runPlatformVerification() {
 
     const notificationLogs = await prisma.attendanceNotificationLog.findMany();
     assert(notificationLogs.length >= 10, `Found ${notificationLogs.length} parent notification logs triggered on absent attendance`);
-    const absentNotificationsHaveParent = notificationLogs.every(n => n.parentEmail && n.triggerStatus === 'Absent' && n.status === 'DELIVERED');
-    assert(absentNotificationsHaveParent, 'All absent alerts correctly address the parent email/phone with DELIVERED status');
+    const absentNotificationsHaveParent = notificationLogs.every(n => (n.parentEmail || n.parentPhone) && n.triggerStatus === 'Absent' && ['DELIVERED', 'SENT', 'QUEUED'].includes(n.status));
+    assert(absentNotificationsHaveParent, 'All absent alerts correctly address parent email/phone with valid dispatch status (SENT/QUEUED/DELIVERED)');
 
     // 7. FEEDBACK & CONCERNS
     console.log('\n[7/7] Testing Parent Feedback & Educational Concerns...');

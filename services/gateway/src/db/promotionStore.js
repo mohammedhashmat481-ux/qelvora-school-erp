@@ -20,7 +20,9 @@ const STANDARDS_ORDER = [
   '7th',
   '8th',
   '9th',
-  '10th'
+  '10th',
+  '11th',
+  '12th'
 ];
 
 const DEFAULT_PROMOTION_STATE = {
@@ -29,7 +31,7 @@ const DEFAULT_PROMOTION_STATE = {
     nextAcademicYear: '2027-2028',
     academicYears: ['2024-2025', '2025-2026', '2026-2027', '2027-2028', '2028-2029'],
     standardsList: STANDARDS_ORDER,
-    terminalStandard: '10th',
+    terminalStandard: '12th',
     allowRepeat: true,
     autoAssignRollNumber: true
   },
@@ -75,13 +77,13 @@ class PromotionStore {
   getNextStandard(std) {
     const idx = STANDARDS_ORDER.indexOf(std);
     if (idx === -1 || idx === STANDARDS_ORDER.length - 1) {
-      return null; // Terminal class (e.g. 10th)
+      return null; // Terminal class (e.g. 12th)
     }
     return STANDARDS_ORDER[idx + 1];
   }
 
   isTerminalStandard(std) {
-    return std === (this.data.settings.terminalStandard || '10th');
+    return std === (this.data.settings.terminalStandard || '12th');
   }
 
   // Ensure initial baseline enrollment is registered for existing DB students
@@ -112,20 +114,31 @@ class PromotionStore {
     return this.data.enrollmentHistory[studentId] || [];
   }
 
-  // Class summary metrics for the promotion dashboard
+  // Class summary metrics for the promotion dashboard (class-wise and section-wise)
   async getClassSummary(fromYear, toYear) {
     const srcYear = fromYear || this.data.settings.currentAcademicYear;
     const tgtYear = toYear || this.data.settings.nextAcademicYear;
 
     let dbStudents = [];
+    let dbClasses = [];
     try {
-      dbStudents = await prisma.student.findMany({
-        where: { leftSchoolStatus: false },
-        orderBy: [{ standard: 'asc' }, { section: 'asc' }]
-      });
+      [dbStudents, dbClasses] = await Promise.all([
+        prisma.student.findMany({
+          where: { leftSchoolStatus: false },
+          orderBy: [{ standard: 'asc' }, { section: 'asc' }]
+        }),
+        prisma.class.findMany({
+          orderBy: [{ standard: 'asc' }, { section: 'asc' }]
+        })
+      ]);
     } catch (e) {
       console.warn('Prisma student read in getClassSummary error:', e.message);
     }
+
+    const classTeacherMap = {};
+    dbClasses.forEach(c => {
+      classTeacherMap[`${c.standard}-${c.section}`] = c.classTeacherName || '';
+    });
 
     const classesMap = {};
 
@@ -140,13 +153,16 @@ class PromotionStore {
         eligibleCount: 0,
         alreadyPromotedCount: 0,
         underReviewCount: 0,
-        sections: new Set()
+        sections: new Set(),
+        sectionsDetail: {}
       };
     });
 
     dbStudents.forEach(student => {
       this.ensureBaselineEnrollment(student, srcYear);
       const std = student.standard;
+      const sec = student.section || 'A';
+
       if (!classesMap[std]) {
         classesMap[std] = {
           standard: std,
@@ -156,12 +172,13 @@ class PromotionStore {
           eligibleCount: 0,
           alreadyPromotedCount: 0,
           underReviewCount: 0,
-          sections: new Set()
+          sections: new Set(),
+          sectionsDetail: {}
         };
       }
 
       classesMap[std].totalStudents++;
-      if (student.section) classesMap[std].sections.add(student.section);
+      classesMap[std].sections.add(sec);
 
       const history = this.data.enrollmentHistory[student.id] || [];
       const hasTargetYear = history.some(e => e.academicYear === tgtYear);
@@ -171,11 +188,35 @@ class PromotionStore {
       } else {
         classesMap[std].eligibleCount++;
       }
+
+      // Section-wise metrics
+      if (!classesMap[std].sectionsDetail[sec]) {
+        classesMap[std].sectionsDetail[sec] = {
+          section: sec,
+          classTeacher: classTeacherMap[`${std}-${sec}`] || '',
+          totalStudents: 0,
+          eligibleCount: 0,
+          alreadyPromotedCount: 0,
+          pendingCount: 0
+        };
+      }
+
+      classesMap[std].sectionsDetail[sec].totalStudents++;
+      if (hasTargetYear) {
+        classesMap[std].sectionsDetail[sec].alreadyPromotedCount++;
+      } else {
+        classesMap[std].sectionsDetail[sec].eligibleCount++;
+      }
+      classesMap[std].sectionsDetail[sec].pendingCount = Math.max(
+        0,
+        classesMap[std].sectionsDetail[sec].totalStudents - classesMap[std].sectionsDetail[sec].alreadyPromotedCount
+      );
     });
 
     const result = Object.values(classesMap).map(c => ({
       ...c,
       sections: Array.from(c.sections).sort(),
+      sectionsDetail: Object.values(c.sectionsDetail || {}).sort((a, b) => a.section.localeCompare(b.section)),
       pendingCount: Math.max(0, c.totalStudents - c.alreadyPromotedCount)
     }));
 
@@ -338,7 +379,7 @@ class PromotionStore {
         targetStandard: targetStd,
         targetSection: targetSec,
         targetRollNumber: item.targetRollNumber || student.rollNumber || '',
-        remarks: item.remarks || (action === 'graduate' ? 'Class 10th completion (Alumni)' : `Promoted to ${targetStd}-${targetSec}`)
+        remarks: item.remarks || (action === 'graduate' ? 'Class 12th completion (Alumni)' : `Promoted to ${targetStd}-${targetSec}`)
       });
     });
 
@@ -404,7 +445,7 @@ class PromotionStore {
         srcRecord.status = action === 'graduate' ? 'Graduated' : action === 'repeat' ? 'Detained' : 'Promoted';
         srcRecord.promotedAt = timestamp;
         srcRecord.promotedBy = adminUser;
-        srcRecord.remarks = remarks || (action === 'graduate' ? 'Completed final standard (10th)' : `Promoted to ${targetStd}-${targetSec}`);
+        srcRecord.remarks = remarks || (action === 'graduate' ? 'Completed final standard (12th)' : `Promoted to ${targetStd}-${targetSec}`);
       }
 
       if (action === 'graduate') {
@@ -442,7 +483,7 @@ class PromotionStore {
             },
             status: 'Graduated',
             certificateNumber: `TC/${srcYear.replace('-', '/')}/${String(this.data.alumniRecords.length + 1).padStart(3, '0')}`,
-            remarks: remarks || 'Completed 10th Standard CBSE Board cycle'
+            remarks: remarks || 'Completed 12th Standard CBSE Board cycle'
           });
         }
       } else if (action === 'promote') {

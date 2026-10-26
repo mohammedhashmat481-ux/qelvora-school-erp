@@ -876,9 +876,30 @@ router.get('/class-sessions', async (req, res) => {
 
       const isLiveActive = session.status === 'in-progress' || session.status === 'active';
 
-      // Calculate Late Check-In Minutes & Severity
+      // Calculate Late Check-In Minutes & Severity from Timetable and configured school hours
       let lateMinutes = 0;
-      if (session.teacher?.toLowerCase().includes('arjun')) {
+      if (session.startTime) {
+        // Derive from check-in time vs scheduled timetable start time
+        const checkInDate = new Date(session.startTime);
+        const checkInHours = checkInDate.getHours();
+        const checkInMinutes = checkInDate.getMinutes();
+        const checkInTotalMins = checkInHours * 60 + checkInMinutes;
+
+        let scheduledMins = schedInfo.mins;
+        if (ttMatch?.startTime) {
+          const match = String(ttMatch.startTime).match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
+          if (match) {
+            let h = parseInt(match[1], 10);
+            const m = parseInt(match[2], 10);
+            const p = match[3]?.toUpperCase();
+            if (p === 'PM' && h < 12) h += 12;
+            if (p === 'AM' && h === 12) h = 0;
+            scheduledMins = h * 60 + m;
+          }
+        }
+        const diff = checkInTotalMins - scheduledMins;
+        lateMinutes = Math.max(0, diff);
+      } else if (session.teacher?.toLowerCase().includes('arjun')) {
         lateMinutes = 18; // >= 15 mins => RED + Notice
       } else if (session.teacher?.toLowerCase().includes('sneha')) {
         lateMinutes = 12; // 10 - 14 mins => ORANGE + Notice
@@ -888,14 +909,6 @@ router.get('/class-sessions', async (req, res) => {
         lateMinutes = 0; // On Time => GREEN
       } else if (session.teacher?.toLowerCase().includes('rajesh') && session.section === 'A') {
         lateMinutes = 2; // < 5 mins => On Time => GREEN
-      } else if (session.startTime) {
-        // Derive from check-in time vs scheduled time
-        const checkInDate = new Date(session.startTime);
-        const checkInHours = checkInDate.getHours();
-        const checkInMinutes = checkInDate.getMinutes();
-        const checkInTotalMins = checkInHours * 60 + checkInMinutes;
-        const diff = checkInTotalMins - schedInfo.mins;
-        lateMinutes = Math.max(0, diff);
       }
 
       // User Rules:

@@ -1,7 +1,7 @@
 import express from 'express';
 import { feesStore } from '../db/feesStore.js';
 import { prisma } from '../db/prisma.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { protect, authorize } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -788,6 +788,19 @@ router.get('/collection/student-details/:studentId', protect, async (req, res) =
     const student = students.find(s => s.id === sId || s.studentId === sId || s.userId === sId);
     if (!student) return res.status(404).json({ success: false, message: 'Student not found' });
 
+    // Enforce Parent / Student Access Isolation
+    const userRole = (req.user?.role || '').toLowerCase();
+    const userEmail = (req.user?.email || '').toLowerCase();
+    if (userRole === 'student' || userRole === 'parent') {
+      const isSelfOrChild =
+        student.userId === req.user.id ||
+        (student.email && student.email.toLowerCase() === userEmail) ||
+        (student.parentEmail && student.parentEmail.toLowerCase() === userEmail);
+      if (!isSelfOrChild) {
+        return res.status(403).json({ success: false, message: 'Access denied: You can only view fee records for your own registered student' });
+      }
+    }
+
     // Find siblings (students with same parentName or parentPhone)
     const siblings = students.filter(s =>
       s.id !== student.id && (
@@ -883,7 +896,7 @@ router.get('/collection/student-details/:studentId', protect, async (req, res) =
   }
 });
 
-router.post('/collection/collect', protect, async (req, res) => {
+router.post('/collection/collect', protect, authorize('admin', 'principal', 'accountant', 'bursar'), async (req, res) => {
   try {
     const {
       studentId,
@@ -1085,6 +1098,19 @@ router.get('/receipts', protect, (req, res) => {
       list = list.filter(r => r.paymentDate <= toDate + 'T23:59:59.999Z');
     }
 
+    // Enforce Parent / Student Access Isolation for Receipts
+    const userRole = (req.user?.role || '').toLowerCase();
+    const userEmail = (req.user?.email || '').toLowerCase();
+    if (userRole === 'student' || userRole === 'parent') {
+      const linkedStudents = feesStore.data.students.filter(s =>
+        s.userId === req.user.id ||
+        (s.email && s.email.toLowerCase() === userEmail) ||
+        (s.parentEmail && s.parentEmail.toLowerCase() === userEmail)
+      );
+      const studentIds = new Set(linkedStudents.map(s => s.id));
+      list = list.filter(r => studentIds.has(r.studentId) || (r.parentEmail && r.parentEmail.toLowerCase() === userEmail));
+    }
+
     res.json({ success: true, data: list.reverse() });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -1095,13 +1121,28 @@ router.get('/receipts/:id', protect, (req, res) => {
   try {
     const receipt = feesStore.data.receipts.find(r => r.id === req.params.id || r.receiptNumber === req.params.id);
     if (!receipt) return res.status(404).json({ success: false, message: 'Receipt not found' });
+
+    const userRole = (req.user?.role || '').toLowerCase();
+    const userEmail = (req.user?.email || '').toLowerCase();
+    if (userRole === 'student' || userRole === 'parent') {
+      const isOwner =
+        (receipt.parentEmail && receipt.parentEmail.toLowerCase() === userEmail) ||
+        feesStore.data.students.some(s =>
+          (s.id === receipt.studentId || s.studentId === receipt.studentId) &&
+          (s.userId === req.user.id || s.email?.toLowerCase() === userEmail || s.parentEmail?.toLowerCase() === userEmail)
+        );
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Access denied: You can only view receipts issued to your own ward' });
+      }
+    }
+
     res.json({ success: true, data: receipt, settings: feesStore.data.settings });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-router.post('/receipts/:id/cancel', protect, (req, res) => {
+router.post('/receipts/:id/cancel', protect, authorize('admin', 'principal', 'accountant', 'bursar'), (req, res) => {
   try {
     const { cancelReason, supervisorApproval } = req.body;
     if (!cancelReason || !cancelReason.trim()) {

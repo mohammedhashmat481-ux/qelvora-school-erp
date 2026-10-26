@@ -122,27 +122,54 @@ router.get('/my-marks', protect, async (req, res) => {
 
     // If Student or Parent, enforce that they only view their corresponding student
     if (userRole === 'student' || userRole === 'parent') {
-      let studentRecord = await prisma.student.findFirst({
-        where: {
-          OR: [
-            { userId: req.user.id },
-            { email: userEmail },
-            { parentEmail: userEmail }
-          ]
+      let studentRecord = null;
+      if (queryStudentId) {
+        studentRecord = await prisma.student.findFirst({
+          where: {
+            id: queryStudentId,
+            OR: [
+              { userId: req.user.id },
+              { email: { equals: userEmail, mode: 'insensitive' } },
+              { parentEmail: { equals: userEmail, mode: 'insensitive' } }
+            ]
+          }
+        });
+        // If queryStudentId does not belong to this parent, ignore queryStudentId and fetch parent's own child
+        if (!studentRecord) {
+          studentRecord = await prisma.student.findFirst({
+            where: {
+              OR: [
+                { userId: req.user.id },
+                { email: { equals: userEmail, mode: 'insensitive' } },
+                { parentEmail: { equals: userEmail, mode: 'insensitive' } }
+              ]
+            }
+          });
         }
-      });
-      if (!studentRecord) {
+      } else {
         studentRecord = await prisma.student.findFirst({
           where: {
             OR: [
-              { name: { contains: req.user?.name || '', mode: 'insensitive' } },
-              { name: { contains: 'Aarav', mode: 'insensitive' } }
+              { userId: req.user.id },
+              { email: { equals: userEmail, mode: 'insensitive' } },
+              { parentEmail: { equals: userEmail, mode: 'insensitive' } }
             ]
           }
         });
       }
+
+      if (!studentRecord && req.user?.name) {
+        studentRecord = await prisma.student.findFirst({
+          where: {
+            parentName: { contains: req.user.name, mode: 'insensitive' }
+          }
+        });
+      }
+
       if (studentRecord) {
         targetStudentId = studentRecord.id;
+      } else {
+        return res.status(403).json({ status: false, message: 'Access denied: No enrolled student linked to this parent/student account' });
       }
     }
 
@@ -251,8 +278,16 @@ router.get('/my-marks', protect, async (req, res) => {
           return { studentId: sId, pct };
         }).sort((a, b) => b.pct - a.pct);
 
-        const foundIndex = rankingList.findIndex(r => r.studentId === targetStudentId);
-        if (foundIndex !== -1) classRank = foundIndex + 1;
+        let calculatedRank = 1;
+        for (let i = 0; i < rankingList.length; i++) {
+          if (i > 0 && rankingList[i].pct < rankingList[i - 1].pct) {
+            calculatedRank = i + 1;
+          }
+          if (rankingList[i].studentId === targetStudentId) {
+            classRank = calculatedRank;
+            break;
+          }
+        }
       } catch (rankErr) {
         console.warn('Rank calculation warning:', rankErr.message);
       }
@@ -1050,8 +1085,9 @@ router.get('/report-cards', async (req, res) => {
       };
     });
 
-    // Compute ranks or grade-only evaluation
+    // Compute ranks or grade-only evaluation (Standard Competition Ranking with tied rank support)
     studentReports.sort((a, b) => b.percentage - a.percentage);
+    let currentRank = 1;
     studentReports.forEach((rep, idx) => {
       const isGradeOnly = isGradeOnlyStandard(rep.student?.class || rep.student?.standard);
       if (isGradeOnly) {
@@ -1059,9 +1095,14 @@ router.get('/report-cards', async (req, res) => {
         rep.evaluationMode = 'GRADE_ONLY';
         rep.rankRemark = 'Grade-Based Evaluation (Class ≤ 5)';
       } else {
-        rep.rank = idx + 1;
+        if (idx > 0 && rep.percentage === studentReports[idx - 1].percentage) {
+          rep.rank = currentRank;
+        } else {
+          currentRank = idx + 1;
+          rep.rank = currentRank;
+        }
         rep.evaluationMode = 'RANK_AND_GRADE';
-        rep.rankRemark = `Rank #${idx + 1} in Class`;
+        rep.rankRemark = `Rank #${rep.rank} in Class`;
       }
     });
 

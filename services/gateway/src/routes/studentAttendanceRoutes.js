@@ -21,6 +21,19 @@ async function resolveClassId(classId, standard, section) {
   return fallback ? fallback.id : classId;
 }
 
+// Helper: Parse 12-hour or 24-hour time string into total minutes since midnight
+export function parseTimeToMinutes(timeStr, fallbackMins = 525) {
+  if (!timeStr) return fallbackMins;
+  const match = String(timeStr).trim().match(/^(\d{1,2}):(\d{2})(?::\d{2})?\s*(AM|PM)?$/i);
+  if (!match) return fallbackMins;
+  let h = parseInt(match[1], 10);
+  const m = parseInt(match[2], 10);
+  const p = match[3]?.toUpperCase();
+  if (p === 'PM' && h < 12) h += 12;
+  if (p === 'AM' && h === 12) h = 0;
+  return h * 60 + m;
+}
+
 // Helper: Ensure default settings exist in DB
 async function getOrCreateSettings() {
   try {
@@ -555,9 +568,9 @@ router.post('/scan-qr', protect, async (req, res) => {
       const [curHours, curMins] = [now.getHours(), now.getMinutes()];
       const totalMinutesNow = curHours * 60 + curMins;
 
-      // Late threshold default: 08:45 AM = 525 mins
-      const lateMins = 8 * 60 + 45;
-      const halfDayMins = 11 * 60 + 30;
+      // Late and Half-day thresholds derived dynamically from AttendanceRuleSettings
+      const lateMins = parseTimeToMinutes(settings.lateThresholdTime, 8 * 60 + 45);
+      const halfDayMins = parseTimeToMinutes(settings.halfDayThresholdTime, 11 * 60 + 30);
 
       if (totalMinutesNow > halfDayMins) {
         assignedStatus = 'Half Day';

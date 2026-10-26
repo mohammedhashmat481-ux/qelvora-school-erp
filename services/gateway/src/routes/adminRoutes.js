@@ -21,8 +21,23 @@ function formatRole(r, index = 0) {
   const isActive = r.isActive !== undefined ? Boolean(r.isActive) : (r.isEnabled !== undefined ? Boolean(r.isEnabled) : (r.status !== 'Inactive'));
   const isEnabled = r.isEnabled !== undefined ? Boolean(r.isEnabled) : isActive;
   const createdBy = r.CreatedBy || r.createdBy || 'Admin';
-  const id = r.id || r._id || `r-${Date.now()}`;
+  const DEFAULT_ALL_MENUS = [
+    'dashboard',
+    'attendance',
+    'admin_panel',
+    'student_attendance',
+    'fees_management',
+    'student_promotion',
+    'examination',
+    'online_exam',
+    'safe_pickup'
+  ];
 
+  const permissions = Array.isArray(r.permissions) && r.permissions.length > 0
+    ? r.permissions
+    : (grantAdminPrivilege ? DEFAULT_ALL_MENUS : ['dashboard']);
+
+  const id = formatLegacyId(r.id || r._id);
   return {
     _id: id,
     id: id,
@@ -34,6 +49,7 @@ function formatRole(r, index = 0) {
     GrantAdminPrivilege: grantAdminPrivilege,
     grantAdminPrivilege: grantAdminPrivilege,
     GantAdminPrevillage: grantAdminPrivilege,
+    permissions: permissions,
     CreatedBy: createdBy,
     createdBy: createdBy,
     status: isActive ? 'Active' : 'Inactive',
@@ -116,7 +132,7 @@ router.get('/roles', async (req, res) => {
 
 router.post('/roles', async (req, res) => {
   try {
-    const { Rolename, rolename, RoleCode, roleCode, GrantAdminPrivilege, grantAdminPrivilege, GantAdminPrevillage, isActive, isEnabled } = req.body;
+    const { Rolename, rolename, RoleCode, roleCode, GrantAdminPrivilege, grantAdminPrivilege, GantAdminPrevillage, isActive, isEnabled, permissions } = req.body;
     const nameVal = Rolename || rolename || req.body.name || 'New Role';
     
     let codeVal = RoleCode || roleCode;
@@ -131,6 +147,19 @@ router.post('/roles', async (req, res) => {
     const adminPriv = GrantAdminPrivilege !== undefined ? Boolean(GrantAdminPrivilege) : (grantAdminPrivilege !== undefined ? Boolean(grantAdminPrivilege) : Boolean(GantAdminPrevillage));
     const activeVal = isActive !== undefined ? Boolean(isActive) : (isEnabled !== undefined ? Boolean(isEnabled) : true);
 
+    const DEFAULT_ALL_MENUS = [
+      'dashboard',
+      'attendance',
+      'admin_panel',
+      'student_attendance',
+      'fees_management',
+      'student_promotion',
+      'examination',
+      'online_exam',
+      'safe_pickup'
+    ];
+    const permVal = Array.isArray(permissions) ? permissions : (adminPriv ? DEFAULT_ALL_MENUS : ['dashboard']);
+
     let createdRecord = null;
     try {
       createdRecord = await prisma.role.create({
@@ -139,6 +168,7 @@ router.post('/roles', async (req, res) => {
           rolename: nameVal,
           name: nameVal,
           grantAdminPrivilege: adminPriv,
+          permissions: permVal,
           createdBy: 'Admin',
           status: activeVal ? 'Active' : 'Inactive',
           isActive: activeVal,
@@ -155,6 +185,7 @@ router.post('/roles', async (req, res) => {
       RoleCode: codeVal,
       Rolename: nameVal,
       GrantAdminPrivilege: adminPriv,
+      permissions: permVal,
       CreatedBy: 'Admin',
       status: activeVal ? 'Active' : 'Inactive',
       isActive: activeVal,
@@ -172,7 +203,7 @@ router.post('/roles', async (req, res) => {
 router.put('/roles/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { Rolename, rolename, RoleCode, roleCode, GrantAdminPrivilege, grantAdminPrivilege, GantAdminPrevillage, isActive, isEnabled, status } = req.body;
+    const { Rolename, rolename, RoleCode, roleCode, GrantAdminPrivilege, grantAdminPrivilege, GantAdminPrevillage, isActive, isEnabled, status, permissions } = req.body;
     
     const nameVal = Rolename || rolename || req.body.name;
     const codeVal = RoleCode || roleCode;
@@ -187,6 +218,7 @@ router.put('/roles/:id', async (req, res) => {
           ...(nameVal && { rolename: nameVal, name: nameVal }),
           ...(codeVal && { roleCode: codeVal }),
           ...(adminPriv !== undefined && { grantAdminPrivilege: adminPriv }),
+          ...(Array.isArray(permissions) && { permissions }),
           ...(activeVal !== undefined && { isActive: activeVal, isEnabled: activeVal, status: activeVal ? 'Active' : 'Inactive' })
         }
       });
@@ -197,6 +229,7 @@ router.put('/roles/:id', async (req, res) => {
       if (nameVal !== undefined) role.Rolename = nameVal;
       if (codeVal !== undefined) role.RoleCode = codeVal;
       if (adminPriv !== undefined) role.GrantAdminPrivilege = adminPriv;
+      if (Array.isArray(permissions)) role.permissions = permissions;
       if (activeVal !== undefined) {
         role.isActive = activeVal;
         role.isEnabled = activeVal;

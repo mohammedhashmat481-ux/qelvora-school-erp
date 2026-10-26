@@ -419,10 +419,6 @@ const Navbar = () => {
                   <HistoryIcon className="w-4 h-4 shrink-0 text-current" />
                   <span>{t('history')}</span>
                 </Link>
-                <Link to="/logout-kiosk" className={desktopLink('/logout-kiosk')}>
-                  <LogOut className="w-4 h-4 shrink-0 text-current" />
-                  <span>{t('kiosk')}</span>
-                </Link>
                  {(user?.role?.toLowerCase() === 'teacher' || user?.role?.toLowerCase() === 'principal' || (user?.role && ['teacher', 'faculty', 'educator', 'department head', 'hod'].some(r => user.role.toLowerCase().includes(r)))) && (
                   <>
                     <Link to="/qelvora-ai" className={desktopLink('/qelvora-ai')}>
@@ -568,9 +564,6 @@ const Navbar = () => {
               </Link>
               <Link to="/login-history" onClick={closeMobile} className={mobileLink('/login-history')}>
                 🕐 {t('history')}
-              </Link>
-              <Link to="/logout-kiosk" onClick={closeMobile} className={mobileLink('/logout-kiosk')}>
-                🚪 {t('kiosk')}
               </Link>
               {(user?.role?.toLowerCase() === 'teacher' || user?.role?.toLowerCase() === 'principal' || (user?.role && ['teacher', 'faculty', 'educator', 'department head', 'hod'].some(r => user.role.toLowerCase().includes(r)))) && (
                 <>

@@ -67,14 +67,37 @@ let DEMO_LEAVE_REQUESTS = [
 // GET /api/leaves & /api/leaves/requests
 router.get(['/requests', '/'], protect, async (req, res) => {
   try {
-    // Enrich with database teacher info if teacher object is missing
-    const teachers = await prisma.teacher.findMany({
-      select: { id: true, name: true, employeeId: true }
-    });
-    const teacherMap = new Map(teachers.map(t => [t.id, t]));
+    const [teachers, dbLeaves] = await Promise.all([
+      prisma.teacher.findMany({ select: { id: true, name: true, employeeId: true } }).catch(() => []),
+      prisma.leaveRequest.findMany({ orderBy: { createdAt: 'desc' } }).catch(() => [])
+    ]);
 
-    const enriched = DEMO_LEAVE_REQUESTS.map(l => {
-      const dbTeacher = teacherMap.get(l.teacherId);
+    const teacherMap = new Map(teachers.map(t => [t.id, t]));
+    const teacherByName = new Map(teachers.map(t => [t.name.toLowerCase().trim(), t]));
+
+    const formattedDbLeaves = dbLeaves.map(l => {
+      const matchT = teacherByName.get((l.applicantName || '').toLowerCase().trim());
+      return {
+        _id: l.id,
+        id: l.id,
+        teacherId: matchT?.id || l.id,
+        teacherName: l.applicantName,
+        teacher: {
+          _id: matchT?.id || l.id,
+          id: matchT?.id || l.id,
+          name: l.applicantName,
+          employeeId: matchT?.employeeId || 'FAC'
+        },
+        leaveDate: l.startDate,
+        endDate: l.endDate,
+        reason: l.reason,
+        status: l.status,
+        createdAt: l.createdAt
+      };
+    });
+
+    const enrichedDemo = DEMO_LEAVE_REQUESTS.map(l => {
+      const dbTeacher = teacherMap.get(l.teacherId) || teacherByName.get((l.teacherName || '').toLowerCase().trim());
       const name = dbTeacher?.name || l.teacherName || l.teacher?.name || 'Faculty Member';
       return {
         ...l,
@@ -88,7 +111,15 @@ router.get(['/requests', '/'], protect, async (req, res) => {
       };
     });
 
-    res.json({ status: true, data: enriched });
+    // Merge DB leaves and Demo leaves without duplicate IDs
+    const combined = [...formattedDbLeaves];
+    enrichedDemo.forEach(d => {
+      if (!combined.some(c => c.id === d.id || c.teacherName === d.teacherName && c.leaveDate === d.leaveDate)) {
+        combined.push(d);
+      }
+    });
+
+    res.json({ status: true, data: combined });
   } catch (err) {
     res.json({ status: true, data: DEMO_LEAVE_REQUESTS });
   }
@@ -99,7 +130,36 @@ router.get('/my-requests', protect, async (req, res) => {
   const uName = (req.user.name || '').toLowerCase().trim();
   const uEmpId = (req.user.employeeId || req.user.employee_id || '').toLowerCase().trim();
 
-  const filtered = DEMO_LEAVE_REQUESTS.filter(l => {
+  let dbLeaves = [];
+  try {
+    const list = await prisma.leaveRequest.findMany({
+      where: {
+        OR: [
+          { applicantName: { equals: req.user.name, mode: 'insensitive' } },
+          ...(req.user.name ? [{ applicantName: { contains: req.user.name.split(' ')[0], mode: 'insensitive' } }] : [])
+        ]
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    dbLeaves = list.map(l => ({
+      _id: l.id,
+      id: l.id,
+      teacherId: uId,
+      teacherName: l.applicantName,
+      teacher: {
+        _id: uId,
+        id: uId,
+        name: l.applicantName,
+        employeeId: uEmpId || 'FAC'
+      },
+      leaveDate: l.startDate,
+      reason: l.reason,
+      status: l.status,
+      createdAt: l.createdAt
+    }));
+  } catch (_) {}
+
+  const filteredDemo = DEMO_LEAVE_REQUESTS.filter(l => {
     if (l.teacherId === uId) return true;
     if (l.teacher?._id === uId || l.teacher?.id === uId) return true;
     if (uName && (l.teacherName?.toLowerCase().trim() === uName || l.teacher?.name?.toLowerCase().trim() === uName)) return true;
@@ -107,15 +167,23 @@ router.get('/my-requests', protect, async (req, res) => {
     return false;
   });
 
-  res.json({ status: true, data: filtered });
+  const combined = [...dbLeaves];
+  filteredDemo.forEach(d => {
+    if (!combined.some(c => c.id === d.id || (c.leaveDate === d.leaveDate && c.reason === d.reason))) {
+      combined.push(d);
+    }
+  });
+
+  res.json({ status: true, data: combined });
 });
 
 // POST /api/leaves/request
 router.post('/request', protect, async (req, res) => {
   try {
     const { leaveDate, reason } = req.body;
-    let tName = req.user?.name || 'Dr. Rajesh Sharma';
+    let tName = req.user?.name || 'Faculty Member';
     let empId = req.user?.employeeId || req.user?.employee_id || 'EMP001';
+    let role = req.user?.role || 'Senior Educator';
 
     if (req.user?.id) {
       const dbTeacher = await prisma.teacher.findFirst({
@@ -126,9 +194,25 @@ router.post('/request', protect, async (req, res) => {
       if (dbTeacher?.employeeId) empId = dbTeacher.employeeId;
     }
 
+    let createdDb = null;
+    try {
+      createdDb = await prisma.leaveRequest.create({
+        data: {
+          applicantName: tName,
+          applicantRole: role,
+          reason: reason || 'Personal Leave',
+          startDate: leaveDate || new Date().toISOString().split('T')[0],
+          endDate: leaveDate || new Date().toISOString().split('T')[0],
+          status: 'Pending'
+        }
+      });
+    } catch (e) {
+      console.warn('Prisma leaveRequest create warning:', e.message);
+    }
+
     const newLeave = {
-      _id: `leave-${Date.now()}`,
-      id: `leave-${Date.now()}`,
+      _id: createdDb?.id || `leave-${Date.now()}`,
+      id: createdDb?.id || `leave-${Date.now()}`,
       teacherId: req.user.id,
       teacherName: tName,
       teacher: {
@@ -140,7 +224,7 @@ router.post('/request', protect, async (req, res) => {
       leaveDate: leaveDate || new Date().toISOString().split('T')[0],
       reason: reason || 'Personal Leave',
       status: 'Pending',
-      createdAt: new Date().toISOString()
+      createdAt: createdDb?.createdAt ? createdDb.createdAt.toISOString() : new Date().toISOString()
     };
 
     DEMO_LEAVE_REQUESTS.unshift(newLeave);
@@ -226,21 +310,48 @@ router.get('/substitute-suggestions', protect, async (req, res) => {
 router.post('/approve/:id', protect, async (req, res) => {
   try {
     const { status, substituteAllocations } = req.body;
+    let found = false;
+    let updatedData = null;
+
+    try {
+      const updated = await prisma.leaveRequest.update({
+        where: { id: req.params.id },
+        data: { status: status || 'Approved' }
+      });
+      if (updated) {
+        found = true;
+        updatedData = {
+          _id: updated.id,
+          id: updated.id,
+          teacherName: updated.applicantName,
+          leaveDate: updated.startDate,
+          reason: updated.reason,
+          status: updated.status,
+          processedAt: new Date().toISOString(),
+          substituteAllocations
+        };
+      }
+    } catch (_) {}
+
     const leave = DEMO_LEAVE_REQUESTS.find(l => l.id === req.params.id || l._id === req.params.id);
-    if (!leave) {
-      return res.status(404).json({ status: false, message: 'Leave request not found' });
+    if (leave) {
+      leave.status = status || 'Approved';
+      leave.processedAt = new Date().toISOString();
+      if (substituteAllocations) {
+        leave.substituteAllocations = substituteAllocations;
+      }
+      found = true;
+      if (!updatedData) updatedData = leave;
     }
 
-    leave.status = status || 'Approved';
-    leave.processedAt = new Date().toISOString();
-    if (substituteAllocations) {
-      leave.substituteAllocations = substituteAllocations;
+    if (!found) {
+      return res.status(404).json({ status: false, message: 'Leave request not found' });
     }
 
     res.json({
       status: true,
       message: `Leave request ${status ? status.toLowerCase() : 'approved'} successfully`,
-      data: leave
+      data: updatedData
     });
   } catch (err) {
     res.status(500).json({ status: false, message: err.message });
