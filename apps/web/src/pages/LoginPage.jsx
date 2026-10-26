@@ -382,26 +382,54 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#F7F9FC] flex flex-col justify-between relative selection:bg-blue-600 selection:text-white">
-      {/* Subtle modern ambient background */}
-      <div className="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none" />
-      <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-blue-100/40 via-blue-50/20 to-transparent pointer-events-none" />
+    <div className="min-h-screen w-full bg-[#FAFCFF] flex flex-col justify-between relative selection:bg-blue-600 selection:text-white overflow-x-hidden">
+      {/* Clean modern subtle ambient background */}
+      <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:24px_24px] opacity-70 pointer-events-none" />
+      <div className="absolute top-0 inset-x-0 h-80 bg-gradient-to-b from-blue-50/70 via-indigo-50/20 to-transparent pointer-events-none" />
+      <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[720px] h-[360px] bg-blue-100/35 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Top minimal header bar */}
-      <header className="relative z-10 w-full max-w-6xl mx-auto px-6 py-5 flex items-center justify-end">
-        <div className="flex items-center gap-3 text-xs text-slate-500 font-medium">
-          <span className="hidden sm:inline">Academic Year {schoolSettings?.academicYear || '2026–2027'}</span>
+      {/* Top Brand & Status Navigation (Clean, Transparent, No Dark Header) */}
+      <nav className="login-page-nav relative z-10 w-full max-w-5xl mx-auto px-6 pt-5 sm:pt-6 pb-2 flex items-center justify-between !bg-transparent !border-0 shadow-none">
+        <div className="flex items-center gap-2.5">
+          {schoolSettings?.schoolLogo ? (
+            <img
+              src={schoolSettings.schoolLogo}
+              alt={schoolSettings.schoolName || 'School Logo'}
+              className="w-9 h-9 object-contain rounded-xl border border-slate-200 bg-white p-1 shadow-xs"
+            />
+          ) : (
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-sm shadow-blue-500/20">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+              </svg>
+            </div>
+          )}
+          <div>
+            <span className="font-bold text-slate-900 text-sm tracking-tight block">
+              {schoolSettings?.schoolName || 'Qelvora School CRM'}
+            </span>
+            <span className="text-[10px] text-slate-400 font-medium hidden sm:block">
+              {schoolSettings?.logoSubtext || 'Institutional Campus Portal'}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2.5 text-xs text-slate-500 font-medium">
+          <span className="hidden sm:inline text-slate-500 font-medium">
+            Academic Year {schoolSettings?.academicYear || '2026–2027'}
+          </span>
           <span className="hidden sm:inline w-1 h-1 rounded-full bg-slate-300" />
-          <span className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60 font-semibold">
+          <span className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/70 text-[11px] font-semibold shadow-xs">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             System Operational
           </span>
         </div>
-      </header>
+      </nav>
 
       {/* Main Single-Page Center Container */}
       <main className="relative z-10 w-full max-w-[460px] mx-auto px-4 py-4 sm:py-6 flex-1 flex flex-col justify-center">
-        <div className="bg-white rounded-2xl shadow-[0_4px_24px_-4px_rgba(15,23,42,0.06),0_1px_3px_rgba(15,23,42,0.04)] border border-slate-200/90 p-7 sm:p-8">
+        <div className="bg-white rounded-2xl shadow-[0_8px_30px_-6px_rgba(15,23,42,0.08),0_2px_6px_-1px_rgba(15,23,42,0.03)] border border-slate-200/80 p-7 sm:p-8">
           
           {/* Card Title & Context */}
           <div className="text-center mb-6 flex flex-col items-center">
@@ -413,7 +441,7 @@ const LoginPage = () => {
                 className="w-16 h-16 object-contain rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm mb-3.5"
               />
             ) : (
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#172B4D] to-indigo-700 text-white flex items-center justify-center shadow-md shadow-blue-900/15 mb-3.5">
+              <div className="w-13 h-13 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 mb-3.5">
                 <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
@@ -428,7 +456,7 @@ const LoginPage = () => {
             </h1>
             <p className="text-xs text-slate-500 mt-1.5 font-medium max-w-sm">
               {step === 'credentials'
-                ? (schoolSettings?.logoSubtext || 'Institutional Portal for Faculty, Administrators & Students')
+                ? (schoolSettings?.logoSubtext || 'Empowering Academic Excellence & Safe Campus Identity')
                 : 'Center your face in the camera to verify your identity'}
             </p>
           </div>
@@ -555,10 +583,10 @@ const LoginPage = () => {
                         value={email}
                         onChange={(e) => { setEmail(e.target.value); setErrors((prev) => ({ ...prev, email: '' })); }}
                         placeholder="e.g. admin@qelvora.in"
-                        className={`w-full pl-9 pr-3.5 py-2 text-sm bg-slate-50/50 border rounded-xl outline-none transition-all placeholder:text-slate-400 ${
+                        className={`w-full pl-9 pr-3.5 py-2.5 text-sm bg-slate-50/70 border rounded-xl outline-none transition-all placeholder:text-slate-400 ${
                           errors.email
-                            ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/10'
-                            : 'border-slate-200 focus:bg-white focus:border-[#29456D] focus:ring-2 focus:ring-blue-600/15'
+                            ? 'border-rose-400 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10'
+                            : 'border-slate-200 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100'
                         }`}
                       />
                     </div>
@@ -574,7 +602,7 @@ const LoginPage = () => {
                       <button
                         type="button"
                         onClick={() => setShowForgotPassword(true)}
-                        className="text-[11px] font-medium text-[#172B4D] hover:underline"
+                        className="text-[11px] font-semibold text-blue-600 hover:text-blue-700 hover:underline"
                       >
                         Forgot password?
                       </button>
@@ -590,10 +618,10 @@ const LoginPage = () => {
                         value={password}
                         onChange={(e) => { setPassword(e.target.value); setErrors((prev) => ({ ...prev, password: '' })); }}
                         placeholder="••••••••"
-                        className={`w-full pl-9 pr-10 py-2 text-sm bg-slate-50/50 border rounded-xl outline-none transition-all placeholder:text-slate-400 ${
+                        className={`w-full pl-9 pr-10 py-2.5 text-sm bg-slate-50/70 border rounded-xl outline-none transition-all placeholder:text-slate-400 ${
                           errors.password
-                            ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/10'
-                            : 'border-slate-200 focus:bg-white focus:border-[#29456D] focus:ring-2 focus:ring-blue-600/15'
+                            ? 'border-rose-400 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10'
+                            : 'border-slate-200 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100'
                         }`}
                       />
                       <button
@@ -624,7 +652,7 @@ const LoginPage = () => {
                         type="checkbox"
                         checked={offlineMode}
                         onChange={(e) => setOfflineMode(e.target.checked)}
-                        className="w-3.5 h-3.5 rounded border-slate-300 text-[#172B4D] focus:ring-0 cursor-pointer"
+                        className="w-3.5 h-3.5 rounded border-slate-300 text-blue-600 accent-blue-600 focus:ring-0 cursor-pointer"
                       />
                       <span className="text-xs text-slate-600 font-medium">Remote Access (Bypass GPS)</span>
                     </label>
@@ -651,7 +679,7 @@ const LoginPage = () => {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full py-2.5 px-4 bg-[#29456D] hover:bg-[#172B4D] active:scale-[0.99] text-white font-semibold rounded-xl text-sm shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 active:scale-[0.99] text-white font-semibold rounded-xl text-sm shadow-sm hover:shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {isLoading ? (
                       <>
@@ -688,7 +716,7 @@ const LoginPage = () => {
                         value={userId}
                         onChange={(e) => setUserId(e.target.value)}
                         placeholder="e.g. rajesh.sharma@qelvora.in"
-                        className="w-full pl-9 pr-3.5 py-2 text-sm bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-[#29456D] focus:ring-2 focus:ring-blue-600/15"
+                        className="w-full pl-9 pr-3.5 py-2.5 text-sm bg-slate-50/70 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
                       />
                     </div>
                   </div>
@@ -702,7 +730,7 @@ const LoginPage = () => {
                       }
                       setStep('face-verify');
                     }}
-                    className="w-full py-2.5 px-4 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold rounded-xl text-sm shadow-sm transition-all flex items-center justify-center gap-2"
+                    className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-sm shadow-blue-500/20 transition-all flex items-center justify-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -768,7 +796,7 @@ const LoginPage = () => {
                       onClick={() => applyDemoAccount(demo)}
                       className={`px-2 py-1.5 rounded-lg text-xs font-semibold border transition-all text-center ${
                         selectedRoleTab === demo.role
-                          ? 'bg-blue-50 border-[#29456D] text-[#172B4D] font-bold shadow-xs'
+                          ? 'bg-blue-50/90 border-blue-600 text-blue-700 font-bold shadow-xs'
                           : 'bg-slate-50/70 hover:bg-slate-100 border-slate-200 text-slate-600'
                       }`}
                     >
@@ -804,7 +832,7 @@ const LoginPage = () => {
         <div className="text-center mt-5 space-y-1.5">
           <p className="text-xs text-slate-500 font-medium">
             New faculty or student?{' '}
-            <Link to="/register" className="text-[#172B4D] hover:underline font-semibold">
+            <Link to="/register" className="text-blue-600 hover:text-blue-700 hover:underline font-semibold">
               Create an Account
             </Link>
           </p>
@@ -814,27 +842,24 @@ const LoginPage = () => {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 w-full bg-[#172B4D] border-t border-[#29456D] py-4 px-6 text-[11px] text-[#CBD5E1]">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className="font-bold text-white tracking-wide text-xs">Qelvora School CRM ENTERPRISE</span>
-            <span className="hidden sm:inline w-1 h-1 rounded-full bg-[#29456D]" />
-            <div className="flex items-center gap-3 text-[#F3F6FC]">
-              <a href="#" className="hover:text-[#93C5FD] transition-colors">Privacy Policy</a>
-              <span className="text-[#29456D]">&bull;</span>
-              <a href="#" className="hover:text-[#93C5FD] transition-colors">Campus Security</a>
-              <span className="text-[#29456D]">&bull;</span>
-              <a href="#" className="hover:text-[#93C5FD] transition-colors">System Status</a>
-            </div>
+      {/* Clean Minimal Footer */}
+      <footer className="login-page-footer relative z-10 w-full py-5 px-6 border-t border-slate-200/60 !bg-transparent !border-t-slate-200/60 text-xs text-slate-400">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2.5 text-center sm:text-left">
+          <div className="flex items-center gap-2 text-slate-500 text-[11px] justify-center sm:justify-start">
+            <span className="font-semibold text-slate-700">Qelvora School CRM</span>
+            <span>•</span>
+            <span className="text-slate-400">Institutional Role-Based Access Control</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded bg-[#29456D] text-white font-mono text-[10px] border border-[#29456D]">
+          <div className="flex items-center gap-3 text-[11px] text-slate-400 justify-center sm:justify-end">
+            <a href="#" className="hover:text-slate-600 transition-colors">Privacy Policy</a>
+            <span>•</span>
+            <a href="#" className="hover:text-slate-600 transition-colors">Campus Safety</a>
+            <span>•</span>
+            <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-mono text-[10px] border border-slate-200/80">
               v2.18
             </span>
-            <span className="text-[#CBD5E1]">
-              &copy; {new Date().getFullYear()} Qelvora School CRM
-            </span>
+            <span>•</span>
+            <span>&copy; {new Date().getFullYear()}</span>
           </div>
         </div>
       </footer>
@@ -855,7 +880,7 @@ const LoginPage = () => {
                   value={forgotEmail}
                   onChange={(e) => setForgotEmail(e.target.value)}
                   placeholder="admin@qelvora.in"
-                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl outline-none focus:border-[#29456D] focus:ring-2 focus:ring-blue-600/15"
+                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
                   required
                 />
               </div>
@@ -870,7 +895,7 @@ const LoginPage = () => {
                 <button
                   type="submit"
                   disabled={forgotLoading}
-                  className="flex-1 py-2 text-xs font-semibold text-white bg-[#29456D] hover:bg-[#172B4D] rounded-xl flex items-center justify-center"
+                  className="flex-1 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl flex items-center justify-center shadow-xs transition-all"
                 >
                   {forgotLoading ? <Spinner size="sm" /> : 'Send Link'}
                 </button>

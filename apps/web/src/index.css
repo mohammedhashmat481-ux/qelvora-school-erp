@@ -134,78 +134,78 @@ textarea:focus {
 }
 
 /* ── Header & Sticky Header Standards ── */
-header, .app-header {
+header:not(.login-page-nav):not(.clean-nav), .app-header {
   background-color: #172B4D;
   color: #FFFFFF;
   border-bottom: 1px solid #29456D;
 }
 
-header.sticky, .sticky-header {
+header.sticky:not(.login-page-nav):not(.clean-nav), .sticky-header {
   background-color: #172B4D !important;
 }
 
-header h1, header h2, header h3, header h4, header h5, header h6,
+header:not(.login-page-nav):not(.clean-nav) h1, header:not(.login-page-nav):not(.clean-nav) h2, header:not(.login-page-nav):not(.clean-nav) h3, header:not(.login-page-nav):not(.clean-nav) h4, header:not(.login-page-nav):not(.clean-nav) h5, header:not(.login-page-nav):not(.clean-nav) h6,
 .app-header h1, .app-header h2, .app-header h3, .app-header h4, .app-header h5, .app-header h6 {
   color: #FFFFFF !important;
 }
 
-header a, .app-header a {
+header:not(.login-page-nav):not(.clean-nav) a, .app-header a {
   color: #FFFFFF;
 }
 
-header a:hover, .app-header a:hover {
+header:not(.login-page-nav):not(.clean-nav) a:hover, .app-header a:hover {
   color: #DBEAFE;
 }
 
-header svg, .app-header svg {
+header:not(.login-page-nav):not(.clean-nav) svg, .app-header svg {
   color: #F3F6FC;
 }
 
 /* Header Dropdowns */
-header select, .app-header select,
-header [role="menu"], .app-header [role="menu"] {
+header:not(.login-page-nav):not(.clean-nav) select, .app-header select,
+header:not(.login-page-nav):not(.clean-nav) [role="menu"], .app-header [role="menu"] {
   background-color: #FFFFFF !important;
   color: #172B4D !important;
   border-color: #29456D !important;
 }
 
-header select option, .app-header select option {
+header:not(.login-page-nav):not(.clean-nav) select option, .app-header select option {
   background-color: #FFFFFF !important;
   color: #172B4D !important;
 }
 
-header select option:hover, header select option:focus,
-header .dropdown-item:hover, .app-header .dropdown-item:hover {
+header:not(.login-page-nav):not(.clean-nav) select option:hover, header:not(.login-page-nav):not(.clean-nav) select option:focus,
+header:not(.login-page-nav):not(.clean-nav) .dropdown-item:hover, .app-header .dropdown-item:hover {
   background-color: #DBEAFE !important;
   color: #172B4D !important;
 }
 
 /* ── Footer Standards ── */
-footer, .app-footer {
+footer:not(.login-page-footer):not(.clean-footer), .app-footer {
   background-color: #172B4D !important;
   color: #CBD5E1 !important;
   border-top: 1px solid #29456D !important;
 }
 
-footer h1, footer h2, footer h3, footer h4, footer h5, footer h6,
+footer:not(.login-page-footer):not(.clean-footer) h1, footer:not(.login-page-footer):not(.clean-footer) h2, footer:not(.login-page-footer):not(.clean-footer) h3, footer:not(.login-page-footer):not(.clean-footer) h4, footer:not(.login-page-footer):not(.clean-footer) h5, footer:not(.login-page-footer):not(.clean-footer) h6,
 .app-footer h1, .app-footer h2, .app-footer h3, .app-footer h4, .app-footer h5, .app-footer h6 {
   color: #FFFFFF !important;
 }
 
-footer p, footer span, .app-footer p, .app-footer span {
+footer:not(.login-page-footer):not(.clean-footer) p, footer:not(.login-page-footer):not(.clean-footer) span, .app-footer p, .app-footer span {
   color: #CBD5E1;
 }
 
-footer a, .app-footer a {
+footer:not(.login-page-footer):not(.clean-footer) a, .app-footer a {
   color: #F3F6FC !important;
   transition: color 0.15s ease-in-out;
 }
 
-footer a:hover, .app-footer a:hover {
+footer:not(.login-page-footer):not(.clean-footer) a:hover, .app-footer a:hover {
   color: #93C5FD !important;
 }
 
-footer hr, footer .divider, footer .border-t, footer .border-b,
+footer:not(.login-page-footer):not(.clean-footer) hr, footer:not(.login-page-footer):not(.clean-footer) .divider, footer:not(.login-page-footer):not(.clean-footer) .border-t, footer:not(.login-page-footer):not(.clean-footer) .border-b,
 .app-footer hr, .app-footer .divider, .app-footer .border-t, .app-footer .border-b {
   border-color: #29456D !important;
 }
