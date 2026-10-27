@@ -35,6 +35,7 @@ model Student {
   id                 String   @id @default(uuid())
   userId             String?
   studentId          String   @unique
+  satsNumber         String?  @default("")
   name               String
   email              String?
   phone              String?
@@ -44,10 +45,35 @@ model Student {
   section            String
   rollNumber         String?
   admissionDate      String?
+  bloodGroup         String?  @default("")
+  category           String?  @default("General")
+  religion           String?  @default("")
+  motherTongue       String?  @default("")
   parentName         String?
+  fatherName         String?  @default("")
+  fatherOccupation   String?  @default("")
+  motherName         String?  @default("")
+  motherOccupation   String?  @default("")
   parentPhone        String?
   parentEmail        String?
+  emergencyContact   String?  @default("")
   address            String?
+  city               String?  @default("")
+  state              String?  @default("")
+  pincode            String?  @default("")
+  previousSchool     String?  @default("")
+  previousClass      String?  @default("")
+  academicYear       String?  @default("2026-2027")
+  studentStatus      String?  @default("Active")
+  nationality        String?  @default("Indian")
+  medicalNotes       String?  @default("")
+  allergies          String?  @default("")
+  parentWhatsapp     String?  @default("")
+  guardianName       String?  @default("")
+  guardianRelation   String?  @default("")
+  transportRequired  Boolean  @default(false)
+  transportRoute     String?  @default("")
+  hostelRequired     Boolean  @default(false)
   photoUrl           String?
   leftSchoolStatus   Boolean  @default(false)
   createdAt          DateTime @default(now())
@@ -58,6 +84,7 @@ model Student {
 
   @@index([standard, section])
   @@index([name])
+  @@index([satsNumber])
   @@index([parentEmail])
 }
 

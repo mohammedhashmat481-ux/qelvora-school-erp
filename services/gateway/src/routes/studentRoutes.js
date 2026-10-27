@@ -19,11 +19,62 @@ function formatStudentItem(s) {
   const legacy = formatLegacyId(s);
   return {
     ...legacy,
+    satsNumber: s.satsNumber || '',
     admissionNumber: s.studentId || legacy.admissionNumber,
     studentId: s.studentId || legacy.admissionNumber,
     parentContact: s.parentPhone || legacy.parentContact,
-    phone: s.phone || s.parentPhone || ''
+    phone: s.phone || s.parentPhone || '',
+    parentWhatsapp: s.parentWhatsapp || '',
+    bloodGroup: s.bloodGroup || '',
+    category: s.category || 'General',
+    religion: s.religion || '',
+    motherTongue: s.motherTongue || '',
+    nationality: s.nationality || 'Indian',
+    academicYear: s.academicYear || '2026-2027',
+    studentStatus: s.studentStatus || (s.leftSchoolStatus ? 'Transferred' : 'Active'),
+    fatherName: s.fatherName || '',
+    fatherOccupation: s.fatherOccupation || '',
+    motherName: s.motherName || '',
+    motherOccupation: s.motherOccupation || '',
+    guardianName: s.guardianName || '',
+    guardianRelation: s.guardianRelation || '',
+    emergencyContact: s.emergencyContact || '',
+    address: s.address || '',
+    city: s.city || '',
+    state: s.state || '',
+    pincode: s.pincode || '',
+    previousSchool: s.previousSchool || '',
+    previousClass: s.previousClass || '',
+    medicalNotes: s.medicalNotes || '',
+    allergies: s.allergies || '',
+    transportRequired: Boolean(s.transportRequired),
+    transportRoute: s.transportRoute || '',
+    hostelRequired: Boolean(s.hostelRequired),
+    leftSchoolStatus: Boolean(s.leftSchoolStatus)
   };
+}
+
+// Convert DD/MM/YYYY, DD-MM-YYYY, or Excel numeric serial dates to standard YYYY-MM-DD
+function parseIndianOrIsoDate(dateVal) {
+  if (!dateVal) return null;
+  const s = String(dateVal).trim();
+  if (/^\d{4,5}$/.test(s)) {
+    try {
+      const parsedExcel = XLSX.SSF.parse_date_code(parseInt(s, 10));
+      if (parsedExcel) {
+        return `${parsedExcel.y}-${String(parsedExcel.m).padStart(2, '0')}-${String(parsedExcel.d).padStart(2, '0')}`;
+      }
+    } catch (_) {}
+  }
+  const dmyMatch = s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
+  if (dmyMatch) {
+    return `${dmyMatch[3]}-${dmyMatch[2].padStart(2, '0')}-${dmyMatch[1].padStart(2, '0')}`;
+  }
+  const ymdMatch = s.match(/^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})$/);
+  if (ymdMatch) {
+    return `${ymdMatch[1]}-${ymdMatch[2].padStart(2, '0')}-${ymdMatch[3].padStart(2, '0')}`;
+  }
+  return s;
 }
 
 // Standardize class standard naming (e.g. 10 -> '10th', '10th' -> '10th', 'NURSERY' -> 'Nursery')
@@ -69,131 +120,258 @@ function normalizeRowData(row) {
   const rollNumber = getVal('rollNumber', 'roll_no', 'Roll No', 'Roll Number', 'Roll');
   const genderRaw = getVal('gender', 'Gender', 'Sex');
   const gender = ['f', 'female', 'girl'].includes(genderRaw.toLowerCase()) ? 'Female' : 'Male';
-  const dob = getVal('dob', 'DOB', 'dateOfBirth', 'Date of Birth', 'Birth Date') || '2010-01-01';
-  const parentName = getVal('parentName', 'fatherName', 'Father Name', 'Parent Name', "Father's Name", 'Guardian Name') || (name ? `${name}'s Parent` : 'Parent');
+  const rawDob = getVal('dob', 'DOB', 'dateOfBirth', 'Date of Birth', 'Birth Date') || '2010-01-01';
+  const dob = parseIndianOrIsoDate(rawDob) || '2010-01-01';
+  const rawAdmDate = getVal('admissionDate', 'Admission Date', 'Adm Date');
+  const admissionDate = parseIndianOrIsoDate(rawAdmDate) || new Date().toISOString().split('T')[0];
+  const satsNumber = getVal('satsNumber', 'sats', 'SATS', 'SATS Number', 'SATS No', 'SATS ID', 'sats_no');
+  const academicYear = getVal('academicYear', 'Academic Year', 'Session') || '2026-2027';
+  const studentStatus = getVal('studentStatus', 'Status', 'Student Status') || 'Active';
+  const bloodGroup = getVal('bloodGroup', 'Blood Group', 'Blood', 'BloodGroup');
+  const category = getVal('category', 'Category', 'Caste', 'Quota') || 'General';
+  const religion = getVal('religion', 'Religion');
+  const motherTongue = getVal('motherTongue', 'Mother Tongue', 'Language');
+  const nationality = getVal('nationality', 'Nationality') || 'Indian';
+  const fatherName = getVal('fatherName', 'Father Name', "Father's Name");
+  const fatherOccupation = getVal('fatherOccupation', "Father's Occupation", 'Father Occupation');
+  const motherName = getVal('motherName', 'Mother Name', "Mother's Name");
+  const motherOccupation = getVal('motherOccupation', "Mother's Occupation", 'Mother Occupation');
+  const guardianName = getVal('guardianName', 'Guardian Name', 'Primary Guardian');
+  const guardianRelation = getVal('guardianRelation', 'Guardian Relation', 'Relationship');
+  const parentName = getVal('parentName', 'Parent Name', 'Guardian Name') || (fatherName || (name ? `${name}'s Parent` : 'Parent'));
   const parentPhone = getVal('parentPhone', 'phone', 'contact', 'Mobile', 'Mobile No', 'Parent Mobile', 'Parent Phone', 'Contact No').replace(/\D/g, '') || '9876543210';
+  const parentWhatsapp = getVal('parentWhatsapp', 'WhatsApp', 'Parent WhatsApp', 'whatsappNumber').replace(/\D/g, '') || '';
   const parentEmail = getVal('parentEmail', 'email', 'Email', 'Parent Email') || null;
-  const address = getVal('address', 'Address', 'City') || null;
+  const emergencyContact = getVal('emergencyContact', 'Emergency Contact', 'Emergency Phone');
+  const address = getVal('address', 'Address', 'Street', 'Full Address') || null;
+  const city = getVal('city', 'City') || null;
+  const state = getVal('state', 'State') || null;
+  const pincode = getVal('pincode', 'PIN', 'Pin Code', 'Pincode', 'Postal Code') || null;
+  const previousSchool = getVal('previousSchool', 'Previous School', 'Last School') || null;
+  const previousClass = getVal('previousClass', 'Previous Class') || null;
+  const medicalNotes = getVal('medicalNotes', 'Medical Notes', 'Medical') || '';
+  const allergies = getVal('allergies', 'Allergies') || '';
+  const transportRaw = getVal('transportRequired', 'Transport', 'Transport Required');
+  const transportRequired = ['yes', 'true', '1', 'y'].includes(transportRaw.toLowerCase());
+  const transportRoute = getVal('transportRoute', 'Transport Route', 'Route', 'Stop') || '';
+  const hostelRaw = getVal('hostelRequired', 'Hostel', 'Hostel Required');
+  const hostelRequired = ['yes', 'true', '1', 'y'].includes(hostelRaw.toLowerCase());
 
   return {
     name,
     standard,
     section,
     admissionNumber,
+    satsNumber,
     rollNumber,
     gender,
     dob,
+    admissionDate,
+    academicYear,
+    studentStatus,
+    bloodGroup,
+    category,
+    religion,
+    motherTongue,
+    nationality,
     parentName,
+    fatherName,
+    fatherOccupation,
+    motherName,
+    motherOccupation,
+    guardianName,
+    guardianRelation,
     parentPhone: parentPhone.length >= 10 ? parentPhone.slice(-10) : parentPhone.padStart(10, '0'),
+    parentWhatsapp: parentWhatsapp.length >= 10 ? parentWhatsapp.slice(-10) : parentWhatsapp,
     parentEmail,
-    address
+    emergencyContact,
+    address,
+    city,
+    state,
+    pincode,
+    previousSchool,
+    previousClass,
+    medicalNotes,
+    allergies,
+    transportRequired,
+    transportRoute,
+    hostelRequired
   };
 }
 
-// GET /api/students/bulk-template - Download Excel/CSV sample template for bulk student upload
+// GET /api/students/bulk-template - Download 3-Sheet Excel Template for Bulk Student Upload
 router.get('/bulk-template', protect, async (req, res) => {
   try {
     const format = (req.query.format || 'xlsx').toLowerCase();
-    
-    // Sample rows across multiple classes and sections
-    const sampleData = [
+
+    // 1. Sheet 1: Instructions & Field Legend
+    const instructionsData = [
+      { "Section": "General", "Field / Rule": "Overview", "Requirement": "Mandatory", "Format / Examples": "Follow these rules to upload students without errors." },
+      { "Section": "Section A", "Field / Rule": "Admission Number", "Requirement": "Required ★", "Format / Examples": "e.g. ADM-2026-001 (Must be unique. Leave blank to auto-generate)" },
+      { "Section": "Section A", "Field / Rule": "SATS Number", "Requirement": "Optional ○", "Format / Examples": "9-digit Student Tracking Number (e.g. 102938475)" },
+      { "Section": "Section A", "Field / Rule": "Student Name", "Requirement": "Required ★", "Format / Examples": "Full Name (e.g. Aarav Sharma)" },
+      { "Section": "Section A", "Field / Rule": "Class Standard", "Requirement": "Required ★", "Format / Examples": "e.g. 1st, 2nd, 5th, 10th, Nursery, LKG, UKG" },
+      { "Section": "Section A", "Field / Rule": "Section", "Requirement": "Required ★", "Format / Examples": "e.g. A, B, C (Defaults to A if blank)" },
+      { "Section": "Section A", "Field / Rule": "Roll Number", "Requirement": "Optional ○", "Format / Examples": "Numeric or alphanumeric (Unique per class+section)" },
+      { "Section": "Section A", "Field / Rule": "Gender", "Requirement": "Required ★", "Format / Examples": "Male, Female, or Other" },
+      { "Section": "Section A", "Field / Rule": "Date of Birth", "Requirement": "Required ★", "Format / Examples": "DD/MM/YYYY or YYYY-MM-DD (e.g. 15/05/2012)" },
+      { "Section": "Section A", "Field / Rule": "Academic Year", "Requirement": "Optional ○", "Format / Examples": "Defaults to 2026-2027" },
+      { "Section": "Section B", "Field / Rule": "Father Name", "Requirement": "Required ★", "Format / Examples": "e.g. Rajesh Sharma" },
+      { "Section": "Section B", "Field / Rule": "Mother Name", "Requirement": "Required ★", "Format / Examples": "e.g. Priya Sharma" },
+      { "Section": "Section B", "Field / Rule": "Parent Phone", "Requirement": "Required ★", "Format / Examples": "10-digit mobile number (e.g. 9876543210)" },
+      { "Section": "Section B", "Field / Rule": "Parent WhatsApp", "Requirement": "Optional ○", "Format / Examples": "10-digit mobile number (If blank, uses Parent Phone)" },
+      { "Section": "Section B", "Field / Rule": "Parent Email", "Requirement": "Optional ○", "Format / Examples": "Valid email address (e.g. rajesh@example.com)" },
+      { "Section": "Section C", "Field / Rule": "Blood Group", "Requirement": "Optional ○", "Format / Examples": "A+, A-, B+, B-, O+, O-, AB+, AB-" },
+      { "Section": "Section C", "Field / Rule": "Category / Quota", "Requirement": "Optional ○", "Format / Examples": "General, RTE, OBC, SC, ST, EWS" },
+      { "Section": "Section C", "Field / Rule": "Full Address", "Requirement": "Optional ○", "Format / Examples": "House/Street, City, PIN" },
+      { "Section": "Section D", "Field / Rule": "Transport Required", "Requirement": "Optional ○", "Format / Examples": "Yes or No" },
+      { "Section": "Section D", "Field / Rule": "Hostel Required", "Requirement": "Optional ○", "Format / Examples": "Yes or No" }
+    ];
+
+    // 2. Sheet 2: Clean Blank Import Roster with Columns
+    const importColumns = [
       {
-        "Admission Number": "ADM-2026-101",
-        "Student Name": "Aarav Sharma",
-        "Standard": "10th",
-        "Section": "A",
-        "Roll Number": "1",
-        "Gender": "Male",
-        "Date of Birth (YYYY-MM-DD)": "2010-05-14",
-        "Parent Name": "Rajesh Sharma",
-        "Parent Phone": "9876543210",
-        "Parent Email": "rajesh.sharma@example.com",
-        "Address": "Flat 402, Green Valley Apartments, Mumbai"
-      },
-      {
-        "Admission Number": "ADM-2026-102",
-        "Student Name": "Ananya Iyer",
-        "Standard": "10th",
-        "Section": "A",
-        "Roll Number": "2",
-        "Gender": "Female",
-        "Date of Birth (YYYY-MM-DD)": "2010-08-22",
-        "Parent Name": "Venkatesh Iyer",
-        "Parent Phone": "9876543211",
-        "Parent Email": "venkat.iyer@example.com",
-        "Address": "12 Lotus Enclave, Indiranagar, Bengaluru"
-      },
-      {
-        "Admission Number": "ADM-2026-103",
-        "Student Name": "Vihaan Patel",
-        "Standard": "10th",
-        "Section": "B",
-        "Roll Number": "1",
-        "Gender": "Male",
-        "Date of Birth (YYYY-MM-DD)": "2010-03-10",
-        "Parent Name": "Ketan Patel",
-        "Parent Phone": "9876543212",
-        "Parent Email": "ketan.patel@example.com",
-        "Address": "B-501 Sunrise Towers, Ahmedabad"
-      },
-      {
-        "Admission Number": "ADM-2026-104",
-        "Student Name": "Diya Sen",
-        "Standard": "9th",
-        "Section": "A",
-        "Roll Number": "1",
-        "Gender": "Female",
-        "Date of Birth (YYYY-MM-DD)": "2011-11-05",
-        "Parent Name": "Subir Sen",
-        "Parent Phone": "9876543213",
-        "Parent Email": "subir.sen@example.com",
-        "Address": "74 Lake Road, Kolkata"
-      },
-      {
-        "Admission Number": "ADM-2026-105",
-        "Student Name": "Sai Krishna",
-        "Standard": "9th",
-        "Section": "B",
-        "Roll Number": "1",
-        "Gender": "Male",
-        "Date of Birth (YYYY-MM-DD)": "2011-07-19",
-        "Parent Name": "Ramesh Krishna",
-        "Parent Phone": "9876543214",
-        "Parent Email": "ramesh.krishna@example.com",
-        "Address": "Block 3, Banjara Hills, Hyderabad"
+        "Admission Number *": "",
+        "SATS Number": "",
+        "Student Name *": "",
+        "Class Standard *": "",
+        "Section *": "",
+        "Roll Number": "",
+        "Gender *": "",
+        "Date of Birth * (DD/MM/YYYY)": "",
+        "Academic Year": "",
+        "Father Name *": "",
+        "Mother Name *": "",
+        "Parent Phone *": "",
+        "Parent WhatsApp": "",
+        "Parent Email": "",
+        "Blood Group": "",
+        "Category": "",
+        "Emergency Contact": "",
+        "Full Address": "",
+        "City": "",
+        "State": "",
+        "PIN Code": "",
+        "Previous School": "",
+        "Transport Required (Yes/No)": "",
+        "Hostel Required (Yes/No)": ""
       }
     ];
 
-    const worksheet = XLSX.utils.json_to_sheet(sampleData);
-    
-    // Set column widths for readability
-    worksheet['!cols'] = [
-      { wch: 18 }, // Admission Number
-      { wch: 22 }, // Student Name
-      { wch: 12 }, // Standard
-      { wch: 10 }, // Section
-      { wch: 14 }, // Roll Number
-      { wch: 10 }, // Gender
-      { wch: 26 }, // Date of Birth
-      { wch: 22 }, // Parent Name
-      { wch: 16 }, // Parent Phone
-      { wch: 26 }, // Parent Email
-      { wch: 40 }  // Address
+    // 3. Sheet 3: Realistic Sample Records
+    const sampleRows = [
+      {
+        "Admission Number *": "ADM-2026-001",
+        "SATS Number": "109823412",
+        "Student Name *": "Aarav Sharma",
+        "Class Standard *": "10th",
+        "Section *": "A",
+        "Roll Number": "1",
+        "Gender *": "Male",
+        "Date of Birth * (DD/MM/YYYY)": "14/05/2010",
+        "Academic Year": "2026-2027",
+        "Father Name *": "Rajesh Sharma",
+        "Mother Name *": "Pooja Sharma",
+        "Parent Phone *": "9876543210",
+        "Parent WhatsApp": "9876543210",
+        "Parent Email": "rajesh.sharma@example.com",
+        "Blood Group": "O+",
+        "Category": "General",
+        "Emergency Contact": "9876543219",
+        "Full Address": "Flat 402, Green Valley Apartments",
+        "City": "Bengaluru",
+        "State": "Karnataka",
+        "PIN Code": "560038",
+        "Previous School": "St. Joseph Convent",
+        "Transport Required (Yes/No)": "Yes",
+        "Hostel Required (Yes/No)": "No"
+      },
+      {
+        "Admission Number *": "ADM-2026-002",
+        "SATS Number": "109823413",
+        "Student Name *": "Ananya Iyer",
+        "Class Standard *": "10th",
+        "Section *": "A",
+        "Roll Number": "2",
+        "Gender *": "Female",
+        "Date of Birth * (DD/MM/YYYY)": "22/08/2010",
+        "Academic Year": "2026-2027",
+        "Father Name *": "Venkatesh Iyer",
+        "Mother Name *": "Lakshmi Iyer",
+        "Parent Phone *": "9876543211",
+        "Parent WhatsApp": "9876543211",
+        "Parent Email": "venkat.iyer@example.com",
+        "Blood Group": "B+",
+        "Category": "General",
+        "Emergency Contact": "9876543218",
+        "Full Address": "12 Lotus Enclave, Indiranagar",
+        "City": "Bengaluru",
+        "State": "Karnataka",
+        "PIN Code": "560038",
+        "Previous School": "National Public School",
+        "Transport Required (Yes/No)": "No",
+        "Hostel Required (Yes/No)": "No"
+      },
+      {
+        "Admission Number *": "ADM-2026-003",
+        "SATS Number": "109823414",
+        "Student Name *": "Vihaan Patel",
+        "Class Standard *": "5th",
+        "Section *": "A",
+        "Roll Number": "1",
+        "Gender *": "Male",
+        "Date of Birth * (DD/MM/YYYY)": "10/03/2015",
+        "Academic Year": "2026-2027",
+        "Father Name *": "Ketan Patel",
+        "Mother Name *": "Bhavna Patel",
+        "Parent Phone *": "9876543212",
+        "Parent WhatsApp": "9876543212",
+        "Parent Email": "ketan.patel@example.com",
+        "Blood Group": "A+",
+        "Category": "OBC",
+        "Emergency Contact": "9876543217",
+        "Full Address": "B-501 Sunrise Towers, Whitefield",
+        "City": "Bengaluru",
+        "State": "Karnataka",
+        "PIN Code": "560066",
+        "Previous School": "Delhi Public School",
+        "Transport Required (Yes/No)": "Yes",
+        "Hostel Required (Yes/No)": "No"
+      }
     ];
 
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Students_Roster');
+
+    // Sheet 1: Instructions
+    const wsInstructions = XLSX.utils.json_to_sheet(instructionsData);
+    wsInstructions['!cols'] = [{ wch: 15 }, { wch: 22 }, { wch: 16 }, { wch: 55 }];
+    XLSX.utils.book_append_sheet(workbook, wsInstructions, 'Instructions');
+
+    // Sheet 2: Student Import
+    const wsImport = XLSX.utils.json_to_sheet(importColumns);
+    wsImport['!cols'] = [
+      { wch: 20 }, { wch: 16 }, { wch: 24 }, { wch: 16 }, { wch: 10 }, { wch: 14 },
+      { wch: 12 }, { wch: 28 }, { wch: 16 }, { wch: 22 }, { wch: 22 }, { wch: 18 },
+      { wch: 18 }, { wch: 26 }, { wch: 14 }, { wch: 14 }, { wch: 20 }, { wch: 36 },
+      { wch: 16 }, { wch: 16 }, { wch: 12 }, { wch: 25 }, { wch: 26 }, { wch: 24 }
+    ];
+    XLSX.utils.book_append_sheet(workbook, wsImport, 'Student Import');
+
+    // Sheet 3: Sample Data
+    const wsSample = XLSX.utils.json_to_sheet(sampleRows);
+    wsSample['!cols'] = wsImport['!cols'];
+    XLSX.utils.book_append_sheet(workbook, wsSample, 'Sample Data');
 
     if (format === 'csv') {
-      const csvBuffer = XLSX.write(workbook, { bookType: 'csv', type: 'buffer' });
+      const csvBuffer = XLSX.write(workbook, { bookType: 'csv', type: 'buffer', sheet: 'Student Import' });
       res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', 'attachment; filename="Students_Bulk_Upload_Template.csv"');
+      res.setHeader('Content-Disposition', 'attachment; filename="School_ERP_Student_Bulk_Upload_Template.csv"');
       return res.send(csvBuffer);
     }
 
     const xlsxBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', 'attachment; filename="Students_Bulk_Upload_Template.xlsx"');
+    res.setHeader('Content-Disposition', 'attachment; filename="School_ERP_Student_Bulk_Upload_Template.xlsx"');
     return res.send(xlsxBuffer);
   } catch (err) {
     console.error('Error generating template:', err);
@@ -210,11 +388,15 @@ router.post('/bulk-upload', protect, upload.single('file'), async (req, res) => 
     // Support 1: Multipart file upload (Excel / CSV)
     if (req.file && req.file.buffer) {
       const workbook = XLSX.read(req.file.buffer, { type: 'buffer', dense: true, cellDates: false });
-      const firstSheetName = workbook.SheetNames[0];
-      if (!firstSheetName) {
+      // Smart sheet picking: prioritize 'Student Import', 'Students_Roster', 'Students', 'Student', or non-instruction sheet
+      let targetSheetName = workbook.SheetNames.find(s => ['student import', 'students_roster', 'students', 'student'].includes(s.trim().toLowerCase()));
+      if (!targetSheetName) {
+        targetSheetName = workbook.SheetNames.find(s => !s.toLowerCase().includes('instruction')) || workbook.SheetNames[0];
+      }
+      if (!targetSheetName) {
         return res.status(400).json({ status: false, message: 'The uploaded spreadsheet is empty.' });
       }
-      const worksheet = workbook.Sheets[firstSheetName];
+      const worksheet = workbook.Sheets[targetSheetName];
       rows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
     } 
     // Support 2: JSON payload { students: [...] } or array [...]
@@ -276,21 +458,49 @@ router.post('/bulk-upload', protect, upload.single('file'), async (req, res) => 
       const rollNumber = parsed.rollNumber ? String(parsed.rollNumber).trim() : null;
       const phoneDigits = (parsed.parentPhone || '').replace(/\D/g, '');
       const validPhone = phoneDigits.length >= 10 ? phoneDigits.slice(-10) : '9876543210';
+      const whatsappDigits = (parsed.parentWhatsapp || '').replace(/\D/g, '');
+      const validWhatsapp = whatsappDigits.length >= 10 ? whatsappDigits.slice(-10) : whatsappDigits;
 
       const studentData = {
         studentId: finalAdmissionNo,
+        satsNumber: parsed.satsNumber || '',
         name: finalName,
         standard: finalStandard,
         section: finalSection,
         rollNumber,
         gender: parsed.gender || 'Male',
         dob: parsed.dob || '2010-01-01',
+        bloodGroup: parsed.bloodGroup || '',
+        category: parsed.category || 'General',
+        religion: parsed.religion || '',
+        motherTongue: parsed.motherTongue || '',
+        nationality: parsed.nationality || 'Indian',
+        academicYear: parsed.academicYear || '2026-2027',
+        studentStatus: parsed.studentStatus || 'Active',
         parentName: parsed.parentName || `${finalName}'s Guardian`,
+        fatherName: parsed.fatherName || '',
+        fatherOccupation: parsed.fatherOccupation || '',
+        motherName: parsed.motherName || '',
+        motherOccupation: parsed.motherOccupation || '',
+        guardianName: parsed.guardianName || '',
+        guardianRelation: parsed.guardianRelation || '',
         parentPhone: validPhone,
         phone: validPhone,
+        parentWhatsapp: validWhatsapp,
         parentEmail: parsed.parentEmail || null,
+        emergencyContact: parsed.emergencyContact || '',
         address: parsed.address || null,
-        admissionDate: new Date().toISOString().split('T')[0]
+        city: parsed.city || '',
+        state: parsed.state || '',
+        pincode: parsed.pincode || '',
+        previousSchool: parsed.previousSchool || '',
+        previousClass: parsed.previousClass || '',
+        medicalNotes: parsed.medicalNotes || '',
+        allergies: parsed.allergies || '',
+        transportRequired: Boolean(parsed.transportRequired),
+        transportRoute: parsed.transportRoute || '',
+        hostelRequired: Boolean(parsed.hostelRequired),
+        admissionDate: parsed.admissionDate || new Date().toISOString().split('T')[0]
       };
 
       validRows.push({ rowNum, studentData });
@@ -334,6 +544,35 @@ router.post('/bulk-upload', protect, upload.single('file'), async (req, res) => 
       }
     }
 
+    // Validation / Preview Mode check
+    const isValidateOnly = req.query.validateOnly === 'true' || req.body.validateOnly === 'true' || req.query.preview === 'true';
+    if (isValidateOnly) {
+      const classBreakdown = Array.from(touchedClasses.values()).map(cls => {
+        const count = validRows.filter(r => r.studentData.standard === cls.standard && r.studentData.section === cls.section).length;
+        return { standard: cls.standard, section: cls.section, count };
+      });
+
+      return res.json({
+        status: true,
+        success: true,
+        preview: true,
+        summary: {
+          totalRows: rows.length,
+          validCount: validRows.length,
+          invalidCount: errors.length,
+          toCreateCount: toCreate.length,
+          toUpdateCount: toUpdate.length,
+          classesDetected: touchedClasses.size,
+          classBreakdown,
+          sampleValidRows: validRows.slice(0, 8).map(vr => ({
+            rowNum: vr.rowNum,
+            ...vr.studentData
+          })),
+          errors: errors.slice(0, 50)
+        }
+      });
+    }
+
     // 3. Ultra-fast bulk insert for new students in chunks of 500
     const CREATE_CHUNK = 500;
     for (let i = 0; i < toCreate.length; i += CREATE_CHUNK) {
@@ -357,9 +596,35 @@ router.post('/bulk-upload', protect, upload.single('file'), async (req, res) => 
           rollNumber: item.data.rollNumber,
           gender: item.data.gender,
           dob: item.data.dob,
+          satsNumber: item.data.satsNumber,
+          bloodGroup: item.data.bloodGroup,
+          category: item.data.category,
+          religion: item.data.religion,
+          motherTongue: item.data.motherTongue,
+          nationality: item.data.nationality,
+          academicYear: item.data.academicYear,
+          studentStatus: item.data.studentStatus,
           parentName: item.data.parentName,
+          fatherName: item.data.fatherName,
+          fatherOccupation: item.data.fatherOccupation,
+          motherName: item.data.motherName,
+          motherOccupation: item.data.motherOccupation,
+          guardianName: item.data.guardianName,
+          guardianRelation: item.data.guardianRelation,
           parentPhone: item.data.parentPhone,
           phone: item.data.phone,
+          parentWhatsapp: item.data.parentWhatsapp,
+          emergencyContact: item.data.emergencyContact,
+          city: item.data.city,
+          state: item.data.state,
+          pincode: item.data.pincode,
+          previousSchool: item.data.previousSchool,
+          previousClass: item.data.previousClass,
+          medicalNotes: item.data.medicalNotes,
+          allergies: item.data.allergies,
+          transportRequired: item.data.transportRequired,
+          transportRoute: item.data.transportRoute,
+          hostelRequired: item.data.hostelRequired,
           ...(item.data.parentEmail && { parentEmail: item.data.parentEmail }),
           ...(item.data.address && { address: item.data.address })
         }
@@ -487,25 +752,50 @@ router.get('/next-admission-number', protect, async (req, res) => {
 // GET /api/students - List students with optional class, section, search & pagination
 router.get('/', protect, async (req, res) => {
   try {
-    const { standard, class: classParam, section, search, page = 1, limit = 10 } = req.query;
+    const {
+      standard,
+      class: classParam,
+      section,
+      search,
+      satsNumber,
+      rollNumber,
+      gender,
+      category,
+      leftSchoolStatus,
+      page = 1,
+      limit = 20
+    } = req.query;
     const stdFilter = standard || classParam || '';
     
     const where = {};
-    if (stdFilter) where.standard = String(stdFilter);
-    if (section) where.section = String(section);
+    if (stdFilter && stdFilter !== 'ALL') where.standard = String(stdFilter);
+    if (section && section !== 'ALL') where.section = String(section).toUpperCase();
+    if (gender && gender !== 'ALL') where.gender = String(gender);
+    if (category && category !== 'ALL') where.category = String(category);
+    if (leftSchoolStatus !== undefined && leftSchoolStatus !== 'ALL') {
+      where.leftSchoolStatus = leftSchoolStatus === 'true' || leftSchoolStatus === true;
+    }
+    if (satsNumber && String(satsNumber).trim()) {
+      where.satsNumber = { contains: String(satsNumber).trim(), mode: 'insensitive' };
+    }
+    if (rollNumber && String(rollNumber).trim()) {
+      where.rollNumber = String(rollNumber).trim();
+    }
 
     if (search && String(search).trim()) {
       const queryStr = String(search).trim();
       where.OR = [
         { name: { contains: queryStr, mode: 'insensitive' } },
         { studentId: { contains: queryStr, mode: 'insensitive' } },
+        { satsNumber: { contains: queryStr, mode: 'insensitive' } },
+        { rollNumber: { contains: queryStr, mode: 'insensitive' } },
         { parentName: { contains: queryStr, mode: 'insensitive' } },
         { parentPhone: { contains: queryStr, mode: 'insensitive' } }
       ];
     }
 
     const pageNum = parseInt(page) || 1;
-    const limitNum = parseInt(limit) || 10;
+    const limitNum = parseInt(limit) || 20;
     const skip = (pageNum - 1) * limitNum;
 
     let total = 0;
@@ -515,7 +805,7 @@ router.get('/', protect, async (req, res) => {
       total = await prisma.student.count({ where });
       students = await prisma.student.findMany({
         where,
-        orderBy: [{ standard: 'asc' }, { section: 'asc' }, { name: 'asc' }],
+        orderBy: [{ standard: 'asc' }, { section: 'asc' }, { rollNumber: 'asc' }, { name: 'asc' }],
         skip,
         take: limitNum
       });
@@ -606,6 +896,7 @@ router.post('/', protect, async (req, res) => {
       lastName,
       admissionNumber,
       studentId,
+      satsNumber,
       dob,
       gender = 'Male',
       standard,
@@ -613,20 +904,43 @@ router.post('/', protect, async (req, res) => {
       section,
       rollNumber,
       admissionDate,
+      academicYear = '2026-2027',
+      studentStatus = 'Active',
+      bloodGroup,
+      category = 'General',
+      religion,
+      motherTongue,
+      nationality = 'Indian',
       parentName,
       fatherName,
+      fatherOccupation,
       motherName,
+      motherOccupation,
+      guardianName,
+      guardianRelation,
       parentPhone,
+      parentWhatsapp,
       parentEmail,
+      emergencyContact,
       address,
+      city,
+      state,
+      pincode,
+      previousSchool,
+      previousClass,
+      medicalNotes,
+      allergies,
+      transportRequired,
+      transportRoute,
+      hostelRequired,
       photoUrl
     } = payload;
 
     const finalAdmissionNo = (admissionNumber || studentId || '').trim();
-    const finalStandard = (standard || classVal || '').trim();
+    const finalStandard = normalizeStandard(standard || classVal || '');
     const finalSection = (section || '').trim().toUpperCase();
     const finalName = (name || [firstName, middleName, lastName].filter(Boolean).join(' ')).trim();
-    const finalParentName = (parentName || [fatherName, motherName].filter(Boolean).join(' / ')).trim();
+    const finalParentName = (parentName || [fatherName, motherName, guardianName].filter(Boolean).join(' / ')).trim();
 
     // Validation
     const errors = {};
@@ -682,22 +996,53 @@ router.post('/', protect, async (req, res) => {
       }
     }
 
+    const cleanDob = parseIndianOrIsoDate(dob) || String(dob);
+    const cleanAdmDate = parseIndianOrIsoDate(admissionDate) || new Date().toISOString().split('T')[0];
+    const cleanPhone = String(parentPhone).replace(/\D/g, '').slice(-10);
+    const cleanWhatsapp = parentWhatsapp ? String(parentWhatsapp).replace(/\D/g, '').slice(-10) : '';
+
     const created = await prisma.student.create({
       data: {
         studentId: finalAdmissionNo,
+        satsNumber: satsNumber ? String(satsNumber).trim() : '',
         name: finalName,
-        dob: String(dob),
+        dob: cleanDob,
         gender: gender || 'Male',
         standard: finalStandard,
         section: finalSection,
         rollNumber: rollNumber ? String(rollNumber).trim() : null,
-        admissionDate: admissionDate || new Date().toISOString().split('T')[0],
+        admissionDate: cleanAdmDate,
+        academicYear: String(academicYear || '2026-2027').trim(),
+        studentStatus: String(studentStatus || 'Active').trim(),
+        bloodGroup: bloodGroup ? String(bloodGroup).trim() : '',
+        category: category ? String(category).trim() : 'General',
+        religion: religion ? String(religion).trim() : '',
+        motherTongue: motherTongue ? String(motherTongue).trim() : '',
+        nationality: nationality ? String(nationality).trim() : 'Indian',
         parentName: finalParentName,
-        parentPhone: String(parentPhone).replace(/\D/g, ''),
+        fatherName: fatherName ? String(fatherName).trim() : '',
+        fatherOccupation: fatherOccupation ? String(fatherOccupation).trim() : '',
+        motherName: motherName ? String(motherName).trim() : '',
+        motherOccupation: motherOccupation ? String(motherOccupation).trim() : '',
+        guardianName: guardianName ? String(guardianName).trim() : '',
+        guardianRelation: guardianRelation ? String(guardianRelation).trim() : '',
+        parentPhone: cleanPhone,
+        phone: cleanPhone,
+        parentWhatsapp: cleanWhatsapp,
         parentEmail: parentEmail ? String(parentEmail).trim() : null,
+        emergencyContact: emergencyContact ? String(emergencyContact).trim() : '',
         address: address ? String(address).trim() : null,
-        photoUrl: photoUrl || null,
-        phone: String(parentPhone).replace(/\D/g, '')
+        city: city ? String(city).trim() : '',
+        state: state ? String(state).trim() : '',
+        pincode: pincode ? String(pincode).trim() : '',
+        previousSchool: previousSchool ? String(previousSchool).trim() : '',
+        previousClass: previousClass ? String(previousClass).trim() : '',
+        medicalNotes: medicalNotes ? String(medicalNotes).trim() : '',
+        allergies: allergies ? String(allergies).trim() : '',
+        transportRequired: Boolean(transportRequired),
+        transportRoute: transportRoute ? String(transportRoute).trim() : '',
+        hostelRequired: Boolean(hostelRequired),
+        photoUrl: photoUrl || null
       }
     });
 
@@ -711,13 +1056,14 @@ router.post('/', protect, async (req, res) => {
         data: { strength: enrolled }
       });
       cache.flush('master:');
+      cache.flush('student:');
     } catch (_) {}
 
     const item = formatStudentItem(created);
     res.status(201).json({
       status: true,
       success: true,
-      message: 'Student added successfully',
+      message: 'Student admitted successfully',
       data: item,
       student: item
     });
@@ -747,6 +1093,7 @@ router.put('/:id', protect, async (req, res) => {
       lastName,
       admissionNumber,
       studentId,
+      satsNumber,
       dob,
       gender,
       standard,
@@ -754,21 +1101,44 @@ router.put('/:id', protect, async (req, res) => {
       section,
       rollNumber,
       admissionDate,
+      academicYear,
+      studentStatus,
+      bloodGroup,
+      category,
+      religion,
+      motherTongue,
+      nationality,
       parentName,
       fatherName,
+      fatherOccupation,
       motherName,
+      motherOccupation,
+      guardianName,
+      guardianRelation,
       parentPhone,
+      parentWhatsapp,
       parentEmail,
+      emergencyContact,
       address,
+      city,
+      state,
+      pincode,
+      previousSchool,
+      previousClass,
+      medicalNotes,
+      allergies,
+      transportRequired,
+      transportRoute,
+      hostelRequired,
       photoUrl,
       leftSchoolStatus
     } = payload;
 
     const finalAdmissionNo = (admissionNumber || studentId || existing.studentId).trim();
-    const finalStandard = (standard || classVal || existing.standard).trim();
+    const finalStandard = normalizeStandard(standard || classVal || existing.standard);
     const finalSection = (section || existing.section).trim().toUpperCase();
     const finalName = (name || ((firstName || lastName) ? [firstName, middleName, lastName].filter(Boolean).join(' ') : '') || '').trim();
-    const finalParentName = (parentName || (fatherName || motherName ? [fatherName, motherName].filter(Boolean).join(' / ') : '') || '').trim();
+    const finalParentName = (parentName || (fatherName || motherName || guardianName ? [fatherName, motherName, guardianName].filter(Boolean).join(' / ') : '') || '').trim();
 
     // Validate phone if passed
     if (parentPhone && !/^\d{10}$/.test(String(parentPhone).replace(/\D/g, ''))) {
@@ -794,7 +1164,7 @@ router.put('/:id', protect, async (req, res) => {
     }
 
     // Check unique rollNumber if modified
-    if (rollNumber && String(rollNumber).trim()) {
+    if (rollNumber !== undefined && String(rollNumber).trim() && (String(rollNumber).trim() !== existing.rollNumber || finalStandard !== existing.standard || finalSection !== existing.section)) {
       const cleanRoll = String(rollNumber).trim();
       const conflictRoll = await prisma.student.findFirst({
         where: {
@@ -813,25 +1183,77 @@ router.put('/:id', protect, async (req, res) => {
       }
     }
 
+    const cleanDob = dob ? (parseIndianOrIsoDate(dob) || String(dob)) : undefined;
+    const cleanAdmDate = admissionDate ? (parseIndianOrIsoDate(admissionDate) || String(admissionDate)) : undefined;
+    const cleanPhone = parentPhone ? String(parentPhone).replace(/\D/g, '').slice(-10) : undefined;
+    const cleanWhatsapp = parentWhatsapp !== undefined ? (parentWhatsapp ? String(parentWhatsapp).replace(/\D/g, '').slice(-10) : '') : undefined;
+
     const updated = await prisma.student.update({
       where: { id: existing.id },
       data: {
         studentId: finalAdmissionNo,
         ...(finalName && { name: finalName }),
-        ...(dob && { dob: String(dob) }),
+        ...(cleanDob && { dob: cleanDob }),
         ...(gender && { gender }),
         ...(finalStandard && { standard: finalStandard }),
         ...(finalSection && { section: finalSection }),
         ...(rollNumber !== undefined && { rollNumber: rollNumber ? String(rollNumber).trim() : null }),
-        ...(admissionDate && { admissionDate }),
+        ...(cleanAdmDate && { admissionDate: cleanAdmDate }),
+        ...(satsNumber !== undefined && { satsNumber: String(satsNumber).trim() }),
+        ...(bloodGroup !== undefined && { bloodGroup: String(bloodGroup).trim() }),
+        ...(category !== undefined && { category: String(category).trim() }),
+        ...(religion !== undefined && { religion: String(religion).trim() }),
+        ...(motherTongue !== undefined && { motherTongue: String(motherTongue).trim() }),
+        ...(nationality !== undefined && { nationality: String(nationality).trim() }),
+        ...(academicYear !== undefined && { academicYear: String(academicYear).trim() }),
+        ...(studentStatus !== undefined && { studentStatus: String(studentStatus).trim() }),
         ...(finalParentName && { parentName: finalParentName }),
-        ...(parentPhone && { parentPhone: String(parentPhone).replace(/\D/g, ''), phone: String(parentPhone).replace(/\D/g, '') }),
+        ...(fatherName !== undefined && { fatherName: String(fatherName).trim() }),
+        ...(fatherOccupation !== undefined && { fatherOccupation: String(fatherOccupation).trim() }),
+        ...(motherName !== undefined && { motherName: String(motherName).trim() }),
+        ...(motherOccupation !== undefined && { motherOccupation: String(motherOccupation).trim() }),
+        ...(guardianName !== undefined && { guardianName: String(guardianName).trim() }),
+        ...(guardianRelation !== undefined && { guardianRelation: String(guardianRelation).trim() }),
+        ...(cleanPhone && { parentPhone: cleanPhone, phone: cleanPhone }),
+        ...(cleanWhatsapp !== undefined && { parentWhatsapp: cleanWhatsapp }),
         ...(parentEmail !== undefined && { parentEmail: parentEmail ? String(parentEmail).trim() : null }),
+        ...(emergencyContact !== undefined && { emergencyContact: String(emergencyContact).trim() }),
         ...(address !== undefined && { address: address ? String(address).trim() : null }),
+        ...(city !== undefined && { city: String(city).trim() }),
+        ...(state !== undefined && { state: String(state).trim() }),
+        ...(pincode !== undefined && { pincode: String(pincode).trim() }),
+        ...(previousSchool !== undefined && { previousSchool: String(previousSchool).trim() }),
+        ...(previousClass !== undefined && { previousClass: String(previousClass).trim() }),
+        ...(medicalNotes !== undefined && { medicalNotes: String(medicalNotes).trim() }),
+        ...(allergies !== undefined && { allergies: String(allergies).trim() }),
+        ...(transportRequired !== undefined && { transportRequired: Boolean(transportRequired) }),
+        ...(transportRoute !== undefined && { transportRoute: String(transportRoute).trim() }),
+        ...(hostelRequired !== undefined && { hostelRequired: Boolean(hostelRequired) }),
         ...(photoUrl !== undefined && { photoUrl }),
         ...(leftSchoolStatus !== undefined && { leftSchoolStatus: Boolean(leftSchoolStatus) })
       }
     });
+
+    // Sync class strength for both old class and new class if standard or section changed
+    try {
+      const classesToSync = [{ standard: finalStandard, section: finalSection }];
+      if (existing.standard !== finalStandard || existing.section !== finalSection) {
+        classesToSync.push({ standard: existing.standard, section: existing.section });
+      }
+      for (const cls of classesToSync) {
+        if (cls.standard && cls.section) {
+          const enrolled = await prisma.student.count({
+            where: { standard: cls.standard, section: cls.section }
+          });
+          await prisma.class.updateMany({
+            where: { standard: cls.standard, section: cls.section },
+            data: { strength: enrolled }
+          });
+        }
+      }
+      cache.flush('master:');
+      cache.flush('student:');
+    } catch (_) {}
 
     const item = formatStudentItem(updated);
     res.json({

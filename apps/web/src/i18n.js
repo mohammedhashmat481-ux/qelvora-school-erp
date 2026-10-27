@@ -27,6 +27,7 @@ const resources = {
       "feature5_desc": "Industry-standard JSON Web Tokens with automatic refresh and secure session management.",
       "feature6_title": "Mobile Responsive",
       "attendance": "Attendance System",
+      "academic_management": "Academic Management",
       "reports": "Reports",
       "daily_reports": "Daily Reports",
       "ai_assist": "AI Assist",

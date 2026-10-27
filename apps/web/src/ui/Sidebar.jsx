@@ -606,6 +606,19 @@ const Sidebar = () => {
                 </Link>
 
                 <Link
+                  to="/academic-management"
+                  onClick={handleLinkClick}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-150 ${
+                    location.pathname.startsWith('/academic-management')
+                      ? 'text-[#172B4D] bg-[#DBEAFE] font-bold shadow-xs'
+                      : 'text-[#F3F6FC] hover:text-white hover:bg-[#29456D]'
+                  }`}
+                >
+                  <School className="w-3.5 h-3.5 shrink-0 text-blue-300" />
+                  <span>Academic Management</span>
+                </Link>
+
+                <Link
                   to="/admin?tab=mappings"
                   onClick={handleLinkClick}
                   className={getSubLinkClass('mappings')}
@@ -651,6 +664,16 @@ const Sidebar = () => {
             >
               <ShieldCheck className={`w-4 h-4 shrink-0 ${location.pathname === '/admin' && tab === 'roles' ? 'text-blue-400' : 'text-slate-400'}`} />
               <span>Access Privilege</span>
+            </Link>
+
+            {/* Dedicated Academic Management Menu */}
+            <Link
+              to="/academic-management"
+              onClick={handleLinkClick}
+              className={getLinkClass('/academic-management', location.pathname.startsWith('/academic-management'))}
+            >
+              <School className={`w-4 h-4 shrink-0 ${location.pathname.startsWith('/academic-management') ? 'text-blue-400' : 'text-slate-400'}`} />
+              <span>Academic Management</span>
             </Link>
 
             {/* Student Attendance Management Module Dropdown */}

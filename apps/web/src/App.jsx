@@ -25,6 +25,7 @@ const FeesManagementPage   = lazy(() => import('./pages/FeesManagementPage'));
 const ExaminationPage      = lazy(() => import('./pages/ExaminationPage'));
 const OnlineExamManagementPage = lazy(() => import('./pages/OnlineExamManagementPage'));
 const StudentPromotionPage = lazy(() => import('./pages/StudentPromotionPage'));
+const AcademicManagementPage = lazy(() => import('./pages/AcademicManagementPage'));
 const PreviousYearBalancePage = lazy(() => import('./pages/PreviousYearBalancePage'));
 const PaperPage            = lazy(() => import('./pages/PaperPage'));
 const SummaryPage          = lazy(() => import('./pages/SummaryPage'));
@@ -106,6 +107,8 @@ function App() {
             <Route path="/student-promotion"   element={<StudentPromotionPage />} />
             <Route path="/promotion"           element={<StudentPromotionPage />} />
             <Route path="/alumni"              element={<StudentPromotionPage />} />
+            <Route path="/academic-management" element={<AcademicManagementPage />} />
+            <Route path="/academics"           element={<AcademicManagementPage />} />
             <Route path="/attendance"          element={<AttendancePage />} />
             <Route path="/reports"             element={<DailyReportsPage />} />
             <Route path="/daily-reports"       element={<DailyReportsPage />} />
