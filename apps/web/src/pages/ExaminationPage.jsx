@@ -165,10 +165,24 @@ const ExaminationPage = () => {
         getCCESkills().catch(() => ({ data: [] })),
         getCCETestTypes().catch(() => ({ data: [] }))
       ]);
-      setExamTypes(typesRes.data || []);
-      setExamNames(namesRes.data || []);
-      setGradeScales(gradesRes.data || []);
-      setCceSkills(skillsRes.data || []);
+      const defaultGradeScales = [
+        { id: 'g1', grade: 'A+', minPercentage: 90, maxPercentage: 100, gradePoint: 10, remark: 'Outstanding' },
+        { id: 'g2', grade: 'A',  minPercentage: 80, maxPercentage: 89,  gradePoint: 9,  remark: 'Excellent' },
+        { id: 'g3', grade: 'B+', minPercentage: 70, maxPercentage: 79,  gradePoint: 8,  remark: 'Very Good' },
+        { id: 'g4', grade: 'B',  minPercentage: 60, maxPercentage: 69,  gradePoint: 7,  remark: 'Good' },
+        { id: 'g5', grade: 'C',  minPercentage: 50, maxPercentage: 59,  gradePoint: 6,  remark: 'Above Average' },
+        { id: 'g6', grade: 'D',  minPercentage: 35, maxPercentage: 49,  gradePoint: 5,  remark: 'Pass' },
+        { id: 'g7', grade: 'F',  minPercentage: 0,  maxPercentage: 34,  gradePoint: 0,  remark: 'Needs Improvement / Fail' }
+      ];
+
+      setExamTypes(Array.isArray(typesRes?.data) ? typesRes.data : []);
+      setExamNames(Array.isArray(namesRes?.data) ? namesRes.data : []);
+      setGradeScales(
+        Array.isArray(gradesRes?.data) && gradesRes.data.length > 0
+          ? gradesRes.data
+          : defaultGradeScales
+      );
+      setCceSkills(Array.isArray(skillsRes?.data) ? skillsRes.data : []);
       try {
         const subsRes = await getSubjects();
         if (subsRes?.data && Array.isArray(subsRes.data) && subsRes.data.length > 0) {
@@ -176,7 +190,7 @@ const ExaminationPage = () => {
           setSubjectOptions(prev => Array.from(new Set([...prev, ...names])));
         }
       } catch (_) {}
-      setCceTestTypes(cceTypesRes.data || []);
+      setCceTestTypes(Array.isArray(cceTypesRes?.data) ? cceTypesRes.data : []);
     } catch (err) {
       console.error('Master data load error:', err);
     } finally {
@@ -2257,13 +2271,13 @@ const ExaminationPage = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
-                      {gradeScales.map((g) => (
-                        <tr key={g.id} className="hover:bg-slate-50">
+                      {(Array.isArray(gradeScales) ? gradeScales : []).map((g) => (
+                        <tr key={g.id || g.grade} className="hover:bg-slate-50">
                           <td className="p-3 text-center font-black text-base text-blue-900">{g.grade}</td>
-                          <td className="p-3 text-center font-bold text-slate-700">{g.minPercentage}%</td>
-                          <td className="p-3 text-center font-bold text-slate-700">{g.maxPercentage}%</td>
-                          <td className="p-3 text-center font-bold font-mono text-purple-800">{g.gradePoint}</td>
-                          <td className="p-3 font-semibold text-slate-900">{g.remark}</td>
+                          <td className="p-3 text-center font-bold text-slate-700">{g.minPercentage ?? g.minPercent ?? 0}%</td>
+                          <td className="p-3 text-center font-bold text-slate-700">{g.maxPercentage ?? g.maxPercent ?? 100}%</td>
+                          <td className="p-3 text-center font-bold font-mono text-purple-800">{g.gradePoint ?? 0}</td>
+                          <td className="p-3 font-semibold text-slate-900">{g.remark || '—'}</td>
                           <td className="p-3 text-center">
                             <span className={`px-2 py-0.5 rounded text-[10px] font-black ${
                               g.grade === 'F' ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'

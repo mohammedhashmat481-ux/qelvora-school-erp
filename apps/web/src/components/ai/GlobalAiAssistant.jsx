@@ -53,12 +53,6 @@ export default function GlobalAiAssistant() {
   const { user, isAuthenticated } = useAuth();
   const location = useLocation();
 
-  // Do not show on auth pages or when already on dedicated /ai-assist page
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/profile-selection';
-  if (isAuthPage || !isAuthenticated || location.pathname === '/ai-assist') {
-    return null;
-  }
-
   // Panel Open State
   const [isOpen, setIsOpen] = useState(false);
 
@@ -330,6 +324,12 @@ export default function GlobalAiAssistant() {
       }
     });
   };
+
+  // Do not show on auth pages, unauthenticated users, or on dedicated /ai-assist page
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/profile-selection';
+  if (isAuthPage || !isAuthenticated || location.pathname === '/ai-assist') {
+    return null;
+  }
 
   return (
     <>
