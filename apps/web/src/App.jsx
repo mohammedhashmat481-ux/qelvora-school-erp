@@ -7,16 +7,19 @@ import { AuthProvider } from './context/AuthContext';
 // ─── Eagerly loaded (tiny, needed on first paint) ──────────────
 import LoginPage from './pages/LoginPage';
 import ProfileSelectionPage from './pages/ProfileSelectionPage';
+import GlobalAiAssistant from './components/ai/GlobalAiAssistant';
 
 // ─── Route-based lazy loading (loaded only when the route is visited) ──
 const HomePage             = lazy(() => import('./pages/HomePage'));
 const RegisterPage         = lazy(() => import('./pages/RegisterPage'));
 const DashboardPage        = lazy(() => import('./pages/DashboardPage'));
+const AiAssistPage         = lazy(() => import('./pages/AiAssistPage'));
 const AdminPage            = lazy(() => import('./pages/AdminPage'));
 const TeacherSectionPage   = lazy(() => import('./pages/TeacherSectionPage'));
 const StudentPage          = lazy(() => import('./pages/StudentPage'));
 const SafePickupPage       = lazy(() => import('./pages/SafePickupPage'));
 const AttendancePage       = lazy(() => import('./pages/AttendancePage'));
+const DailyReportsPage     = lazy(() => import('./pages/DailyReportsPage'));
 const StudentAttendancePage = lazy(() => import('./pages/StudentAttendancePage'));
 const FeesManagementPage   = lazy(() => import('./pages/FeesManagementPage'));
 const ExaminationPage      = lazy(() => import('./pages/ExaminationPage'));
@@ -62,6 +65,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Toaster position="top-right" />
+        <GlobalAiAssistant />
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/"                    element={<LoginPage />} />
@@ -103,6 +107,9 @@ function App() {
             <Route path="/promotion"           element={<StudentPromotionPage />} />
             <Route path="/alumni"              element={<StudentPromotionPage />} />
             <Route path="/attendance"          element={<AttendancePage />} />
+            <Route path="/reports"             element={<DailyReportsPage />} />
+            <Route path="/daily-reports"       element={<DailyReportsPage />} />
+            <Route path="/ai-assist"           element={<AiAssistPage />} />
             <Route path="/student-attendance"  element={<StudentAttendancePage />} />
             <Route path="/logout-kiosk"        element={<LogoutKioskPage />} />
             <Route path="/qelvora-ai"          element={<PaperPage />} />

@@ -29,6 +29,8 @@ import studyMaterialRoutes from './src/routes/studyMaterialRoutes.js';
 import examinationRoutes from './src/routes/examinationRoutes.js';
 import onlineExamRoutes from './src/routes/onlineExamRoutes.js';
 import studentAttendanceRoutes from './src/routes/studentAttendanceRoutes.js';
+import reportRoutes from './src/routes/reportRoutes.js';
+import aiAssistantRoutes from './src/routes/aiAssistantRoutes.js';
 import { validateAiConfig } from './src/lib/ai/providers.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -120,6 +122,8 @@ app.use('/api/previous-balance', previousBalanceRoutes);
 app.use('/api/examination', examinationRoutes);
 app.use('/api/online-exam', onlineExamRoutes);
 app.use('/api/student-attendance', studentAttendanceRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/ai-assistant', aiAssistantRoutes);
 
 // Enhanced Health check endpoint with DB ping and performance metrics
 app.get('/health', async (req, res) => {

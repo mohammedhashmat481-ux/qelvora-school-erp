@@ -41,7 +41,8 @@ import {
   QrCode,
   ScanFace,
   BellRing,
-  BadgeCheck
+  BadgeCheck,
+  Sparkles
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -354,6 +355,24 @@ const Sidebar = () => {
                 <ClipboardCheck className={`w-4 h-4 shrink-0 ${location.pathname === '/attendance' ? 'text-blue-400' : 'text-slate-500'}`} />
                 <span>{t('attendance') || 'Attendance System'}</span>
               </Link>
+
+              <Link
+                to="/reports"
+                onClick={handleLinkClick}
+                className={getLinkClass('/reports', location.pathname === '/reports' || location.pathname === '/daily-reports')}
+              >
+                <FileSpreadsheet className={`w-4 h-4 shrink-0 ${location.pathname === '/reports' || location.pathname === '/daily-reports' ? 'text-blue-400' : 'text-slate-500'}`} />
+                <span>{t('reports') || 'Reports'}</span>
+              </Link>
+
+              <Link
+                to="/ai-assist"
+                onClick={handleLinkClick}
+                className={getLinkClass('/ai-assist')}
+              >
+                <Sparkles className={`w-4 h-4 shrink-0 ${location.pathname === '/ai-assist' ? 'text-blue-400' : 'text-slate-500'}`} />
+                <span>{t('ai_assist') || 'AI Assist'}</span>
+              </Link>
             </>
           )}
 
@@ -530,6 +549,15 @@ const Sidebar = () => {
                 >
                   <Settings className="w-3.5 h-3.5 shrink-0" />
                   <span>Master Settings</span>
+                </Link>
+
+                <Link
+                  to="/admin?tab=ai_settings"
+                  onClick={handleLinkClick}
+                  className={getSubLinkClass('ai_settings')}
+                >
+                  <Sparkles className="w-3.5 h-3.5 shrink-0 text-amber-400" />
+                  <span>AI Assistant & Usage</span>
                 </Link>
 
                 <Link

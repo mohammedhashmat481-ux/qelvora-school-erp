@@ -1,0 +1,26 @@
+{
+  "settings": {
+    "tier": "free",
+    "geminiApiKey": "",
+    "elevenLabsApiKey": "",
+    "elevenLabsVoiceId": "21m00Tcm4TlvDq8ikWAM",
+    "llmModelFree": "gemini-1.5-flash",
+    "llmModelPremium": "gemini-3.5-flash",
+    "ttsProviderFree": "browser",
+    "ttsProviderPremium": "gemini",
+    "voices": {
+      "en": "en-US-Journey-F",
+      "hi": "hi-IN-Neural2-D",
+      "kn": "kn-IN-Standard-A"
+    },
+    "userDailyLimitFree": 50,
+    "userDailyLimitPremium": 200,
+    "schoolDailyLimitFree": 500,
+    "schoolDailyLimitPremium": 5000,
+    "cacheTtlSeconds": 60,
+    "maxHistoryTurns": 6,
+    "updatedAt": "2026-10-27T00:00:00.000Z"
+  },
+  "usageCounters": {},
+  "usageLogs": []
+}

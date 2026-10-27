@@ -102,6 +102,78 @@ Logs from the auto-spawned processes will be written to `backend/school_crm_back
 
 ---
 
+## AI Assistant (Voice & Text School-Wide Copilot)
+
+The **AI Assistant** is an intelligent assistant accessible across the entire Qelvora School CRM for Principals, Admins, Teachers, Parents, and Students. It supports simultaneous voice and text interactions, multi-lingual operation (English, Hindi, Kannada), and live read-only querying of the school database.
+
+### Free Tier vs. Premium Tier (Gemini 3.5 Flash)
+The assistant supports dynamic tier switching via configuration or the Admin Panel without restarting or redeploying the server:
+
+| Feature | Free Tier | Premium Tier |
+|---|---|---|
+| **LLM Model** | Configured via `LLM_MODEL_FREE` (e.g., `gemini-1.5-flash`) | Configured via `LLM_MODEL_PREMIUM` (default: **Gemini 3.5 Flash** `gemini-3.5-flash`) |
+| **TTS Audio** | Native Browser `speechSynthesis` (Zero API / bandwidth cost) | Gemini / Google Cloud / ElevenLabs TTS with natural prosody and SSML pauses |
+| **Voice Streaming** | Full paragraph utterance | First-sentence queue streaming (speaks sentence 1 immediately with zero delay) |
+| **Quota / 429 Handling** | Automatic exponential backoff + friendly busy response | Dedicated priority tier capacity |
+| **Audio Fallback** | Native browser | Automatic fallback to browser synthesis if cloud TTS fails |
+| **Daily Quotas** | Configurable (Default: 50 / user, 500 school total) | Configurable (Default: 200 / user, 5000 school total) |
+
+### How to Switch Tiers in the Admin Panel
+1. Log in as an Administrator or Principal.
+2. Navigate to **Admin Panel** -> click **AI Assistant & Usage** tab (or direct URL `http://localhost:3600/admin?tab=ai_settings`).
+3. Click either the **Free Tier** card or **Premium Tier** card.
+4. The active tier changes immediately for all CRM users across the school with zero downtime.
+
+### Cost Control & Rate Limiting
+- **60-Second Query Cache**: Identical database queries (such as "teachers absent today") are cached in-memory for 60 seconds to eliminate redundant DB queries and LLM token usage.
+- **Truncated History**: Limits prompt history to the last 6 turns (3 exchanges).
+- **Text-Only Mode Savings**: Skips TTS audio generation completely when the user selects `Text only` reply mode.
+- **Usage & Cost Dashboard**: Displays real-time KPIs for tokens processed, TTS characters, and estimated cost (USD / INR) with an audit log of recent inquiries.
+
+### Configuration (`services/gateway/.env`)
+```bash
+# Active AI Tier ('free' | 'premium')
+AI_TIER="free"
+
+# Google Gemini API Key
+GEMINI_API_KEY="your-gemini-api-key"
+
+# Per-Tier Model IDs (Never hardcoded in code)
+LLM_MODEL_FREE="gemini-1.5-flash"
+LLM_MODEL_PREMIUM="gemini-3.5-flash"
+
+# TTS Providers ('browser' | 'gemini' | 'elevenlabs')
+TTS_PROVIDER_FREE="browser"
+TTS_PROVIDER_PREMIUM="gemini"
+
+# Optional ElevenLabs integration
+ELEVENLABS_API_KEY=""
+ELEVENLABS_VOICE_ID="21m00Tcm4TlvDq8ikWAM"
+
+# Language Voices
+AI_VOICE_EN="en-US-Journey-F"
+AI_VOICE_HI="hi-IN-Neural2-D"
+AI_VOICE_KN="kn-IN-Standard-A"
+
+# Daily Limits & Caching
+AI_USER_LIMIT_FREE="50"
+AI_USER_LIMIT_PREMIUM="200"
+AI_SCHOOL_LIMIT_FREE="500"
+AI_SCHOOL_LIMIT_PREMIUM="5000"
+AI_CACHE_TTL_SEC="60"
+```
+
+### Benchmark Test Questions
+Test all three reply modes (`Voice only`, `Text only`, `Voice + Text`) with:
+1. *"How many teachers are absent today?"*
+2. *"Which students of class 10A are absent?"*
+3. *"Who has pending fees?"*
+4. *"What is the timetable of class 8B on Monday?"*
+
+---
+
 ## License
 
 MIT
+
+

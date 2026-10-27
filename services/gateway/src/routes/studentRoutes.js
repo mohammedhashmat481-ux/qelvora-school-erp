@@ -7,10 +7,10 @@ import cache from '../lib/cache.js';
 
 const router = express.Router();
 
-// In-memory multer storage for file uploads
+// In-memory multer storage for file uploads (supports up to 50MB for large rosters)
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+  limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit
 });
 
 // Helper to format student fields for legacy contract compatibility
@@ -201,14 +201,15 @@ router.get('/bulk-template', protect, async (req, res) => {
   }
 });
 
-// POST /api/students/bulk-upload - Parse, normalize, upsert students, auto-create classes, update strength, flush cache
+// POST /api/students/bulk-upload - High-Performance Batch Upsert for 2,000+ students
 router.post('/bulk-upload', protect, upload.single('file'), async (req, res) => {
+  const startTime = Date.now();
   try {
     let rows = [];
 
     // Support 1: Multipart file upload (Excel / CSV)
     if (req.file && req.file.buffer) {
-      const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
+      const workbook = XLSX.read(req.file.buffer, { type: 'buffer', dense: true, cellDates: false });
       const firstSheetName = workbook.SheetNames[0];
       if (!firstSheetName) {
         return res.status(400).json({ status: false, message: 'The uploaded spreadsheet is empty.' });
@@ -237,13 +238,14 @@ router.post('/bulk-upload', protect, upload.single('file'), async (req, res) => 
     const currentYear = new Date().getFullYear();
     let totalCountInDb = await prisma.student.count().catch(() => 0);
 
-    const createdRecords = [];
-    const updatedRecords = [];
+    const validRows = [];
     const errors = [];
     const touchedClasses = new Map(); // standard_section -> { standard, section }
+    const assignedIdsInBatch = new Set();
 
+    // 1. In-memory parse & validate all rows
     for (let i = 0; i < rows.length; i++) {
-      const rowNum = i + 2; // Row number in spreadsheet (accounting for header)
+      const rowNum = i + 2;
       const parsed = normalizeRowData(rows[i]);
 
       const finalName = parsed.name;
@@ -263,11 +265,16 @@ router.post('/bulk-upload', protect, upload.single('file'), async (req, res) => 
       let finalAdmissionNo = parsed.admissionNumber;
       if (!finalAdmissionNo) {
         totalCountInDb++;
-        finalAdmissionNo = `ADM-${currentYear}-${String(totalCountInDb).padStart(4, '0')}`;
+        finalAdmissionNo = `ADM-${currentYear}-${String(totalCountInDb).padStart(5, '0')}`;
+        while (assignedIdsInBatch.has(finalAdmissionNo)) {
+          totalCountInDb++;
+          finalAdmissionNo = `ADM-${currentYear}-${String(totalCountInDb).padStart(5, '0')}`;
+        }
       }
+      assignedIdsInBatch.add(finalAdmissionNo);
 
       const rollNumber = parsed.rollNumber ? String(parsed.rollNumber).trim() : null;
-      const phoneDigits = parsed.parentPhone.replace(/\D/g, '');
+      const phoneDigits = (parsed.parentPhone || '').replace(/\D/g, '');
       const validPhone = phoneDigits.length >= 10 ? phoneDigits.slice(-10) : '9876543210';
 
       const studentData = {
@@ -286,65 +293,108 @@ router.post('/bulk-upload', protect, upload.single('file'), async (req, res) => 
         admissionDate: new Date().toISOString().split('T')[0]
       };
 
-      try {
-        // Upsert by studentId / admission number
-        const existing = await prisma.student.findFirst({
-          where: { studentId: finalAdmissionNo }
-        });
+      validRows.push({ rowNum, studentData });
 
-        if (existing) {
-          const updated = await prisma.student.update({
-            where: { id: existing.id },
-            data: {
-              name: studentData.name,
-              standard: studentData.standard,
-              section: studentData.section,
-              rollNumber: studentData.rollNumber,
-              gender: studentData.gender,
-              dob: studentData.dob,
-              parentName: studentData.parentName,
-              parentPhone: studentData.parentPhone,
-              phone: studentData.phone,
-              ...(studentData.parentEmail && { parentEmail: studentData.parentEmail }),
-              ...(studentData.address && { address: studentData.address })
-            }
-          });
-          updatedRecords.push(updated);
-        } else {
-          const created = await prisma.student.create({
-            data: studentData
-          });
-          createdRecords.push(created);
-        }
-
-        // Track class for strength & auto-creation
-        const classKey = `${finalStandard}__${finalSection}`;
-        if (!touchedClasses.has(classKey)) {
-          touchedClasses.set(classKey, { standard: finalStandard, section: finalSection });
-        }
-      } catch (rowErr) {
-        errors.push({ row: rowNum, name: finalName, error: rowErr.message });
+      // Track class
+      const classKey = `${finalStandard}__${finalSection}`;
+      if (!touchedClasses.has(classKey)) {
+        touchedClasses.set(classKey, { standard: finalStandard, section: finalSection });
       }
     }
 
-    // Auto-create missing classes and synchronize live student strength for every touched class
-    const classSummary = [];
-    for (const [key, clsInfo] of touchedClasses.entries()) {
-      try {
-        const liveEnrolledCount = await prisma.student.count({
-          where: { standard: clsInfo.standard, section: clsInfo.section }
-        });
+    if (validRows.length === 0) {
+      return res.status(400).json({
+        status: false,
+        message: 'No valid student records could be parsed from the file.',
+        errors
+      });
+    }
 
-        // Find or create class
-        const existingClass = await prisma.class.findFirst({
-          where: { standard: clsInfo.standard, section: clsInfo.section }
-        });
+    // 2. Fetch existing students in ONE batched query
+    const candidateIds = validRows.map(vr => vr.studentData.studentId);
+    const existingMap = new Map();
+    for (let i = 0; i < candidateIds.length; i += 1000) {
+      const chunkIds = candidateIds.slice(i, i + 1000);
+      const found = await prisma.student.findMany({
+        where: { studentId: { in: chunkIds } },
+        select: { id: true, studentId: true }
+      });
+      found.forEach(s => existingMap.set(s.studentId, s.id));
+    }
+
+    const toCreate = [];
+    const toUpdate = [];
+
+    for (const vr of validRows) {
+      const sData = vr.studentData;
+      if (existingMap.has(sData.studentId)) {
+        toUpdate.push({ id: existingMap.get(sData.studentId), data: sData });
+      } else {
+        toCreate.push(sData);
+      }
+    }
+
+    // 3. Ultra-fast bulk insert for new students in chunks of 500
+    const CREATE_CHUNK = 500;
+    for (let i = 0; i < toCreate.length; i += CREATE_CHUNK) {
+      const chunk = toCreate.slice(i, i + CREATE_CHUNK);
+      await prisma.student.createMany({
+        data: chunk,
+        skipDuplicates: true
+      });
+    }
+
+    // 4. Concurrent batch updates for existing students
+    const UPDATE_CONCURRENCY = 50;
+    for (let i = 0; i < toUpdate.length; i += UPDATE_CONCURRENCY) {
+      const chunk = toUpdate.slice(i, i + UPDATE_CONCURRENCY);
+      await Promise.all(chunk.map(item => prisma.student.update({
+        where: { id: item.id },
+        data: {
+          name: item.data.name,
+          standard: item.data.standard,
+          section: item.data.section,
+          rollNumber: item.data.rollNumber,
+          gender: item.data.gender,
+          dob: item.data.dob,
+          parentName: item.data.parentName,
+          parentPhone: item.data.parentPhone,
+          phone: item.data.phone,
+          ...(item.data.parentEmail && { parentEmail: item.data.parentEmail }),
+          ...(item.data.address && { address: item.data.address })
+        }
+      })));
+    }
+
+    // 5. Consolidated Auto-create missing classes and synchronize live student strength
+    const classSummary = [];
+    if (touchedClasses.size > 0) {
+      const touchedList = Array.from(touchedClasses.values());
+      const standards = [...new Set(touchedList.map(t => t.standard))];
+      const sections = [...new Set(touchedList.map(t => t.section))];
+
+      const existingClasses = await prisma.class.findMany({
+        where: { standard: { in: standards }, section: { in: sections } }
+      });
+      const classMap = new Map(existingClasses.map(c => [`${c.standard}__${c.section}`, c]));
+
+      const liveCounts = await prisma.student.groupBy({
+        by: ['standard', 'section'],
+        where: { standard: { in: standards }, section: { in: sections } },
+        _count: { id: true }
+      });
+      const countMap = new Map(liveCounts.map(lc => [`${lc.standard}__${lc.section}`, lc._count.id]));
+
+      const classesToCreate = [];
+      const classesToUpdate = [];
+
+      for (const clsInfo of touchedList) {
+        const key = `${clsInfo.standard}__${clsInfo.section}`;
+        const liveEnrolledCount = countMap.get(key) || 0;
+        const existingClass = classMap.get(key);
 
         if (existingClass) {
-          await prisma.class.update({
-            where: { id: existingClass.id },
-            data: { strength: liveEnrolledCount }
-          });
+          classesToUpdate.push({ id: existingClass.id, strength: liveEnrolledCount });
           classSummary.push({
             standard: clsInfo.standard,
             section: clsInfo.section,
@@ -352,13 +402,11 @@ router.post('/bulk-upload', protect, upload.single('file'), async (req, res) => 
             status: 'Updated'
           });
         } else {
-          await prisma.class.create({
-            data: {
-              standard: clsInfo.standard,
-              section: clsInfo.section,
-              board: 'CBSE',
-              strength: liveEnrolledCount
-            }
+          classesToCreate.push({
+            standard: clsInfo.standard,
+            section: clsInfo.section,
+            board: 'CBSE',
+            strength: liveEnrolledCount
           });
           classSummary.push({
             standard: clsInfo.standard,
@@ -367,27 +415,43 @@ router.post('/bulk-upload', protect, upload.single('file'), async (req, res) => 
             status: 'Created New Class'
           });
         }
-      } catch (classSyncErr) {
-        console.warn(`Could not sync class ${clsInfo.standard}-${clsInfo.section}:`, classSyncErr.message);
+      }
+
+      if (classesToCreate.length > 0) {
+        await prisma.class.createMany({
+          data: classesToCreate,
+          skipDuplicates: true
+        });
+      }
+
+      if (classesToUpdate.length > 0) {
+        await Promise.all(classesToUpdate.map(cu => prisma.class.update({
+          where: { id: cu.id },
+          data: { strength: cu.strength }
+        })));
       }
     }
 
-    // Flush master cache so dashboard and other endpoints pick up new classes and strengths immediately
+    // Flush cache
     try {
       cache.flush('master:');
       cache.flush('timetable:');
+      cache.flush('student:');
     } catch (_) {}
+
+    const durationMs = Date.now() - startTime;
 
     return res.json({
       status: true,
       success: true,
-      message: `Bulk upload completed successfully. Added ${createdRecords.length} new student(s), updated ${updatedRecords.length} existing record(s).`,
+      message: `Bulk upload completed successfully in ${(durationMs / 1000).toFixed(2)}s. Added ${toCreate.length} new student(s), updated ${toUpdate.length} existing record(s).`,
       summary: {
         totalProcessed: rows.length,
-        created: createdRecords.length,
-        updated: updatedRecords.length,
+        created: toCreate.length,
+        updated: toUpdate.length,
         failed: errors.length,
-        errors,
+        durationMs,
+        errors: errors.slice(0, 50),
         classesAffected: classSummary
       }
     });

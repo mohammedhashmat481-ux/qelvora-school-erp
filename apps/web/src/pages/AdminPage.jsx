@@ -59,6 +59,7 @@ import {
   Send,
   Mail
 } from 'lucide-react';
+import AiAssistantSettingsTab from '../components/admin/AiAssistantSettingsTab';
 
 const MONTH_NAMES = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -3212,15 +3213,14 @@ Office of the Principal / Academic Administration`
     if (!file) return;
     setBulkFile(file);
 
-    // Parse preview in browser using FileReader and XLSX if available, or basic CSV parser
+    // Parse preview in browser using FileReader and XLSX (dense array mode for high performance with 2k+ rows)
     try {
       const reader = new FileReader();
       reader.onload = async (e) => {
         try {
           const buffer = e.target.result;
-          // Dynamically import xlsx on client side or inspect buffer
           const XLSX = await import('xlsx');
-          const wb = XLSX.read(buffer, { type: 'binary' });
+          const wb = XLSX.read(buffer, { type: 'array', dense: true });
           const firstSheet = wb.SheetNames[0];
           const rawRows = XLSX.utils.sheet_to_json(wb.Sheets[firstSheet], { defval: '' });
           
@@ -3239,7 +3239,7 @@ Office of the Principal / Academic Administration`
           console.warn('Could not preview file locally:', parseErr);
         }
       };
-      reader.readAsBinaryString(file);
+      reader.readAsArrayBuffer(file);
     } catch (_) {}
   };
 
@@ -3628,11 +3628,12 @@ Office of the Principal / Academic Administration`
         <>
 
         {/* Horizontal Navigation Tabs */}
-        {['settings', 'roles', 'employees', 'consolidated', 'details', 'daily_status', 'individual_details'].includes(activeTab) && (
+        {['settings', 'roles', 'employees', 'consolidated', 'details', 'daily_status', 'individual_details', 'ai_settings'].includes(activeTab) && (
           <div className="w-full bg-slate-100/80 p-1 sm:p-1.5 rounded-2xl border border-slate-200/80 mb-6">
             <div className="flex gap-1.5 overflow-x-auto py-1 px-1 items-center justify-start w-full touch-pan-x" style={{ WebkitOverflowScrolling: 'touch' }}>
               {[
                 { id: 'settings', label: 'School Settings', icon: <SettingsIcon className="w-4 h-4 shrink-0" /> },
+                { id: 'ai_settings', label: 'AI Assistant & Usage', icon: <Sparkles className="w-4 h-4 shrink-0 text-amber-500" /> },
                 { id: 'roles', label: 'Role', icon: <ShieldCheck className="w-4 h-4 shrink-0" /> },
                 { id: 'employees', label: t('employee_mgmt') || 'Employee Management', icon: <UsersRound className="w-4 h-4 shrink-0" /> },
                 { id: 'consolidated', label: 'Consolidated', icon: <BarChart2 className="w-4 h-4 shrink-0" /> },
@@ -4183,6 +4184,10 @@ Office of the Principal / Academic Administration`
           </>
         )}
 
+        {/* AI ASSISTANT SETTINGS & USAGE TAB */}
+        {activeTab === 'ai_settings' && (
+          <AiAssistantSettingsTab />
+        )}
 
          {/* CONSOLIDATED REPORT TAB */}
         {activeTab === 'consolidated' && (
@@ -11501,7 +11506,7 @@ Office of the Principal / Academic Administration`
                       {Object.values(bulkClassBreakdown).reduce((a, b) => a + b, 0)} Total Students
                     </span>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto pr-1">
                     {Object.entries(bulkClassBreakdown).map(([clsKey, count]) => (
                       <span
                         key={clsKey}
@@ -11585,7 +11590,7 @@ Office of the Principal / Academic Administration`
                   {isUploadingBulk ? (
                     <>
                       <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                      <span>Uploading & Updating Strengths...</span>
+                      <span>Uploading & Ingesting {Object.values(bulkClassBreakdown).reduce((a, b) => a + b, 0) || ''} Students...</span>
                     </>
                   ) : (
                     <>
