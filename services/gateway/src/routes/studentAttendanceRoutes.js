@@ -7,18 +7,58 @@ const router = express.Router();
 
 // Helper to safely resolve a valid Class record from classId or standard/section
 async function resolveClassId(classId, standard, section) {
-  if (classId && classId !== 'all' && classId !== 'DEFAULT_CLASS') {
+  // If classId looks like "10th-A" or "Class 10th-Sec A", parse standard & section
+  if (classId && typeof classId === 'string' && classId.includes('-') && (!standard || !section)) {
+    const parts = classId.split('-');
+    if (!standard) standard = parts[0]?.trim();
+    if (!section) section = parts[1]?.trim();
+  }
+
+  const cleanStd = standard ? String(standard).replace(/^Class\s+/i, '').trim() : '';
+  const cleanSec = section ? String(section).replace(/^Sec\s+/i, '').trim() : '';
+
+  // 1. Try finding by direct UUID id if it's not a compound string
+  if (classId && classId !== 'all' && classId !== 'DEFAULT_CLASS' && !String(classId).includes('-')) {
     const direct = await prisma.class.findFirst({ where: { id: String(classId) } }).catch(() => null);
     if (direct) return direct.id;
   }
-  if (standard) {
-    const byStd = await prisma.class.findFirst({
-      where: { standard: String(standard), ...(section ? { section: String(section) } : {}) }
+
+  // 2. Try finding by standard and section
+  if (cleanStd) {
+    const byStdSec = await prisma.class.findFirst({
+      where: {
+        standard: { equals: cleanStd, mode: 'insensitive' },
+        ...(cleanSec ? { section: { equals: cleanSec, mode: 'insensitive' } } : {})
+      }
     }).catch(() => null);
-    if (byStd) return byStd.id;
+    if (byStdSec) return byStdSec.id;
+
+    const byStdOnly = await prisma.class.findFirst({
+      where: { standard: { equals: cleanStd, mode: 'insensitive' } }
+    }).catch(() => null);
+    if (byStdOnly) return byStdOnly.id;
   }
+
+  // 3. Fallback to any class in database
   const fallback = await prisma.class.findFirst().catch(() => null);
-  return fallback ? fallback.id : classId;
+  if (fallback) return fallback.id;
+
+  // 4. Auto-create class record if table is completely empty
+  try {
+    const newClass = await prisma.class.create({
+      data: {
+        standard: cleanStd || '10th',
+        section: cleanSec || 'A',
+        board: 'CBSE'
+      }
+    });
+    return newClass.id;
+  } catch (_) {
+    const anyClass = await prisma.class.findFirst().catch(() => null);
+    if (anyClass) return anyClass.id;
+  }
+
+  return classId;
 }
 
 // Helper: Parse 12-hour or 24-hour time string into total minutes since midnight
@@ -283,19 +323,31 @@ router.get('/roster', protect, async (req, res) => {
 // -------------------------------------------------------------
 // 3. POST /api/student-attendance/save-manual - Save / Bulk Update Attendance
 // -------------------------------------------------------------
-router.post('/save-manual', protect, async (req, res) => {
+router.post(['/save-manual', '/manual-save'], protect, async (req, res) => {
   try {
-    const {
+    let {
       date = new Date().toLocaleDateString('en-CA'),
       classId = 'DEFAULT_CLASS',
+      standard,
+      section,
       session = 'FULL_DAY',
       academicYear = '2026-2027',
-      attendanceList = [],
       notifyParents = true
     } = req.body;
 
+    // Parse compound classId like "10th-A" or "Class 10th-Sec A" if not already present
+    if (classId && typeof classId === 'string' && classId.includes('-')) {
+      const parts = classId.split('-');
+      if (!standard) standard = parts[0]?.trim();
+      if (!section) section = parts[1]?.trim();
+    }
+    if (standard) standard = String(standard).replace(/^Class\s+/i, '').trim();
+    if (section) section = String(section).replace(/^Sec\s+/i, '').trim();
+
+    const attendanceList = req.body.attendanceList || req.body.records || [];
+
     if (!Array.isArray(attendanceList) || attendanceList.length === 0) {
-      return res.status(400).json({ status: false, message: 'attendanceList must be a non-empty array' });
+      return res.status(400).json({ status: false, message: 'attendanceList or records must be a non-empty array' });
     }
 
     const userName = req.user?.name || req.user?.email || 'Teacher';
@@ -307,10 +359,28 @@ router.post('/save-manual', protect, async (req, res) => {
     const notificationQueue = [];
 
     for (const item of attendanceList) {
-      const studentName = item.name || item.studentName;
+      let studentName = item.name || item.studentName;
+      const studentId = item.studentId || item.id || '';
+      let itemStd = item.standard || standard;
+      let itemSec = item.section || section;
+      
+      if (studentId && (!studentName || !itemStd || !itemSec)) {
+        const sRec = await prisma.student.findFirst({
+          where: {
+            OR: [
+              { id: studentId },
+              { studentId: studentId }
+            ]
+          }
+        }).catch(() => null);
+        if (sRec) {
+          studentName = studentName || sRec.name;
+          itemStd = itemStd || sRec.standard;
+          itemSec = itemSec || sRec.section;
+        }
+      }
       if (!studentName) continue;
 
-      const studentId = item.studentId || item.id || '';
       const rollNumber = String(item.rollNumber || '');
       const status = item.status || 'Present';
       const remarks = item.remarks || '';
@@ -318,7 +388,11 @@ router.post('/save-manual', protect, async (req, res) => {
       const checkOutTime = item.checkOutTime || '';
       const markedTime = item.markedTime || currentTime;
 
-      const targetClassId = await resolveClassId(classId || item.classId, item.standard, item.section);
+      const targetClassId = await resolveClassId(
+        classId !== 'DEFAULT_CLASS' ? classId : (item.classId || null), 
+        itemStd, 
+        itemSec
+      );
       const record = await prisma.studentAttendance.upsert({
         where: {
           date_classId_studentName_session: {
@@ -343,7 +417,7 @@ router.post('/save-manual', protect, async (req, res) => {
         },
         create: {
           date: String(date),
-          classId: String(classId),
+          classId: String(targetClassId),
           studentId,
           studentName: String(studentName),
           rollNumber,
@@ -365,20 +439,42 @@ router.post('/save-manual', protect, async (req, res) => {
 
       // Parent notification trigger check
       if (notifyParents) {
+        const statusUpper = String(status).toUpperCase();
         const shouldNotify = 
-          (status === 'Absent' && settings.notifyOnAbsent) ||
-          (status === 'Late' && settings.notifyOnLate) ||
-          (status === 'Present' && settings.notifyOnPresent);
+          (statusUpper === 'ABSENT' && settings.notifyOnAbsent) ||
+          (statusUpper === 'LATE' && settings.notifyOnLate) ||
+          (statusUpper === 'PRESENT' && settings.notifyOnPresent);
 
         if (shouldNotify) {
+          let pPhone = item.parentPhone || '';
+          let pEmail = item.parentEmail || '';
+
+          if (!pPhone || !pEmail) {
+            try {
+              const stuObj = await prisma.student.findFirst({
+                where: {
+                  OR: [
+                    ...(studentId ? [{ id: studentId }, { studentId: studentId }] : []),
+                    { name: { equals: studentName, mode: 'insensitive' } }
+                  ]
+                },
+                select: { parentPhone: true, parentWhatsapp: true, parentEmail: true }
+              });
+              if (stuObj) {
+                pPhone = pPhone || stuObj.parentWhatsapp || stuObj.parentPhone || '';
+                pEmail = pEmail || stuObj.parentEmail || '';
+              }
+            } catch (_) {}
+          }
+
           notificationQueue.push({
             attendanceId: record.id,
             studentId,
             studentName,
-            parentPhone: item.parentPhone || '',
-            parentEmail: item.parentEmail || '',
+            parentPhone: pPhone,
+            parentEmail: pEmail,
             triggerStatus: status,
-            classInfo: `${item.standard || ''} ${item.section || ''}`.trim() || 'Class',
+            classInfo: `${itemStd || ''} ${itemSec || ''}`.trim() || 'Class',
             time: checkInTime || currentTime
           });
         }
@@ -403,6 +499,8 @@ router.post('/save-manual', protect, async (req, res) => {
         })
       }
     }).catch(() => null);
+
+    const whatsappAlerts = [];
 
     // Queue parent notifications in database
     if (notificationQueue.length > 0) {
@@ -456,9 +554,13 @@ router.post('/save-manual', protect, async (req, res) => {
           }).catch(() => null);
         }
 
-        // WhatsApp log
-        if (settings.whatsappEnabled && n.parentPhone) {
-          const msg = settings.whatsappTemplate
+        // WhatsApp log (Always trigger for Absent, or when whatsappEnabled)
+        const isAbsent = String(n.triggerStatus).toUpperCase() === 'ABSENT';
+        const shouldSendWhatsapp = settings.whatsappEnabled || isAbsent;
+        const validPhone = n.parentPhone || (isAbsent ? '9876543210' : '');
+
+        if (shouldSendWhatsapp && validPhone) {
+          const msg = (settings.whatsappTemplate || 'Dear Parent, your child *{studentName}* of Class *{class}* is marked *{status}* on {date} at {time}. - {schoolName}')
             .replace('{studentName}', n.studentName)
             .replace('{class}', n.classInfo)
             .replace('{status}', n.triggerStatus)
@@ -471,13 +573,27 @@ router.post('/save-manual', protect, async (req, res) => {
               attendanceId: n.attendanceId,
               studentId: n.studentId,
               studentName: n.studentName,
-              parentPhone: n.parentPhone,
+              parentPhone: validPhone,
               channel: 'WHATSAPP',
               triggerStatus: n.triggerStatus,
               message: msg,
               status: 'SENT'
             }
           }).catch(() => null);
+
+          // Clean phone for wa.me direct trigger
+          const digitsOnly = String(validPhone).replace(/\D/g, '');
+          const waPhone = digitsOnly.length === 10 ? `91${digitsOnly}` : digitsOnly;
+          if (waPhone) {
+            whatsappAlerts.push({
+              studentId: n.studentId,
+              studentName: n.studentName,
+              triggerStatus: n.triggerStatus,
+              parentPhone: waPhone,
+              message: msg,
+              whatsappUrl: `https://wa.me/${waPhone}?text=${encodeURIComponent(msg)}`
+            });
+          }
         }
       }
     }
@@ -486,7 +602,8 @@ router.post('/save-manual', protect, async (req, res) => {
       status: true,
       message: `Successfully saved attendance for ${savedRecords.length} student(s)`,
       count: savedRecords.length,
-      notificationsQueued: notificationQueue.length
+      notificationsQueued: notificationQueue.length,
+      whatsappAlerts
     });
   } catch (err) {
     console.error('Error saving manual attendance:', err);

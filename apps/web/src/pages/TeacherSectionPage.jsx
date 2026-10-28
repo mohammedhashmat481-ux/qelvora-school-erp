@@ -1,16 +1,24 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
-import { getProfile, updateTeacherProfile, getTimetables, getAttendanceLogs, getMyLeaveRequests, requestLeave, getTeacherDashboard, classLogin, classLogout, getTeacherFeedbackAnalytics, getDetailsReport, exportAttendanceExcel, getStudentsList } from '../services/authService';
+import { 
+  getProfile, updateTeacherProfile, getTimetables, getAttendanceLogs, 
+  getMyLeaveRequests, requestLeave, getTeacherDashboard, classLogin, 
+  classLogout, getTeacherFeedbackAnalytics, getDetailsReport, 
+  exportAttendanceExcel, getStudentsList, getMyTeacherAllocations,
+  getMyNotices, markNoticeRead, getHomeworkList, assignHomework,
+  gradeHomeworkSubmission, deleteHomework, getExamNames, getExamMarks,
+  saveBulkExamMarks, togglePublishExam
+} from '../services/authService';
 import Sidebar from '../components/ui/Sidebar';
 import Spinner from '../components/ui/Spinner';
+import { 
+  Award, BookOpen, Bell, Send, CheckCircle2, AlertCircle, Plus, 
+  Eye, Check, X, FileText, ChevronDown, Calendar, Users, Star, 
+  Sparkles, CheckCheck, Clock, Download, RefreshCw, Trash2, Printer
+} from 'lucide-react';
 
-const DEFAULT_STUDENTS = [
-  'Aarav Sharma', 'Ananya Iyer', 'Vihaan Patel', 'Diya Sen', 'Sai Krishna', 
-  'Meera Nair', 'Rohan Das', 'Ishaan Roy', 'Kavya Reddy', 'Aditya Joshi',
-  'Priya Verma', 'Kabir Malhotra', 'Zara Khan', 'Arjun Mehta', 'Sneha Patil'
-];
 
 const TeacherSectionPage = () => {
   const { user, refreshProfile } = useAuth();
@@ -58,6 +66,32 @@ const TeacherSectionPage = () => {
   const [feedbackAnalytics, setFeedbackAnalytics] = useState(null);
   const [loadingFeedback, setLoadingFeedback] = useState(false);
 
+  // Teacher Allocations & Mappings State
+  const [teacherAllocations, setTeacherAllocations] = useState({ classes: [], mappings: [] });
+
+  // Marks Entry State
+  const [examList, setExamList] = useState([]);
+  const [selectedExamId, setSelectedExamId] = useState('');
+  const [selectedMarksClass, setSelectedMarksClass] = useState('');
+  const [selectedMarksSubject, setSelectedMarksSubject] = useState('');
+  const [marksRoster, setMarksRoster] = useState([]);
+  const [loadingMarks, setLoadingMarks] = useState(false);
+  const [savingMarks, setSavingMarks] = useState(false);
+  const [isExamPublished, setIsExamPublished] = useState(false);
+  const [publishingExam, setPublishingExam] = useState(false);
+
+  // Homework State
+  const [homeworkList, setHomeworkList] = useState([]);
+  const [loadingHomework, setLoadingHomework] = useState(false);
+  const [showAddHwModal, setShowAddHwModal] = useState(false);
+  const [newHwForm, setNewHwForm] = useState({ title: '', description: '', standard: '', section: 'A', subject: '', dueDate: 'Tomorrow (09:00 AM)' });
+  const [selectedHwForSubmissions, setSelectedHwForSubmissions] = useState(null);
+  const [gradeModal, setGradeModal] = useState({ show: false, submissionId: null, studentName: '', grade: 'A+', feedback: '' });
+
+  // Notices State
+  const [noticesList, setNoticesList] = useState([]);
+  const [loadingNotices, setLoadingNotices] = useState(false);
+
   // Load dashboard/tab details
   const fetchData = useCallback(async () => {
     try {
@@ -73,13 +107,26 @@ const TeacherSectionPage = () => {
 
         const tId = prof.data.teacherId || prof.data._id;
 
-        // Load timetable, attendance, leaves, and dashboard today's schedule safely
-        const [timeRes, attRes, leavesRes, dashRes] = await Promise.all([
+        // Load timetable, attendance, leaves, dashboard, allocations, and exams safely
+        const [timeRes, attRes, leavesRes, dashRes, allocRes, examRes] = await Promise.all([
           getTimetables({ teacherId: tId }).catch(() => ({ status: false, data: [] })),
           getAttendanceLogs().catch(() => ({ status: false, data: [] })),
           getMyLeaveRequests().catch(() => ({ status: false, data: [] })),
-          getTeacherDashboard().catch(() => null)
+          getTeacherDashboard().catch(() => null),
+          getMyTeacherAllocations().catch(() => ({ status: false, data: { classes: [], mappings: [] } })),
+          getExamNames().catch(() => ({ status: false, data: [] }))
         ]);
+
+        if (allocRes?.status && allocRes.data) {
+          setTeacherAllocations(allocRes.data);
+        }
+
+        if (examRes?.status && Array.isArray(examRes.data)) {
+          setExamList(examRes.data);
+          if (examRes.data.length > 0 && !selectedExamId) {
+            setSelectedExamId(examRes.data[0].id);
+          }
+        }
 
         if (timeRes?.status && Array.isArray(timeRes.data)) {
           setTimetable(timeRes.data);
@@ -128,6 +175,28 @@ const TeacherSectionPage = () => {
             setLoadingFeedback(false);
           }
         }
+
+        if (activeTab === 'homework') {
+          setLoadingHomework(true);
+          try {
+            const hwRes = await getHomeworkList();
+            if (hwRes?.status && Array.isArray(hwRes.data)) {
+              setHomeworkList(hwRes.data);
+            }
+          } catch (_) {}
+          setLoadingHomework(false);
+        }
+
+        if (activeTab === 'notices') {
+          setLoadingNotices(true);
+          try {
+            const notRes = await getMyNotices();
+            if (notRes?.status && Array.isArray(notRes.data)) {
+              setNoticesList(notRes.data);
+            }
+          } catch (_) {}
+          setLoadingNotices(false);
+        }
       }
       setLoading(false);
     } catch (err) {
@@ -135,7 +204,7 @@ const TeacherSectionPage = () => {
       toast.error('Failed to load profile details.');
       setLoading(false);
     }
-  }, [activeTab, reportMonth, reportYear]);
+  }, [activeTab, reportMonth, reportYear, selectedExamId]);
 
   const fetchDetails = useCallback(async (empId) => {
     if (!empId) return;
@@ -460,33 +529,59 @@ const TeacherSectionPage = () => {
   // Group timetable by weekdays
   const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-  // Extract unique classes mapped to this teacher
-  const uniqueClasses = [];
-  timetable.forEach(t => {
-    const cls = t.class || (t.standard ? {
-      _id: t.classId || `${t.standard}-${t.section || 'A'}`,
-      name: `Class ${t.standard} - Section ${t.section || 'A'}`,
-      standard: t.standard,
-      section: t.section || 'A'
-    } : null);
-    if (cls && !uniqueClasses.find(c => c._id === cls._id || (c.standard === cls.standard && c.section === cls.section))) {
-      uniqueClasses.push(cls);
-    }
-  });
-
-  if (profileData?.assignedClass) {
-    const std = profileData.assignedClass;
-    const sec = profileData.assignedSection || 'A';
-    const classKey = `${std}-${sec}`;
-    if (!uniqueClasses.find(c => (c.standard === std && c.section === sec) || c._id === classKey)) {
-      uniqueClasses.push({
-        _id: classKey,
-        name: `Class ${std} - Section ${sec}`,
-        standard: std,
-        section: sec
+  // Extract unique classes mapped to this teacher (prioritize TeacherClassSubjectMapping from API)
+  const uniqueClasses = useMemo(() => {
+    const list = [];
+    if (teacherAllocations?.classes && teacherAllocations.classes.length > 0) {
+      teacherAllocations.classes.forEach(c => {
+        const idKey = c.classId || `${c.standard}-${c.section || 'A'}`;
+        list.push({
+          _id: idKey,
+          id: idKey,
+          name: c.name || `Class ${c.standard} - Section ${c.section || 'A'}`,
+          standard: c.standard,
+          section: c.section || 'A',
+          board: c.board || 'CBSE',
+          subjects: c.subjects && c.subjects.length > 0 ? c.subjects : ['Mathematics', 'Science'],
+          isClassTeacher: c.isClassTeacher || false
+        });
       });
     }
-  }
+
+    timetable.forEach(t => {
+      const clsKey = `${t.standard}-${t.section || 'A'}`;
+      if (!list.find(c => c._id === clsKey || (c.standard === t.standard && c.section === (t.section || 'A')))) {
+        list.push({
+          _id: t.classId || clsKey,
+          id: t.classId || clsKey,
+          name: `Class ${t.standard} - Section ${t.section || 'A'}`,
+          standard: t.standard,
+          section: t.section || 'A',
+          board: 'CBSE',
+          subjects: t.subject ? [t.subject] : ['Mathematics', 'Science']
+        });
+      }
+    });
+
+    if (profileData?.assignedClass) {
+      const std = profileData.assignedClass;
+      const sec = profileData.assignedSection || 'A';
+      const classKey = `${std}-${sec}`;
+      if (!list.find(c => (c.standard === std && c.section === sec) || c._id === classKey)) {
+        list.push({
+          _id: classKey,
+          id: classKey,
+          name: `Class ${std} - Section ${sec}`,
+          standard: std,
+          section: sec,
+          board: 'CBSE',
+          subjects: ['General Science', 'Mathematics']
+        });
+      }
+    }
+
+    return list;
+  }, [teacherAllocations, timetable, profileData]);
 
   const [selectedClassId, setSelectedClassId] = useState('');
   const [classStudents, setClassStudents] = useState([]);
@@ -496,8 +591,12 @@ const TeacherSectionPage = () => {
     if (uniqueClasses.length > 0 && !selectedClassId) {
       setSelectedClassId(uniqueClasses[0]._id);
     }
-  }, [uniqueClasses, selectedClassId]);
+    if (uniqueClasses.length > 0 && !selectedMarksClass) {
+      setSelectedMarksClass(uniqueClasses[0]._id);
+    }
+  }, [uniqueClasses, selectedClassId, selectedMarksClass]);
 
+  // Load real student roster when activeTab === 'students'
   useEffect(() => {
     if (activeTab === 'students' && selectedClassId) {
       const targetClass = uniqueClasses.find(c => c._id === selectedClassId);
@@ -507,33 +606,253 @@ const TeacherSectionPage = () => {
       setLoadingStudents(true);
       getStudentsList({ standard: std, section: sec })
         .then(res => {
-          if (res?.status && Array.isArray(res.data) && res.data.length > 0) {
+          if (res?.status && Array.isArray(res.data)) {
             setClassStudents(res.data);
           } else {
-            // Fallback to default student names mapped with proper standard
-            setClassStudents(DEFAULT_STUDENTS.map((name, i) => ({
-              id: `std-def-${i}`,
-              name,
-              rollNumber: `${100 + i + 1}`,
-              studentId: `ADM-2026-${String(i + 1).padStart(3, '0')}`,
-              standard: std || '10th',
-              section: sec || 'A'
-            })));
+            setClassStudents([]);
           }
         })
         .catch(() => {
-          setClassStudents(DEFAULT_STUDENTS.map((name, i) => ({
-            id: `std-def-${i}`,
-            name,
-            rollNumber: `${100 + i + 1}`,
-            studentId: `ADM-2026-${String(i + 1).padStart(3, '0')}`,
-            standard: std || '10th',
-            section: sec || 'A'
-          })));
+          setClassStudents([]);
         })
         .finally(() => setLoadingStudents(false));
     }
   }, [activeTab, selectedClassId, uniqueClasses]);
+
+  // Sync subjects for Marks Entry
+  const marksClassObj = uniqueClasses.find(c => c._id === selectedMarksClass);
+  const availableMarksSubjects = marksClassObj?.subjects && marksClassObj.subjects.length > 0
+    ? marksClassObj.subjects
+    : ['Mathematics', 'Science'];
+
+  useEffect(() => {
+    if (availableMarksSubjects.length > 0 && (!selectedMarksSubject || !availableMarksSubjects.includes(selectedMarksSubject))) {
+      setSelectedMarksSubject(availableMarksSubjects[0]);
+    }
+  }, [availableMarksSubjects, selectedMarksSubject]);
+
+  // Dynamic Grade Calculator
+  const calculateGradeBadge = (marks, isAbsent) => {
+    if (isAbsent) return { grade: 'AB', status: 'ABSENT', bg: 'bg-amber-100 text-amber-800 border-amber-300' };
+    if (marks === '' || marks === null || marks === undefined) return { grade: '-', status: 'PENDING', bg: 'bg-gray-100 text-gray-500 border-gray-200' };
+    const m = Number(marks);
+    if (isNaN(m)) return { grade: '-', status: 'PENDING', bg: 'bg-gray-100 text-gray-500 border-gray-200' };
+    if (m >= 90) return { grade: 'A+', status: 'PASS', bg: 'bg-emerald-100 text-emerald-800 border-emerald-300' };
+    if (m >= 80) return { grade: 'A', status: 'PASS', bg: 'bg-emerald-50 text-emerald-700 border-emerald-250' };
+    if (m >= 70) return { grade: 'B+', status: 'PASS', bg: 'bg-blue-100 text-blue-800 border-blue-300' };
+    if (m >= 60) return { grade: 'B', status: 'PASS', bg: 'bg-blue-50 text-blue-700 border-blue-200' };
+    if (m >= 50) return { grade: 'C', status: 'PASS', bg: 'bg-yellow-100 text-yellow-800 border-yellow-300' };
+    if (m >= 35) return { grade: 'D', status: 'PASS', bg: 'bg-orange-100 text-orange-800 border-orange-300' };
+    return { grade: 'F', status: 'FAIL', bg: 'bg-rose-100 text-rose-800 border-rose-300' };
+  };
+
+  // Load Marks Roster
+  const loadMarksRoster = useCallback(async () => {
+    if (!selectedExamId || !selectedMarksClass || !selectedMarksSubject) return;
+    const targetClass = uniqueClasses.find(c => c._id === selectedMarksClass);
+    if (!targetClass) return;
+
+    setLoadingMarks(true);
+    try {
+      const [studentsRes, marksRes] = await Promise.all([
+        getStudentsList({ standard: targetClass.standard, section: targetClass.section }),
+        getExamMarks({
+          examNameId: selectedExamId,
+          standard: targetClass.standard,
+          section: targetClass.section,
+          subjectName: selectedMarksSubject
+        }).catch(() => ({ status: false, data: [] }))
+      ]);
+
+      const stuList = studentsRes?.status && Array.isArray(studentsRes.data) ? studentsRes.data : [];
+      const marksList = marksRes?.status && Array.isArray(marksRes.data) ? marksRes.data : [];
+
+      const currentExamObj = examList.find(e => e.id === selectedExamId);
+      setIsExamPublished(!!currentExamObj?.isPublished);
+
+      const merged = stuList.map(stu => {
+        const found = marksList.find(m => m.studentId === stu.id);
+        const marksObtained = found ? found.marksObtained : '';
+        const isAbsent = found ? found.isAbsent : false;
+        const remarks = found ? (found.remarks || '') : '';
+        const gradeBadge = calculateGradeBadge(marksObtained, isAbsent);
+
+        return {
+          studentId: stu.id,
+          studentName: stu.name,
+          rollNumber: stu.rollNumber || stu.studentId,
+          marksObtained,
+          isAbsent,
+          remarks,
+          grade: gradeBadge.grade,
+          status: gradeBadge.status,
+          maxMarks: 100
+        };
+      });
+
+      setMarksRoster(merged);
+    } catch (err) {
+      console.error('Error loading marks roster:', err);
+      toast.error('Failed to load marks roster');
+    } finally {
+      setLoadingMarks(false);
+    }
+  }, [selectedExamId, selectedMarksClass, selectedMarksSubject, uniqueClasses, examList]);
+
+  useEffect(() => {
+    if (activeTab === 'marks') {
+      loadMarksRoster();
+    }
+  }, [activeTab, loadMarksRoster]);
+
+  // Handle Marks input change
+  const handleMarkChange = (studentId, field, value) => {
+    setMarksRoster(prev => prev.map(item => {
+      if (item.studentId !== studentId) return item;
+      const updated = { ...item, [field]: value };
+      if (field === 'isAbsent' && value === true) {
+        updated.marksObtained = 0;
+      }
+      const badge = calculateGradeBadge(updated.marksObtained, updated.isAbsent);
+      updated.grade = badge.grade;
+      updated.status = badge.status;
+      return updated;
+    }));
+  };
+
+  // Save Bulk Marks
+  const handleSaveMarks = async () => {
+    if (!selectedExamId || !selectedMarksClass || !selectedMarksSubject) {
+      toast.error('Please select Exam, Class, and Subject');
+      return;
+    }
+    const targetClass = uniqueClasses.find(c => c._id === selectedMarksClass);
+    if (!targetClass) return;
+
+    setSavingMarks(true);
+    const toastId = toast.loading('Saving and linking marks to student records...');
+    try {
+      const payload = {
+        examNameId: selectedExamId,
+        standard: targetClass.standard,
+        section: targetClass.section,
+        subjectName: selectedMarksSubject,
+        marksList: marksRoster.map(s => ({
+          studentId: s.studentId,
+          studentName: s.studentName,
+          marksObtained: s.isAbsent ? 0 : Number(s.marksObtained || 0),
+          isAbsent: !!s.isAbsent,
+          remarks: s.remarks || '',
+          maxMarks: 100
+        }))
+      };
+
+      const res = await saveBulkExamMarks(payload);
+      if (res?.status || res?.success) {
+        toast.success('Marks saved successfully! Student report cards updated.', { id: toastId });
+        loadMarksRoster();
+      } else {
+        toast.error(res?.message || 'Failed to save marks.', { id: toastId });
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.message || 'Error saving marks', { id: toastId });
+    } finally {
+      setSavingMarks(false);
+    }
+  };
+
+  // Toggle Exam Publish
+  const handleTogglePublish = async () => {
+    if (!selectedExamId) return;
+    setPublishingExam(true);
+    const toastId = toast.loading('Updating report card publication status...');
+    try {
+      const res = await togglePublishExam(selectedExamId);
+      if (res?.status || res?.success) {
+        const newStatus = res?.data?.isPublished;
+        setIsExamPublished(newStatus);
+        setExamList(prev => prev.map(e => e.id === selectedExamId ? { ...e, isPublished: newStatus } : e));
+        toast.success(newStatus ? 'Report Cards Published! Parents & Students can now view results.' : 'Report Cards Unpublished.', { id: toastId });
+      } else {
+        toast.error(res?.message || 'Failed to toggle publication', { id: toastId });
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.message || 'Error toggling publish', { id: toastId });
+    } finally {
+      setPublishingExam(false);
+    }
+  };
+
+  // Handle Create Homework
+  const handleCreateHomework = async (e) => {
+    e.preventDefault();
+    if (!newHwForm.title || !newHwForm.standard || !newHwForm.subject) {
+      toast.error('Title, Class, and Subject are required');
+      return;
+    }
+    const toastId = toast.loading('Publishing homework to class...');
+    try {
+      const res = await assignHomework(newHwForm);
+      if (res?.status) {
+        toast.success('Homework published successfully!', { id: toastId });
+        setShowAddHwModal(false);
+        setNewHwForm({ title: '', description: '', standard: '', section: 'A', subject: '', dueDate: 'Tomorrow (09:00 AM)' });
+        const hwRes = await getHomeworkList();
+        if (hwRes?.status && Array.isArray(hwRes.data)) setHomeworkList(hwRes.data);
+      } else {
+        toast.error(res?.message || 'Failed to publish homework', { id: toastId });
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.message || 'Error creating homework', { id: toastId });
+    }
+  };
+
+  // Handle Delete Homework
+  const handleDeleteHomework = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this homework?')) return;
+    try {
+      const res = await deleteHomework(id);
+      if (res?.status) {
+        toast.success('Homework deleted');
+        setHomeworkList(prev => prev.filter(h => h.id !== id));
+      }
+    } catch (err) {
+      toast.error('Failed to delete homework');
+    }
+  };
+
+  // Handle Grade Submission
+  const handleGradeSubmission = async (e) => {
+    e.preventDefault();
+    if (!gradeModal.submissionId) return;
+    const toastId = toast.loading('Saving grade and feedback...');
+    try {
+      const res = await gradeHomeworkSubmission(gradeModal.submissionId, {
+        grade: gradeModal.grade,
+        feedback: gradeModal.feedback
+      });
+      if (res?.status) {
+        toast.success('Submission graded successfully!', { id: toastId });
+        setGradeModal({ show: false, submissionId: null, studentName: '', grade: 'A+', feedback: '' });
+        const hwRes = await getHomeworkList();
+        if (hwRes?.status && Array.isArray(hwRes.data)) setHomeworkList(hwRes.data);
+        if (selectedHwForSubmissions) {
+          const updatedSelected = hwRes.data.find(h => h.id === selectedHwForSubmissions.id);
+          if (updatedSelected) setSelectedHwForSubmissions(updatedSelected);
+        }
+      }
+    } catch (err) {
+      toast.error('Failed to grade submission', { id: toastId });
+    }
+  };
+
+  // Handle Mark Notice Read
+  const handleMarkNotice = async (id) => {
+    try {
+      await markNoticeRead(id);
+      setNoticesList(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
+    } catch (_) {}
+  };
 
   if (loading) {
     return (
@@ -551,13 +870,51 @@ const TeacherSectionPage = () => {
         <header className="mb-6 flex justify-between items-center bg-[#172B4D] border border-[#29456D] shadow-sm rounded-2xl p-6 text-white">
           <div>
             <span className="text-[10px] font-bold text-[#DBEAFE] uppercase tracking-widest block mb-1">
-              Faculty Section
+              Faculty Section &bull; {profileData?.name || 'Academic Portal'}
             </span>
             <h1 className="text-2xl font-black text-white capitalize">
-              {activeTab.replace('-', ' ')}
+              {activeTab === 'marks' ? 'Examination Marks Entry' : activeTab === 'homework' ? 'Homework & Assignments' : activeTab === 'notices' ? 'Administrative Notices & Circulars' : activeTab === 'students' ? 'My Classes & Student Roster' : activeTab.replace('-', ' ')}
             </h1>
           </div>
+          <div className="flex items-center gap-3">
+            <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-mono border border-white/20">
+              Faculty ID: {profileData?.employeeId || 'FAC'}
+            </span>
+          </div>
         </header>
+
+        {/* Tab Navigation Pill Bar */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-6 scrollbar-thin">
+          {[
+            { id: 'profile', label: 'Faculty Profile', icon: Users },
+            { id: 'students', label: 'My Classes & Students', icon: Users },
+            { id: 'marks', label: 'Marks Entry & Exams', icon: Award },
+            { id: 'homework', label: 'Homework & Tasks', icon: BookOpen },
+            { id: 'timetable', label: 'My Timetable', icon: Calendar },
+            { id: 'notices', label: 'Notices & Circulars', icon: Bell },
+            { id: 'attendance', label: 'Attendance Grid', icon: CheckCircle2 },
+            { id: 'leaves', label: 'Leave Requests', icon: FileText },
+            { id: 'feedback', label: 'Parent Reviews', icon: Star },
+          ].map(tabItem => {
+            const Icon = tabItem.icon;
+            const isActive = activeTab === tabItem.id;
+            return (
+              <button
+                key={tabItem.id}
+                onClick={() => navigate(`/teacher-section?tab=${tabItem.id}`)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs whitespace-nowrap transition-all shadow-sm ${
+                  isActive
+                    ? 'bg-[#172B4D] text-white shadow-md'
+                    : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-50 hover:text-stone-900'
+                }`}
+              >
+                <Icon className={`w-4 h-4 ${isActive ? 'text-blue-300' : 'text-stone-400'}`} />
+                <span>{tabItem.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
 
         {/* PROFILE TAB */}
         {activeTab === 'profile' && profileData && (
@@ -1042,7 +1399,402 @@ const TeacherSectionPage = () => {
           </div>
         )}
 
-        {/* ATTENDANCE TAB */}
+        {/* MARKS ENTRY TAB */}
+        {activeTab === 'marks' && (
+          <div className="space-y-6">
+            {/* Top Config Card */}
+            <div className="bg-white border border-[#e9ebec] shadow-sm rounded-2xl p-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-stone-200">
+                <div>
+                  <h3 className="text-lg font-black text-stone-850 flex items-center gap-2">
+                    <Award className="w-5 h-5 text-amber-500" />
+                    <span>Academic Examination Marks Entry</span>
+                  </h3>
+                  <p className="text-xs text-stone-500 mt-1">
+                    Select the examination session, your allocated class, and subject to enter or modify student marks.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    onClick={handleTogglePublish}
+                    disabled={publishingExam || !selectedExamId}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border shadow-sm ${
+                      isExamPublished
+                        ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
+                        : 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100'
+                    }`}
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    <span>{isExamPublished ? '✓ Published to Parents & Students' : '🔒 Unpublished (Draft Mode)'}</span>
+                  </button>
+
+                  <button
+                    onClick={handleSaveMarks}
+                    disabled={savingMarks || marksRoster.length === 0}
+                    className="px-5 py-2.5 bg-[#172B4D] hover:bg-[#29456D] text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+                  >
+                    <CheckCheck className="w-4 h-4" />
+                    <span>{savingMarks ? 'Saving...' : 'Save & Sync Marks'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Selector Controls */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6">
+                <div>
+                  <label className="block text-[11px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">
+                    1. Examination Session
+                  </label>
+                  <select
+                    value={selectedExamId}
+                    onChange={(e) => setSelectedExamId(e.target.value)}
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                  >
+                    {examList.length === 0 ? (
+                      <option value="">No Examinations Found</option>
+                    ) : (
+                      examList.map(e => (
+                        <option key={e.id} value={e.id}>
+                          {e.name} {e.isPublished ? '✓ (Published)' : ''}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">
+                    2. Allocated Class & Section
+                  </label>
+                  <select
+                    value={selectedMarksClass}
+                    onChange={(e) => setSelectedMarksClass(e.target.value)}
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                  >
+                    {uniqueClasses.length === 0 ? (
+                      <option value="">No Classes Allocated</option>
+                    ) : (
+                      uniqueClasses.map(cls => (
+                        <option key={cls._id} value={cls._id}>
+                          Class {cls.standard} - Section {cls.section} ({cls.board})
+                        </option>
+                      ))
+                    )}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">
+                    3. Teaching Subject
+                  </label>
+                  <select
+                    value={selectedMarksSubject}
+                    onChange={(e) => setSelectedMarksSubject(e.target.value)}
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                  >
+                    {availableMarksSubjects.map(sub => (
+                      <option key={sub} value={sub}>
+                        {sub}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Marks Roster Table */}
+            <div className="bg-white border border-[#e9ebec] shadow-sm rounded-2xl overflow-hidden">
+              <div className="p-6 border-b border-stone-200 flex justify-between items-center bg-stone-50/50">
+                <div>
+                  <h4 className="text-sm font-black text-stone-850">
+                    Student Marks Roster &bull; {selectedMarksSubject}
+                  </h4>
+                  <p className="text-xs text-stone-400 mt-0.5">
+                    Enrolled students in Class {marksClassObj?.standard || ''}-{marksClassObj?.section || ''}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-bold bg-white border border-stone-200 px-3 py-1 rounded-full text-stone-600">
+                    Total Students: {marksRoster.length}
+                  </span>
+                  <button
+                    onClick={loadMarksRoster}
+                    className="p-1.5 rounded-lg border border-stone-200 text-stone-500 hover:bg-stone-100"
+                    title="Reload Roster"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {loadingMarks ? (
+                <div className="p-12 text-center"><Spinner size="lg" className="mx-auto" /></div>
+              ) : marksRoster.length === 0 ? (
+                <div className="p-12 text-center text-stone-400 italic text-xs">
+                  No students found enrolled in this class section. Please register students in Academic Management.
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-left text-xs divide-y divide-stone-200">
+                    <thead className="bg-stone-50 text-stone-500 font-bold uppercase text-[10px] tracking-wider">
+                      <tr>
+                        <th className="py-3 px-4 w-12 text-center">#</th>
+                        <th className="py-3 px-4 w-28">Roll No</th>
+                        <th className="py-3 px-4 min-w-[160px]">Student Name</th>
+                        <th className="py-3 px-4 w-24 text-center">Max Marks</th>
+                        <th className="py-3 px-4 w-36 text-center">Marks Obtained</th>
+                        <th className="py-3 px-4 w-28 text-center">Absent?</th>
+                        <th className="py-3 px-4 w-24 text-center">Grade</th>
+                        <th className="py-3 px-4 w-24 text-center">Result</th>
+                        <th className="py-3 px-4 min-w-[200px]">Teacher Remarks</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-stone-100 bg-white">
+                      {marksRoster.map((item, idx) => {
+                        const gradeInfo = calculateGradeBadge(item.marksObtained, item.isAbsent);
+                        return (
+                          <tr key={item.studentId} className="hover:bg-blue-50/20 transition-all">
+                            <td className="py-3.5 px-4 text-center font-mono text-stone-400">{idx + 1}</td>
+                            <td className="py-3.5 px-4 font-mono font-bold text-stone-700">#{item.rollNumber}</td>
+                            <td className="py-3.5 px-4 font-extrabold text-stone-900">{item.studentName}</td>
+                            <td className="py-3.5 px-4 text-center font-mono text-stone-500 font-bold">100</td>
+                            <td className="py-3.5 px-4 text-center">
+                              <input
+                                type="number"
+                                min="0"
+                                max="100"
+                                disabled={item.isAbsent}
+                                placeholder="0 - 100"
+                                value={item.marksObtained}
+                                onChange={(e) => handleMarkChange(item.studentId, 'marksObtained', e.target.value)}
+                                className={`w-24 text-center py-1.5 px-2 border rounded-lg font-black text-xs outline-none transition-all ${
+                                  item.isAbsent
+                                    ? 'bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'
+                                    : 'bg-stone-50 border-stone-300 focus:border-[#29456D] text-stone-850'
+                                }`}
+                              />
+                            </td>
+                            <td className="py-3.5 px-4 text-center">
+                              <label className="inline-flex items-center gap-1.5 cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  checked={!!item.isAbsent}
+                                  onChange={(e) => handleMarkChange(item.studentId, 'isAbsent', e.target.checked)}
+                                  className="rounded text-amber-600 focus:ring-amber-500 w-4 h-4 cursor-pointer"
+                                />
+                                <span className={`text-[11px] font-bold ${item.isAbsent ? 'text-amber-700' : 'text-stone-400'}`}>
+                                  {item.isAbsent ? 'ABSENT' : 'Present'}
+                                </span>
+                              </label>
+                            </td>
+                            <td className="py-3.5 px-4 text-center">
+                              <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-black border ${gradeInfo.bg}`}>
+                                {gradeInfo.grade}
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-4 text-center">
+                              <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
+                                gradeInfo.status === 'PASS'
+                                  ? 'bg-emerald-50 text-emerald-700'
+                                  : gradeInfo.status === 'ABSENT'
+                                    ? 'bg-amber-50 text-amber-700'
+                                    : gradeInfo.status === 'FAIL'
+                                      ? 'bg-rose-50 text-rose-700'
+                                      : 'bg-stone-50 text-stone-400'
+                              }`}>
+                                {gradeInfo.status}
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <input
+                                type="text"
+                                placeholder="Add remark..."
+                                value={item.remarks}
+                                onChange={(e) => handleMarkChange(item.studentId, 'remarks', e.target.value)}
+                                className="w-full bg-stone-50 border border-stone-200 rounded-lg px-3 py-1.5 text-xs text-stone-700 outline-none focus:border-[#29456D]"
+                              />
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Roster Footer Action */}
+              <div className="p-4 bg-stone-50 border-t border-stone-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div className="flex items-center gap-4 text-xs font-bold text-stone-600">
+                  <span>Present: {marksRoster.filter(s => !s.isAbsent && s.marksObtained !== '').length}</span>
+                  <span>Absent: {marksRoster.filter(s => s.isAbsent).length}</span>
+                  <span>Pending: {marksRoster.filter(s => !s.isAbsent && s.marksObtained === '').length}</span>
+                </div>
+                <button
+                  onClick={handleSaveMarks}
+                  disabled={savingMarks || marksRoster.length === 0}
+                  className="px-6 py-2.5 bg-[#172B4D] hover:bg-[#29456D] text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-2 disabled:opacity-50"
+                >
+                  <CheckCheck className="w-4 h-4" />
+                  <span>{savingMarks ? 'Saving...' : 'Save & Sync Marks'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* HOMEWORK TAB */}
+        {activeTab === 'homework' && (
+          <div className="space-y-6">
+            <div className="bg-white border border-[#e9ebec] shadow-sm rounded-2xl p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h3 className="text-lg font-black text-stone-850 flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-blue-500" />
+                  <span>Homework & Tasks Management</span>
+                </h3>
+                <p className="text-xs text-stone-500 mt-1">
+                  Assign homework to your allocated classes, track student submissions, and grade completed tasks.
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setNewHwForm({
+                    title: '',
+                    description: '',
+                    standard: uniqueClasses[0]?.standard || '8th',
+                    section: uniqueClasses[0]?.section || 'A',
+                    subject: availableMarksSubjects[0] || 'Mathematics',
+                    dueDate: 'Tomorrow (09:00 AM)'
+                  });
+                  setShowAddHwModal(true);
+                }}
+                className="px-4 py-2.5 bg-[#172B4D] hover:bg-[#29456D] text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Assign New Homework</span>
+              </button>
+            </div>
+
+            {/* Homework List */}
+            {loadingHomework ? (
+              <div className="text-center py-12"><Spinner size="lg" className="mx-auto" /></div>
+            ) : homeworkList.length === 0 ? (
+              <div className="bg-white border border-[#e9ebec] shadow-sm rounded-2xl p-12 text-center text-stone-400 italic text-xs">
+                No homework assignments created yet. Click "Assign New Homework" to create one for your class.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {homeworkList.map((hw) => (
+                  <div key={hw.id} className="bg-white border border-[#e9ebec] shadow-sm rounded-2xl p-6 space-y-4 hover:border-blue-300 transition-all">
+                    <div className="flex justify-between items-start gap-3">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-200">
+                            Class {hw.standard}-{hw.section}
+                          </span>
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-purple-50 text-purple-700 border border-purple-200">
+                            {hw.subject}
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-black text-stone-850 mt-2">{hw.title}</h4>
+                      </div>
+
+                      <button
+                        onClick={() => handleDeleteHomework(hw.id)}
+                        className="text-stone-400 hover:text-rose-600 p-1 rounded transition-all"
+                        title="Delete Homework"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <p className="text-xs text-stone-600 leading-relaxed bg-stone-50 p-3 rounded-xl border border-stone-200/60">
+                      {hw.description || 'No detailed instructions provided.'}
+                    </p>
+
+                    <div className="flex items-center justify-between text-xs pt-2 border-t border-stone-100">
+                      <div className="flex items-center gap-1.5 text-stone-500 font-medium text-[11px]">
+                        <Clock className="w-3.5 h-3.5 text-stone-400" />
+                        <span>Due: {hw.dueDate}</span>
+                      </div>
+
+                      <button
+                        onClick={() => setSelectedHwForSubmissions(hw)}
+                        className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-bold transition-all flex items-center gap-1"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Submissions ({hw.totalSubmissions || 0})</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* NOTICES & CIRCULARS TAB */}
+        {activeTab === 'notices' && (
+          <div className="space-y-6">
+            <div className="bg-white border border-[#e9ebec] shadow-sm rounded-2xl p-6">
+              <h3 className="text-lg font-black text-stone-850 flex items-center gap-2">
+                <Bell className="w-5 h-5 text-indigo-500" />
+                <span>Administrative Notices & Circulars</span>
+              </h3>
+              <p className="text-xs text-stone-500 mt-1">
+                Official notices, timetabling changes, and circulars issued by School Administration for academic faculty.
+              </p>
+            </div>
+
+            {loadingNotices ? (
+              <div className="text-center py-12"><Spinner size="lg" className="mx-auto" /></div>
+            ) : noticesList.length === 0 ? (
+              <div className="bg-white border border-[#e9ebec] shadow-sm rounded-2xl p-12 text-center text-stone-400 italic text-xs">
+                No active notices or circulars issued for your department.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {noticesList.map((notif) => (
+                  <div
+                    key={notif.id}
+                    className={`bg-white border rounded-2xl p-5 shadow-sm transition-all flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ${
+                      notif.isRead ? 'border-[#e9ebec] opacity-90' : 'border-blue-400 bg-blue-50/10'
+                    }`}
+                  >
+                    <div className="space-y-1.5 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                          notif.priority === 'URGENT'
+                            ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                            : 'bg-blue-100 text-blue-800 border border-blue-300'
+                        }`}>
+                          {notif.priority || 'CIRCULAR'}
+                        </span>
+                        <span className="text-[11px] font-bold text-stone-400">
+                          {new Date(notif.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </span>
+                        <span className="text-[11px] font-mono text-stone-500">&bull; From: {notif.senderName || 'School Administration'}</span>
+                      </div>
+                      <h4 className="text-sm font-black text-stone-850">{notif.title}</h4>
+                      <p className="text-xs text-stone-600 leading-relaxed">{notif.message}</p>
+                    </div>
+
+                    {!notif.isRead && (
+                      <button
+                        onClick={() => handleMarkNotice(notif.id)}
+                        className="px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-lg text-xs font-bold transition-all shrink-0"
+                      >
+                        ✓ Mark as Read
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {activeTab === 'attendance' && (
           <div className="space-y-8">
             {/* Monthly Calendar Grid View */}
@@ -1597,7 +2349,259 @@ const TeacherSectionPage = () => {
         </div>
       )}
 
+      {/* MODAL: ASSIGN HOMEWORK */}
+      {showAddHwModal && (
+        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white border border-stone-200 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
+            <div className="bg-[#172B4D] px-6 py-4 flex justify-between items-center text-white">
+              <h3 className="text-sm font-black flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-blue-300" />
+                <span>Assign New Homework & Task</span>
+              </h3>
+              <button onClick={() => setShowAddHwModal(false)} className="text-white/60 hover:text-white text-xl font-bold">&times;</button>
+            </div>
+            <form onSubmit={handleCreateHomework}>
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-stone-600 uppercase mb-1">Homework Title *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Quadratic Equations Exercise 4.2"
+                    value={newHwForm.title}
+                    onChange={(e) => setNewHwForm({ ...newHwForm, title: e.target.value })}
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-stone-600 uppercase mb-1">Class Standard *</label>
+                    <select
+                      value={newHwForm.standard}
+                      onChange={(e) => setNewHwForm({ ...newHwForm, standard: e.target.value })}
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                    >
+                      {uniqueClasses.map(cls => (
+                        <option key={cls._id} value={cls.standard}>
+                          Class {cls.standard}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-600 uppercase mb-1">Section *</label>
+                    <select
+                      value={newHwForm.section}
+                      onChange={(e) => setNewHwForm({ ...newHwForm, section: e.target.value })}
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                    >
+                      <option value="A">Section A</option>
+                      <option value="B">Section B</option>
+                      <option value="C">Section C</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-stone-600 uppercase mb-1">Subject *</label>
+                    <select
+                      value={newHwForm.subject}
+                      onChange={(e) => setNewHwForm({ ...newHwForm, subject: e.target.value })}
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                    >
+                      {availableMarksSubjects.map(sub => (
+                        <option key={sub} value={sub}>{sub}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-600 uppercase mb-1">Due Date *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Tomorrow (09:00 AM)"
+                      value={newHwForm.dueDate}
+                      onChange={(e) => setNewHwForm({ ...newHwForm, dueDate: e.target.value })}
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-600 uppercase mb-1">Detailed Instructions</label>
+                  <textarea
+                    rows={3}
+                    placeholder="Provide step-by-step problem details, page numbers, or submission requirements..."
+                    value={newHwForm.description}
+                    onChange={(e) => setNewHwForm({ ...newHwForm, description: e.target.value })}
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl p-3 text-xs text-stone-700 outline-none focus:border-[#29456D]"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-stone-50 px-6 py-4 border-t border-stone-200 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAddHwModal(false)}
+                  className="px-4 py-2 border border-stone-200 text-stone-500 rounded-xl text-xs font-bold hover:bg-stone-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-[#172B4D] hover:bg-[#29456D] text-white font-black text-xs rounded-xl shadow-md"
+                >
+                  Publish Homework to Students
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: VIEW HOMEWORK SUBMISSIONS */}
+      {selectedHwForSubmissions && (
+        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white border border-stone-200 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+            <div className="bg-[#172B4D] px-6 py-4 flex justify-between items-center text-white shrink-0">
+              <div>
+                <span className="text-[10px] text-blue-300 font-bold uppercase tracking-wider block">Student Submissions</span>
+                <h3 className="text-sm font-black">{selectedHwForSubmissions.title} &bull; Class {selectedHwForSubmissions.standard}-{selectedHwForSubmissions.section}</h3>
+              </div>
+              <button onClick={() => setSelectedHwForSubmissions(null)} className="text-white/60 hover:text-white text-xl font-bold">&times;</button>
+            </div>
+
+            <div className="p-6 overflow-y-auto space-y-4 flex-1">
+              {!selectedHwForSubmissions.submissions || selectedHwForSubmissions.submissions.length === 0 ? (
+                <div className="text-center py-12 text-stone-400 text-xs italic">
+                  No students have submitted solutions for this homework yet.
+                </div>
+              ) : (
+                selectedHwForSubmissions.submissions.map((sub) => (
+                  <div key={sub.id} className="border border-stone-200 rounded-xl p-4 bg-stone-50/50 space-y-2">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <span className="font-extrabold text-stone-850 text-xs">{sub.studentName}</span>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          sub.status === 'REVIEWED' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
+                        }`}>
+                          {sub.status}
+                        </span>
+                      </div>
+                      {sub.grade && (
+                        <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-100 text-amber-800 border border-amber-300">
+                          Grade: {sub.grade}
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="text-xs text-stone-700 bg-white p-3 rounded-lg border border-stone-200">
+                      {sub.submissionText || 'Completed assignment as per instructions.'}
+                    </p>
+
+                    {sub.feedback && (
+                      <p className="text-[11px] text-emerald-700 font-medium italic">
+                        Teacher Feedback: {sub.feedback}
+                      </p>
+                    )}
+
+                    <div className="flex justify-end pt-1">
+                      <button
+                        onClick={() => setGradeModal({
+                          show: true,
+                          submissionId: sub.id,
+                          studentName: sub.studentName,
+                          grade: sub.grade || 'A+',
+                          feedback: sub.feedback || ''
+                        })}
+                        className="px-3 py-1 bg-stone-100 hover:bg-stone-200 border border-stone-200 rounded-lg text-xs font-bold text-stone-700"
+                      >
+                        ✏️ {sub.grade ? 'Update Grade' : 'Grade & Feedback'}
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="bg-stone-50 px-6 py-3 border-t border-stone-200 flex justify-end shrink-0">
+              <button
+                onClick={() => setSelectedHwForSubmissions(null)}
+                className="px-4 py-1.5 border border-stone-200 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-100"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: GRADE SUBMISSION */}
+      {gradeModal.show && (
+        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white border border-stone-200 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="bg-[#172B4D] px-6 py-4 flex justify-between items-center text-white">
+              <h3 className="text-sm font-black">Grade Homework &bull; {gradeModal.studentName}</h3>
+              <button onClick={() => setGradeModal({ show: false, submissionId: null, studentName: '', grade: 'A+', feedback: '' })} className="text-white/60 hover:text-white text-xl font-bold">&times;</button>
+            </div>
+
+            <form onSubmit={handleGradeSubmission}>
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-stone-600 uppercase mb-1">Award Grade *</label>
+                  <select
+                    value={gradeModal.grade}
+                    onChange={(e) => setGradeModal({ ...gradeModal, grade: e.target.value })}
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs font-black text-stone-850 outline-none focus:border-[#29456D]"
+                  >
+                    <option value="A+ (98%)">A+ (Outstanding)</option>
+                    <option value="A (90%)">A (Excellent)</option>
+                    <option value="B+ (80%)">B+ (Very Good)</option>
+                    <option value="B (70%)">B (Good)</option>
+                    <option value="C (55%)">C (Satisfactory)</option>
+                    <option value="D (40%)">D (Pass)</option>
+                    <option value="Need Improvement">Needs Improvement</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-600 uppercase mb-1">Teacher Feedback / Notes</label>
+                  <textarea
+                    rows={3}
+                    placeholder="e.g. Excellent conceptual clarity and well-labeled diagrams..."
+                    value={gradeModal.feedback}
+                    onChange={(e) => setGradeModal({ ...gradeModal, feedback: e.target.value })}
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl p-3 text-xs text-stone-700 outline-none focus:border-[#29456D]"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-stone-50 px-6 py-4 border-t border-stone-200 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setGradeModal({ show: false, submissionId: null, studentName: '', grade: 'A+', feedback: '' })}
+                  className="px-4 py-2 border border-stone-200 text-stone-500 rounded-xl text-xs font-bold hover:bg-stone-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-[#172B4D] hover:bg-[#29456D] text-white font-black text-xs rounded-xl shadow-md"
+                >
+                  Save Grade & Feedback
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
+
   );
 };
 

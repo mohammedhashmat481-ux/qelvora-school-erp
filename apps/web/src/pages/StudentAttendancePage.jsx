@@ -209,12 +209,25 @@ export default function StudentAttendancePage() {
     fetchRoster();
   };
 
+  const [whatsappModalAlerts, setWhatsappModalAlerts] = useState(null);
+
+  const openWhatsAppForStudent = (student) => {
+    const rawPhone = student.parentPhone || student.parentWhatsapp || '9876543210';
+    const digitsOnly = String(rawPhone).replace(/\D/g, '');
+    const waPhone = digitsOnly.length === 10 ? `91${digitsOnly}` : digitsOnly;
+    const msg = `Dear Parent, your child *${student.name}* of Class *${student.standard || selectedClass}-${student.section || selectedSection}* is marked *${student.status}* on ${selectedDate} at ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}. Remarks: ${student.remarks || 'None'}. - QELVORA SCHOOL CRM`;
+    const url = `https://wa.me/${waPhone}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  };
+
   const handleSaveManualAttendance = async () => {
     setSavingManual(true);
     try {
       const res = await studentAttendanceService.saveManual({
         date: selectedDate,
         classId: `${selectedClass}-${selectedSection}`,
+        standard: selectedClass,
+        section: selectedSection,
         session: selectedSession,
         academicYear,
         attendanceList: roster,
@@ -225,6 +238,10 @@ export default function StudentAttendancePage() {
         setHasUnsavedChanges(false);
         fetchRoster();
         fetchDashboard();
+
+        if (res.data?.whatsappAlerts && res.data.whatsappAlerts.length > 0) {
+          setWhatsappModalAlerts(res.data.whatsappAlerts);
+        }
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to save attendance');
@@ -1239,6 +1256,18 @@ export default function StudentAttendancePage() {
                                     </button>
                                   );
                                 })}
+
+                                {student.status === 'Absent' && (
+                                  <button
+                                    type="button"
+                                    onClick={() => openWhatsAppForStudent(student)}
+                                    title="Send instant WhatsApp message to parent"
+                                    className="px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold flex items-center gap-1 shadow-2xs transition-all cursor-pointer shrink-0 ml-1"
+                                  >
+                                    <MessageSquare className="w-3 h-3" />
+                                    <span>WhatsApp</span>
+                                  </button>
+                                )}
                               </div>
                             </td>
 
@@ -2280,6 +2309,82 @@ export default function StudentAttendancePage() {
           )}
         </main>
       </div>
+
+      {/* WhatsApp Notification Dispatch Modal */}
+      {whatsappModalAlerts && whatsappModalAlerts.length > 0 && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                  <MessageSquare className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-800 text-base">Parent WhatsApp Alerts Ready</h3>
+                  <p className="text-xs text-slate-500 font-medium">
+                    {whatsappModalAlerts.length} absentee parent notification(s) ready to send
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setWhatsappModalAlerts(null)}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-2.5 max-h-72 overflow-y-auto pr-1">
+              {whatsappModalAlerts.map((alert, idx) => (
+                <div key={idx} className="p-3 bg-slate-50 rounded-2xl border border-slate-200/80 flex items-center justify-between gap-3">
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-800 text-xs">{alert.studentName}</span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-red-100 text-red-700">
+                        {alert.triggerStatus}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-slate-500 font-mono flex items-center gap-1">
+                      <Phone className="w-3 h-3 text-slate-400" />
+                      <span>+{alert.parentPhone}</span>
+                    </div>
+                  </div>
+                  <a
+                    href={alert.whatsappUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-xs transition-colors shrink-0 cursor-pointer"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Send</span>
+                  </a>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-2 flex items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  whatsappModalAlerts.forEach(a => window.open(a.whatsappUrl, '_blank'));
+                  setWhatsappModalAlerts(null);
+                }}
+                className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>Open All WhatsApp Chats ({whatsappModalAlerts.length})</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setWhatsappModalAlerts(null)}
+                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Print Styles for ID Cards & Daily Registers */}
       <style>{`

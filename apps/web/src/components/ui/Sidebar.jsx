@@ -460,6 +460,33 @@ const Sidebar = () => {
                 </Link>
 
                 <Link
+                  to="/teacher-section?tab=marks"
+                  onClick={handleLinkClick}
+                  className={getTeacherSubLinkClass('marks')}
+                >
+                  <Award className="w-3.5 h-3.5 shrink-0 text-amber-500" />
+                  <span>{t('marks_entry') || 'Marks Entry'}</span>
+                </Link>
+
+                <Link
+                  to="/teacher-section?tab=homework"
+                  onClick={handleLinkClick}
+                  className={getTeacherSubLinkClass('homework')}
+                >
+                  <BookOpen className="w-3.5 h-3.5 shrink-0 text-blue-500" />
+                  <span>{t('homework_management') || 'Homework & Tasks'}</span>
+                </Link>
+
+                <Link
+                  to="/teacher-section?tab=notices"
+                  onClick={handleLinkClick}
+                  className={getTeacherSubLinkClass('notices')}
+                >
+                  <Bell className="w-3.5 h-3.5 shrink-0 text-indigo-500" />
+                  <span>{t('notices_circulars') || 'Notices & Circulars'}</span>
+                </Link>
+
+                <Link
                   to="/teacher-section?tab=attendance"
                   onClick={handleLinkClick}
                   className={getTeacherSubLinkClass('attendance')}
@@ -1193,9 +1220,9 @@ const Sidebar = () => {
               <button
                 type="button"
                 onClick={() => { setIsMobileOpen(false); handleLogout(); }}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-rose-300 hover:text-white bg-rose-950/40 hover:bg-rose-700 rounded-lg transition-all border border-rose-800/60 hover:border-rose-600 shadow-xs cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-black text-white bg-red-600 hover:bg-red-700 active:bg-red-800 rounded-lg transition-all border border-red-500 shadow-md cursor-pointer active:scale-95"
               >
-                <LogOut className="w-3.5 h-3.5" />
+                <LogOut className="w-3.5 h-3.5 text-white" />
                 <span>Logout</span>
               </button>
             </div>
@@ -1242,10 +1269,10 @@ const Sidebar = () => {
           <button
             type="button"
             onClick={handleLogout}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-rose-300 hover:text-white bg-rose-950/40 hover:bg-rose-700 rounded-lg transition-all border border-rose-800/60 hover:border-rose-600 shadow-xs cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-black text-white bg-red-600 hover:bg-red-700 active:bg-red-800 rounded-lg transition-all border border-red-500 shadow-md cursor-pointer active:scale-95"
             title="Sign Out / Logout"
           >
-            <LogOut className="w-3.5 h-3.5" />
+            <LogOut className="w-3.5 h-3.5 text-white" />
             <span>Logout</span>
           </button>
         </div>

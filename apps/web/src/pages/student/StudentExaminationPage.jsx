@@ -44,12 +44,18 @@ export default function StudentExaminationPage() {
     window.print();
   };
 
-  // Extract marks from response or fallback mock
-  const rawMarks = (myMarksData?.marks && myMarksData.marks.length > 0)
+  const [selectedExamId, setSelectedExamId] = useState('ALL');
+
+  // Extract exams list from response
+  const examsList = myMarksData?.data?.exams || [];
+
+  // Extract marks from response
+  const allMarks = (myMarksData?.marks && myMarksData.marks.length > 0)
     ? myMarksData.marks
-    : (myMarksData?.data?.exams && myMarksData.data.exams.length > 0)
-      ? myMarksData.data.exams.flatMap(e => (e.subjects || []).map(s => ({
+    : (examsList.length > 0)
+      ? examsList.flatMap(e => (e.subjects || []).map(s => ({
           id: s.id,
+          examNameId: e.examNameId || e.id,
           subject: s.subjectName || s.subject,
           examName: e.examName,
           maxMarks: s.maxMarks,
@@ -60,26 +66,21 @@ export default function StudentExaminationPage() {
           remarks: s.remarks,
           grade: s.grade
         })))
-      : null;
+      : [];
 
-  const displayMarks = (rawMarks && rawMarks.length > 0)
-    ? rawMarks
-    : [
-        { id: 'm1', subject: 'Mathematics', examName: 'Term 1 Mid-Term 2026', maxMarks: 100, minMarks: 35, marksObtained: 96, isAbsent: false, remarks: 'Excellent logical reasoning and problem solving.' },
-        { id: 'm2', subject: 'Science (Physics & Chem)', examName: 'Term 1 Mid-Term 2026', maxMarks: 100, minMarks: 35, marksObtained: 92, isAbsent: false, remarks: 'Strong conceptual clarity.' },
-        { id: 'm3', subject: 'English Language', examName: 'Term 1 Mid-Term 2026', maxMarks: 100, minMarks: 35, marksObtained: 89, isAbsent: false, remarks: 'Good creative vocabulary.' },
-        { id: 'm4', subject: 'Social Studies', examName: 'Term 1 Mid-Term 2026', maxMarks: 100, minMarks: 35, marksObtained: 94, isAbsent: false, remarks: 'Consistent understanding of geography and history.' },
-        { id: 'm5', subject: 'Computer Applications', examName: 'Term 1 Mid-Term 2026', maxMarks: 100, minMarks: 35, marksObtained: 98, isAbsent: false, remarks: 'Superb programming fundamentals.' }
-      ];
+  const displayMarks = selectedExamId === 'ALL'
+    ? allMarks
+    : allMarks.filter(m => String(m.examNameId) === String(selectedExamId) || m.examName === selectedExamId);
 
   const overallSummary = myMarksData?.data?.overallSummary || myMarksData?.overallSummary;
   const currentRank = overallSummary?.rank || 1;
   const currentGrade = overallSummary?.grade || 'A+';
   const currentStanding = overallSummary?.finalResult || 'PASS';
 
-  const totalObtained = displayMarks.reduce((sum, m) => sum + Number(m.marksObtained || 0), 0);
+  const totalObtained = displayMarks.reduce((sum, m) => sum + (m.isAbsent ? 0 : Number(m.marksObtained || 0)), 0);
   const totalMax = displayMarks.reduce((sum, m) => sum + Number(m.maxMarks || 100), 0);
   const percentage = totalMax > 0 ? ((totalObtained / totalMax) * 100).toFixed(1) : 0;
+  const studentInfo = myMarksData?.data?.student || user;
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col md:flex-row font-sans">
@@ -158,6 +159,39 @@ export default function StudentExaminationPage() {
               </div>
             </div>
 
+            {/* Student Verified Profile Ribbon */}
+            <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-4 text-xs">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-900 text-white font-black text-sm flex items-center justify-center">
+                  {(studentInfo?.name || 'S')[0]}
+                </div>
+                <div>
+                  <h4 className="font-black text-slate-900 text-sm">{studentInfo?.name || 'Student Candidate'}</h4>
+                  <p className="text-slate-500 font-medium">
+                    ID: <strong className="text-slate-800">{studentInfo?.studentId || studentInfo?.id || 'Enrolled'}</strong> &bull; Class: <strong className="text-slate-800">{studentInfo?.standard || '10th'} - {studentInfo?.section || 'A'}</strong> &bull; Roll: <strong className="text-slate-800">#{studentInfo?.rollNumber || '01'}</strong>
+                  </p>
+                </div>
+              </div>
+
+              {examsList.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-slate-500">Filter Exam:</span>
+                  <select
+                    value={selectedExamId}
+                    onChange={(e) => setSelectedExamId(e.target.value)}
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                  >
+                    <option value="ALL">All Published Assessments ({allMarks.length} records)</option>
+                    {examsList.map((ex) => (
+                      <option key={ex.examNameId || ex.id} value={ex.examNameId || ex.id}>
+                        {ex.examName} ({ex.percentage}%)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+
             {/* Subject-Wise Table Card */}
             <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-5 animate-fadeIn">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
@@ -165,13 +199,23 @@ export default function StudentExaminationPage() {
                   <h3 className="font-extrabold text-slate-900 text-lg">Subject-Wise Assessment Breakdown</h3>
                   <p className="text-xs text-slate-500">Official term scores validated by the academic exam board</p>
                 </div>
-                <span className="text-xs font-bold text-slate-400">Term 1 (2026-2027)</span>
+                <span className="text-xs font-bold text-indigo-900 bg-indigo-50 px-3 py-1 rounded-xl border border-indigo-100">
+                  {selectedExamId === 'ALL' ? 'Cumulative Term Overview' : 'Selected Assessment Term'}
+                </span>
               </div>
 
               {isLoading ? (
                 <div className="p-12 text-center text-slate-500 space-y-3">
                   <RefreshCw className="w-8 h-8 animate-spin mx-auto text-indigo-900" />
                   <p className="font-bold text-sm">Loading verified examination records...</p>
+                </div>
+              ) : displayMarks.length === 0 ? (
+                <div className="p-12 text-center bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+                  <FileText className="w-10 h-10 text-slate-400 mx-auto" />
+                  <h4 className="font-black text-slate-800 text-base">No Published Report Cards Available</h4>
+                  <p className="text-xs text-slate-500 max-w-md mx-auto">
+                    Subject faculty are currently finalizing marks evaluations. Once the academic council publishes results, your verified statement of marks and official grades will appear here.
+                  </p>
                 </div>
               ) : (
                 <div className="overflow-x-auto rounded-2xl border border-slate-200">

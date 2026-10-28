@@ -297,13 +297,20 @@ model LeaveRequest {
 
 model Notification {
   id                 String   @id @default(uuid())
-  recipientRole      String
+  recipientRole      String   // "ALL", "TEACHER", "STUDENT", "PARENT"
+  recipientId        String?  @default("")
+  targetStandard     String?  @default("")
+  targetSection      String?  @default("")
+  senderName         String?  @default("School Administration")
+  priority           String?  @default("NORMAL") // "NORMAL", "URGENT", "ANNOUNCEMENT"
   title              String
   message            String
   isRead             Boolean  @default(false)
   createdAt          DateTime @default(now())
 
   @@index([recipientRole, isRead])
+  @@index([recipientId])
+  @@index([targetStandard, targetSection])
   @@index([createdAt])
 }
 
@@ -959,7 +966,7 @@ model AttendanceRuleSettings {
   allowManualOverride    Boolean  @default(true)
   smsEnabled             Boolean  @default(false)
   emailEnabled           Boolean  @default(true)
-  whatsappEnabled        Boolean  @default(false)
+  whatsappEnabled        Boolean  @default(true)
   notifyOnAbsent         Boolean  @default(true)
   notifyOnLate           Boolean  @default(true)
   notifyOnPresent        Boolean  @default(false)
@@ -981,4 +988,44 @@ model AttendanceAuditLog {
   timestamp          DateTime @default(now())
 
   @@index([date, action])
+}
+
+model Homework {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  standard    String
+  section     String
+  subject     String
+  teacherId   String?
+  teacherName String
+  dueDate     String
+  attachments Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  submissions HomeworkSubmission[]
+
+  @@index([standard, section])
+  @@index([teacherId])
+  @@index([subject])
+}
+
+model HomeworkSubmission {
+  id             String    @id @default(uuid())
+  homeworkId     String
+  studentId      String
+  studentName    String
+  status         String    @default("SUBMITTED") // "PENDING", "SUBMITTED", "REVIEWED"
+  submissionText String?   @default("")
+  attachments    Json?
+  grade          String?   @default("")
+  feedback       String?   @default("")
+  submittedAt    DateTime  @default(now())
+  reviewedAt     DateTime?
+
+  homework Homework @relation(fields: [homeworkId], references: [id], onDelete: Cascade)
+
+  @@unique([homeworkId, studentId])
+  @@index([studentId])
 }

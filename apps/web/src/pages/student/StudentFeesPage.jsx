@@ -31,7 +31,7 @@ export default function StudentFeesPage() {
   const [showPayModal, setShowPayModal] = useState(false);
 
   const studentName = user?.name || 'Aarav Sharma';
-  const studentId = user?.studentId || user?.id || 'STU-2026-8941';
+  const studentId = user?.studentDbId || user?.studentId || user?.id || 'STU-2026-8941';
 
   const loadFees = async () => {
     setIsLoading(true);

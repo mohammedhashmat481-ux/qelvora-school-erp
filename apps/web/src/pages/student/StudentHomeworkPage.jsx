@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../../components/ui/Sidebar';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+import { getHomeworkList, submitHomework } from '../../services/authService';
 import {
   BookOpen,
   FileText,
@@ -14,7 +15,11 @@ import {
   Calendar,
   Sparkles,
   ArrowRight,
-  Filter
+  Filter,
+  Send,
+  X,
+  MessageSquare,
+  Award
 } from 'lucide-react';
 
 export default function StudentHomeworkPage() {
@@ -22,111 +27,117 @@ export default function StudentHomeworkPage() {
   const studentName = user?.name || 'Aarav Sharma';
 
   const [activeFilter, setActiveFilter] = useState('ALL');
+  const [isLoading, setIsLoading] = useState(false);
+  const [submissionModalHw, setSubmissionModalHw] = useState(null);
+  const [submissionText, setSubmissionText] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Homework & Assignments State
-  const [homeworkList, setHomeworkList] = useState([
-    {
-      id: 'HW-01',
-      subject: 'Mathematics',
-      title: 'Quadratic Equations Exercise 4.2 & Word Problems',
-      dueDate: 'Tomorrow (09:00 AM)',
-      teacher: 'Dr. Rajesh Sharma',
-      status: 'Pending',
-      description: 'Solve questions 1 through 15 on page 84. Show complete step-by-step working.'
-    },
-    {
-      id: 'HW-02',
-      subject: 'Science (Physics)',
-      title: "Newton's Third Law Lab Activity Summary",
-      dueDate: 'Wednesday, Oct 14',
-      teacher: 'Priya Patel',
-      status: 'Submitted',
-      description: 'Document observations from the balloon rocket experiment with labeled diagram.'
-    },
-    {
-      id: 'HW-03',
-      subject: 'English Literature',
-      title: 'Poem Analysis: The Road Not Taken by Robert Frost',
-      dueDate: 'Thursday, Oct 15',
-      teacher: 'Ananya Sen',
-      status: 'Reviewed',
-      grade: 'A+ (98%)',
-      description: 'Write a 250-word reflective paragraph on themes of choice and consequences.'
-    },
-    {
-      id: 'HW-04',
-      subject: 'Social Science',
-      title: 'Major Climate Zones of India Map Chart',
-      dueDate: 'Friday, Oct 16',
-      teacher: 'Vikram Singh',
-      status: 'Pending',
-      description: 'Color-code the 6 distinct climatic zones on the provided physical map worksheet.'
-    }
-  ]);
+  const [homeworkList, setHomeworkList] = useState([]);
 
-  // Learning Roadmap Milestones
-  const [learningRoadmap] = useState([
-    {
-      id: 'M-1',
-      title: 'Unit 1: Number Mastery & Algebra Foundations',
-      subject: 'Mathematics',
-      progress: 100,
-      status: 'Completed',
-      targetDate: 'Aug 2026',
-      badges: ['Master Calculator', 'Perfect Score Quiz']
-    },
-    {
-      id: 'M-2',
-      title: "Unit 2: Kinetic Forces & Newton's Laws Experiments",
-      subject: 'Physics',
-      progress: 85,
-      status: 'In Progress',
-      targetDate: 'Oct 2026',
-      badges: ['Young Scientist']
-    },
-    {
-      id: 'M-3',
-      title: 'Unit 3: Creative Prose & Debate Expression',
-      subject: 'English',
-      progress: 60,
-      status: 'In Progress',
-      targetDate: 'Nov 2026',
-      badges: ['Eloquent Speaker']
-    },
-    {
-      id: 'M-4',
-      title: 'Unit 4: Computer Programming with Python & Scratch',
-      subject: 'Computer Science',
-      progress: 40,
-      status: 'Upcoming',
-      targetDate: 'Dec 2026',
-      badges: ['Code Explorer']
-    },
-    {
-      id: 'M-5',
-      title: 'Unit 5: Environmental Geography & Climate Mapping',
-      subject: 'Geography',
-      progress: 15,
-      status: 'Upcoming',
-      targetDate: 'Jan 2027',
-      badges: ['Eco Champion']
-    }
-  ]);
-
-  const filteredHomework = homeworkList.filter(hw => {
-    if (activeFilter === 'ALL') return true;
-    return hw.status.toUpperCase() === activeFilter;
-  });
-
-  const handleToggleHomeworkStatus = (id) => {
-    setHomeworkList(prev => prev.map(hw => {
-      if (hw.id === id) {
-        const nextStatus = hw.status === 'Pending' ? 'Submitted' : 'Pending';
-        toast.success(`Task ${hw.title} marked as ${nextStatus}!`);
-        return { ...hw, status: nextStatus };
+  const loadHomework = async () => {
+    setIsLoading(true);
+    try {
+      const res = await getHomeworkList({
+        standard: user?.standard,
+        section: user?.section
+      });
+      if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+        // Map backend homework with current student's submission status
+        const currentStudentId = user?.studentDbId || user?.studentId || user?.id;
+        const mapped = res.data.map(hw => {
+          const mySub = (hw.submissions || []).find(s => 
+            s.studentId === currentStudentId || 
+            s.student?.userId === user?.id || 
+            (user?.email && s.student?.email === user.email)
+          );
+          return {
+            id: hw.id,
+            subject: hw.subject,
+            title: hw.title,
+            dueDate: hw.dueDate ? new Date(hw.dueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'No Deadline',
+            teacher: hw.teacherName || hw.teacher?.name || 'Subject Faculty',
+            status: mySub ? (mySub.status === 'GRADED' ? 'Reviewed' : 'Submitted') : 'Pending',
+            grade: mySub?.grade || null,
+            feedback: mySub?.feedback || null,
+            submissionText: mySub?.submissionText || '',
+            description: hw.description
+          };
+        });
+        setHomeworkList(mapped);
+      } else {
+        // Fallback default sample assignments if no assignments created yet
+        setHomeworkList([
+          {
+            id: 'HW-01',
+            subject: 'Mathematics',
+            title: 'Quadratic Equations Exercise 4.2 & Word Problems',
+            dueDate: 'Tomorrow (09:00 AM)',
+            teacher: 'Priya Patel',
+            status: 'Pending',
+            description: 'Solve questions 1 through 15 on page 84. Show complete step-by-step working.'
+          },
+          {
+            id: 'HW-02',
+            subject: 'Science (Physics)',
+            title: "Newton's Third Law Lab Activity Summary",
+            dueDate: 'Wednesday, Oct 14',
+            teacher: 'Priya Patel',
+            status: 'Submitted',
+            description: 'Document observations from the balloon rocket experiment with labeled diagram.'
+          },
+          {
+            id: 'HW-03',
+            subject: 'English Literature',
+            title: 'Poem Analysis: The Road Not Taken by Robert Frost',
+            dueDate: 'Thursday, Oct 15',
+            teacher: 'Ananya Sen',
+            status: 'Reviewed',
+            grade: 'A+ (98%)',
+            description: 'Write a 250-word reflective paragraph on themes of choice and consequences.'
+          }
+        ]);
       }
-      return hw;
-    }));
+    } catch (err) {
+      console.warn('Could not load online homework, using fallback curriculum:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadHomework();
+  }, [user]);
+
+  const handleSubmitSolution = async (e) => {
+    e.preventDefault();
+    if (!submissionModalHw) return;
+    if (!submissionText.trim()) {
+      toast.error('Please enter your homework submission answer or link');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // If it is a real DB homework (UUID)
+      if (submissionModalHw.id.length > 10) {
+        await submitHomework(submissionModalHw.id, {
+          submissionText: submissionText.trim()
+        });
+      }
+      toast.success(`Homework for ${submissionModalHw.subject} submitted successfully!`);
+      setHomeworkList(prev => prev.map(hw => 
+        hw.id === submissionModalHw.id 
+          ? { ...hw, status: 'Submitted', submissionText } 
+          : hw
+      ));
+      setSubmissionModalHw(null);
+      setSubmissionText('');
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Failed to submit homework');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -207,28 +218,54 @@ export default function StudentHomeworkPage() {
                     {filteredHomework.map((hw) => (
                       <div
                         key={hw.id}
-                        className="p-4 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-300 transition-all space-y-3"
+                        className="p-5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-300 transition-all space-y-3.5"
                       >
                         <div className="flex items-start justify-between gap-3">
-                          <div>
+                          <div className="space-y-1">
                             <span className="px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-indigo-100 text-indigo-900 border border-indigo-200">
                               {hw.subject}
                             </span>
                             <h4 className="font-black text-slate-900 text-sm mt-1">{hw.title}</h4>
-                            <p className="text-xs text-slate-600 mt-1 leading-relaxed">{hw.description}</p>
+                            <p className="text-xs text-slate-600 leading-relaxed">{hw.description}</p>
                           </div>
                           <span
-                            className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider whitespace-nowrap border shrink-0 ${
+                            className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider whitespace-nowrap border shrink-0 ${
                               hw.status === 'Reviewed'
-                                ? 'bg-purple-50 text-purple-800 border-purple-200'
+                                ? 'bg-purple-100 text-purple-900 border-purple-300'
                                 : hw.status === 'Submitted'
-                                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                                : 'bg-amber-50 text-amber-800 border-amber-200'
+                                ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                                : 'bg-amber-100 text-amber-900 border-amber-300'
                             }`}
                           >
                             {hw.status}
                           </span>
                         </div>
+
+                        {/* If reviewed with grade and teacher feedback */}
+                        {hw.grade && (
+                          <div className="p-3 bg-purple-50/70 border border-purple-200 rounded-xl space-y-1">
+                            <div className="flex items-center justify-between text-xs font-bold text-purple-950">
+                              <span className="flex items-center gap-1">
+                                <Award className="w-3.5 h-3.5 text-purple-700" />
+                                Teacher Grade: <strong>{hw.grade}</strong>
+                              </span>
+                              <span className="text-[10px] uppercase font-black text-purple-700">Reviewed</span>
+                            </div>
+                            {hw.feedback && (
+                              <p className="text-xs text-purple-900 italic">
+                                "{hw.feedback}"
+                              </p>
+                            )}
+                          </div>
+                        )}
+
+                        {/* If student submitted solution */}
+                        {hw.submissionText && hw.status === 'Submitted' && (
+                          <div className="p-2.5 bg-slate-100 rounded-xl border border-slate-200 text-xs text-slate-700">
+                            <span className="font-bold text-slate-900 block text-[11px] mb-0.5">Your Submission:</span>
+                            <p className="italic text-slate-600 line-clamp-2">"{hw.submissionText}"</p>
+                          </div>
+                        )}
 
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs pt-2.5 border-t border-slate-200/80 gap-2 text-slate-500">
                           <span className="flex items-center gap-1 font-medium">
@@ -238,13 +275,17 @@ export default function StudentHomeworkPage() {
 
                           <div className="flex items-center gap-3">
                             <span className="text-[11px] font-semibold text-slate-500">
-                              Assigned by: {hw.teacher}
+                              Faculty: <strong className="text-slate-700">{hw.teacher}</strong>
                             </span>
                             <button
-                              onClick={() => handleToggleHomeworkStatus(hw.id)}
-                              className="text-[11px] font-bold text-indigo-900 hover:underline"
+                              onClick={() => {
+                                setSubmissionModalHw(hw);
+                                setSubmissionText(hw.submissionText || '');
+                              }}
+                              className="px-3 py-1.5 rounded-xl bg-indigo-900 hover:bg-indigo-800 text-white font-black text-[11px] transition-all flex items-center gap-1.5 shadow-xs"
                             >
-                              {hw.status === 'Pending' ? 'Mark Submitted' : 'Revert to Pending'}
+                              <Send className="w-3 h-3" />
+                              <span>{hw.status === 'Pending' ? 'Submit Solution' : 'Edit Submission'}</span>
                             </button>
                           </div>
                         </div>
@@ -316,6 +357,71 @@ export default function StudentHomeworkPage() {
 
           </div>
         </main>
+
+        {/* Submit Homework Solution Modal */}
+        {submissionModalHw && (
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
+            <div className="bg-white rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl border border-slate-200 space-y-5 animate-scaleUp">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-indigo-100 text-indigo-900">
+                    {submissionModalHw.subject}
+                  </span>
+                  <h3 className="font-extrabold text-slate-900 text-lg mt-1">Submit Assignment Solution</h3>
+                </div>
+                <button
+                  onClick={() => setSubmissionModalHw(null)}
+                  className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 space-y-1">
+                <h4 className="font-bold text-slate-900 text-sm">{submissionModalHw.title}</h4>
+                <p className="text-xs text-slate-600">{submissionModalHw.description}</p>
+                <div className="text-[11px] text-slate-500 pt-1 flex items-center justify-between">
+                  <span>Faculty: <strong>{submissionModalHw.teacher}</strong></span>
+                  <span>Due: <strong>{submissionModalHw.dueDate}</strong></span>
+                </div>
+              </div>
+
+              <form onSubmit={handleSubmitSolution} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
+                    Your Response / Answers / Notes / Google Drive Link
+                  </label>
+                  <textarea
+                    rows={5}
+                    value={submissionText}
+                    onChange={(e) => setSubmissionText(e.target.value)}
+                    placeholder="Type your complete solution, exercise steps, or paste your presentation/document link here..."
+                    className="w-full px-3.5 py-3 rounded-2xl border border-slate-200 text-sm focus:outline-hidden focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"
+                    required
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setSubmissionModalHw(null)}
+                    className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="px-5 py-2.5 rounded-xl bg-indigo-900 hover:bg-indigo-800 text-white font-black text-xs shadow-md transition-all flex items-center gap-2 disabled:opacity-50"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>{isSubmitting ? 'Submitting...' : 'Confirm Submission'}</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
     </div>
   );
 }

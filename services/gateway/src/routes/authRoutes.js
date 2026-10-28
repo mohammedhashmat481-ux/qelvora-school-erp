@@ -283,60 +283,112 @@ const TEACHER_EXTENDED_PROFILES = new Map();
 async function getEnrichedUserProfile(user) {
   if (!user) return user;
   const base = formatLegacyId(user);
-  let teacher = null;
-  try {
-    teacher = await prisma.teacher.findFirst({
-      where: {
-        OR: [
-          { userId: user.id },
-          { email: user.email },
-          { name: user.name }
-        ]
+  const roleLower = (user.role || '').toLowerCase();
+
+  // 1. If Teacher / Educator
+  if (roleLower === 'teacher' || roleLower === 'educator' || roleLower === 'faculty') {
+    let teacher = null;
+    try {
+      teacher = await prisma.teacher.findFirst({
+        where: {
+          OR: [
+            { userId: user.id },
+            { email: { equals: user.email, mode: 'insensitive' } },
+            { name: { equals: user.name, mode: 'insensitive' } }
+          ]
+        }
+      });
+    } catch (_) {}
+
+    const defaultQual = teacher ? [
+      { degree: teacher.qualification || 'M.Sc. Education', institution: 'University of Mumbai', year: '2016' },
+      { degree: 'B.Sc. in ' + (teacher.department?.split(' ')[0] || 'Science'), institution: 'Delhi University', year: '2013' }
+    ] : [
+      { degree: 'Master of Education', institution: 'State University', year: '2016' }
+    ];
+
+    const defaultExp = teacher ? [
+      { role: teacher.designation || 'Senior Faculty', institution: 'Qelvora International School', duration: '2020 - Present' },
+      { role: 'Assistant Teacher', institution: 'National Public School', duration: '2016 - 2020' }
+    ] : [
+      { role: 'Teacher', institution: 'Qelvora International School', duration: '2020 - Present' }
+    ];
+
+    const ext = TEACHER_EXTENDED_PROFILES.get(user.email) || TEACHER_EXTENDED_PROFILES.get(user.id) || {
+      qualificationsList: user.email === 'rajesh.sharma@qelvora.in' ? [
+        { degree: 'Ph.D. in Pure Mathematics', institution: 'Indian Institute of Science (IISc)', year: '2016' },
+        { degree: 'M.Sc. in Applied Mathematics', institution: 'University of Delhi', year: '2011' }
+      ] : defaultQual,
+      experienceList: user.email === 'rajesh.sharma@qelvora.in' ? [
+        { role: 'Head of Mathematics', institution: 'Sri Chaitanya Techno School', duration: '2019 - Present' },
+        { role: 'Senior Mathematics Lecturer', institution: 'National Public School', duration: '2015 - 2019' }
+      ] : defaultExp
+    };
+
+    const employeeId = teacher?.employeeId || (user.email === 'rajesh.sharma@qelvora.in' ? 'EMP001' : (user.email === 'priya.patel@qelvora.in' ? 'EMP002' : (user.employeeId || user.employee_id || 'EMP002')));
+
+    return {
+      ...base,
+      teacherId: teacher?.id || user.id,
+      employeeId: employeeId,
+      employee_id: employeeId,
+      department: teacher?.department || 'Academics',
+      designation: teacher?.designation || 'Faculty Member',
+      qualification: teacher?.qualification || 'Post Graduate in Education',
+      assignedClass: teacher?.assignedClass || '10th',
+      assignedSection: teacher?.assignedSection || 'A',
+      status: 'Active',
+      qualificationsList: ext.qualificationsList || [],
+      experienceList: ext.experienceList || []
+    };
+  }
+
+  // 2. If Student or Parent
+  if (roleLower === 'student' || roleLower === 'parent') {
+    let student = null;
+    try {
+      student = await prisma.student.findFirst({
+        where: {
+          OR: [
+            { userId: user.id },
+            { email: { equals: user.email, mode: 'insensitive' } },
+            { parentEmail: { equals: user.email, mode: 'insensitive' } },
+            { name: { equals: user.name, mode: 'insensitive' } }
+          ]
+        }
+      });
+      if (!student && roleLower === 'parent') {
+        student = await prisma.student.findFirst({
+          where: { parentName: { contains: user.name, mode: 'insensitive' } }
+        });
       }
-    });
-  } catch (_) {}
+      // If student still null, grab first available student so portal never crashes
+      if (!student) {
+        student = await prisma.student.findFirst({
+          where: { standard: '10th', section: 'A' }
+        });
+      }
+    } catch (_) {}
 
-  const defaultQual = teacher ? [
-    { degree: teacher.qualification || 'M.Sc. Education', institution: 'University of Mumbai', year: '2016' },
-    { degree: 'B.Sc. in ' + (teacher.department?.split(' ')[0] || 'Science'), institution: 'Delhi University', year: '2013' }
-  ] : [
-    { degree: 'Master of Education', institution: 'State University', year: '2016' }
-  ];
+    if (student) {
+      return {
+        ...base,
+        studentId: student.id,
+        studentDbId: student.id,
+        studentCustomId: student.studentId,
+        student_id: student.studentId,
+        standard: student.standard,
+        section: student.section,
+        rollNumber: student.rollNumber,
+        parentName: student.parentName,
+        parentPhone: student.parentPhone,
+        parentWhatsapp: student.parentWhatsapp || student.parentPhone,
+        studentName: student.name
+      };
+    }
+  }
 
-  const defaultExp = teacher ? [
-    { role: teacher.designation || 'Senior Faculty', institution: 'Qelvora International School', duration: '2020 - Present' },
-    { role: 'Assistant Teacher', institution: 'National Public School', duration: '2016 - 2020' }
-  ] : [
-    { role: 'Teacher', institution: 'Qelvora International School', duration: '2020 - Present' }
-  ];
-
-  const ext = TEACHER_EXTENDED_PROFILES.get(user.email) || TEACHER_EXTENDED_PROFILES.get(user.id) || {
-    qualificationsList: user.email === 'rajesh.sharma@qelvora.in' ? [
-      { degree: 'Ph.D. in Pure Mathematics', institution: 'Indian Institute of Science (IISc)', year: '2016' },
-      { degree: 'M.Sc. in Applied Mathematics', institution: 'University of Delhi', year: '2011' }
-    ] : defaultQual,
-    experienceList: user.email === 'rajesh.sharma@qelvora.in' ? [
-      { role: 'Head of Mathematics', institution: 'Sri Chaitanya Techno School', duration: '2019 - Present' },
-      { role: 'Senior Mathematics Lecturer', institution: 'National Public School', duration: '2015 - 2019' }
-    ] : defaultExp
-  };
-
-  const employeeId = teacher?.employeeId || (user.email === 'rajesh.sharma@qelvora.in' ? 'EMP001' : (user.employeeId || user.employee_id || 'EMP002'));
-
-  return {
-    ...base,
-    teacherId: teacher?.id || user.id,
-    employeeId: employeeId,
-    employee_id: employeeId,
-    department: teacher?.department || 'Academics',
-    designation: teacher?.designation || 'Faculty Member',
-    qualification: teacher?.qualification || 'Post Graduate in Education',
-    assignedClass: teacher?.assignedClass || '10th',
-    assignedSection: teacher?.assignedSection || 'A',
-    status: 'Active',
-    qualificationsList: ext.qualificationsList || [],
-    experienceList: ext.experienceList || []
-  };
+  return base;
 }
 
 // GET /api/auth/profile & /api/auth/me

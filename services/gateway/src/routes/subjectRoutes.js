@@ -234,6 +234,159 @@ router.get('/mappings', async (req, res) => {
   }
 });
 
+// GET /api/subjects/my-mappings - Return mapped classes, sections, and subjects for authenticated teacher
+router.get(['/my-mappings', '/my-allocations'], protect, async (req, res) => {
+  try {
+    const user = req.user;
+    if (!user) return res.status(401).json({ status: false, message: 'Unauthorized' });
+
+    let teacher = null;
+    try {
+      teacher = await prisma.teacher.findFirst({
+        where: {
+          OR: [
+            { userId: user.id },
+            { email: { equals: user.email, mode: 'insensitive' } },
+            { name: { equals: user.name, mode: 'insensitive' } },
+            ...(user.employeeId ? [{ employeeId: user.employeeId }] : [])
+          ]
+        }
+      });
+    } catch (_) {}
+
+    const teacherName = teacher?.name || user.name || '';
+    const teacherId = teacher?.id || user.id || '';
+    const employeeId = teacher?.employeeId || user.employeeId || '';
+
+    // Search TeacherClassSubjectMapping
+    const orConditions = [];
+    if (teacherId) orConditions.push({ teacherId });
+    if (teacherName) orConditions.push({ teacherName: { equals: teacherName, mode: 'insensitive' } });
+    if (employeeId) orConditions.push({ employeeId: { equals: employeeId, mode: 'insensitive' } });
+
+    let mappings = [];
+    if (orConditions.length > 0) {
+      mappings = await prisma.teacherClassSubjectMapping.findMany({
+        where: { OR: orConditions },
+        orderBy: [{ standard: 'asc' }, { section: 'asc' }]
+      });
+    }
+
+    // Also search Timetable slots
+    let timetableEntries = [];
+    try {
+      timetableEntries = await prisma.timetable.findMany({
+        where: {
+          OR: [
+            ...(teacherId ? [{ teacherId }] : []),
+            ...(teacherName ? [{ teacher: { contains: teacherName, mode: 'insensitive' } }] : [])
+          ]
+        }
+      });
+    } catch (_) {}
+
+    // Also search Class for class teacher assignment
+    let classTeacherClasses = [];
+    try {
+      classTeacherClasses = await prisma.class.findMany({
+        where: {
+          OR: [
+            ...(teacherId ? [{ classTeacherId: teacherId }] : []),
+            ...(teacherName ? [{ classTeacherName: { contains: teacherName, mode: 'insensitive' } }] : [])
+          ]
+        }
+      });
+    } catch (_) {}
+
+    // Consolidate unique classes
+    const classesMap = new Map();
+
+    mappings.forEach(m => {
+      const key = `${m.standard}-${m.section || 'A'}`.toUpperCase();
+      if (!classesMap.has(key)) {
+        classesMap.set(key, {
+          standard: m.standard,
+          section: m.section || 'A',
+          board: m.board || 'CBSE',
+          classId: m.classId || key,
+          name: `Class ${m.standard} - Section ${m.section || 'A'}`,
+          subjects: []
+        });
+      }
+      const entry = classesMap.get(key);
+      if (m.subject && !entry.subjects.includes(m.subject)) {
+        entry.subjects.push(m.subject);
+      }
+    });
+
+    timetableEntries.forEach(t => {
+      const key = `${t.standard}-${t.section || 'A'}`.toUpperCase();
+      if (!classesMap.has(key)) {
+        classesMap.set(key, {
+          standard: t.standard,
+          section: t.section || 'A',
+          board: 'CBSE',
+          classId: t.classId || key,
+          name: `Class ${t.standard} - Section ${t.section || 'A'}`,
+          subjects: []
+        });
+      }
+      const entry = classesMap.get(key);
+      if (t.subject && !entry.subjects.includes(t.subject)) {
+        entry.subjects.push(t.subject);
+      }
+    });
+
+    classTeacherClasses.forEach(c => {
+      const key = `${c.standard}-${c.section || 'A'}`.toUpperCase();
+      if (!classesMap.has(key)) {
+        classesMap.set(key, {
+          standard: c.standard,
+          section: c.section || 'A',
+          board: c.board || 'CBSE',
+          classId: c.id,
+          name: `Class ${c.standard} - Section ${c.section || 'A'}`,
+          subjects: [],
+          isClassTeacher: true
+        });
+      } else {
+        classesMap.get(key).isClassTeacher = true;
+      }
+    });
+
+    const uniqueClasses = Array.from(classesMap.values());
+    const allSubjects = Array.from(new Set([
+      ...mappings.map(m => m.subject).filter(Boolean),
+      ...timetableEntries.map(t => t.subject).filter(Boolean),
+      ...uniqueClasses.flatMap(c => c.subjects || [])
+    ]));
+
+    res.json({
+      status: true,
+      data: {
+        teacher: {
+          id: teacherId,
+          name: teacherName,
+          employeeId: employeeId
+        },
+        classes: uniqueClasses,
+        subjects: allSubjects,
+        mappings: mappings.map(m => ({
+          id: m.id,
+          standard: m.standard,
+          section: m.section,
+          subject: m.subject,
+          subjectCode: m.subjectCode,
+          roomNumber: m.roomNumber
+        }))
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ status: false, message: err.message });
+  }
+});
+
+
 // POST create mapping
 router.post('/mappings', async (req, res) => {
   try {

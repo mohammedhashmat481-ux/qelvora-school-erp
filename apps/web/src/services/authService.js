@@ -209,7 +209,7 @@ export const getAttendanceLogs = async () => {
 };
 
 export const punchIn = async (employee_id, face_image = null, challenge_frame = null, location = null) => {
-  const response = await api.post('/auth/attendance/punch-in', { 
+  const response = await api.post('/auth/attendance/punch-in', {
     employee_id,
     face_image,
     challenge_frame,
@@ -244,9 +244,9 @@ export const kioskGetEmployee = async (employee_id) => {
 };
 
 export const kioskLogoutEmployee = async (employee_id, login_time, duration_minutes, face_image = null, challenge_frame = null, location = null) => {
-  const response = await api.post('/auth/kiosk/logout', { 
-    employee_id, 
-    login_time, 
+  const response = await api.post('/auth/kiosk/logout', {
+    employee_id,
+    login_time,
     duration_minutes,
     face_image,
     challenge_frame,
@@ -314,21 +314,21 @@ export const exportAttendanceExcel = async (reportType = 'consolidated', month, 
   if (department) params.department = department;
   if (employeeId) params.employee_id = employeeId;
   const response = await api.get('/auth/attendance/export', { params, responseType: 'blob' });
-  
+
   if (response.data && response.data.type === 'application/json') {
     const text = await response.data.text();
     const json = JSON.parse(text);
     throw new Error(json.message || json.detail || 'Export failed');
   }
 
-  const blob = new Blob([response.data], { 
-    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+  const blob = new Blob([response.data], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   });
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
   const filterSuffix = department ? `_${department.trim().replace(/[^a-zA-Z0-9]/g, '_')}` : '';
-  link.setAttribute('download', `attendance_${reportType}_${year}_${String(month).padStart(2,'0')}${filterSuffix}.xlsx`);
+  link.setAttribute('download', `attendance_${reportType}_${year}_${String(month).padStart(2, '0')}${filterSuffix}.xlsx`);
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -956,6 +956,66 @@ export const saveGradeScale = async (data) => {
 export const getMyStudentMarks = async (studentId = null) => {
   const url = studentId ? `/examination/my-marks?studentId=${studentId}` : '/examination/my-marks';
   const response = await api.get(url);
+  return response.data;
+};
+
+export const getMyTeacherAllocations = async () => {
+  const response = await api.get('/subjects/my-mappings');
+  return response.data;
+};
+
+export const getMyNotices = async () => {
+  const response = await api.get('/notices');
+  return response.data;
+};
+
+export const createNotice = async (data) => {
+  const response = await api.post('/notices', data);
+  return response.data;
+};
+
+export const markNoticeRead = async (noticeId) => {
+  const response = await api.patch(`/notices/${noticeId}/read`);
+  return response.data;
+};
+
+export const getHomeworkList = async (params = {}) => {
+  const response = await api.get('/homework', { params });
+  return response.data;
+};
+
+export const assignHomework = async (data) => {
+  const response = await api.post('/homework', data);
+  return response.data;
+};
+
+export const submitHomework = async (data) => {
+  const response = await api.post('/homework/submit', data);
+  return response.data;
+};
+
+export const gradeHomeworkSubmission = async (data) => {
+  const response = await api.post('/homework/grade', data);
+  return response.data;
+};
+
+export const deleteHomework = async (id) => {
+  const response = await api.delete(`/homework/${id}`);
+  return response.data;
+};
+
+export const getExamMarks = async (params = {}) => {
+  const response = await api.get('/examination/marks', { params });
+  return response.data;
+};
+
+export const saveBulkExamMarks = async (data) => {
+  const response = await api.post('/examination/marks/bulk', data);
+  return response.data;
+};
+
+export const togglePublishExam = async (examId, isPublished) => {
+  const response = await api.patch(`/examination/exams/${examId}/publish`, { isPublished });
   return response.data;
 };
 

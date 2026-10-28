@@ -788,11 +788,12 @@ router.get('/marks', async (req, res) => {
 });
 
 // POST /api/examination/marks/bulk (Save/Upsert marks for multiple students)
-router.post('/marks/bulk', async (req, res) => {
+router.post('/marks/bulk', protect, async (req, res) => {
   try {
-    const { examNameId, standard, section, subjectName, marksList } = req.body;
+    const { examNameId, standard, section, subjectName } = req.body;
+    const marksList = req.body.marksList || req.body.marksData;
     if (!examNameId || !marksList || !Array.isArray(marksList)) {
-      return res.status(400).json({ status: false, message: 'Invalid payload: examNameId and marksList array are required' });
+      return res.status(400).json({ status: false, message: 'Invalid payload: examNameId and marksList/marksData array are required' });
     }
 
     const exam = await prisma.examName.findUnique({
@@ -820,6 +821,28 @@ router.post('/marks/bulk', async (req, res) => {
           continue;
         }
 
+        let studentName = item.studentName;
+        let studentStd = standard || item.standard;
+        let studentSec = section || item.section;
+        let rollNumber = item.rollNumber;
+
+        if (!studentName || !studentStd || !studentSec || !rollNumber) {
+          const studentRec = await prisma.student.findUnique({
+            where: { id: item.studentId }
+          });
+          if (studentRec) {
+            studentName = studentName || studentRec.name;
+            studentStd = studentStd || studentRec.standard;
+            studentSec = studentSec || studentRec.section;
+            rollNumber = rollNumber || studentRec.rollNumber || '01';
+          }
+        }
+
+        studentName = studentName || 'Student';
+        studentStd = studentStd || '10th';
+        studentSec = studentSec || 'A';
+        rollNumber = rollNumber || '01';
+
         const pct = maxMarks > 0 ? (marksObtained / maxMarks) * 100 : 0;
         const gradeInfo = await calculateGrade(pct);
         const isPassed = !isAbsent && marksObtained >= minMarks;
@@ -829,7 +852,7 @@ router.post('/marks/bulk', async (req, res) => {
             studentId_examNameId_subjectName: {
               studentId: item.studentId,
               examNameId,
-              subjectName: subjectName || item.subjectName,
+              subjectName: subjectName || item.subjectName || 'General',
             }
           },
           update: {
@@ -839,18 +862,18 @@ router.post('/marks/bulk', async (req, res) => {
             grade: gradeInfo.grade,
             gradePoint: gradeInfo.gradePoint,
             remarks: item.remarks || '',
-            modifiedBy: `${req.user.name} (${req.user.role})`,
+            modifiedBy: `${req.user?.name || 'Faculty'} (${req.user?.role || 'teacher'})`,
             modifiedOn: new Date(),
           },
           create: {
             examNameId,
             examTypeId: exam.examTypeId,
             studentId: item.studentId,
-            rollNumber: item.rollNumber || '01',
-            studentName: item.studentName,
-            standard: standard || item.standard,
-            section: section || item.section,
-            subjectName: subjectName || item.subjectName,
+            rollNumber,
+            studentName,
+            standard: studentStd,
+            section: studentSec,
+            subjectName: subjectName || item.subjectName || 'General',
             maxMarks,
             minMarks,
             marksObtained,
@@ -859,7 +882,7 @@ router.post('/marks/bulk', async (req, res) => {
             grade: gradeInfo.grade,
             gradePoint: gradeInfo.gradePoint,
             remarks: item.remarks || '',
-            enteredBy: `${req.user.name} (${req.user.role})`,
+            enteredBy: `${req.user?.name || 'Faculty'} (${req.user?.role || 'teacher'})`,
           }
         });
         savedRecords.push(record);
