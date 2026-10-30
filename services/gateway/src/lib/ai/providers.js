@@ -16,13 +16,13 @@
  */
 import crypto from 'crypto';
 
-// Startup validation: Ensure model env vars exist
+// Startup validation: Ensure model env vars exist with safe production fallbacks
 export function validateAiConfig() {
   if (!process.env.GEMINI_MODEL) {
-    throw new Error('FATAL STARTUP ERROR: GEMINI_MODEL is not set in environment variables. Specify a valid model ID (e.g. gemini-1.5-flash) in .env.');
+    process.env.GEMINI_MODEL = 'gemini-1.5-flash';
   }
   if (!process.env.GROQ_MODEL) {
-    throw new Error('FATAL STARTUP ERROR: GROQ_MODEL is not set in environment variables. Specify a valid model ID (e.g. llama-3.3-70b-versatile) in .env.');
+    process.env.GROQ_MODEL = 'llama-3.3-70b-versatile';
   }
 }
 

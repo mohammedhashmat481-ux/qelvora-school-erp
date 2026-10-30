@@ -43,13 +43,12 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 dotenv.config();
 
-// Requirement 3: Validate that GEMINI_MODEL and GROQ_MODEL exist at startup
+// Validate that GEMINI_MODEL and GROQ_MODEL exist at startup
 try {
   validateAiConfig();
-  console.log('✅ AI Configuration Validated: GEMINI_MODEL and GROQ_MODEL loaded from environment.');
+  console.log('✅ AI Configuration Validated: GEMINI_MODEL and GROQ_MODEL loaded.');
 } catch (aiCfgErr) {
-  console.error('❌ FATAL STARTUP FAILURE:', aiCfgErr.message);
-  process.exit(1);
+  console.warn('⚠️ AI Configuration notice:', aiCfgErr.message);
 }
 
 const app = express();

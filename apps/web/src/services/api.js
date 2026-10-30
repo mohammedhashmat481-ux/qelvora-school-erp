@@ -153,6 +153,7 @@ api.interceptors.response.use(
   (error) => {
     // Timeout or network error
     if (error.code === 'ECONNABORTED' || !error.response) {
+      console.error('Network/API connection failure on URL:', error.config?.url, error.message);
       error.isTimeout = true;
       error.friendlyMessage = 'Server is taking longer than expected. Please retry in a moment.';
       return Promise.reject(error);
