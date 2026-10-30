@@ -2307,7 +2307,8 @@ Office of the Principal / Academic Administration`
   const handleExportCsv = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const API_URL = import.meta.env.VITE_API_URL || '/api';
+      const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+      const API_URL = isLocal ? (import.meta.env.VITE_API_URL || 'http://localhost:8010/api') : '/api';
       const response = await fetch(`${API_URL}/feedback/admin/all?exportCsv=true`, {
         headers: {
           'Authorization': `Bearer ${token}`

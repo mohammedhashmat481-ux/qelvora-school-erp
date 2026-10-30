@@ -8,16 +8,21 @@
  */
 import axios from 'axios';
 
-let API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const getBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (!isLocal) {
+      // In production (e.g. school.qelvora.in), ALWAYS use relative /api
+      // This eliminates Mixed Content security blocks and works seamlessly with SSL/Nginx reverse proxy.
+      return '/api';
+    }
+    const raw = import.meta.env.VITE_API_URL || import.meta.env.VITE_GATEWAY_URL || 'http://localhost:8010/api';
+    return raw.endsWith('/api') ? raw : `${raw.replace(/\/+$/, '')}/api`;
+  }
+  return '/api';
+};
 
-// Fallback to local Node backend on port 8010 if running on localhost and using relative proxy path
-if (
-  typeof window !== 'undefined' && 
-  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') &&
-  (API_BASE_URL === '/api' || API_BASE_URL.startsWith('/api'))
-) {
-  API_BASE_URL = (import.meta.env.VITE_GATEWAY_URL || 'http://localhost:8010') + '/api';
-}
+const API_BASE_URL = getBaseUrl();
 
 const api = axios.create({
   baseURL: API_BASE_URL,

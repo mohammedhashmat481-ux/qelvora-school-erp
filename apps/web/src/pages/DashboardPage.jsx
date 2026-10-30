@@ -536,15 +536,10 @@ const DashboardPage = () => {
   // Real-time Socket.IO Connection
   useEffect(() => {
     if (!user?._id) return;
-    let socketUrl = import.meta.env.VITE_GATEWAY_URL || import.meta.env.VITE_API_URL || '/api';
-    if (
-      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') &&
-      (socketUrl === '/api' || socketUrl.startsWith('/api'))
-    ) {
-      socketUrl = import.meta.env.VITE_GATEWAY_URL || 'http://localhost:8010';
-    } else if (!socketUrl.startsWith('http')) {
-      socketUrl = window.location.origin;
-    }
+    const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    const socketUrl = isLocal
+      ? (import.meta.env.VITE_GATEWAY_URL || 'http://localhost:8010')
+      : (typeof window !== 'undefined' ? window.location.origin : '/');
     const socket = io(socketUrl);
 
     socket.emit('register_user', user._id);

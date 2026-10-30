@@ -28,7 +28,8 @@ const VideoPlayerPage = () => {
 
   const videoRef = useRef(null);
   const token = localStorage.getItem('access_token');
-  const API_URL = import.meta.env.VITE_API_URL || '/api';
+  const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  const API_URL = isLocal ? (import.meta.env.VITE_API_URL || 'http://localhost:8010/api') : '/api';
 
   // Helper to parse youtube URLs or filenames
   const getEmbedUrl = (urlOrFile) => {

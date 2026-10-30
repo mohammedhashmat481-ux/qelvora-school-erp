@@ -37,14 +37,18 @@ echo "📥 [2/5] Pulling latest code from GitHub..."
 git pull origin main
 
 # 3. Safely Synchronize Database Schema (Adds new columns without touching existing data)
-echo "🔄 [3/5] Safely synchronizing new database columns..."
+echo "🔄 [3/5] Safely synchronizing database client and schema..."
 cd "$SCRIPT_DIR/services/gateway"
-npx prisma db push --skip-generate
+npx prisma generate
+npx prisma db push --skip-generate || true
 cd "$SCRIPT_DIR"
 
 # 4. Build Frontend Web App
 echo "🏗️ [4/5] Building production frontend bundle..."
-npm run build --workspaces --if-present
+cd "$SCRIPT_DIR/apps/web"
+npm install --no-audit --prefer-offline || npm install
+npm run build
+cd "$SCRIPT_DIR"
 
 # 5. Reload Server Processes with PM2
 echo "🚀 [5/5] Restarting application processes with PM2..."
