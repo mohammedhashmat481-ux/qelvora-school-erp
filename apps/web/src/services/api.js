@@ -79,7 +79,9 @@ api.interceptors.request.use(
 );
 
 // Custom caching adapter wrapper over Axios default adapter
-const defaultAdapter = api.defaults.adapter || axios.defaults.adapter;
+const defaultAdapter = typeof axios.getAdapter === 'function'
+  ? axios.getAdapter(api.defaults.adapter || ['xhr', 'http', 'fetch'])
+  : (typeof api.defaults.adapter === 'function' ? api.defaults.adapter : axios.defaults.adapter);
 
 api.defaults.adapter = async (config) => {
   const method = (config.method || 'get').toLowerCase();
