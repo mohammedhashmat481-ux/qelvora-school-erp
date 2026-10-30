@@ -122,7 +122,7 @@ const AttendancePage = () => {
         if (res?.status && Array.isArray(res.data)) {
           setClassesList(res.data);
           if (res.data.length > 0) {
-            setSelectedClassId(res.data[0]._id);
+            setSelectedClassId(res.data[0].id || res.data[0]._id);
           }
         }
       } catch (err) {
@@ -456,7 +456,7 @@ const AttendancePage = () => {
                       {geoPosition ? (
                         <div className="flex items-center gap-2 text-xs text-emerald-400 font-mono bg-emerald-50 text-emerald-800 p-3 rounded border border-emerald-200">
                           <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping" />
-                          <span>GPS Ready: {geoPosition.latitude.toFixed(5)}, {geoPosition.longitude.toFixed(5)}</span>
+                          <span>GPS Ready: {typeof geoPosition?.latitude === 'number' ? geoPosition.latitude.toFixed(5) : (geoPosition?.latitude || '0.00000')}, {typeof geoPosition?.longitude === 'number' ? geoPosition.longitude.toFixed(5) : (geoPosition?.longitude || '0.00000')}</span>
                         </div>
                       ) : (
                         <div className="flex items-center gap-2 text-xs text-[#172B4D] font-mono bg-stone-50 text-stone-800 p-3 rounded border border-amber-200 animate-pulse">

@@ -1,3 +1,4 @@
+import { confirmModal } from '../context/ModalContext';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -728,7 +729,7 @@ const FeesManagementPage = () => {
   };
 
   const handleDeleteHead = async (h) => {
-    if (!window.confirm(`Are you sure you want to delete fee head "${h.name}"?`)) return;
+    if (!(await confirmModal({ title: 'Delete Fee Head', message: `Are you sure you want to delete fee head "${h.name}"?`, type: 'danger', confirmText: 'Delete Fee Head' }))) return;
     try {
       const res = await deleteFeeHead(h.id);
       if (res.success) {
@@ -819,7 +820,7 @@ const FeesManagementPage = () => {
   };
 
   const handleDeleteQuota = async (q) => {
-    if (!window.confirm(`Are you sure you want to delete quota "${q.name}"?`)) return;
+    if (!(await confirmModal({ title: 'Delete Fee Quota', message: `Are you sure you want to delete quota "${q.name}"?`, type: 'danger', confirmText: 'Delete Quota' }))) return;
     try {
       const res = await deleteFeeQuota(q.id);
       if (res.success) {

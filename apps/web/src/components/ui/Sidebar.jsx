@@ -40,6 +40,7 @@ import {
   CalendarCheck,
   QrCode,
   ScanFace,
+  Bell,
   BellRing,
   BadgeCheck,
   Sparkles
@@ -66,16 +67,22 @@ const Sidebar = () => {
   const params = new URLSearchParams(location.search);
   const tab = params.get('tab');
 
-  const [companyLogo, setCompanyLogo] = useState('');
-  const [companyName, setCompanyName] = useState('Qelvora School CRM');
-  const [logoSubtext, setLogoSubtext] = useState('');
+  const [companyLogo, setCompanyLogo] = useState(() => {
+    try { return localStorage.getItem('school_crm_cached_logo') || ''; } catch { return ''; }
+  });
+  const [companyName, setCompanyName] = useState(() => {
+    try { return localStorage.getItem('school_crm_cached_name') || 'Qelvora School CRM'; } catch { return 'Qelvora School CRM'; }
+  });
+  const [logoSubtext, setLogoSubtext] = useState(() => {
+    try { return localStorage.getItem('school_crm_cached_subtext') || ''; } catch { return ''; }
+  });
 
   const loadSidebarSettings = () => {
     getCompanySettings().then(res => {
       if (res?.data) {
-        if (res.data.schoolLogo) setCompanyLogo(res.data.schoolLogo);
-        if (res.data.schoolName) setCompanyName(res.data.schoolName);
-        if (res.data.logoSubtext) setLogoSubtext(res.data.logoSubtext);
+        if (res.data.schoolLogo) { setCompanyLogo(res.data.schoolLogo); try { localStorage.setItem('school_crm_cached_logo', res.data.schoolLogo); } catch {} }
+        if (res.data.schoolName) { setCompanyName(res.data.schoolName); try { localStorage.setItem('school_crm_cached_name', res.data.schoolName); } catch {} }
+        if (res.data.logoSubtext) { setLogoSubtext(res.data.logoSubtext); try { localStorage.setItem('school_crm_cached_subtext', res.data.logoSubtext); } catch {} }
       }
     }).catch(() => {});
   };
@@ -306,7 +313,24 @@ const Sidebar = () => {
   const isAdmin =
     userRoleLower.includes('admin') ||
     userRoleLower === 'principal' ||
-    Boolean(user?.isAdmin);
+    userRoleLower === 'superadmin' ||
+    Boolean(user?.isAdmin) ||
+    Boolean(user?.grantAdminPrivilege);
+
+  const hasPermission = (key) => {
+    if (isAdmin) return true;
+    if (Array.isArray(user?.permissions)) {
+      return user.permissions.includes(key) || user.permissions.includes('all');
+    }
+    return false;
+  };
+
+  const hasAnyAdminPermission =
+    isAdmin ||
+    (Array.isArray(user?.permissions) &&
+      user.permissions.some(p =>
+        ['admin_panel', 'student_attendance', 'fees_management', 'student_promotion', 'examination', 'online_exam', 'safe_pickup', 'attendance'].includes(p)
+      ));
   const isTeacher =
     !isAdmin &&
     (userRoleLower === 'teacher' ||
@@ -345,7 +369,7 @@ const Sidebar = () => {
           </Link>
 
           {/* Admin Attendance & Kiosk Links */}
-          {isAdmin && (
+          {(isAdmin || hasPermission('attendance')) && (
             <>
               <Link
                 to="/attendance"
@@ -398,7 +422,7 @@ const Sidebar = () => {
             
             <button
               type="button"
-              onClick={() => setIsTeacherOpen(!isTeacherOpen)}
+              onClick={() => { setIsTeacherOpen(prev => !prev); if (!location.pathname.startsWith('/teacher-section') && location.pathname !== '/qelvora-ai' && location.pathname !== '/summary') { navigate('/teacher-section'); } }}
               className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer ${
                 isTeacherSectionActive 
                   ? 'text-indigo-950 bg-slate-100 font-bold' 
@@ -543,13 +567,15 @@ const Sidebar = () => {
           </div>
         )}
 
-        {/* ── ADMIN ONLY SECTION (VISIBLE ONLY WHEN LOGGED IN AS ADMIN) ── */}
-        {isAdmin && (
+        {/* ── ADMIN & PRIVILEGED ROLES SECTION ── */}
+        {hasAnyAdminPermission && (
           <div className="space-y-1 pt-2 border-t border-[#29456D]">
             <span className="text-[10px] font-black text-[#93C5FD] uppercase tracking-widest block px-3 mb-2 opacity-90">
               {t('admin_system') || 'ADMIN_SYSTEM'}
             </span>
             
+            {hasPermission('admin_panel') && (
+            <>
             <button
               type="button"
               onClick={() => setIsAdminOpen(!isAdminOpen)}
@@ -603,15 +629,6 @@ const Sidebar = () => {
                 >
                   <UsersRound className="w-3.5 h-3.5 shrink-0" />
                   <span>Employee Management</span>
-                </Link>
-
-                <Link
-                  to="/admin?tab=students_mgt"
-                  onClick={handleLinkClick}
-                  className={getSubLinkClass('students_mgt')}
-                >
-                  <GraduationCap className="w-3.5 h-3.5 shrink-0" />
-                  <span>Student & Parent Management</span>
                 </Link>
 
                 <Link
@@ -683,6 +700,11 @@ const Sidebar = () => {
               </div>
             )}
 
+            </>
+            )}
+
+            {hasPermission('admin_panel') && (
+            <>
             {/* Dedicated Access Privilege Menu below Admin Panel */}
             <Link
               to="/admin?tab=roles"
@@ -703,7 +725,11 @@ const Sidebar = () => {
               <span>Academic Management</span>
             </Link>
 
+            </>
+            )}
+
             {/* Student Attendance Management Module Dropdown */}
+            {hasPermission('student_attendance') && (
             <div className="space-y-1">
               <button
                 type="button"
@@ -770,7 +796,10 @@ const Sidebar = () => {
               )}
             </div>
 
+            )}
+
             {/* Fees Management Module Dropdown */}
+            {hasPermission('fees_management') && (
             <div className="space-y-1">
               <button
                 type="button"
@@ -845,7 +874,10 @@ const Sidebar = () => {
               )}
             </div>
 
+            )}
+
             {/* Student Promotion Module Dropdown */}
+            {hasPermission('student_promotion') && (
             <div className="space-y-1">
               <button
                 type="button"
@@ -888,7 +920,10 @@ const Sidebar = () => {
               )}
             </div>
 
+            )}
+
             {/* Examination Module Dropdown */}
+            {hasPermission('examination') && (
             <div className="space-y-1">
               <button
                 type="button"
@@ -946,7 +981,10 @@ const Sidebar = () => {
               )}
             </div>
 
+            )}
+
             {/* Online Exam Module Dropdown */}
+            {hasPermission('online_exam') && (
             <div className="space-y-1">
               <button
                 type="button"
@@ -992,7 +1030,10 @@ const Sidebar = () => {
               )}
             </div>
 
+            )}
+
             {/* Safe Pickup Module Dropdown */}
+            {hasPermission('safe_pickup') && (
             <div className="space-y-1">
               <button
                 type="button"
@@ -1039,6 +1080,7 @@ const Sidebar = () => {
                 </div>
               )}
             </div>
+            )}
           </div>
         )}
 

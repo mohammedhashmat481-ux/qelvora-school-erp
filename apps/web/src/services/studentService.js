@@ -69,7 +69,8 @@ export const downloadBulkTemplate = async (format = 'xlsx') => {
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.setAttribute('download', 'School_ERP_Student_Bulk_Upload_Template.xlsx');
+  const ext = format === 'csv' ? 'csv' : 'xlsx';
+  link.setAttribute('download', `School_ERP_Student_Bulk_Upload_Template.${ext}`);
   document.body.appendChild(link);
   link.click();
   link.parentNode.removeChild(link);

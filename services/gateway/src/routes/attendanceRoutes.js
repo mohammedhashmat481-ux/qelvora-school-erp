@@ -5,7 +5,7 @@ import { prisma, formatLegacyId } from '../db/prisma.js';
 import { protect, authorize } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
-const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:5000';
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:5010';
 const AI_INTERNAL_SECRET = process.env.AI_INTERNAL_SECRET || 'internal_shared_secret_school_crm_ai_service_token';
 
 // GET /api/attendance - List attendance by date & class

@@ -1,3 +1,4 @@
+import { confirmModal } from '../context/ModalContext';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -547,7 +548,7 @@ const OrderPage = () => {
       return;
     }
 
-    if (!window.confirm('Are you sure you want to delete this order?')) return;
+    if (!(await confirmModal({ title: 'Delete Order', message: 'Are you sure you want to delete this order record?', type: 'danger', confirmText: 'Delete Order' }))) return;
     
     try {
       const res = await deleteOrder(id);

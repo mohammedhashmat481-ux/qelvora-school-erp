@@ -177,10 +177,16 @@ async function resolveTimetablePayload(body) {
   if (teacherId) {
     const t = await prisma.teacher.findFirst({
       where: { OR: [{ id: teacherId }, { employeeId: teacherId }] }
-    });
+    }).catch(() => null);
     if (t) {
       teacher = t.name;
       employeeId = t.employeeId || employeeId || 'FAC';
+    } else {
+      const u = await prisma.user.findFirst({ where: { id: teacherId } }).catch(() => null);
+      if (u) {
+        teacher = u.name;
+        employeeId = u.employeeId || employeeId || 'FAC';
+      }
     }
   }
 

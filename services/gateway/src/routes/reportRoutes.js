@@ -407,8 +407,8 @@ async function getAggregatedReportData(selectedDate, targetStandard, targetSecti
   };
 }
 
-// GET /api/reports/daily — Principal Daily Briefing JSON
-router.get('/daily', async (req, res) => {
+// GET /api/reports/daily & /api/reports/daily-stats — Principal Daily Briefing JSON
+router.get(['/daily', '/daily-stats'], async (req, res) => {
   try {
     const selectedDate = req.query.date || new Date().toISOString().split('T')[0];
     const data = await getAggregatedReportData(selectedDate, req.query.standard, req.query.section);

@@ -100,6 +100,10 @@ model Teacher {
   designation        String?
   assignedClass      String?
   assignedSection    String?
+  experience         Int?     @default(0)
+  primary_subject    String?  @default("")
+  secondary_subject  String?  @default("")
+  plain_password     String?  @default("qelvora123")
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 

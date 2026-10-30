@@ -56,6 +56,20 @@ import {
   downloadBulkTemplate
 } from '../services/studentService';
 
+const formatToDDMMYYYY = (dateStr) => {
+  if (!dateStr) return '—';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  } catch {
+    return dateStr;
+  }
+};
+
 const STANDARDS_LIST = [
   'Nursery',
   'LKG',
@@ -87,6 +101,11 @@ export default function AcademicManagementPage() {
   // ── Main State ──
   const [students, setStudents] = useState([]);
   const [classes, setClasses] = useState([]);
+
+  const dynamicStandardsList = useMemo(() => {
+    const fromClasses = (classes || []).map(c => c.standard).filter(Boolean);
+    return Array.from(new Set([...STANDARDS_LIST, ...fromClasses]));
+  }, [classes]);
   const [loading, setLoading] = useState(true);
   const [academicYear, setAcademicYear] = useState('2026-2027');
 
@@ -106,10 +125,17 @@ export default function AcademicManagementPage() {
   const [activeProfileTab, setActiveProfileTab] = useState('personal'); // 'personal'|'guardian'|'address'|'medical'|'services'
 
   const [bulkModalOpen, setBulkModalOpen] = useState(false);
+  const [bulkUploadScope, setBulkUploadScope] = useState('auto'); // 'auto' | 'specific'
+  const [bulkTargetStandard, setBulkTargetStandard] = useState('1st');
+  const [bulkTargetSection, setBulkTargetSection] = useState('A');
   const [bulkFile, setBulkFile] = useState(null);
   const [bulkPreviewData, setBulkPreviewData] = useState(null);
+  const [bulkFilePreview, setBulkFilePreview] = useState([]);
+  const [bulkClassBreakdown, setBulkClassBreakdown] = useState({});
   const [bulkValidating, setBulkValidating] = useState(false);
   const [bulkCommitting, setBulkCommitting] = useState(false);
+  const [isDownloadingTemplate, setIsDownloadingTemplate] = useState(false);
+  const [bulkSuccessResult, setBulkSuccessResult] = useState(null);
   const fileInputRef = useRef(null);
 
   const [deleteConfirmStudent, setDeleteConfirmStudent] = useState(null);
@@ -187,6 +213,13 @@ export default function AcademicManagementPage() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('bulk') === 'true') {
+      handleOpenBulkModal();
+    }
+  }, [location.search]);
 
   // ── Sync auto-generated admission number on open 'add' modal ──
   const handleOpenAddModal = async () => {
@@ -366,48 +399,165 @@ export default function AcademicManagementPage() {
     }
   };
 
-  // ── Bulk Upload File Selection & Auto-Validation ──
-  const handleFileSelect = async (e) => {
-    const file = e.target.files?.[0];
+  // ── Bulk Upload Management (Multi-Class & Specific Class Modes) ──
+  const handleOpenBulkModal = (prefillStandard = '', prefillSection = '') => {
+    setBulkFile(null);
+    setBulkPreviewData(null);
+    setBulkFilePreview([]);
+    setBulkClassBreakdown({});
+    // Multi-Class Mode is the safe, default mode so file standard is preserved
+    setBulkUploadScope('auto');
+    const std = prefillStandard && prefillStandard !== 'ALL'
+      ? prefillStandard
+      : (selectedStandard && selectedStandard !== 'ALL' ? selectedStandard : (dynamicStandardsList[0] || '1st'));
+    const sec = prefillSection && prefillSection !== 'ALL'
+      ? prefillSection
+      : (selectedSection && selectedSection !== 'ALL' ? selectedSection : 'A');
+
+    setBulkTargetStandard(std);
+    setBulkTargetSection(sec || 'A');
+    setBulkModalOpen(true);
+  };
+
+  const handleDownloadTemplateFile = async (format = 'xlsx') => {
+    setIsDownloadingTemplate(true);
+    try {
+      await downloadBulkTemplate(format);
+      toast.success(`Sample template (${format.toUpperCase()}) downloaded!`);
+    } catch (err) {
+      toast.error('Failed to download template: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setIsDownloadingTemplate(false);
+    }
+  };
+
+  const handleBulkFileSelection = async (file) => {
     if (!file) return;
     setBulkFile(file);
     setBulkPreviewData(null);
-    setBulkValidating(true);
+    setBulkFilePreview([]);
+    setBulkClassBreakdown({});
 
-    const formData = new FormData();
-    formData.append('file', file);
+    // Robust field normalizer for client-side preview
+    const cleanKey = (str) => String(str || '').toLowerCase().replace(/[\*\(\)\:\_\-\s\/\\\[\]]/g, '');
+    const getVal = (rowObj, ...keys) => {
+      const map = new Map();
+      for (const [k, v] of Object.entries(rowObj || {})) {
+        if (v !== undefined && v !== null && String(v).trim() !== '') {
+          map.set(cleanKey(k), String(v).trim());
+        }
+      }
+      for (const k of keys) {
+        const ck = cleanKey(k);
+        if (map.has(ck)) return map.get(ck);
+      }
+      for (const k of keys) {
+        const ck = cleanKey(k);
+        for (const [ek, ev] of map.entries()) {
+          if (ek.includes(ck) || (ck.length > 3 && ck.includes(ek))) return ev;
+        }
+      }
+      return '';
+    };
 
+    // 1. Immediate in-browser local preview using FileReader & XLSX
     try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const buffer = e.target.result;
+          const wb = XLSX.read(buffer, { type: 'array', dense: true });
+          let targetSheetName = wb.SheetNames.find(s => ['student import', 'students_roster', 'students', 'student'].includes(s.trim().toLowerCase()));
+          if (!targetSheetName) {
+            targetSheetName = wb.SheetNames.find(s => !s.toLowerCase().includes('instruction')) || wb.SheetNames[0];
+          }
+          if (targetSheetName && wb.Sheets[targetSheetName]) {
+            const rawRows = XLSX.utils.sheet_to_json(wb.Sheets[targetSheetName], { defval: '' });
+            
+            const previewRows = rawRows.slice(0, 5).map(row => ({
+              name: getVal(row, 'studentName', 'name', 'student_name', 'Student Name', 'Full Name') || '—',
+              standard: getVal(row, 'classStandard', 'standard', 'class', 'Class Standard', 'Grade') || '—',
+              section: (getVal(row, 'section', 'Section', 'sec') || 'A').toUpperCase(),
+              rollNumber: getVal(row, 'rollNumber', 'roll_no', 'Roll No', 'Roll Number') || '—',
+              parentPhone: getVal(row, 'parentPhone', 'phone', 'contact', 'Mobile', 'Parent Mobile') || '—'
+            }));
+            setBulkFilePreview(previewRows);
+
+            const breakdown = {};
+            rawRows.forEach(row => {
+              const rawStd = getVal(row, 'classStandard', 'standard', 'class', 'Class Standard', 'Grade') || 'Unspecified';
+              const rawSec = (getVal(row, 'section', 'Section', 'sec') || 'A').toUpperCase();
+              const key = `${rawStd} - ${rawSec}`;
+              breakdown[key] = (breakdown[key] || 0) + 1;
+            });
+            setBulkClassBreakdown(breakdown);
+          }
+        } catch (parseErr) {
+          console.warn('Local preview parse error:', parseErr);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    } catch (_) {}
+
+    // 2. Server validation
+    setBulkValidating(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('scope', bulkUploadScope);
+      if (bulkUploadScope === 'specific') {
+        formData.append('standard', bulkTargetStandard);
+        formData.append('section', bulkTargetSection);
+      }
       const res = await previewBulkUpload(formData);
       if (res?.summary) {
         setBulkPreviewData(res.summary);
-        toast.success(`Template analyzed: ${res.summary.validCount} valid records, ${res.summary.invalidCount} errors`);
-      } else {
-        toast.error('Could not parse preview from file');
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to parse spreadsheet');
+      console.warn('Server validation error:', err);
     } finally {
       setBulkValidating(false);
     }
   };
 
-  // ── Bulk Upload Commit ──
   const handleCommitBulkUpload = async () => {
-    if (!bulkFile) return;
+    if (!bulkFile) {
+      toast.error('Please select an Excel (.xlsx, .xls) or CSV (.csv) file.');
+      return;
+    }
     setBulkCommitting(true);
-    const formData = new FormData();
-    formData.append('file', bulkFile);
-
     try {
+      const formData = new FormData();
+      formData.append('file', bulkFile);
+      formData.append('scope', bulkUploadScope);
+      if (bulkUploadScope === 'specific') {
+        formData.append('standard', bulkTargetStandard);
+        formData.append('section', bulkTargetSection);
+      }
       const res = await commitBulkUpload(formData);
-      toast.success(res?.message || 'Bulk upload completed successfully!');
-      setBulkModalOpen(false);
-      setBulkFile(null);
-      setBulkPreviewData(null);
-      await fetchData();
+      if (res && (res.status || res.success)) {
+        // Detailed Success Confirmation Modal
+        setBulkSuccessResult({
+          message: res.message || 'Bulk upload completed successfully!',
+          totalProcessed: res.summary?.totalProcessed ?? (Number(res.summary?.created || 0) + Number(res.summary?.updated || 0)),
+          created: res.summary?.created ?? 0,
+          updated: res.summary?.updated ?? 0,
+          failed: res.summary?.failed ?? 0,
+          classesAffected: res.summary?.classesAffected || [],
+          fileName: bulkFile.name
+        });
+        setBulkModalOpen(false);
+        setBulkFile(null);
+        setBulkPreviewData(null);
+        setBulkFilePreview([]);
+        setBulkClassBreakdown({});
+        await fetchData();
+      } else {
+        toast.error(res?.message || 'Failed to ingest students');
+      }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to ingest students');
+      console.error('Commit bulk upload error:', err);
+      toast.error(err.response?.data?.message || err.message || 'Failed to ingest students');
     } finally {
       setBulkCommitting(false);
     }
@@ -601,11 +751,7 @@ export default function AcademicManagementPage() {
             </button>
 
             <button
-              onClick={() => {
-                setBulkFile(null);
-                setBulkPreviewData(null);
-                setBulkModalOpen(true);
-              }}
+              onClick={() => handleOpenBulkModal()}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow-sm transition-all cursor-pointer"
             >
               <Upload className="w-3.5 h-3.5" />
@@ -709,7 +855,7 @@ export default function AcademicManagementPage() {
                 All Classes ({students.length})
               </button>
 
-              {STANDARDS_LIST.map(std => {
+              {dynamicStandardsList.map(std => {
                 const count = classBreakdownMap.get(std) || 0;
                 const isSelected = selectedStandard === std;
                 return (
@@ -1342,7 +1488,7 @@ export default function AcademicManagementPage() {
                         onChange={(e) => handleFormChange('standard', e.target.value)}
                         className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold focus:outline-none focus:border-blue-500 cursor-pointer"
                       >
-                        {STANDARDS_LIST.map(std => (
+                        {dynamicStandardsList.map(std => (
                           <option key={std} value={std}>{std}</option>
                         ))}
                       </select>
@@ -1911,97 +2057,244 @@ export default function AcademicManagementPage() {
       )}
 
       {/* ══════════════════════════════════════════════════════════════════════════ */}
-      {/* ── TWO-STEP BULK UPLOAD MODAL (WITH VALIDATION PREVIEW) ── */}
+      {/* ── BULK UPLOAD STUDENTS MODAL (MULTI-CLASS & SPECIFIC CLASS WISE) ── */}
       {/* ══════════════════════════════════════════════════════════════════════════ */}
       {bulkModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn overflow-y-auto">
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
-            
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn overflow-y-auto">
+          <div className="bg-white border border-gray-200 rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-2xl relative overflow-y-auto max-h-[90vh] text-slate-900">
+            <button
+              type="button"
+              onClick={() => {
+                if (!bulkCommitting) {
+                  setBulkModalOpen(false);
+                  setBulkFile(null);
+                  setBulkPreviewData(null);
+                  setBulkFilePreview([]);
+                  setBulkClassBreakdown({});
+                }
+              }}
+              className="absolute top-6 right-6 text-gray-400 hover:text-gray-900 bg-gray-100 rounded-full p-1.5 transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
             {/* Modal Header */}
-            <div className="px-6 py-4 bg-[#172B4D] text-white flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-600/30 border border-emerald-400/40 text-emerald-300 flex items-center justify-center">
-                  <FileSpreadsheet className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-base font-black tracking-tight text-white flex items-center gap-2">
-                    <span>Bulk Student Excel Ingestion</span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
-                      High Speed Batch Upsert
-                    </span>
-                  </h3>
-                  <p className="text-xs text-blue-200/80">
-                    Upload formatted spreadsheet with pre-commit validation preview and SATS support.
-                  </p>
-                </div>
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#172B4D]">
+                <Upload className="w-5 h-5 text-[#172B4D]" />
               </div>
-              <button
-                onClick={() => setBulkModalOpen(false)}
-                className="p-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div>
+                <h3 className="text-base sm:text-lg font-bold text-gray-900">
+                  Bulk Upload Students (Class & Section Wise)
+                </h3>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Upload complete school student rosters at once using Excel (.xlsx, .xls) or CSV (.csv).
+                </p>
+              </div>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-6 overflow-y-auto space-y-5">
-              
-              {/* Step 1: Download Template Notice */}
-              <div className="bg-blue-50/70 border border-blue-200 p-4 rounded-2xl flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <FileSpreadsheet className="w-6 h-6 text-blue-600 shrink-0" />
-                  <div>
-                    <h4 className="text-xs font-black text-blue-900">Download the Official 3-Sheet Excel Template</h4>
-                    <p className="text-[11px] text-blue-700">
-                      Contains `Instructions`, `Student Import`, and `Sample Data` with SATS Number and parent contact columns.
-                    </p>
+            <div className="space-y-6">
+              {/* Step 1: Download Sample Formatted Template */}
+              <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-blue-950">
+                    <Sparkles className="w-4 h-4 text-blue-600 shrink-0" />
+                    <span>Download Pre-formatted Sample Template</span>
                   </div>
+                  <p className="text-[11px] text-blue-800/80 leading-relaxed">
+                    Includes columns for Admission No, SATS No, Name, Standard, Section, Roll No, Gender, DOB, Parent Contact, and Address.
+                  </p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => downloadBulkTemplate('xlsx')}
-                  className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shrink-0 transition-all cursor-pointer shadow-xs"
-                >
-                  Download .xlsx
-                </button>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    disabled={isDownloadingTemplate}
+                    onClick={() => handleDownloadTemplateFile('xlsx')}
+                    className="px-3 py-1.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold text-xs rounded-xl shadow-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Excel (.xlsx)</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isDownloadingTemplate}
+                    onClick={() => handleDownloadTemplateFile('csv')}
+                    className="px-3 py-1.5 bg-white hover:bg-blue-100 text-[#172B4D] font-semibold text-xs rounded-xl border border-blue-300 shadow-2xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>CSV (.csv)</span>
+                  </button>
+                </div>
               </div>
 
-              {/* Step 2: File Picker Area */}
-              <div>
-                <label className="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
-                  Select Spreadsheet (.xlsx, .xls, .csv)
+              {/* Step 2: Upload Target Mode */}
+              <div className="space-y-3">
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Upload Scope & Assignment
                 </label>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  accept=".xlsx, .xls, .csv"
-                  onChange={handleFileSelect}
-                  className="hidden"
-                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <label
+                    onClick={() => setBulkUploadScope('auto')}
+                    className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
+                      bulkUploadScope === 'auto'
+                        ? 'bg-blue-50/70 border-[#29456D] text-[#172B4D] shadow-xs'
+                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="uploadScope"
+                      checked={bulkUploadScope === 'auto'}
+                      onChange={() => setBulkUploadScope('auto')}
+                      className="mt-0.5 text-[#172B4D] focus:ring-[#93C5FD]"
+                    />
+                    <div>
+                      <div className="font-bold text-xs">Multi-Class Mode (From File)</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">
+                        Reads Class and Section directly from each row in the uploaded sheet. Missing classes will be created automatically.
+                      </div>
+                    </div>
+                  </label>
 
+                  <label
+                    onClick={() => setBulkUploadScope('specific')}
+                    className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
+                      bulkUploadScope === 'specific'
+                        ? 'bg-blue-50/70 border-[#29456D] text-[#172B4D] shadow-xs'
+                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="uploadScope"
+                      checked={bulkUploadScope === 'specific'}
+                      onChange={() => setBulkUploadScope('specific')}
+                      className="mt-0.5 text-[#172B4D] focus:ring-[#93C5FD]"
+                    />
+                    <div>
+                      <div className="font-bold text-xs">Assign Specific Class & Section</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">
+                        Assign all rows in this file to a single selected Class and Section.
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
+                {bulkUploadScope === 'specific' && (
+                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl grid grid-cols-2 gap-3 animate-fadeIn">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        Target Standard *
+                      </label>
+                      <select
+                        value={bulkTargetStandard}
+                        onChange={(e) => setBulkTargetStandard(e.target.value)}
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none cursor-pointer"
+                      >
+                        {dynamicStandardsList.map(std => (
+                          <option key={std} value={std}>{std}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        Target Section *
+                      </label>
+                      <input
+                        type="text"
+                        maxLength="3"
+                        value={bulkTargetSection}
+                        onChange={(e) => setBulkTargetSection(e.target.value.toUpperCase())}
+                        placeholder="e.g. A"
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Step 3: Drag & Drop File Upload Zone */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Select Spreadsheet File (.xlsx, .xls, .csv)
+                </label>
                 <div
-                  onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-2xl p-6 text-center cursor-pointer transition-all bg-slate-50/50 hover:bg-blue-50/30 flex flex-col items-center justify-center gap-2 group"
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                      handleBulkFileSelection(e.dataTransfer.files[0]);
+                    }
+                  }}
+                  className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all ${
+                    bulkFile 
+                      ? 'border-emerald-400 bg-emerald-50/40' 
+                      : 'border-slate-300 hover:border-[#29456D] bg-slate-50/60 hover:bg-blue-50/20 cursor-pointer'
+                  }`}
+                  onClick={() => {
+                    document.getElementById('academic-bulk-file-input')?.click();
+                  }}
                 >
-                  <Upload className="w-8 h-8 text-slate-400 group-hover:text-blue-600 transition-colors" />
-                  <p className="text-xs font-bold text-slate-700">
-                    {bulkFile ? bulkFile.name : 'Click to browse or drag and drop spreadsheet here'}
-                  </p>
-                  <p className="text-[10px] text-slate-400">
-                    Supports 2,000+ student rows with automatic batching
-                  </p>
+                  <input
+                    id="academic-bulk-file-input"
+                    type="file"
+                    accept=".xlsx, .xls, .csv"
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        handleBulkFileSelection(e.target.files[0]);
+                      }
+                    }}
+                  />
+                  
+                  {bulkFile ? (
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                        <CheckCircle2 className="w-6 h-6" />
+                      </div>
+                      <div className="font-bold text-sm text-slate-900">{bulkFile.name}</div>
+                      <div className="text-xs text-slate-500 font-medium">
+                        {(bulkFile.size / 1024).toFixed(1)} KB — Ready to process
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setBulkFile(null);
+                          setBulkPreviewData(null);
+                          setBulkFilePreview([]);
+                          setBulkClassBreakdown({});
+                        }}
+                        className="mt-1 text-xs text-rose-600 hover:text-rose-800 font-semibold underline cursor-pointer"
+                      >
+                        Remove and choose another file
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <div className="w-12 h-12 rounded-2xl bg-blue-100 text-[#172B4D] flex items-center justify-center">
+                        <Upload className="w-6 h-6" />
+                      </div>
+                      <div className="font-bold text-xs sm:text-sm text-slate-800">
+                        Click to browse or drag & drop student roster here
+                      </div>
+                      <div className="text-[11px] text-slate-500">
+                        Supports Microsoft Excel (.xlsx, .xls) and Comma-Separated Values (.csv) up to 10MB
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Step 3: Validation State */}
+              {/* Validation Spinner */}
               {bulkValidating && (
-                <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 text-center flex flex-col items-center justify-center gap-2">
-                  <RefreshCw className="w-6 h-6 text-blue-600 animate-spin" />
-                  <p className="text-xs font-bold text-slate-700">Analyzing template rows and detecting conflicts...</p>
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center flex items-center justify-center gap-2 text-xs font-semibold text-slate-600">
+                  <RefreshCw className="w-4 h-4 text-blue-600 animate-spin" />
+                  <span>Analyzing roster template and checking database conflicts...</span>
                 </div>
               )}
 
-              {/* Step 4: Validation Preview Summary */}
+              {/* Validation Summary Cards if available */}
               {bulkPreviewData && (
                 <div className="space-y-4 animate-fadeIn">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -2028,22 +2321,6 @@ export default function AcademicManagementPage() {
                     </div>
                   </div>
 
-                  {/* Class Breakdown Chips */}
-                  {bulkPreviewData.classBreakdown && bulkPreviewData.classBreakdown.length > 0 && (
-                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                      <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider block mb-1.5">
-                        Classes Detected in Spreadsheet:
-                      </span>
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        {bulkPreviewData.classBreakdown.map((cb, idx) => (
-                          <span key={idx} className="px-2 py-0.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-800 shadow-2xs">
-                            {cb.standard} - {cb.section}: <span className="text-blue-600 font-black">{cb.count}</span>
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
                   {/* Errors Table if any */}
                   {bulkPreviewData.errors && bulkPreviewData.errors.length > 0 && (
                     <div className="border border-rose-200 rounded-xl bg-rose-50/50 p-3 max-h-36 overflow-y-auto">
@@ -2060,65 +2337,209 @@ export default function AcademicManagementPage() {
                       </ul>
                     </div>
                   )}
-
-                  {/* Sample Valid Rows Preview */}
-                  {bulkPreviewData.sampleValidRows && bulkPreviewData.sampleValidRows.length > 0 && (
-                    <div className="space-y-1.5">
-                      <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">
-                        Sample Parsed Records (First 5):
-                      </span>
-                      <div className="overflow-x-auto border border-slate-200 rounded-xl">
-                        <table className="w-full text-left text-[11px] border-collapse">
-                          <thead className="bg-slate-100 text-slate-600 uppercase text-[9px] font-black">
-                            <tr>
-                              <th className="py-1.5 px-2">Row</th>
-                              <th className="py-1.5 px-2">Name</th>
-                              <th className="py-1.5 px-2">Class</th>
-                              <th className="py-1.5 px-2">SATS No</th>
-                              <th className="py-1.5 px-2">Phone</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-slate-100">
-                            {bulkPreviewData.sampleValidRows.slice(0, 5).map((sr, idx) => (
-                              <tr key={idx} className="hover:bg-slate-50 font-semibold text-slate-700">
-                                <td className="py-1.5 px-2 font-mono">{sr.rowNum}</td>
-                                <td className="py-1.5 px-2 font-bold text-slate-900">{sr.name}</td>
-                                <td className="py-1.5 px-2">{sr.standard} - {sr.section}</td>
-                                <td className="py-1.5 px-2 font-mono text-purple-700">{sr.satsNumber || '—'}</td>
-                                <td className="py-1.5 px-2 font-mono">{sr.parentPhone || sr.phone}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  )}
-
                 </div>
               )}
 
+              {/* Class Breakdown Badge Summary */}
+              {Object.keys(bulkClassBreakdown).length > 0 && (
+                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2 animate-fadeIn">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+                    <span className="flex items-center gap-1.5">
+                      <School className="w-3.5 h-3.5 text-[#172B4D]" />
+                      <span>Class Strength Distribution in File:</span>
+                    </span>
+                    <span className="text-emerald-700 font-mono">
+                      {Object.values(bulkClassBreakdown).reduce((a, b) => a + b, 0)} Total Students
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto pr-1">
+                    {Object.entries(bulkClassBreakdown).map(([clsKey, count]) => (
+                      <span
+                        key={clsKey}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-2xs"
+                      >
+                        <span className="text-[#172B4D] font-bold">Class {clsKey}:</span>
+                        <strong className="text-emerald-600 font-mono">+{count} students</strong>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Live Preview Table */}
+              {bulkFilePreview.length > 0 && (
+                <div className="space-y-2 animate-fadeIn">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>Preview of First {bulkFilePreview.length} Student Rows:</span>
+                    <span className="text-slate-400 text-[10px] font-normal">All columns will be imported</span>
+                  </div>
+                  <div className="overflow-x-auto border border-slate-200 rounded-xl max-h-48 text-[11px]">
+                    <table className="min-w-full divide-y divide-slate-200">
+                      <thead className="bg-slate-100 text-slate-700 font-semibold sticky top-0">
+                        <tr>
+                          <th className="px-3 py-2 text-left">#</th>
+                          <th className="px-3 py-2 text-left">Name</th>
+                          <th className="px-3 py-2 text-left">Class</th>
+                          <th className="px-3 py-2 text-left">Section</th>
+                          <th className="px-3 py-2 text-left">Roll No</th>
+                          <th className="px-3 py-2 text-left">Parent Phone</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 bg-white">
+                        {bulkFilePreview.map((row, idx) => (
+                          <tr key={idx} className="hover:bg-slate-50">
+                            <td className="px-3 py-1.5 font-mono text-slate-400">{idx + 1}</td>
+                            <td className="px-3 py-1.5 font-bold text-slate-900">
+                              {row.name}
+                            </td>
+                            <td className="px-3 py-1.5 text-slate-700 font-semibold">
+                              {bulkUploadScope === 'specific' ? bulkTargetStandard : row.standard}
+                            </td>
+                            <td className="px-3 py-1.5 text-slate-700 font-bold">
+                              {bulkUploadScope === 'specific' ? bulkTargetSection : row.section}
+                            </td>
+                            <td className="px-3 py-1.5 font-mono text-slate-600">
+                              {row.rollNumber}
+                            </td>
+                            <td className="px-3 py-1.5 font-mono text-slate-600">
+                              {row.parentPhone}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+                <button
+                  type="button"
+                  disabled={bulkCommitting}
+                  onClick={() => {
+                    setBulkModalOpen(false);
+                    setBulkFile(null);
+                    setBulkPreviewData(null);
+                    setBulkFilePreview([]);
+                    setBulkClassBreakdown({});
+                  }}
+                  className="w-full sm:w-1/3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer text-center"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={!bulkFile || bulkCommitting}
+                  onClick={handleCommitBulkUpload}
+                  className="w-full sm:w-2/3 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  {bulkCommitting ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                      <span>Uploading & Ingesting {Object.values(bulkClassBreakdown).reduce((a, b) => a + b, 0) || (bulkPreviewData?.validCount ? bulkPreviewData.validCount : '')} Students...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-4 h-4" />
+                      <span>Confirm & Upload Student Roster</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════════════ */}
+      {/* ── BULK UPLOAD SUCCESS CONFIRMATION MODAL ── */}
+      {/* ══════════════════════════════════════════════════════════════════════════ */}
+      {bulkSuccessResult && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl p-6 sm:p-8 w-full max-w-lg relative text-slate-900 animate-scaleIn">
+            
+            {/* Header Icon & Message */}
+            <div className="flex flex-col items-center text-center space-y-3">
+              <div className="w-16 h-16 rounded-3xl bg-emerald-100 border border-emerald-200 text-emerald-600 flex items-center justify-center shadow-xs">
+                <CheckCircle2 className="w-9 h-9" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-xl font-black text-slate-900 tracking-tight">
+                  Bulk Upload Completed!
+                </h3>
+                <p className="text-xs text-slate-500 max-w-xs mx-auto">
+                  {bulkSuccessResult.message || 'Student roster was successfully processed and saved to the database.'}
+                </p>
+              </div>
             </div>
 
-            {/* Modal Footer */}
-            <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
-              <button
-                type="button"
-                onClick={() => setBulkModalOpen(false)}
-                className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-100 transition-all cursor-pointer"
-              >
-                Cancel
-              </button>
-
-              <button
-                type="button"
-                onClick={handleCommitBulkUpload}
-                disabled={!bulkPreviewData || bulkPreviewData.validCount === 0 || bulkCommitting}
-                className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-300 text-white text-xs font-black shadow-md shadow-emerald-900/20 transition-all cursor-pointer flex items-center gap-2"
-              >
-                {bulkCommitting && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
-                <span>
-                  {bulkCommitting ? 'Ingesting...' : `Commit & Ingest (${bulkPreviewData?.validCount || 0} Students)`}
+            {/* Stat Cards */}
+            <div className="grid grid-cols-3 gap-2.5 my-6">
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 text-center">
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Processed</span>
+                <span className="text-lg font-black text-slate-800 font-mono">
+                  {bulkSuccessResult.totalProcessed}
                 </span>
+              </div>
+              <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 text-center">
+                <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">New Added</span>
+                <span className="text-lg font-black text-emerald-700 font-mono">
+                  +{bulkSuccessResult.created}
+                </span>
+              </div>
+              <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3 text-center">
+                <span className="text-[10px] font-bold text-blue-700 uppercase tracking-wider block">Updated</span>
+                <span className="text-lg font-black text-blue-700 font-mono">
+                  {bulkSuccessResult.updated}
+                </span>
+              </div>
+            </div>
+
+            {/* Classes Affected Live Strength List */}
+            {bulkSuccessResult.classesAffected && bulkSuccessResult.classesAffected.length > 0 && (
+              <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl mb-6 space-y-2">
+                <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                  <School className="w-3.5 h-3.5 text-[#172B4D]" />
+                  <span>Classes Updated & Live Strengths:</span>
+                </span>
+                <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+                  {bulkSuccessResult.classesAffected.map((cls, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-2xs"
+                    >
+                      <span className="text-[#172B4D] font-bold">Class {cls.standard} - {cls.section}:</span>
+                      <strong className="text-emerald-600 font-mono font-bold">{cls.enrolledCount} Students Enrolled</strong>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-2.5">
+              {bulkSuccessResult.classesAffected && bulkSuccessResult.classesAffected[0]?.standard && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const firstClass = bulkSuccessResult.classesAffected[0].standard;
+                    setSelectedStandard(firstClass);
+                    setSelectedSection('ALL');
+                    setBulkSuccessResult(null);
+                  }}
+                  className="w-full sm:flex-1 py-3 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Eye className="w-4 h-4" />
+                  <span>View Class {bulkSuccessResult.classesAffected[0].standard} Roster</span>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setBulkSuccessResult(null)}
+                className="w-full sm:w-auto px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer text-center"
+              >
+                Close
               </button>
             </div>
 
@@ -2126,7 +2547,7 @@ export default function AcademicManagementPage() {
         </div>
       )}
 
-      {/* ══════════════════════════════════════════════════════════════════════════ */}
+            {/* ══════════════════════════════════════════════════════════════════════════ */}
       {/* ── QUICK VIEW MODAL ── */}
       {/* ══════════════════════════════════════════════════════════════════════════ */}
       {quickViewStudent && (
@@ -2176,6 +2597,10 @@ export default function AcademicManagementPage() {
                 <div>
                   <span className="text-[10px] text-slate-400 font-bold uppercase block">Date of Birth</span>
                   <span className="font-semibold text-slate-700">{quickViewStudent.dob || '—'}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase block">Admission Date</span>
+                  <span className="font-semibold text-slate-700">{formatToDDMMYYYY(quickViewStudent.admissionDate)}</span>
                 </div>
                 <div>
                   <span className="text-[10px] text-slate-400 font-bold uppercase block">Blood Group</span>

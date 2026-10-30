@@ -3,8 +3,24 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      'lucide-react',
+      'axios',
+      'react-hot-toast',
+      'socket.io-client',
+      'xlsx',
+      'i18next',
+      'react-i18next'
+    ],
+  },
   server: {
     port: 3600,
+    strictPort: true,
+    host: true,
     proxy: {
       '/api': {
         target: 'http://localhost:8010',
@@ -67,4 +83,3 @@ export default defineConfig({
     },
   },
 });
-

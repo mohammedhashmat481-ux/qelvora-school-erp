@@ -80,7 +80,7 @@ function parseIndianOrIsoDate(dateVal) {
 // Standardize class standard naming (e.g. 10 -> '10th', '10th' -> '10th', 'NURSERY' -> 'Nursery')
 function normalizeStandard(val) {
   if (!val) return '';
-  const s = String(val).trim();
+  const s = String(val).trim().replace(/^class\s+/i, '').trim();
   const lower = s.toLowerCase();
   if (['nursery', 'nur'].includes(lower)) return 'Nursery';
   if (['lkg', 'l.k.g.'].includes(lower)) return 'LKG';
@@ -97,22 +97,43 @@ function normalizeStandard(val) {
 
 // Normalizer for row keys from Excel/CSV headers
 function normalizeRowData(row) {
+  const cleanKey = (str) => String(str || '').toLowerCase().replace(/[\*\(\)\:\_\-\s\/\\\[\]]/g, '');
+  
+  const cleanedRowMap = new Map();
+  for (const [k, v] of Object.entries(row || {})) {
+    if (v !== undefined && v !== null && String(v).trim() !== '') {
+      cleanedRowMap.set(cleanKey(k), String(v).trim());
+    }
+  }
+
   const getVal = (...keys) => {
+    // 1. Direct match on row
     for (const k of keys) {
       if (row[k] !== undefined && row[k] !== null && String(row[k]).trim() !== '') {
         return String(row[k]).trim();
       }
-      // Also check case-insensitive match
-      const foundKey = Object.keys(row).find(rk => rk.trim().toLowerCase() === k.toLowerCase());
-      if (foundKey && row[foundKey] !== undefined && row[foundKey] !== null && String(row[foundKey]).trim() !== '') {
-        return String(row[foundKey]).trim();
+    }
+    // 2. Cleaned match
+    for (const k of keys) {
+      const ck = cleanKey(k);
+      if (cleanedRowMap.has(ck)) {
+        return cleanedRowMap.get(ck);
+      }
+    }
+    // 3. Substring match
+    for (const k of keys) {
+      const ck = cleanKey(k);
+      for (const [entryKey, entryVal] of cleanedRowMap.entries()) {
+        if (entryKey.includes(ck) || (ck.length > 3 && ck.includes(entryKey))) {
+          return entryVal;
+        }
       }
     }
     return '';
   };
 
-  const name = getVal('name', 'studentName', 'student_name', 'Student Name', 'Full Name', 'Name of Student');
-  const rawStandard = getVal('standard', 'class', 'Class', 'Standard', 'Grade');
+  const name = getVal('studentName', 'name', 'student_name', 'Student Name', 'Full Name', 'Name of Student');
+  const rawStandard = getVal('classStandard', 'standard', 'class', 'Class', 'Standard', 'Grade');
   const standard = normalizeStandard(rawStandard);
   const rawSection = getVal('section', 'Section', 'sec');
   const section = rawSection ? rawSection.toUpperCase() : '';
@@ -414,11 +435,14 @@ router.post('/bulk-upload', protect, upload.single('file'), async (req, res) => 
     }
 
     // Default override standard and section if user specified them in the form
+    const isSpecificScope = String(req.body.scope || '').trim().toLowerCase() === 'specific';
     const defaultStandard = normalizeStandard(req.body.standard || req.body.class);
     const defaultSection = req.body.section ? String(req.body.section).trim().toUpperCase() : '';
 
     const currentYear = new Date().getFullYear();
-    let totalCountInDb = await prisma.student.count().catch(() => 0);
+    const existingStudentList = await prisma.student.findMany({ select: { studentId: true } }).catch(() => []);
+    const existingStudentIdSet = new Set(existingStudentList.map(s => s.studentId));
+    let nextAdmIndex = existingStudentList.length + 1;
 
     const validRows = [];
     const errors = [];
@@ -431,8 +455,8 @@ router.post('/bulk-upload', protect, upload.single('file'), async (req, res) => 
       const parsed = normalizeRowData(rows[i]);
 
       const finalName = parsed.name;
-      const finalStandard = parsed.standard || defaultStandard;
-      const finalSection = parsed.section || defaultSection || 'A';
+      const finalStandard = isSpecificScope ? (defaultStandard || parsed.standard) : (parsed.standard || defaultStandard);
+      const finalSection = isSpecificScope ? (defaultSection || parsed.section || 'A') : (parsed.section || defaultSection || 'A');
 
       if (!finalName) {
         errors.push({ row: rowNum, error: 'Student Name is missing' });
@@ -446,12 +470,12 @@ router.post('/bulk-upload', protect, upload.single('file'), async (req, res) => 
       // Generate unique admission number if missing
       let finalAdmissionNo = parsed.admissionNumber;
       if (!finalAdmissionNo) {
-        totalCountInDb++;
-        finalAdmissionNo = `ADM-${currentYear}-${String(totalCountInDb).padStart(5, '0')}`;
-        while (assignedIdsInBatch.has(finalAdmissionNo)) {
-          totalCountInDb++;
-          finalAdmissionNo = `ADM-${currentYear}-${String(totalCountInDb).padStart(5, '0')}`;
+        finalAdmissionNo = `ADM-${currentYear}-${String(nextAdmIndex).padStart(5, '0')}`;
+        while (existingStudentIdSet.has(finalAdmissionNo) || assignedIdsInBatch.has(finalAdmissionNo)) {
+          nextAdmIndex++;
+          finalAdmissionNo = `ADM-${currentYear}-${String(nextAdmIndex).padStart(5, '0')}`;
         }
+        nextAdmIndex++;
       }
       assignedIdsInBatch.add(finalAdmissionNo);
 
@@ -768,8 +792,8 @@ router.get('/', protect, async (req, res) => {
     const stdFilter = standard || classParam || '';
     
     const where = {};
-    if (stdFilter && stdFilter !== 'ALL') where.standard = String(stdFilter);
-    if (section && section !== 'ALL') where.section = String(section).toUpperCase();
+    if (stdFilter && String(stdFilter).toUpperCase() !== 'ALL') where.standard = String(stdFilter);
+    if (section && String(section).toUpperCase() !== 'ALL') where.section = String(section).toUpperCase();
     if (gender && gender !== 'ALL') where.gender = String(gender);
     if (category && category !== 'ALL') where.category = String(category);
     if (leftSchoolStatus !== undefined && leftSchoolStatus !== 'ALL') {

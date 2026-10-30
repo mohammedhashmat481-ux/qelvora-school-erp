@@ -1,3 +1,4 @@
+import { confirmModal } from '../context/ModalContext';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -276,7 +277,7 @@ const ExaminationPage = () => {
   };
 
   const handleDeleteExamType = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this Exam Type? This will fail if marks or exams exist for it.')) return;
+    if (!(await confirmModal({ title: 'Delete Exam Type', message: 'Are you sure you want to delete this Exam Type? This will fail if marks or exams are linked to it.', type: 'danger', confirmText: 'Delete Type' }))) return;
     try {
       const res = await deleteExamType(id);
       if (res.success) {
@@ -358,7 +359,7 @@ const ExaminationPage = () => {
   };
 
   const handleDeleteExamName = async (id) => {
-    if (!window.confirm('Delete this Exam? Marks and schedules linked will be affected.')) return;
+    if (!(await confirmModal({ title: 'Delete Examination', message: 'Are you sure you want to delete this Exam? Associated marks and exam schedules will be affected.', type: 'danger', confirmText: 'Delete Exam' }))) return;
     try {
       const res = await deleteExamName(id);
       if (res.success) {
@@ -871,7 +872,7 @@ const ExaminationPage = () => {
   };
 
   const handleDeleteAllocation = async (id) => {
-    if (!window.confirm('Deallocate this exam sheet?')) return;
+    if (!(await confirmModal({ title: 'Deallocate Exam Sheet', message: 'Are you sure you want to deallocate this exam mark sheet?', type: 'warning', confirmText: 'Deallocate' }))) return;
     try {
       const res = await deleteExamAllocation(id);
       if (res.success) {

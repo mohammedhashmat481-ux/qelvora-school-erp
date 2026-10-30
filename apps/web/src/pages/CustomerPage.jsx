@@ -1,3 +1,4 @@
+import { confirmModal } from '../context/ModalContext';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -173,7 +174,7 @@ const CustomerPage = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this customer? This action cannot be undone.")) return;
+    if (!(await confirmModal({ title: 'Delete Record', message: 'Are you sure you want to delete this customer? This action cannot be undone.', type: 'danger', confirmText: 'Delete' }))) return;
     try {
       const res = await deleteCustomer(id);
       if (res.status) {

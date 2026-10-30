@@ -1,3 +1,4 @@
+import { confirmModal } from '../context/ModalContext';
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -464,7 +465,7 @@ const OnlineExamManagementPage = () => {
   };
 
   const handlePublishExam = async (examId) => {
-    if (!window.confirm('Are you sure you want to publish this examination? The question snapshot will be locked and students will be able to attempt within the scheduled window.')) {
+    if (await confirmModal({ title: 'Publish Examination', subtitle: 'Lock Snapshot & Open Window', message: 'Are you sure you want to publish this examination? The question snapshot will be locked and eligible students will be able to attempt within the scheduled window.', type: 'info', confirmText: 'Publish Exam' })) {
       return;
     }
     try {
@@ -477,7 +478,7 @@ const OnlineExamManagementPage = () => {
   };
 
   const handleArchiveExam = async (examId) => {
-    if (!window.confirm('Archive this examination?')) return;
+    if (!(await confirmModal({ title: 'Archive Examination', message: 'Are you sure you want to archive this examination?', type: 'warning', confirmText: 'Archive Exam' }))) return;
     try {
       await archiveExam(examId);
       toast.success('Exam archived');
@@ -488,7 +489,7 @@ const OnlineExamManagementPage = () => {
   };
 
   const handleDeleteExam = async (examId) => {
-    if (!window.confirm('Permanently delete this exam draft?')) return;
+    if (!(await confirmModal({ title: 'Delete Exam Draft', message: 'Are you sure you want to permanently delete this examination draft?', type: 'danger', confirmText: 'Delete Draft' }))) return;
     try {
       await deleteExam(examId);
       toast.success('Exam deleted');
@@ -621,7 +622,7 @@ const OnlineExamManagementPage = () => {
   };
 
   const handleDeleteQ = async (id) => {
-    if (!window.confirm('Delete or archive this question?')) return;
+    if (!(await confirmModal({ title: 'Delete Question', message: 'Are you sure you want to delete or archive this question?', type: 'danger', confirmText: 'Delete Question' }))) return;
     try {
       await deleteQuestion(id);
       toast.success('Question removed');

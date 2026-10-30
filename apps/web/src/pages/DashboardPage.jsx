@@ -1,3 +1,4 @@
+import { confirmModal } from '../context/ModalContext';
 /**
  * Dashboard Page — Premium Responsive School & Faculty Management Dashboard.
  * Integrates dual-dashboard views:
@@ -1008,7 +1009,7 @@ const DashboardPage = () => {
   };
 
   const handleDeleteCell = async (entryId) => {
-    if (!window.confirm('Are you sure you want to delete this timetable slot?')) return;
+    if (!(await confirmModal({ title: 'Delete Timetable Slot', message: 'Are you sure you want to delete this timetable slot?', type: 'danger', confirmText: 'Delete Slot' }))) return;
     try {
       const res = await deleteTimetableEntry(entryId);
       if (res?.status) {

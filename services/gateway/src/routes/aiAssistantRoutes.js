@@ -776,8 +776,8 @@ router.post('/tts', protect, async (req, res) => {
 // ADMIN MANAGEMENT & USAGE ENDPOINTS
 // -----------------------------------------------------------------------------
 
-// GET /api/ai-assistant/settings — Get active AI Tier & configuration (Admin only)
-router.get('/settings', protect, async (req, res) => {
+// GET /api/ai-assistant/settings or /config — Get active AI Tier & configuration (Admin only)
+router.get(['/settings', '/config'], protect, async (req, res) => {
   try {
     const userRole = (req.user?.role || '').toLowerCase();
     if (userRole !== 'admin' && userRole !== 'principal' && userRole !== 'management') {

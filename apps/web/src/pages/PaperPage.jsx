@@ -1,3 +1,4 @@
+import { confirmModal } from '../context/ModalContext';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -306,7 +307,7 @@ export default function PaperPage() {
 
   // Delete paper from history
   const handleDeletePaper = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this saved question paper?')) return;
+    if (!(await confirmModal({ title: 'Delete Question Paper', message: 'Are you sure you want to delete this saved question paper?', type: 'danger', confirmText: 'Delete Paper' }))) return;
     try {
       await api.delete(`/paper/${id}`);
       setHistoryList(prev => prev.filter(p => p.id !== id));
@@ -770,8 +771,8 @@ export default function PaperPage() {
   };
 
   // Reset form
-  const handleReset = () => {
-    if (window.confirm('Reset all generator options back to school defaults?')) {
+  const handleReset = async () => {
+    if (await confirmModal({ title: 'Reset Options', message: 'Reset all question paper generator options back to school defaults?', type: 'warning', confirmText: 'Reset Defaults' })) {
       setSettings(DEFAULT_SETTINGS);
       localStorage.removeItem('school_crm_paper_generator_config');
       toast.success('Configuration reset to defaults.');

@@ -1,3 +1,4 @@
+import { confirmModal } from '../context/ModalContext';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -289,7 +290,7 @@ const TeacherSectionPage = () => {
   };
 
   const handleQualDelete = async (index) => {
-    if (!window.confirm('Are you sure you want to delete this qualification?')) return;
+    if (!(await confirmModal({ title: 'Delete Qualification', message: 'Are you sure you want to delete this qualification record from your faculty profile?', type: 'danger', confirmText: 'Delete Record' }))) return;
     const currentList = [...(profileData.qualificationsList || [])];
     currentList.splice(index, 1);
 
@@ -331,7 +332,7 @@ const TeacherSectionPage = () => {
   };
 
   const handleExpDelete = async (index) => {
-    if (!window.confirm('Are you sure you want to delete this experience record?')) return;
+    if (!(await confirmModal({ title: 'Delete Experience', message: 'Are you sure you want to delete this professional experience record from your profile?', type: 'danger', confirmText: 'Delete Record' }))) return;
     const currentList = [...(profileData.experienceList || [])];
     currentList.splice(index, 1);
 
@@ -809,7 +810,7 @@ const TeacherSectionPage = () => {
 
   // Handle Delete Homework
   const handleDeleteHomework = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this homework?')) return;
+    if (!(await confirmModal({ title: 'Delete Homework & Task', message: 'Are you sure you want to permanently delete this homework? All student submissions and grading logs attached to this task will also be removed.', type: 'danger', confirmText: 'Delete Homework' }))) return;
     try {
       const res = await deleteHomework(id);
       if (res?.status) {
@@ -1142,7 +1143,7 @@ const TeacherSectionPage = () => {
                                 </td>
                                 <td className="py-3.5 px-4 text-center">
                                   <span className={`inline-block px-2.5 py-1 rounded-full font-bold uppercase text-[9px] border ${
-                                    slot.classSession?.status === 'active' 
+                                    (slot.classSession?.status === 'active' || slot.classSession?.status === 'in-progress') 
                                       ? 'bg-green-800 text-white border-green-900 font-bold' 
                                       : slot.classSession?.status === 'completed'
                                         ? 'bg-stone-100 text-stone-600 border-stone-250 font-bold'
@@ -1165,7 +1166,7 @@ const TeacherSectionPage = () => {
                                     >
                                       📥 Check In
                                     </button>
-                                  ) : slot.classSession.status === 'active' ? (
+                                  ) : (slot.classSession?.status === 'active' || slot.classSession?.status === 'in-progress') ? (
                                     <button
                                       onClick={() => handleClassLogout(slot.classId, slot.period)}
                                       className="px-3.5 py-1.5 bg-red-700 hover:bg-red-800 text-white text-[10px] font-bold rounded-lg shadow-sm transition-all"

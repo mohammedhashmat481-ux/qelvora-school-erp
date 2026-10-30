@@ -40,6 +40,7 @@ import {
   CalendarCheck,
   QrCode,
   ScanFace,
+  Bell,
   BellRing,
   BadgeCheck,
   Sparkles
@@ -66,16 +67,22 @@ const Sidebar = () => {
   const params = new URLSearchParams(location.search);
   const tab = params.get('tab');
 
-  const [companyLogo, setCompanyLogo] = useState('');
-  const [companyName, setCompanyName] = useState('Qelvora School CRM');
-  const [logoSubtext, setLogoSubtext] = useState('');
+  const [companyLogo, setCompanyLogo] = useState(() => {
+    try { return localStorage.getItem('school_crm_cached_logo') || ''; } catch { return ''; }
+  });
+  const [companyName, setCompanyName] = useState(() => {
+    try { return localStorage.getItem('school_crm_cached_name') || 'Qelvora School CRM'; } catch { return 'Qelvora School CRM'; }
+  });
+  const [logoSubtext, setLogoSubtext] = useState(() => {
+    try { return localStorage.getItem('school_crm_cached_subtext') || ''; } catch { return ''; }
+  });
 
   const loadSidebarSettings = () => {
     getCompanySettings().then(res => {
       if (res?.data) {
-        if (res.data.schoolLogo) setCompanyLogo(res.data.schoolLogo);
-        if (res.data.schoolName) setCompanyName(res.data.schoolName);
-        if (res.data.logoSubtext) setLogoSubtext(res.data.logoSubtext);
+        if (res.data.schoolLogo) { setCompanyLogo(res.data.schoolLogo); try { localStorage.setItem('school_crm_cached_logo', res.data.schoolLogo); } catch {} }
+        if (res.data.schoolName) { setCompanyName(res.data.schoolName); try { localStorage.setItem('school_crm_cached_name', res.data.schoolName); } catch {} }
+        if (res.data.logoSubtext) { setLogoSubtext(res.data.logoSubtext); try { localStorage.setItem('school_crm_cached_subtext', res.data.logoSubtext); } catch {} }
       }
     }).catch(() => {});
   };
@@ -398,7 +405,7 @@ const Sidebar = () => {
             
             <button
               type="button"
-              onClick={() => setIsTeacherOpen(!isTeacherOpen)}
+              onClick={() => { setIsTeacherOpen(prev => !prev); if (!location.pathname.startsWith('/teacher-section') && location.pathname !== '/qelvora-ai' && location.pathname !== '/summary') { navigate('/teacher-section'); } }}
               className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer ${
                 isTeacherSectionActive 
                   ? 'text-indigo-950 bg-slate-100 font-bold' 

@@ -8,6 +8,8 @@ import { AuthProvider } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import ProfileSelectionPage from './pages/ProfileSelectionPage';
 import GlobalAiAssistant from './components/ai/GlobalAiAssistant';
+import ErrorBoundary from './components/ui/ErrorBoundary';
+import { ModalProvider } from './context/ModalContext';
 
 // ─── Route-based lazy loading (loaded only when the route is visited) ──
 const HomePage             = lazy(() => import('./pages/HomePage'));
@@ -64,10 +66,12 @@ function PageLoader() {
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <ModalProvider>
+        <Router>
         <Toaster position="top-right" />
         <GlobalAiAssistant />
-        <Suspense fallback={<PageLoader />}>
+        <ErrorBoundary>
+          <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/"                    element={<LoginPage />} />
             <Route path="/login"               element={<LoginPage />} />
@@ -124,7 +128,9 @@ function App() {
             <Route path="*"                    element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
+        </ErrorBoundary>
       </Router>
+      </ModalProvider>
     </AuthProvider>
   );
 }

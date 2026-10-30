@@ -3,7 +3,7 @@ import axios from 'axios';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
-const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:5000';
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:5010';
 const AI_INTERNAL_SECRET = process.env.AI_INTERNAL_SECRET || 'internal_shared_secret_school_crm_ai_service_token';
 
 // Proxy all /api/vidya requests to private Python AI microservice

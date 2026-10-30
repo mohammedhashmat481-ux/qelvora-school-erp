@@ -3,6 +3,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import { prisma, formatLegacyId } from '../db/prisma.js';
 import { protect } from '../middleware/authMiddleware.js';
+import cache from '../lib/cache.js';
 
 const router = express.Router();
 
@@ -313,7 +314,10 @@ router.get('/auth/admin/employees', async (req, res) => {
       item.skip_location = t.user ? t.user.skip_location : false;
       item.is_enabled = t.user ? t.user.isActive !== false : true;
       item.is_super_admin = (item.role || '').toLowerCase() === 'admin' || (item.role || '').toLowerCase() === 'super_admin';
-      item.plain_password = t.plain_password || t.user?.plain_password || 'qelvora123';
+      item.experience = t.experience !== undefined && t.experience !== null ? t.experience : 0;
+      item.primary_subject = t.primary_subject || '';
+      item.secondary_subject = t.secondary_subject || '';
+      item.plain_password = t.plain_password || t.user?.plain_password || '';
       item.password = item.plain_password;
       item.userId = t.userId || t.user?.id;
       result.push(item);
@@ -363,7 +367,8 @@ router.put('/auth/admin/employee/:id/settings', async (req, res) => {
     if (payload.firstName || payload.lastName) {
       payload.name = [payload.firstName, payload.middleName, payload.lastName].filter(Boolean).join(' ');
     }
-    const newPwd = payload.password || payload.plain_password;
+    const rawPwd = (payload.password || payload.plain_password || '').trim();
+    const newPwd = (rawPwd && rawPwd !== 'qelvora123' && rawPwd !== 'Welcome@123' && rawPwd !== '***') ? rawPwd : null;
     if (emp) {
       Object.assign(emp, payload);
       if (newPwd) emp.plain_password = newPwd;
@@ -403,6 +408,10 @@ router.put('/auth/admin/employee/:id/settings', async (req, res) => {
           ...(payload.phone && { phone: payload.phone }),
           ...(payload.qualification && { qualification: payload.qualification }),
           ...(normalizedRole && { designation: normalizedRole }),
+          ...(payload.experience !== undefined && { experience: Number(payload.experience) || 0 }),
+          ...(payload.primary_subject !== undefined && { primary_subject: payload.primary_subject }),
+          ...(payload.secondary_subject !== undefined && { secondary_subject: payload.secondary_subject }),
+          ...(newPwd && { plain_password: newPwd }),
           ...(teacher.userId && { userId: teacher.userId })
         };
         const requestedEmpId = payload.employeeId || payload.employee_id;
@@ -588,7 +597,8 @@ router.get('/auth/settings', async (req, res) => {
     lunch_break_start: '12:00',
     small_break_mins: 15,
     small_break_start: '10:30',
-    face_auth_enabled: true,
+    academicYear: '2026-2027',
+  face_auth_enabled: true,
     location_auth_enabled: true
   };
 
@@ -616,6 +626,7 @@ router.post('/auth/settings', async (req, res) => {
       schoolName: payload.schoolName || 'Qelvora School CRM',
       schoolLogo: payload.schoolLogo !== undefined ? payload.schoolLogo : (first?.schoolLogo || ''),
       logoSubtext: payload.logoSubtext || 'Empowering Educational Excellence',
+      academicYear: payload.academicYear || first?.academicYear || '2026-2027',
       board: payload.board || 'CBSE',
       boardsList: payload.boardsList || ['CBSE', 'STATE', 'ICSE'],
       standardsList: payload.standardsList || ['Nursery', 'LKG', 'UKG', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'],
@@ -789,6 +800,11 @@ router.post('/classes', async (req, res) => {
       classTeacher: teacherName ? { _id: teacherId, id: teacherId, name: teacherName } : null
     };
 
+    try {
+      cache.delete('master:classes_full');
+      cache.delete('master:classes');
+    } catch (_) {}
+
     return res.status(201).json({ status: true, message: `Class ${cleanStandard}-${cleanSection} created successfully!`, data: result });
   } catch (err) {
     console.error('Error creating class:', err);
@@ -876,6 +892,10 @@ router.delete('/classes/:id', async (req, res) => {
     await prisma.class.delete({
       where: { id }
     });
+    try {
+      cache.delete('master:classes_full');
+      cache.delete('master:classes');
+    } catch (_) {}
     return res.json({ status: true, message: 'Class deleted successfully' });
   } catch (err) {
     console.error('Error deleting class:', err);
@@ -887,7 +907,25 @@ router.delete('/classes/:id', async (req, res) => {
 router.post('/faculty/teacher', async (req, res) => {
   try {
     const { name, firstName, middleName, lastName, email, phone, role, employeeId, password, qualification, primary_subject, secondary_subject } = req.body;
-    const empCode = employeeId || `TCH${String(DEMO_EMPLOYEES.length + 1).padStart(3, '0')}`;
+    const expVal = req.body.experience !== undefined ? Number(req.body.experience) || 0 : 0;
+    const primSub = primary_subject || req.body.primarySubject || '';
+    const secSub = secondary_subject || req.body.secondarySubject || '';
+
+    let empCode = employeeId;
+    if (!empCode) {
+      let count = DEMO_EMPLOYEES.length + 1;
+      try {
+        const tCount = await prisma.teacher.count().catch(() => 0);
+        count = Math.max(count, tCount + 1);
+      } catch (_) {}
+      const prefix = (role && role.toLowerCase().includes('teacher')) ? 'TCH' : 'EMP';
+      empCode = `${prefix}${String(count).padStart(3, '0')}`;
+      let suffix = 1;
+      while (DEMO_EMPLOYEES.some(e => e.employeeId === empCode || e.employee_id === empCode)) {
+        empCode = `${prefix}${String(count + suffix).padStart(3, '0')}`;
+        suffix++;
+      }
+    }
     const empEmail = email || `faculty${Date.now()}@qelvora.in`;
     const empName = (firstName || lastName)
       ? [firstName, middleName, lastName].filter(Boolean).join(' ')
@@ -920,7 +958,11 @@ router.post('/faculty/teacher', async (req, res) => {
           email: empEmail,
           phone: phone || null,
           qualification: qualification || 'N/A',
-          designation: (empRole || '').toLowerCase() === 'teacher' ? 'Teacher' : empRole
+          designation: (empRole || '').toLowerCase() === 'teacher' ? 'Teacher' : empRole,
+          experience: expVal,
+          primary_subject: primSub,
+          secondary_subject: secSub,
+          plain_password: plainPass
         }
       });
       createdId = teacherRecord.id;
@@ -940,7 +982,9 @@ router.post('/faculty/teacher', async (req, res) => {
       email: empEmail,
       phone: phone || '+91 9876543210',
       qualification: qualification || 'N/A',
-      experience: req.body.experience || 0,
+      experience: expVal,
+      primary_subject: primSub,
+      secondary_subject: secSub,
       role: empRole,
       status: 'Active',
       skip_face: true,

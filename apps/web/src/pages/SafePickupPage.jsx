@@ -1,3 +1,4 @@
+import { confirmModal } from '../context/ModalContext';
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Sidebar from '../components/ui/Sidebar';
@@ -780,8 +781,8 @@ A mobile/web app connecting Parents, Authorized Third Parties, and School Staff 
     setNewContact({ name: '', relation: 'Family Driver', phone: '', vehicleNo: '', child: 'Aarav Sharma (Std 5-A)', photo: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80' });
   };
 
-  const handleDeleteContact = (id) => {
-    if (window.confirm('Are you sure you want to revoke authorization for this person?')) {
+  const handleDeleteContact = async (id) => {
+    if (await confirmModal({ title: 'Revoke Authorization', message: 'Are you sure you want to revoke pickup authorization for this guardian/person?', type: 'danger', confirmText: 'Revoke Authorization' })) {
       setContacts(contacts.filter(c => c.id !== id));
       toast.success('Authorization revoked successfully.');
     }

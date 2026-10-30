@@ -1,3 +1,4 @@
+import { confirmModal } from '../context/ModalContext';
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getVideos, submitFeedback, updateFeedback, deleteFeedback, getVideoFeedback } from '../services/authService';
@@ -157,7 +158,7 @@ const VideoPlayerPage = () => {
 
   // Delete Feedback
   const handleDeleteReview = async (reviewId) => {
-    if (!window.confirm('Are you sure you want to delete this review?')) return;
+    if (!(await confirmModal({ title: 'Delete Review', message: 'Are you sure you want to delete this video review?', type: 'danger', confirmText: 'Delete Review' }))) return;
 
     try {
       const res = await deleteFeedback(reviewId, 'parent');

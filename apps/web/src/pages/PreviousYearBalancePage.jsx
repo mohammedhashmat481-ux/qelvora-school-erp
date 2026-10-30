@@ -1,3 +1,4 @@
+import { confirmModal } from '../context/ModalContext';
 import React, { useState, useEffect } from 'react';
 import {
   Wallet,
@@ -289,7 +290,7 @@ export default function PreviousYearBalancePage() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to remove or waive this previous balance record?')) return;
+    if (!(await confirmModal({ title: 'Waive Balance Record', message: 'Are you sure you want to remove or waive this previous year balance record?', type: 'warning', confirmText: 'Waive Record' }))) return;
     try {
       const res = await deletePreviousBalance(id);
       if (res?.success) {

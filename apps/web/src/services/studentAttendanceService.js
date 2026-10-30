@@ -31,9 +31,12 @@ export const studentAttendanceService = {
   getLowAttendanceReport: (params) => api.get('/student-attendance/reports/low-attendance', { params }),
   getStudentHistory: (studentId) => api.get(`/student-attendance/reports/student-history/${studentId}`),
 
-  // Notifications
+  // Notifications & Parent Outreach
   getNotifications: (params) => api.get('/student-attendance/notifications', { params }),
   retryNotifications: (data) => api.post('/student-attendance/notifications/retry', data),
+  sendWhatsApp: (data) => api.post('/student-attendance/send-whatsapp', data),
+  sendVoiceMessage: (data) => api.post('/student-attendance/send-voice-message', data),
+  sendVoiceCall: (data) => api.post('/student-attendance/send-voice-call', data),
 
   // Settings
   getSettings: () => api.get('/student-attendance/settings'),

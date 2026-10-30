@@ -200,7 +200,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ status: false, message: 'Invalid credentials' });
     }
 
-    const formattedUser = formatLegacyId(user);
+    const formattedUser = await getEnrichedUserProfile(user);
     const token = generateToken(formattedUser);
     const requiresFace = !user.skip_face && user.face_embeddings && user.face_embeddings.length > 0;
 
@@ -259,7 +259,7 @@ router.post('/register', async (req, res) => {
       DEMO_USERS[cleanEmail] = user;
     }
 
-    const formattedUser = formatLegacyId(user);
+    const formattedUser = await getEnrichedUserProfile(user);
     const token = generateToken(formattedUser);
 
     res.status(201).json({
@@ -284,6 +284,43 @@ async function getEnrichedUserProfile(user) {
   if (!user) return user;
   const base = formatLegacyId(user);
   const roleLower = (user.role || '').toLowerCase();
+
+  let permissions = [];
+  let grantAdminPrivilege = false;
+
+  if (roleLower === 'admin' || roleLower === 'superadmin') {
+    grantAdminPrivilege = true;
+    permissions = [
+      'dashboard',
+      'attendance',
+      'admin_panel',
+      'student_attendance',
+      'fees_management',
+      'student_promotion',
+      'examination',
+      'online_exam',
+      'safe_pickup'
+    ];
+  } else {
+    try {
+      const roleRecord = await prisma.role.findFirst({
+        where: {
+          OR: [
+            { roleCode: { equals: user.role, mode: 'insensitive' } },
+            { rolename: { equals: user.role, mode: 'insensitive' } },
+            { name: { equals: user.role, mode: 'insensitive' } }
+          ]
+        }
+      });
+      if (roleRecord) {
+        permissions = Array.isArray(roleRecord.permissions) ? roleRecord.permissions : [];
+        grantAdminPrivilege = Boolean(roleRecord.grantAdminPrivilege);
+      }
+    } catch (_) {}
+  }
+
+  base.permissions = permissions;
+  base.grantAdminPrivilege = grantAdminPrivilege;
 
   // 1. If Teacher / Educator
   if (roleLower === 'teacher' || roleLower === 'educator' || roleLower === 'faculty') {

@@ -1,3 +1,4 @@
+import { confirmModal } from '../context/ModalContext';
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -221,8 +222,8 @@ const InventoryPage = () => {
     return Object.values(groupedBrands).flat().some(b => b.toLowerCase() === brandName.toLowerCase());
   };
 
-  const handleDeleteBrand = (brandName) => {
-    if (window.confirm(`Are you sure you want to delete brand "${brandName}"?`)) {
+  const handleDeleteBrand = async (brandName) => {
+    if (await confirmModal({ title: 'Delete Brand', message: `Are you sure you want to delete brand "${brandName}"?`, type: 'danger', confirmText: 'Delete Brand' })) {
       setDeletedBrands(prev => {
         const updated = [...prev, brandName];
         localStorage.setItem('deletedBrands', JSON.stringify(updated));
@@ -232,8 +233,8 @@ const InventoryPage = () => {
     }
   };
 
-  const handleDeleteCategory = (categoryName) => {
-    if (window.confirm(`Are you sure you want to delete category "${categoryName}" and all its brands?`)) {
+  const handleDeleteCategory = async (categoryName) => {
+    if (await confirmModal({ title: 'Delete Category', message: `Are you sure you want to delete category "${categoryName}" and all its brands?`, type: 'danger', confirmText: 'Delete Category' })) {
       setDeletedCategories(prev => {
         const updated = [...prev, categoryName];
         localStorage.setItem('deletedCategories', JSON.stringify(updated));
@@ -522,7 +523,7 @@ const InventoryPage = () => {
 
   // Delete product handler
   const handleDeleteProduct = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this product? This action cannot be undone.')) return;
+    if (!(await confirmModal({ title: 'Delete Inventory Item', message: 'Are you sure you want to delete this product? This action cannot be undone.', type: 'danger', confirmText: 'Delete Item' }))) return;
     try {
       const res = await deleteInventory(id);
       if (res.status) {
@@ -538,7 +539,7 @@ const InventoryPage = () => {
 
   // Delete measurement handler
   const handleDeleteMeasurement = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this measurement?')) return;
+    if (!(await confirmModal({ title: 'Delete Measurement', message: 'Are you sure you want to delete this measurement unit?', type: 'danger', confirmText: 'Delete' }))) return;
     try {
       const res = await deleteMeasurement(id);
       if (res.status) {

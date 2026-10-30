@@ -1,3 +1,4 @@
+import { confirmModal } from '../context/ModalContext';
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/ui/Sidebar';
 import Spinner from '../components/ui/Spinner';
@@ -237,7 +238,7 @@ export default function SummaryPage() {
   // Delete an item from history
   const handleDeleteFromHistory = async (e, id) => {
     e.stopPropagation();
-    if (!window.confirm('Delete this saved summary?')) return;
+    if (!(await confirmModal({ title: 'Delete Lesson Summary', message: 'Are you sure you want to delete this saved lesson summary?', type: 'danger', confirmText: 'Delete Summary' }))) return;
     try {
       await api.delete(`/summary/${id}`);
       setHistoryItems(prev => prev.filter(h => h.id !== id));

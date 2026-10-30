@@ -67,7 +67,11 @@ app.use(compression({
   }
 }));
 
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true,
+  maxAge: 86400 // Cache CORS preflight for 24 hours to eliminate redundant OPTIONS roundtrips
+}));
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.json({ limit: '150mb' }));
 app.use(express.urlencoded({ extended: true, limit: '150mb' }));
@@ -130,7 +134,7 @@ app.use('/api/homework', homeworkRoutes);
 app.use('/api/notices', noticeRoutes);
 
 // Enhanced Health check endpoint with DB ping and performance metrics
-app.get('/health', async (req, res) => {
+app.get(['/health', '/api/health'], async (req, res) => {
   let dbStatus = 'disconnected';
   let dbLatency = null;
   const start = Date.now();
@@ -168,6 +172,7 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
+  // Automated notifications & GPS socket channel
   console.log(`⚡ WebSocket client connected: ${socket.id}`);
 
   socket.on('driver:location-update', (data) => {
