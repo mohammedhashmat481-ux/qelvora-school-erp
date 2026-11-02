@@ -338,15 +338,15 @@ export default function GlobalAiAssistant() {
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-[#172B4D] via-[#1E3A8A] to-[#2563EB] text-white rounded-full shadow-2xl hover:shadow-blue-500/25 hover:scale-105 active:scale-95 transition-all duration-200 border-2 border-white/20 group"
+          className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40 flex items-center gap-2 sm:gap-2.5 px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gradient-to-r from-[#203B61] via-[#244B78] to-[#3978D5] text-white rounded-full shadow-2xl hover:shadow-blue-500/25 hover:scale-105 active:scale-95 transition-all duration-200 border-2 border-white/20 group cursor-pointer"
           title="Open Qelvora AI Assistant"
         >
           <div className="relative">
-            <Sparkles className="w-5 h-5 text-amber-300 animate-spin-slow" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full border border-[#172B4D] animate-ping" />
+            <Sparkles className="w-4 sm:w-5 h-4 sm:h-5 text-amber-300 animate-spin-slow" />
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full border border-[#203B61] animate-ping" />
           </div>
-          <span className="font-extrabold text-sm tracking-wide">AI Assist</span>
-          <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider text-blue-100">
+          <span className="font-extrabold text-xs sm:text-sm tracking-wide">AI Assist</span>
+          <span className="hidden xs:inline-block text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider text-blue-100">
             Voice & Text
           </span>
         </button>

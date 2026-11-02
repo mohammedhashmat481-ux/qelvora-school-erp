@@ -689,167 +689,183 @@ export default function AcademicManagementPage() {
   }, [students]);
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-[#F7F9FC] font-sans text-[#334155] antialiased">
+    <div className="flex flex-col md:flex-row min-h-screen bg-[#F5F8FC] font-sans text-[#253858] antialiased overflow-x-hidden">
       {/* ── Platform Sidebar ── */}
       <Sidebar />
 
       {/* ── Main Content Container ── */}
-      <div className="flex-1 flex flex-col min-w-0 pb-20 md:pb-0 overflow-y-auto">
+      <div className="flex-1 flex flex-col min-w-0 pb-28 md:pb-16 overflow-y-auto">
         
-        {/* ── Header ── */}
-        <header className="h-auto md:h-16 py-3 md:py-0 bg-[#172B4D] border-b border-[#29456D] text-white px-4 md:px-6 flex flex-col md:flex-row md:items-center justify-between gap-3 shrink-0 shadow-xs z-10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#29456D] text-[#F3F6FC] border border-[#29456D] flex items-center justify-center shadow-md shrink-0">
-              <School className="w-5 h-5 text-blue-300" />
+        {/* ── Header Bar ── */}
+        <header className="bg-[#203B61] text-white px-4 sm:px-6 py-4 sm:py-5 border-b border-[#2D4D77] shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex items-start sm:items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-[#2D4D77] text-white flex items-center justify-center shadow-xs shrink-0 border border-[#3A5F8F]">
+              <School className="w-6 h-6 text-[#93C5FD]" />
             </div>
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-base font-black text-white tracking-tight">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h1 className="text-lg sm:text-xl font-extrabold text-white tracking-tight">
                   Academic Management & Student Records
                 </h1>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#DBEAFE] text-[#172B4D] border border-[#93C5FD]">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#DCEBFA] text-[#244B78] border border-[#BBD7F5]">
                   CBSE / SATS Integrated
                 </span>
               </div>
-              <p className="text-xs text-[#CBD5E1]">
+              <p className="text-xs sm:text-sm text-blue-100/90 font-normal mt-0.5">
                 Class & section rosters, real-time profile editing, SATS search, and bulk template ingestion.
               </p>
             </div>
           </div>
 
           {/* Academic Session Selector & Actions */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="flex items-center gap-1.5 bg-[#29456D] px-2.5 py-1.5 rounded-xl border border-[#3b5984] text-xs font-bold text-white shadow-2xs">
-              <Calendar className="w-3.5 h-3.5 text-blue-300" />
-              <span className="text-[10px] uppercase text-blue-200">Session:</span>
+          <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
+            {/* Session Selector */}
+            <div className="flex items-center gap-1.5 bg-[#2D4D77] px-3 py-2 rounded-xl border border-[#3A5F8F] text-xs font-semibold text-white shadow-2xs">
+              <Calendar className="w-3.5 h-3.5 text-blue-200" />
+              <span className="text-[11px] text-blue-100 font-medium uppercase tracking-wider">Session:</span>
               <select
                 value={academicYear}
                 onChange={(e) => setAcademicYear(e.target.value)}
-                className="bg-transparent text-white font-black text-xs focus:outline-none cursor-pointer"
+                className="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer pr-1"
+                title="Select Academic Session"
               >
                 {ACADEMIC_YEARS.map(yr => (
-                  <option key={yr} value={yr} className="text-slate-900 bg-white">{yr}</option>
+                  <option key={yr} value={yr} className="text-slate-900 bg-white font-medium">{yr}</option>
                 ))}
               </select>
             </div>
 
+            {/* Refresh Button */}
             <button
               onClick={() => fetchData()}
               disabled={loading}
-              title="Refresh Roster"
-              className="p-2 rounded-xl bg-[#29456D] text-blue-200 hover:text-white hover:bg-[#385b8c] border border-[#3b5984] transition-all cursor-pointer"
+              title="Refresh Roster Data"
+              className="p-2.5 rounded-xl bg-[#2D4D77] hover:bg-[#385B8A] active:scale-95 text-blue-100 hover:text-white border border-[#3A5F8F] transition-all cursor-pointer shadow-2xs"
+              aria-label="Refresh Roster"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </button>
 
+            {/* Download Template */}
             <button
               onClick={() => downloadBulkTemplate('xlsx')}
-              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#29456D] text-blue-100 hover:bg-[#385b8c] border border-[#3b5984] text-xs font-bold transition-all cursor-pointer"
+              title="Download Excel Ingestion Template"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#2D4D77] hover:bg-[#385B8A] active:scale-95 text-blue-100 hover:text-white border border-[#3A5F8F] text-xs font-semibold transition-all cursor-pointer shadow-2xs"
             >
-              <Download className="w-3.5 h-3.5 text-blue-300" />
+              <Download className="w-3.5 h-3.5 text-blue-200" />
               <span>Template</span>
             </button>
 
+            {/* Bulk Upload Button */}
             <button
               onClick={() => handleOpenBulkModal()}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow-sm transition-all cursor-pointer"
+              title="Bulk Ingest Student Admissions via Excel"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#20A779] hover:bg-[#1A8E67] active:scale-95 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
             >
               <Upload className="w-3.5 h-3.5" />
               <span>Bulk Upload</span>
             </button>
 
+            {/* New Admission Button */}
             <button
               onClick={handleOpenAddModal}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-black shadow-md shadow-blue-900/40 transition-all cursor-pointer"
+              title="Register a New Student"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#3978D5] hover:bg-[#2D64B5] active:scale-95 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>New Admission</span>
+              <span>+ New Admission</span>
             </button>
           </div>
         </header>
 
-        {/* ── KPI Summary Cards ── */}
-        <div className="p-4 md:p-6 space-y-5">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        {/* ── Main Content Body ── */}
+        <div className="p-4 sm:p-6 space-y-5">
+          
+          {/* ── KPI Summary Cards (4 Cards) ── */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4.5">
             
-            {/* Total Enrolled */}
-            <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            {/* 1. Total Enrolled */}
+            <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex items-center justify-between transition-all hover:border-[#DCEBFA]">
               <div>
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Enrolled</p>
-                <h3 className="text-2xl font-black text-[#172B4D] mt-0.5">{students.length}</h3>
-                <p className="text-[10px] text-emerald-600 font-bold mt-0.5">Active Academic Roster</p>
+                <p className="text-[11px] font-bold text-[#718096] uppercase tracking-wider">Total Enrolled</p>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#253858] tracking-tight mt-0.5">{students.length}</h3>
+                <p className="text-[11px] text-[#20A779] font-bold mt-0.5 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#20A779]"></span>
+                  <span>Active Academic Roster</span>
+                </p>
               </div>
-              <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+              <div className="w-11 h-11 rounded-2xl bg-[#DCEBFA] text-[#244B78] flex items-center justify-center shrink-0 shadow-2xs">
                 <GraduationCap className="w-6 h-6" />
               </div>
             </div>
 
-            {/* Boys vs Girls */}
-            <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            {/* 2. Gender Ratio */}
+            <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex items-center justify-between transition-all hover:border-[#DCEBFA]">
               <div>
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Gender Ratio</p>
+                <p className="text-[11px] font-bold text-[#718096] uppercase tracking-wider">Gender Ratio</p>
                 <div className="flex items-baseline gap-2 mt-0.5">
-                  <span className="text-xl font-black text-blue-700">{boysCount} <span className="text-xs font-medium text-slate-400">Boys</span></span>
-                  <span className="text-slate-300">/</span>
-                  <span className="text-xl font-black text-pink-600">{girlsCount} <span className="text-xs font-medium text-slate-400">Girls</span></span>
+                  <span className="text-xl sm:text-2xl font-extrabold text-[#3978D5]">{boysCount} <span className="text-xs font-semibold text-[#718096]">Boys</span></span>
+                  <span className="text-[#CBD5E1]">/</span>
+                  <span className="text-xl sm:text-2xl font-extrabold text-pink-600">{girlsCount} <span className="text-xs font-semibold text-[#718096]">Girls</span></span>
                 </div>
-                <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Balanced Cohort</p>
+                <p className="text-[11px] text-[#718096] font-medium mt-0.5">Balanced Cohort</p>
               </div>
-              <div className="w-11 h-11 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
+              <div className="w-11 h-11 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center shrink-0 shadow-2xs">
                 <Users className="w-6 h-6" />
               </div>
             </div>
 
-            {/* SATS Registered */}
-            <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            {/* 3. SATS Tracking */}
+            <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex items-center justify-between transition-all hover:border-[#DCEBFA]">
               <div>
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">SATS Tracking</p>
-                <h3 className="text-2xl font-black text-purple-700 mt-0.5">{satsRegisteredCount}</h3>
-                <p className="text-[10px] text-purple-600 font-bold mt-0.5">
+                <p className="text-[11px] font-bold text-[#718096] uppercase tracking-wider">SATS Tracking</p>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-purple-700 tracking-tight mt-0.5">{satsRegisteredCount}</h3>
+                <p className="text-[11px] text-purple-600 font-bold mt-0.5">
                   {students.length > 0 ? `${Math.round((satsRegisteredCount / students.length) * 100)}% Registered` : '0%'}
                 </p>
               </div>
-              <div className="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+              <div className="w-11 h-11 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center shrink-0 shadow-2xs">
                 <Building className="w-6 h-6" />
               </div>
             </div>
 
-            {/* Classes & Sections */}
-            <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            {/* 4. Classes & Sections */}
+            <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex items-center justify-between transition-all hover:border-[#DCEBFA]">
               <div>
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Classes & Sections</p>
-                <h3 className="text-2xl font-black text-indigo-700 mt-0.5">
+                <p className="text-[11px] font-bold text-[#718096] uppercase tracking-wider">Classes & Sections</p>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-indigo-700 tracking-tight mt-0.5">
                   {classes.length > 0 ? classes.length : classBreakdownMap.size}
                 </h3>
-                <p className="text-[10px] text-indigo-600 font-bold mt-0.5">Active Classrooms</p>
+                <p className="text-[11px] text-indigo-600 font-bold mt-0.5">Active Classrooms</p>
               </div>
-              <div className="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+              <div className="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center shrink-0 shadow-2xs">
                 <Layers className="w-6 h-6" />
               </div>
             </div>
 
           </div>
 
-          {/* ── Class-Wise Filter Pill Bar ── */}
-          <div className="bg-white p-3 md:p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-black text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-                <School className="w-4 h-4 text-blue-600" />
+          {/* ── Class & Section Selector Bar ── */}
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] space-y-3.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <span className="text-xs font-bold text-[#253858] uppercase tracking-wider flex items-center gap-2">
+                <School className="w-4 h-4 text-[#3978D5]" />
                 <span>Select Class Standard:</span>
               </span>
-              <span className="text-[11px] font-bold text-slate-400">
-                Showing {filteredStudents.length} of {students.length} students
+              <span className="text-xs font-semibold text-[#718096]">
+                Showing <strong className="text-[#253858] font-bold">{filteredStudents.length}</strong> of {students.length} students
               </span>
             </div>
 
-            {/* Standard Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+            {/* Standard Pills (Smooth Horizontal Touch Scroll) */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin touch-pan-x">
               <button
+                type="button"
                 onClick={() => { setSelectedStandard('ALL'); setSelectedSection('ALL'); }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all cursor-pointer ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer border ${
                   selectedStandard === 'ALL'
-                    ? 'bg-[#172B4D] text-white shadow-sm shadow-blue-900/30'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'bg-[#203B61] text-white border-[#203B61] shadow-xs'
+                    : 'bg-white text-[#253858] border-[#E6ECF3] hover:bg-[#F5F8FC] hover:border-[#DCEBFA]'
                 }`}
               >
                 All Classes ({students.length})
@@ -861,20 +877,21 @@ export default function AcademicManagementPage() {
                 return (
                   <button
                     key={std}
+                    type="button"
                     onClick={() => {
                       setSelectedStandard(std);
                       setSelectedSection('ALL');
                     }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all flex items-center gap-1.5 cursor-pointer ${
+                    className={`px-3 py-2 rounded-xl text-xs font-bold shrink-0 transition-all flex items-center gap-1.5 cursor-pointer border ${
                       isSelected
-                        ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30 font-black'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        ? 'bg-[#203B61] text-white border-[#203B61] shadow-xs'
+                        : 'bg-white text-[#253858] border-[#E6ECF3] hover:bg-[#F5F8FC] hover:border-[#DCEBFA]'
                     }`}
                   >
                     <span>{std}</span>
                     {count > 0 && (
-                      <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
-                        isSelected ? 'bg-blue-800 text-white' : 'bg-slate-200 text-slate-700'
+                      <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                        isSelected ? 'bg-[#2D4D77] text-white' : 'bg-[#F5F8FC] text-[#718096] border border-[#E6ECF3]'
                       }`}>
                         {count}
                       </span>
@@ -886,16 +903,17 @@ export default function AcademicManagementPage() {
 
             {/* Section Pills (Visible when a specific class is selected) */}
             {selectedStandard !== 'ALL' && (
-              <div className="pt-2 border-t border-slate-100 flex items-center gap-2 overflow-x-auto">
-                <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider shrink-0">
+              <div className="pt-3 border-t border-[#E6ECF3] flex items-center gap-2 overflow-x-auto touch-pan-x">
+                <span className="text-[11px] font-bold text-[#718096] uppercase tracking-wider shrink-0">
                   Section:
                 </span>
                 <button
+                  type="button"
                   onClick={() => setSelectedSection('ALL')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
                     selectedSection === 'ALL'
-                      ? 'bg-indigo-600 text-white font-black'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      ? 'bg-[#3978D5] text-white border-[#3978D5] shadow-2xs'
+                      : 'bg-white text-[#253858] border-[#E6ECF3] hover:bg-[#F5F8FC]'
                   }`}
                 >
                   All Sections
@@ -909,16 +927,19 @@ export default function AcademicManagementPage() {
                   return (
                     <button
                       key={sec}
+                      type="button"
                       onClick={() => setSelectedSection(sec)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border ${
                         isSelected
-                          ? 'bg-indigo-600 text-white font-black shadow-xs'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          ? 'bg-[#3978D5] text-white border-[#3978D5] shadow-2xs'
+                          : 'bg-white text-[#253858] border-[#E6ECF3] hover:bg-[#F5F8FC]'
                       }`}
                     >
                       <span>Section {sec}</span>
                       {secCount > 0 && (
-                        <span className={`text-[9px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-indigo-800 text-white' : 'bg-slate-200 text-slate-700'}`}>
+                        <span className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold ${
+                          isSelected ? 'bg-[#2D64B5] text-white' : 'bg-[#F5F8FC] text-[#718096] border border-[#E6ECF3]'
+                        }`}>
                           {secCount}
                         </span>
                       )}
@@ -930,35 +951,38 @@ export default function AcademicManagementPage() {
           </div>
 
           {/* ── Search & Filter Controls ── */}
-          <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+          <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
             
             {/* Search Input */}
             <div className="relative flex-1">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-[#718096] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search by Name, Roll No, SATS No, Admission No, Phone..."
+                placeholder="Search by student name, roll number, SATS ID, admission no, or phone..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-9 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
+                className="w-full pl-10 pr-9 py-2.5 bg-[#F5F8FC] border border-[#E6ECF3] rounded-xl text-xs font-medium text-[#253858] placeholder:text-[#718096] focus:outline-none focus:bg-white focus:border-[#3978D5] focus:ring-2 focus:ring-[#DCEBFA] transition-all"
               />
               {searchQuery && (
                 <button
+                  type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  title="Clear Search"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#718096] hover:text-[#253858] p-1 cursor-pointer"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
 
-            {/* Filter Dropdowns */}
-            <div className="flex items-center gap-2 flex-wrap">
+            {/* Filter Dropdowns and Actions */}
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:items-center gap-2">
               {/* Gender */}
               <select
                 value={selectedGender}
                 onChange={(e) => setSelectedGender(e.target.value)}
-                className="px-2.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:border-blue-500 cursor-pointer"
+                className="px-3 py-2 bg-[#F5F8FC] border border-[#E6ECF3] rounded-xl text-xs font-semibold text-[#253858] focus:outline-none focus:bg-white focus:border-[#3978D5] cursor-pointer"
+                title="Filter by Gender"
               >
                 <option value="ALL">All Genders</option>
                 <option value="Male">Male</option>
@@ -969,7 +993,8 @@ export default function AcademicManagementPage() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-2.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:border-blue-500 cursor-pointer"
+                className="px-3 py-2 bg-[#F5F8FC] border border-[#E6ECF3] rounded-xl text-xs font-semibold text-[#253858] focus:outline-none focus:bg-white focus:border-[#3978D5] cursor-pointer"
+                title="Filter by Category"
               >
                 <option value="ALL">All Categories</option>
                 {CATEGORIES.map(c => (
@@ -981,7 +1006,8 @@ export default function AcademicManagementPage() {
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="px-2.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:border-blue-500 cursor-pointer"
+                className="px-3 py-2 bg-[#F5F8FC] border border-[#E6ECF3] rounded-xl text-xs font-semibold text-[#253858] focus:outline-none focus:bg-white focus:border-[#3978D5] cursor-pointer"
+                title="Filter by Enrollment Status"
               >
                 <option value="ALL">All Status</option>
                 <option value="Active">Active</option>
@@ -990,27 +1016,30 @@ export default function AcademicManagementPage() {
 
               {/* Export XLSX Button */}
               <button
+                type="button"
                 onClick={handleExportRoster}
                 title="Export Filtered Roster to Excel"
-                className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                className="flex items-center justify-center gap-1.5 px-3 py-2 bg-white hover:bg-[#F5F8FC] text-[#253858] border border-[#E6ECF3] rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-2xs"
               >
-                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-                <span className="hidden sm:inline">Export</span>
+                <FileSpreadsheet className="w-3.5 h-3.5 text-[#20A779]" />
+                <span>Export</span>
               </button>
 
               {/* View Mode Toggle */}
-              <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200">
+              <div className="flex items-center bg-[#F5F8FC] p-1 rounded-xl border border-[#E6ECF3]">
                 <button
+                  type="button"
                   onClick={() => setViewMode('table')}
-                  title="Table View"
-                  className={`p-1.5 rounded-lg transition-all ${viewMode === 'table' ? 'bg-white shadow-xs text-blue-600 font-bold' : 'text-slate-500 hover:text-slate-800'}`}
+                  title="Table View (Desktop/Tablet)"
+                  className={`p-1.5 rounded-lg transition-all cursor-pointer ${viewMode === 'table' ? 'bg-white shadow-2xs text-[#3978D5] font-bold' : 'text-[#718096] hover:text-[#253858]'}`}
                 >
                   <TableIcon className="w-3.5 h-3.5" />
                 </button>
                 <button
+                  type="button"
                   onClick={() => setViewMode('grid')}
                   title="Card Grid View"
-                  className={`p-1.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white shadow-xs text-blue-600 font-bold' : 'text-slate-500 hover:text-slate-800'}`}
+                  className={`p-1.5 rounded-lg transition-all cursor-pointer ${viewMode === 'grid' ? 'bg-white shadow-2xs text-[#3978D5] font-bold' : 'text-[#718096] hover:text-[#253858]'}`}
                 >
                   <LayoutGrid className="w-3.5 h-3.5" />
                 </button>
@@ -1022,226 +1051,337 @@ export default function AcademicManagementPage() {
 
           {/* ── Student Roster Content ── */}
           {loading ? (
-            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center flex flex-col items-center justify-center gap-3">
-              <div className="w-9 h-9 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
-              <p className="text-sm font-bold text-slate-500">Loading student rosters...</p>
+            <div className="bg-white rounded-2xl border border-[#E6ECF3] p-12 text-center flex flex-col items-center justify-center gap-3 shadow-2xs">
+              <div className="w-9 h-9 border-3 border-[#3978D5] border-t-transparent rounded-full animate-spin" />
+              <p className="text-sm font-bold text-[#718096]">Loading student rosters...</p>
             </div>
           ) : filteredStudents.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center flex flex-col items-center justify-center gap-3">
-              <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center">
+            <div className="bg-white rounded-2xl border border-[#E6ECF3] p-12 sm:p-14 text-center flex flex-col items-center justify-center gap-3.5 shadow-2xs">
+              <div className="w-14 h-14 rounded-2xl bg-[#DCEBFA] text-[#244B78] flex items-center justify-center shadow-xs">
                 <Users className="w-7 h-7" />
               </div>
-              <h3 className="text-base font-black text-slate-700">No student records found</h3>
-              <p className="text-xs text-slate-400 max-w-sm">
-                No students match your current search or class filters. Try resetting filters or add a new admission.
+              <h3 className="text-base font-bold text-[#253858]">No student records found</h3>
+              <p className="text-xs text-[#718096] max-w-sm">
+                No students match your current search query or class filters. Try resetting filters or register a new student.
               </p>
               <button
+                type="button"
                 onClick={handleOpenAddModal}
-                className="mt-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold shadow-sm transition-all"
+                className="mt-2 px-4 py-2.5 bg-[#3978D5] hover:bg-[#2D64B5] text-white rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer"
               >
                 + New Student Admission
               </button>
             </div>
           ) : viewMode === 'table' ? (
-            /* ── Table View ── */
-            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-600 uppercase text-[10px] font-black tracking-wider">
-                      <th className="py-3.5 px-4">Student</th>
-                      <th className="py-3.5 px-3">Admission No</th>
-                      <th className="py-3.5 px-3">SATS Number</th>
-                      <th className="py-3.5 px-3">Class & Sec</th>
-                      <th className="py-3.5 px-3">Roll No</th>
-                      <th className="py-3.5 px-3">Parent / Guardian</th>
-                      <th className="py-3.5 px-3">Contact</th>
-                      <th className="py-3.5 px-3">Status</th>
-                      <th className="py-3.5 px-4 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {filteredStudents.map((student) => {
-                      const isTransferred = student.studentStatus === 'Transferred' || Boolean(student.leftSchoolStatus);
-                      return (
-                        <tr
-                          key={student.id || student._id || student.studentId}
-                          className="hover:bg-slate-50/70 transition-colors group"
-                        >
-                          {/* Student Name & Avatar */}
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-2xs">
-                                {student.photoUrl ? (
-                                  <img src={student.photoUrl} alt="" className="w-full h-full object-cover rounded-xl" />
-                                ) : (
-                                  student.name?.charAt(0).toUpperCase() || 'S'
-                                )}
-                              </div>
-                              <div className="min-w-0">
-                                <div className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors flex items-center gap-1.5">
-                                  <span className="truncate">{student.name}</span>
-                                  {student.bloodGroup && (
-                                    <span className="text-[9px] px-1 py-0.2 rounded bg-rose-50 text-rose-600 font-black border border-rose-200">
-                                      {student.bloodGroup}
-                                    </span>
+            <>
+              {/* ── Desktop & Tablet Table View (hidden on mobile < md) ── */}
+              <div className="hidden md:block bg-white rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-[#F5F8FC] border-b border-[#E6ECF3] text-[#718096] uppercase text-[10px] font-bold tracking-wider">
+                        <th className="py-3.5 px-4">Student</th>
+                        <th className="py-3.5 px-3">Admission No</th>
+                        <th className="py-3.5 px-3">SATS Number</th>
+                        <th className="py-3.5 px-3">Class & Sec</th>
+                        <th className="py-3.5 px-3">Roll No</th>
+                        <th className="py-3.5 px-3">Parent / Guardian</th>
+                        <th className="py-3.5 px-3">Contact</th>
+                        <th className="py-3.5 px-3">Status</th>
+                        <th className="py-3.5 px-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#E6ECF3]/70">
+                      {filteredStudents.map((student) => {
+                        const isTransferred = student.studentStatus === 'Transferred' || Boolean(student.leftSchoolStatus);
+                        return (
+                          <tr
+                            key={student.id || student._id || student.studentId}
+                            className="hover:bg-[#F5F8FC]/80 transition-colors group"
+                          >
+                            {/* Student Name & Avatar */}
+                            <td className="py-3 px-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#203B61] to-[#3978D5] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                                  {student.photoUrl ? (
+                                    <img src={student.photoUrl} alt="" className="w-full h-full object-cover rounded-xl" />
+                                  ) : (
+                                    student.name?.charAt(0).toUpperCase() || 'S'
                                   )}
                                 </div>
-                                <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
-                                  <span>{student.gender || 'Male'}</span>
-                                  <span>•</span>
-                                  <span>{student.category || 'General'}</span>
+                                <div className="min-w-0">
+                                  <div className="font-bold text-[#253858] group-hover:text-[#3978D5] transition-colors flex items-center gap-1.5">
+                                    <span className="truncate">{student.name}</span>
+                                    {student.bloodGroup && (
+                                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-rose-50 text-[#E35D6A] font-bold border border-rose-200">
+                                        {student.bloodGroup}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="text-[10px] text-[#718096] flex items-center gap-1 mt-0.5">
+                                    <span>{student.gender || 'Male'}</span>
+                                    <span>•</span>
+                                    <span>{student.category || 'General'}</span>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </td>
+                            </td>
 
-                          {/* Admission No */}
-                          <td className="py-3 px-3">
-                            <span className="font-mono text-xs font-bold text-slate-800">
-                              {student.studentId || student.admissionNumber || '—'}
-                            </span>
-                          </td>
+                            {/* Admission No */}
+                            <td className="py-3 px-3">
+                              <span className="font-mono text-xs font-semibold text-[#253858]">
+                                {student.studentId || student.admissionNumber || '—'}
+                              </span>
+                            </td>
 
-                          {/* SATS Number */}
-                          <td className="py-3 px-3">
-                            {student.satsNumber ? (
-                              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-purple-50 text-purple-700 font-mono text-[11px] font-bold border border-purple-200">
-                                <span>{student.satsNumber}</span>
+                            {/* SATS Number */}
+                            <td className="py-3 px-3">
+                              {student.satsNumber ? (
+                                <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-purple-50 text-purple-700 font-mono text-[11px] font-bold border border-purple-100">
+                                  <span>{student.satsNumber}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => copyToClipboard(student.satsNumber, 'SATS Number')}
+                                    title="Copy SATS ID to Clipboard"
+                                    className="text-purple-400 hover:text-purple-700 cursor-pointer"
+                                  >
+                                    <Copy className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              ) : (
+                                <span className="text-[#718096] italic text-[11px]">Not assigned</span>
+                              )}
+                            </td>
+
+                            {/* Class & Section */}
+                            <td className="py-3 px-3">
+                              <span className="px-2.5 py-1 rounded-lg bg-[#DCEBFA] text-[#244B78] font-bold text-xs border border-[#BBD7F5]">
+                                {student.standard} - {student.section}
+                              </span>
+                            </td>
+
+                            {/* Roll No */}
+                            <td className="py-3 px-3">
+                              <span className="px-2 py-0.5 rounded bg-[#F5F8FC] font-mono text-xs font-semibold text-[#253858] border border-[#E6ECF3]">
+                                {student.rollNumber ? `#${student.rollNumber}` : '—'}
+                              </span>
+                            </td>
+
+                            {/* Parent */}
+                            <td className="py-3 px-3">
+                              <div className="text-[#253858] font-semibold truncate max-w-[150px]">
+                                {student.fatherName || student.parentName || student.motherName || '—'}
+                              </div>
+                              {student.fatherOccupation && (
+                                <div className="text-[10px] text-[#718096] truncate max-w-[150px]">
+                                  {student.fatherOccupation}
+                                </div>
+                              )}
+                            </td>
+
+                            {/* Contact & WhatsApp */}
+                            <td className="py-3 px-3">
+                              {student.parentPhone || student.phone ? (
+                                <div className="flex items-center gap-1.5">
+                                  <span className="font-mono text-xs font-semibold text-[#253858]">
+                                    {student.parentPhone || student.phone}
+                                  </span>
+                                  <a
+                                    href={`https://wa.me/91${(student.parentWhatsapp || student.parentPhone || student.phone).replace(/\D/g, '')}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    title="Chat with Parent on WhatsApp"
+                                    className="text-[#20A779] hover:text-emerald-700 cursor-pointer"
+                                  >
+                                    <MessageCircle className="w-3.5 h-3.5" />
+                                  </a>
+                                </div>
+                              ) : (
+                                <span className="text-[#718096]">—</span>
+                              )}
+                            </td>
+
+                            {/* Status */}
+                            <td className="py-3 px-3">
+                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase inline-flex items-center gap-1.5 ${
+                                isTransferred
+                                  ? 'bg-amber-50 text-[#E9A23B] border border-amber-200'
+                                  : 'bg-emerald-50 text-[#20A779] border border-emerald-200'
+                              }`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${isTransferred ? 'bg-[#E9A23B]' : 'bg-[#20A779]'}`}></span>
+                                <span>{isTransferred ? 'Transferred' : 'Active'}</span>
+                              </span>
+                            </td>
+
+                            {/* Actions */}
+                            <td className="py-3 px-4 text-right">
+                              <div className="flex items-center justify-end gap-1">
                                 <button
-                                  onClick={() => copyToClipboard(student.satsNumber, 'SATS Number')}
-                                  title="Copy SATS No"
-                                  className="text-purple-400 hover:text-purple-700 cursor-pointer"
+                                  type="button"
+                                  onClick={() => setQuickViewStudent(student)}
+                                  title="Quick View Student Profile"
+                                  className="p-1.5 rounded-lg text-[#718096] hover:text-[#244B78] hover:bg-[#DCEBFA] transition-all cursor-pointer"
                                 >
-                                  <Copy className="w-3 h-3" />
+                                  <Eye className="w-3.5 h-3.5" />
+                                </button>
+                                
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenEditModal(student)}
+                                  title="Edit Full Profile"
+                                  className="p-1.5 rounded-lg text-[#718096] hover:text-[#3978D5] hover:bg-blue-50 transition-all cursor-pointer"
+                                >
+                                  <Edit2 className="w-3.5 h-3.5" />
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => setDeleteConfirmStudent(student)}
+                                  title="Remove Student Record"
+                                  className="p-1.5 rounded-lg text-[#718096] hover:text-[#E35D6A] hover:bg-rose-50 transition-all cursor-pointer"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
                                 </button>
                               </div>
-                            ) : (
-                              <span className="text-slate-300 italic text-[11px]">Not assigned</span>
-                            )}
-                          </td>
+                            </td>
 
-                          {/* Class & Section */}
-                          <td className="py-3 px-3">
-                            <span className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 font-black text-xs border border-blue-200">
-                              {student.standard} - {student.section}
-                            </span>
-                          </td>
-
-                          {/* Roll No */}
-                          <td className="py-3 px-3">
-                            <span className="px-2 py-0.5 rounded bg-slate-100 font-mono text-xs font-bold text-slate-700">
-                              {student.rollNumber ? `#${student.rollNumber}` : '—'}
-                            </span>
-                          </td>
-
-                          {/* Parent */}
-                          <td className="py-3 px-3">
-                            <div className="text-slate-800 font-semibold truncate max-w-[150px]">
-                              {student.fatherName || student.parentName || student.motherName || '—'}
-                            </div>
-                            {student.fatherOccupation && (
-                              <div className="text-[10px] text-slate-400 truncate max-w-[150px]">
-                                {student.fatherOccupation}
-                              </div>
-                            )}
-                          </td>
-
-                          {/* Contact & WhatsApp */}
-                          <td className="py-3 px-3">
-                            {student.parentPhone || student.phone ? (
-                              <div className="flex items-center gap-1.5">
-                                <span className="font-mono text-xs font-bold text-slate-700">
-                                  {student.parentPhone || student.phone}
-                                </span>
-                                <a
-                                  href={`https://wa.me/91${(student.parentWhatsapp || student.parentPhone || student.phone).replace(/\D/g, '')}`}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  title="Chat on WhatsApp"
-                                  className="text-emerald-500 hover:text-emerald-600 cursor-pointer"
-                                >
-                                  <MessageCircle className="w-3.5 h-3.5" />
-                                </a>
-                              </div>
-                            ) : (
-                              <span className="text-slate-300">—</span>
-                            )}
-                          </td>
-
-                          {/* Status */}
-                          <td className="py-3 px-3">
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                              isTransferred
-                                ? 'bg-amber-100 text-amber-800 border border-amber-200'
-                                : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                            }`}>
-                              {isTransferred ? 'Transferred' : 'Active'}
-                            </span>
-                          </td>
-
-                          {/* Actions */}
-                          <td className="py-3 px-4 text-right">
-                            <div className="flex items-center justify-end gap-1">
-                              <button
-                                onClick={() => setQuickViewStudent(student)}
-                                title="Quick View"
-                                className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all cursor-pointer"
-                              >
-                                <Eye className="w-3.5 h-3.5" />
-                              </button>
-                              
-                              <button
-                                onClick={() => handleOpenEditModal(student)}
-                                title="Edit Full Profile"
-                                className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all cursor-pointer"
-                              >
-                                <Edit2 className="w-3.5 h-3.5" />
-                              </button>
-
-                              <button
-                                onClick={() => setDeleteConfirmStudent(student)}
-                                title="Remove Student"
-                                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all cursor-pointer"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          </td>
-
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
+
+              {/* ── Mobile Responsive Cards (< md) ── */}
+              <div className="block md:hidden space-y-3">
+                {filteredStudents.map((student) => {
+                  const isTransferred = student.studentStatus === 'Transferred' || Boolean(student.leftSchoolStatus);
+                  return (
+                    <div
+                      key={student.id || student._id || student.studentId}
+                      className="bg-white rounded-2xl border border-[#E6ECF3] p-4 shadow-[0_2px_8px_rgba(32,59,97,0.04)] space-y-3"
+                    >
+                      {/* Top Header Row */}
+                      <div className="flex items-start justify-between gap-2.5">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#203B61] to-[#3978D5] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                            {student.photoUrl ? (
+                              <img src={student.photoUrl} alt="" className="w-full h-full object-cover rounded-xl" />
+                            ) : (
+                              student.name?.charAt(0).toUpperCase() || 'S'
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <h4 className="font-bold text-[#253858] text-sm truncate">{student.name}</h4>
+                            <p className="text-[11px] font-mono text-[#718096] font-semibold">
+                              {student.studentId || student.admissionNumber}
+                            </p>
+                          </div>
+                        </div>
+
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase shrink-0 inline-flex items-center gap-1 ${
+                          isTransferred ? 'bg-amber-50 text-[#E9A23B] border border-amber-200' : 'bg-emerald-50 text-[#20A779] border border-emerald-200'
+                        }`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${isTransferred ? 'bg-[#E9A23B]' : 'bg-[#20A779]'}`}></span>
+                          <span>{isTransferred ? 'Transferred' : 'Active'}</span>
+                        </span>
+                      </div>
+
+                      {/* Detail Pill Grid */}
+                      <div className="grid grid-cols-2 gap-2 text-xs bg-[#F5F8FC] p-3 rounded-xl border border-[#E6ECF3]">
+                        <div>
+                          <span className="text-[10px] text-[#718096] font-bold uppercase block">Class & Sec</span>
+                          <span className="font-bold text-[#244B78]">Class {student.standard} - {student.section}</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-[#718096] font-bold uppercase block">Roll Number</span>
+                          <span className="font-mono font-bold text-[#253858]">{student.rollNumber ? `#${student.rollNumber}` : '—'}</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-[#718096] font-bold uppercase block">SATS ID</span>
+                          <span className="font-mono font-bold text-purple-700">{student.satsNumber || '—'}</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-[#718096] font-bold uppercase block">Parent Phone</span>
+                          <span className="font-mono font-semibold text-[#253858] flex items-center gap-1">
+                            <span>{student.parentPhone || student.phone || '—'}</span>
+                            {(student.parentWhatsapp || student.parentPhone || student.phone) && (
+                              <a
+                                href={`https://wa.me/91${(student.parentWhatsapp || student.parentPhone || student.phone).replace(/\D/g, '')}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                title="Chat on WhatsApp"
+                                className="text-[#20A779]"
+                              >
+                                <MessageCircle className="w-3 h-3" />
+                              </a>
+                            )}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Card Action Buttons */}
+                      <div className="pt-2 border-t border-[#E6ECF3] flex items-center justify-between gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setQuickViewStudent(student)}
+                          className="px-3 py-1.5 bg-[#F5F8FC] hover:bg-[#E6ECF3] text-[#253858] text-xs font-semibold rounded-lg border border-[#E6ECF3] transition-all cursor-pointer"
+                        >
+                          Quick View
+                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEditModal(student)}
+                            className="px-3 py-1.5 bg-[#DCEBFA] hover:bg-[#C9E0F7] text-[#244B78] text-xs font-bold rounded-lg border border-[#BBD7F5] flex items-center gap-1 transition-all cursor-pointer"
+                          >
+                            <Edit2 className="w-3 h-3" />
+                            <span>Edit</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setDeleteConfirmStudent(student)}
+                            className="p-1.5 bg-rose-50 hover:bg-rose-100 text-[#E35D6A] rounded-lg border border-rose-200 transition-all cursor-pointer"
+                            title="Delete Student"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                  );
+                })}
+              </div>
+            </>
           ) : (
-            /* ── Card Grid View ── */
+            /* ── Card Grid View (Custom Toggle) ── */
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredStudents.map((student) => {
                 const isTransferred = student.studentStatus === 'Transferred' || Boolean(student.leftSchoolStatus);
                 return (
                   <div
                     key={student.id || student._id || student.studentId}
-                    className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+                    className="bg-white rounded-2xl border border-[#E6ECF3] p-4.5 shadow-[0_2px_8px_rgba(32,59,97,0.04)] hover:shadow-md transition-all flex flex-col justify-between"
                   >
                     <div>
                       {/* Top Row: Class & Status */}
                       <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="px-2 py-0.5 rounded-lg bg-blue-50 text-blue-700 font-black text-xs border border-blue-200">
+                        <span className="px-2.5 py-1 rounded-lg bg-[#DCEBFA] text-[#244B78] font-bold text-xs border border-[#BBD7F5]">
                           {student.standard} - {student.section}
                         </span>
-                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${
-                          isTransferred ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase inline-flex items-center gap-1 ${
+                          isTransferred ? 'bg-amber-50 text-[#E9A23B] border border-amber-200' : 'bg-emerald-50 text-[#20A779] border border-emerald-200'
                         }`}>
-                          {isTransferred ? 'Transferred' : 'Active'}
+                          <span className={`w-1.5 h-1.5 rounded-full ${isTransferred ? 'bg-[#E9A23B]' : 'bg-[#20A779]'}`}></span>
+                          <span>{isTransferred ? 'Transferred' : 'Active'}</span>
                         </span>
                       </div>
 
                       {/* Student Info */}
                       <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-sm flex items-center justify-center shrink-0 shadow-xs">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#203B61] to-[#3978D5] text-white font-bold text-sm flex items-center justify-center shrink-0 shadow-xs">
                           {student.photoUrl ? (
                             <img src={student.photoUrl} alt="" className="w-full h-full object-cover rounded-xl" />
                           ) : (
@@ -1249,36 +1389,36 @@ export default function AcademicManagementPage() {
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <h4 className="font-bold text-slate-900 text-sm truncate">{student.name}</h4>
-                          <p className="text-[11px] font-mono text-slate-500 font-semibold">
+                          <h4 className="font-bold text-[#253858] text-sm truncate">{student.name}</h4>
+                          <p className="text-[11px] font-mono text-[#718096] font-semibold">
                             {student.studentId || student.admissionNumber}
                           </p>
                         </div>
                       </div>
 
                       {/* SATS & Roll Details */}
-                      <div className="mt-3.5 space-y-1.5 text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                      <div className="mt-3.5 space-y-1.5 text-xs bg-[#F5F8FC] p-2.5 rounded-xl border border-[#E6ECF3]">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] text-slate-400 font-bold uppercase">SATS ID:</span>
+                          <span className="text-[10px] text-[#718096] font-bold uppercase">SATS ID:</span>
                           <span className="font-mono font-bold text-purple-700 text-[11px]">
                             {student.satsNumber || '—'}
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] text-slate-400 font-bold uppercase">Roll No:</span>
-                          <span className="font-mono font-bold text-slate-800">
+                          <span className="text-[10px] text-[#718096] font-bold uppercase">Roll No:</span>
+                          <span className="font-mono font-bold text-[#253858]">
                             {student.rollNumber ? `#${student.rollNumber}` : '—'}
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] text-slate-400 font-bold uppercase">Parent:</span>
-                          <span className="font-semibold text-slate-700 truncate max-w-[130px]">
+                          <span className="text-[10px] text-[#718096] font-bold uppercase">Parent:</span>
+                          <span className="font-semibold text-[#253858] truncate max-w-[130px]">
                             {student.fatherName || student.parentName || '—'}
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] text-slate-400 font-bold uppercase">Phone:</span>
-                          <span className="font-mono font-bold text-slate-700">
+                          <span className="text-[10px] text-[#718096] font-bold uppercase">Phone:</span>
+                          <span className="font-mono font-bold text-[#253858]">
                             {student.parentPhone || student.phone || '—'}
                           </span>
                         </div>
@@ -1286,24 +1426,28 @@ export default function AcademicManagementPage() {
                     </div>
 
                     {/* Footer Actions */}
-                    <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <div className="mt-4 pt-3 border-t border-[#E6ECF3] flex items-center justify-between">
                       <button
+                        type="button"
                         onClick={() => setQuickViewStudent(student)}
-                        className="text-xs font-bold text-slate-500 hover:text-slate-800 cursor-pointer"
+                        className="text-xs font-semibold text-[#718096] hover:text-[#253858] cursor-pointer"
                       >
                         Quick View
                       </button>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1.5">
                         <button
+                          type="button"
                           onClick={() => handleOpenEditModal(student)}
-                          className="px-2.5 py-1 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer"
+                          className="px-2.5 py-1 bg-[#DCEBFA] text-[#244B78] hover:bg-[#C9E0F7] rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer border border-[#BBD7F5]"
                         >
                           <Edit2 className="w-3 h-3" />
                           <span>Edit</span>
                         </button>
                         <button
+                          type="button"
                           onClick={() => setDeleteConfirmStudent(student)}
-                          className="p-1 text-slate-400 hover:text-rose-600 transition-all cursor-pointer"
+                          className="p-1 text-[#718096] hover:text-[#E35D6A] transition-all cursor-pointer"
+                          title="Delete Student"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -1328,7 +1472,7 @@ export default function AcademicManagementPage() {
           <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden">
             
             {/* Modal Header */}
-            <div className="px-6 py-4 bg-[#172B4D] text-white flex items-center justify-between shrink-0">
+            <div className="px-6 py-4 bg-[#203B61] text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-600/30 border border-blue-400/40 text-blue-300 flex items-center justify-center">
                   {profileModalMode === 'add' ? <Plus className="w-5 h-5" /> : <Edit2 className="w-5 h-5" />}
@@ -2080,8 +2224,8 @@ export default function AcademicManagementPage() {
 
             {/* Modal Header */}
             <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#172B4D]">
-                <Upload className="w-5 h-5 text-[#172B4D]" />
+              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#244B78]">
+                <Upload className="w-5 h-5 text-[#244B78]" />
               </div>
               <div>
                 <h3 className="text-base sm:text-lg font-bold text-gray-900">
@@ -2110,7 +2254,7 @@ export default function AcademicManagementPage() {
                     type="button"
                     disabled={isDownloadingTemplate}
                     onClick={() => handleDownloadTemplateFile('xlsx')}
-                    className="px-3 py-1.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold text-xs rounded-xl shadow-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    className="px-3 py-1.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold text-xs rounded-xl shadow-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Excel (.xlsx)</span>
@@ -2119,7 +2263,7 @@ export default function AcademicManagementPage() {
                     type="button"
                     disabled={isDownloadingTemplate}
                     onClick={() => handleDownloadTemplateFile('csv')}
-                    className="px-3 py-1.5 bg-white hover:bg-blue-100 text-[#172B4D] font-semibold text-xs rounded-xl border border-blue-300 shadow-2xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    className="px-3 py-1.5 bg-white hover:bg-blue-100 text-[#244B78] font-semibold text-xs rounded-xl border border-blue-300 shadow-2xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>CSV (.csv)</span>
@@ -2137,7 +2281,7 @@ export default function AcademicManagementPage() {
                     onClick={() => setBulkUploadScope('auto')}
                     className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
                       bulkUploadScope === 'auto'
-                        ? 'bg-blue-50/70 border-[#29456D] text-[#172B4D] shadow-xs'
+                        ? 'bg-blue-50/70 border-[#2D4D77] text-[#244B78] shadow-xs'
                         : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                   >
@@ -2146,7 +2290,7 @@ export default function AcademicManagementPage() {
                       name="uploadScope"
                       checked={bulkUploadScope === 'auto'}
                       onChange={() => setBulkUploadScope('auto')}
-                      className="mt-0.5 text-[#172B4D] focus:ring-[#93C5FD]"
+                      className="mt-0.5 text-[#244B78] focus:ring-[#93C5FD]"
                     />
                     <div>
                       <div className="font-bold text-xs">Multi-Class Mode (From File)</div>
@@ -2160,7 +2304,7 @@ export default function AcademicManagementPage() {
                     onClick={() => setBulkUploadScope('specific')}
                     className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
                       bulkUploadScope === 'specific'
-                        ? 'bg-blue-50/70 border-[#29456D] text-[#172B4D] shadow-xs'
+                        ? 'bg-blue-50/70 border-[#2D4D77] text-[#244B78] shadow-xs'
                         : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                   >
@@ -2169,7 +2313,7 @@ export default function AcademicManagementPage() {
                       name="uploadScope"
                       checked={bulkUploadScope === 'specific'}
                       onChange={() => setBulkUploadScope('specific')}
-                      className="mt-0.5 text-[#172B4D] focus:ring-[#93C5FD]"
+                      className="mt-0.5 text-[#244B78] focus:ring-[#93C5FD]"
                     />
                     <div>
                       <div className="font-bold text-xs">Assign Specific Class & Section</div>
@@ -2189,7 +2333,7 @@ export default function AcademicManagementPage() {
                       <select
                         value={bulkTargetStandard}
                         onChange={(e) => setBulkTargetStandard(e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none cursor-pointer"
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none cursor-pointer"
                       >
                         {dynamicStandardsList.map(std => (
                           <option key={std} value={std}>{std}</option>
@@ -2206,7 +2350,7 @@ export default function AcademicManagementPage() {
                         value={bulkTargetSection}
                         onChange={(e) => setBulkTargetSection(e.target.value.toUpperCase())}
                         placeholder="e.g. A"
-                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none"
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none"
                       />
                     </div>
                   </div>
@@ -2229,7 +2373,7 @@ export default function AcademicManagementPage() {
                   className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all ${
                     bulkFile 
                       ? 'border-emerald-400 bg-emerald-50/40' 
-                      : 'border-slate-300 hover:border-[#29456D] bg-slate-50/60 hover:bg-blue-50/20 cursor-pointer'
+                      : 'border-slate-300 hover:border-[#2D4D77] bg-slate-50/60 hover:bg-blue-50/20 cursor-pointer'
                   }`}
                   onClick={() => {
                     document.getElementById('academic-bulk-file-input')?.click();
@@ -2272,7 +2416,7 @@ export default function AcademicManagementPage() {
                     </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center gap-2">
-                      <div className="w-12 h-12 rounded-2xl bg-blue-100 text-[#172B4D] flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-2xl bg-blue-100 text-[#244B78] flex items-center justify-center">
                         <Upload className="w-6 h-6" />
                       </div>
                       <div className="font-bold text-xs sm:text-sm text-slate-800">
@@ -2345,7 +2489,7 @@ export default function AcademicManagementPage() {
                 <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2 animate-fadeIn">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-800">
                     <span className="flex items-center gap-1.5">
-                      <School className="w-3.5 h-3.5 text-[#172B4D]" />
+                      <School className="w-3.5 h-3.5 text-[#244B78]" />
                       <span>Class Strength Distribution in File:</span>
                     </span>
                     <span className="text-emerald-700 font-mono">
@@ -2358,7 +2502,7 @@ export default function AcademicManagementPage() {
                         key={clsKey}
                         className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-2xs"
                       >
-                        <span className="text-[#172B4D] font-bold">Class {clsKey}:</span>
+                        <span className="text-[#244B78] font-bold">Class {clsKey}:</span>
                         <strong className="text-emerald-600 font-mono">+{count} students</strong>
                       </span>
                     ))}
@@ -2432,7 +2576,7 @@ export default function AcademicManagementPage() {
                   type="button"
                   disabled={!bulkFile || bulkCommitting}
                   onClick={handleCommitBulkUpload}
-                  className="w-full sm:w-2/3 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="w-full sm:w-2/3 py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   {bulkCommitting ? (
                     <>
@@ -2500,7 +2644,7 @@ export default function AcademicManagementPage() {
             {bulkSuccessResult.classesAffected && bulkSuccessResult.classesAffected.length > 0 && (
               <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl mb-6 space-y-2">
                 <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                  <School className="w-3.5 h-3.5 text-[#172B4D]" />
+                  <School className="w-3.5 h-3.5 text-[#244B78]" />
                   <span>Classes Updated & Live Strengths:</span>
                 </span>
                 <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
@@ -2509,7 +2653,7 @@ export default function AcademicManagementPage() {
                       key={idx}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-2xs"
                     >
-                      <span className="text-[#172B4D] font-bold">Class {cls.standard} - {cls.section}:</span>
+                      <span className="text-[#244B78] font-bold">Class {cls.standard} - {cls.section}:</span>
                       <strong className="text-emerald-600 font-mono font-bold">{cls.enrolledCount} Students Enrolled</strong>
                     </span>
                   ))}
@@ -2528,7 +2672,7 @@ export default function AcademicManagementPage() {
                     setSelectedSection('ALL');
                     setBulkSuccessResult(null);
                   }}
-                  className="w-full sm:flex-1 py-3 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full sm:flex-1 py-3 bg-[#2D4D77] hover:bg-[#203B61] text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Eye className="w-4 h-4" />
                   <span>View Class {bulkSuccessResult.classesAffected[0].standard} Roster</span>
@@ -2553,7 +2697,7 @@ export default function AcademicManagementPage() {
       {quickViewStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
           <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-lg overflow-hidden animate-scaleIn">
-            <div className="px-6 py-4 bg-[#172B4D] text-white flex items-center justify-between">
+            <div className="px-6 py-4 bg-[#203B61] text-white flex items-center justify-between">
               <h3 className="text-sm font-black tracking-tight text-white flex items-center gap-2">
                 <span>Student Quick Profile</span>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-blue-500/20 text-blue-200">

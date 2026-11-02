@@ -216,8 +216,8 @@ const Sidebar = () => {
       ((!tab && defaultTab) || tab === tabName);
     return `w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-150 ${
       isCurrent
-        ? 'text-[#172B4D] bg-[#DBEAFE] font-bold shadow-xs'
-        : 'text-[#F3F6FC] hover:text-white hover:bg-[#29456D]'
+        ? 'text-[#244B78] bg-[#DCEBFA] font-bold shadow-xs'
+        : 'text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]'
     }`;
   };
 
@@ -227,8 +227,8 @@ const Sidebar = () => {
       ((!tab && defaultTab) || tab === tabName);
     return `w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-150 ${
       isCurrent
-        ? 'text-[#172B4D] bg-[#DBEAFE] font-bold shadow-xs'
-        : 'text-[#F3F6FC] hover:text-white hover:bg-[#29456D]'
+        ? 'text-[#244B78] bg-[#DCEBFA] font-bold shadow-xs'
+        : 'text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]'
     }`;
   };
 
@@ -237,9 +237,9 @@ const Sidebar = () => {
     const isFeesActive = location.pathname === '/fees';
     const isMatch = isFeesActive && (tab === tabName || (!tab && defaultForFees));
     if (isMatch) {
-      return `${base} text-[#172B4D] bg-[#DBEAFE] font-bold shadow-xs`;
+      return `${base} text-[#244B78] bg-[#DCEBFA] font-bold shadow-xs`;
     }
-    return `${base} text-[#F3F6FC] hover:text-white hover:bg-[#29456D]`;
+    return `${base} text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]`;
   };
 
   const getPromotionSubLinkClass = (tabName, defaultForPromotion = false) => {
@@ -247,9 +247,9 @@ const Sidebar = () => {
     const isPromotionActive = location.pathname === '/student-promotion' || location.pathname === '/promotion' || location.pathname === '/alumni';
     const isMatch = (location.pathname === '/alumni' && tabName === 'alumni') || (isPromotionActive && (tab === tabName || (!tab && defaultForPromotion)));
     if (isMatch) {
-      return `${base} text-[#172B4D] bg-[#DBEAFE] font-bold shadow-xs`;
+      return `${base} text-[#244B78] bg-[#DCEBFA] font-bold shadow-xs`;
     }
-    return `${base} text-[#F3F6FC] hover:text-white hover:bg-[#29456D]`;
+    return `${base} text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]`;
   };
 
   const isDashboardActive = location.pathname === '/dashboard';
@@ -261,9 +261,9 @@ const Sidebar = () => {
     const isActive = isSpecialActive || (location.pathname === path && !isDashboardActive && !isSpecialActive);
     
     if (isActive) {
-      return `${base} text-[#172B4D] bg-[#DBEAFE] font-bold shadow-xs`;
+      return `${base} text-[#244B78] bg-[#DCEBFA] font-bold shadow-xs`;
     }
-    return `${base} text-[#F3F6FC] hover:text-white hover:bg-[#29456D]`;
+    return `${base} text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]`;
   };
 
   const getSubLinkClass = (tabName, defaultForAdmin = false) => {
@@ -272,9 +272,9 @@ const Sidebar = () => {
     const isActive = location.pathname === '/admin' && (tab === tabName || (!tab && defaultForAdmin) || isFeedbackMatch);
 
     if (isActive) {
-      return `${base} text-[#172B4D] bg-[#DBEAFE] font-bold shadow-xs`;
+      return `${base} text-[#244B78] bg-[#DCEBFA] font-bold shadow-xs`;
     }
-    return `${base} text-[#F3F6FC] hover:text-white hover:bg-[#29456D]`;
+    return `${base} text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]`;
   };
 
   const getSafePickupSubLinkClass = (targetTab) => {
@@ -285,9 +285,9 @@ const Sidebar = () => {
       : (isCurrentSafePickup && (tab === 'teacher-panel' || tab === 'logs'));
 
     if (isMatch) {
-      return `${base} text-[#172B4D] bg-[#DBEAFE] font-bold shadow-xs`;
+      return `${base} text-[#244B78] bg-[#DCEBFA] font-bold shadow-xs`;
     }
-    return `${base} text-[#F3F6FC] hover:text-white hover:bg-[#29456D]`;
+    return `${base} text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]`;
   };
 
   const getTeacherSubLinkClass = (tabName, customPath = null) => {
@@ -297,9 +297,9 @@ const Sidebar = () => {
       : (location.pathname === '/teacher-section' && tab === tabName);
 
     if (isActive) {
-      return `${base} text-[#172B4D] bg-[#DBEAFE] font-bold shadow-xs`;
+      return `${base} text-[#244B78] bg-[#DCEBFA] font-bold shadow-xs`;
     }
-    return `${base} text-[#F3F6FC] hover:text-white hover:bg-[#29456D]`;
+    return `${base} text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]`;
   };
 
   const handleLinkClick = () => {
@@ -398,7 +398,7 @@ const Sidebar = () => {
 
         {/* ── TEACHER ONLY SECTION (VISIBLE ONLY WHEN LOGGED IN AS TEACHER) ── */}
         {isTeacher && (
-          <div className="space-y-1 pt-2 border-t border-[#29456D]">
+          <div className="space-y-1 pt-2 border-t border-[#2D4D77]">
             <span className="text-[10px] font-black text-[#93C5FD] uppercase tracking-widest block px-3 mb-2 opacity-90">
               {t('teacher_system') || 'TEACHER_SYSTEM'}
             </span>
@@ -409,7 +409,7 @@ const Sidebar = () => {
               className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer ${
                 isTeacherSectionActive 
                   ? 'text-indigo-950 bg-slate-100 font-bold' 
-                  : 'text-[#F3F6FC] hover:text-white hover:bg-[#29456D]'
+                  : 'text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]'
               }`}
             >
               <div className="flex items-center gap-3">
@@ -420,7 +420,7 @@ const Sidebar = () => {
             </button>
 
             {isTeacherOpen && (
-              <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#29456D] ml-5 animate-fadeIn">
+              <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#2D4D77] ml-5 animate-fadeIn">
                 <Link
                   to="/qelvora-ai"
                   onClick={handleLinkClick}
@@ -525,8 +525,8 @@ const Sidebar = () => {
                   onClick={handleLinkClick}
                   className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-150 ${
                     location.pathname.startsWith('/examination')
-                      ? 'text-[#172B4D] bg-[#DBEAFE] font-bold shadow-xs'
-                      : 'text-[#F3F6FC] hover:text-white hover:bg-[#29456D]'
+                      ? 'text-[#244B78] bg-[#DCEBFA] font-bold shadow-xs'
+                      : 'text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]'
                   }`}
                 >
                   <Award className="w-3.5 h-3.5 text-current shrink-0" />
@@ -538,8 +538,8 @@ const Sidebar = () => {
                   onClick={handleLinkClick}
                   className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-150 ${
                     location.pathname.startsWith('/online-exam')
-                      ? 'text-[#172B4D] bg-[#DBEAFE] font-bold shadow-xs'
-                      : 'text-[#F3F6FC] hover:text-white hover:bg-[#29456D]'
+                      ? 'text-[#244B78] bg-[#DCEBFA] font-bold shadow-xs'
+                      : 'text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]'
                   }`}
                 >
                   <MonitorPlay className="w-3.5 h-3.5 text-current shrink-0" />
@@ -552,7 +552,7 @@ const Sidebar = () => {
 
         {/* ── ADMIN ONLY SECTION (VISIBLE ONLY WHEN LOGGED IN AS ADMIN) ── */}
         {isAdmin && (
-          <div className="space-y-1 pt-2 border-t border-[#29456D]">
+          <div className="space-y-1 pt-2 border-t border-[#2D4D77]">
             <span className="text-[10px] font-black text-[#93C5FD] uppercase tracking-widest block px-3 mb-2 opacity-90">
               {t('admin_system') || 'ADMIN_SYSTEM'}
             </span>
@@ -563,7 +563,7 @@ const Sidebar = () => {
               className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer ${
                 isAdminSectionActive 
                   ? 'text-indigo-950 bg-slate-100 font-bold' 
-                  : 'text-[#F3F6FC] hover:text-white hover:bg-[#29456D]'
+                  : 'text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]'
               }`}
             >
               <div className="flex items-center gap-3">
@@ -575,7 +575,7 @@ const Sidebar = () => {
 
             {/* Submenu List */}
             {isAdminOpen && (
-              <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#29456D] ml-5 animate-fadeIn">
+              <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#2D4D77] ml-5 animate-fadeIn">
                 <Link
                   to="/admin?tab=settings"
                   onClick={handleLinkClick}
@@ -644,8 +644,8 @@ const Sidebar = () => {
                   onClick={handleLinkClick}
                   className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-150 ${
                     location.pathname.startsWith('/academic-management')
-                      ? 'text-[#172B4D] bg-[#DBEAFE] font-bold shadow-xs'
-                      : 'text-[#F3F6FC] hover:text-white hover:bg-[#29456D]'
+                      ? 'text-[#244B78] bg-[#DCEBFA] font-bold shadow-xs'
+                      : 'text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]'
                   }`}
                 >
                   <School className="w-3.5 h-3.5 shrink-0 text-blue-300" />
@@ -724,7 +724,7 @@ const Sidebar = () => {
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer ${
                   location.pathname.startsWith('/student-attendance')
                     ? 'text-indigo-950 bg-slate-100 font-bold'
-                    : 'text-[#F3F6FC] hover:text-white hover:bg-[#29456D]'
+                    : 'text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -736,7 +736,7 @@ const Sidebar = () => {
 
               {/* Student Attendance Submenu List */}
               {isStudentAttendanceOpen && (
-                <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#29456D] ml-5 animate-fadeIn">
+                <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#2D4D77] ml-5 animate-fadeIn">
                   <Link to="/student-attendance?tab=dashboard" onClick={handleLinkClick} className={getStudentAttendanceSubLinkClass('dashboard', true)}>
                     <LayoutDashboard className="w-3.5 h-3.5 shrink-0" />
                     <span>Overview & Dashboard</span>
@@ -791,7 +791,7 @@ const Sidebar = () => {
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer ${
                   location.pathname === '/fees'
                     ? 'text-indigo-950 bg-slate-100 font-bold'
-                    : 'text-[#F3F6FC] hover:text-white hover:bg-[#29456D]'
+                    : 'text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -803,7 +803,7 @@ const Sidebar = () => {
 
               {/* Fees Submenu List */}
               {isFeesOpen && (
-                <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#29456D] ml-5 animate-fadeIn">
+                <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#2D4D77] ml-5 animate-fadeIn">
                   <Link to="/fees?tab=overview" onClick={handleLinkClick} className={getFeesSubLinkClass('overview', true)}>
                     <LayoutDashboard className="w-3.5 h-3.5 shrink-0" />
                     <span>Overview</span>
@@ -866,7 +866,7 @@ const Sidebar = () => {
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer ${
                   location.pathname === '/student-promotion' || location.pathname === '/promotion' || location.pathname === '/alumni'
                     ? 'text-indigo-950 bg-slate-100 font-bold'
-                    : 'text-[#F3F6FC] hover:text-white hover:bg-[#29456D]'
+                    : 'text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -878,7 +878,7 @@ const Sidebar = () => {
 
               {/* Submenu List */}
               {isPromotionOpen && (
-                <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#29456D] ml-5 animate-fadeIn">
+                <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#2D4D77] ml-5 animate-fadeIn">
                   <Link to="/student-promotion?tab=promote" onClick={handleLinkClick} className={getPromotionSubLinkClass('promote', true)}>
                     <TrendingUp className="w-3.5 h-3.5 shrink-0" />
                     <span>Promote Students</span>
@@ -909,7 +909,7 @@ const Sidebar = () => {
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer ${
                   location.pathname.startsWith('/examination')
                     ? 'text-indigo-950 bg-slate-100 font-bold'
-                    : 'text-[#F3F6FC] hover:text-white hover:bg-[#29456D]'
+                    : 'text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -921,32 +921,32 @@ const Sidebar = () => {
 
               {/* Examination Submenu List */}
               {isExamOpen && (
-                <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#29456D] ml-5 animate-fadeIn">
-                  <Link to="/examination?tab=types" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#29456D]">
+                <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#2D4D77] ml-5 animate-fadeIn">
+                  <Link to="/examination?tab=types" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]">
                     <span>1. Define Exam Type</span>
                   </Link>
-                  <Link to="/examination?tab=names" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#29456D]">
+                  <Link to="/examination?tab=names" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]">
                     <span>2. Exam Names / Schedule</span>
                   </Link>
-                  <Link to="/examination?tab=entry" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#29456D]">
+                  <Link to="/examination?tab=entry" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]">
                     <span>3. Marks Entry</span>
                   </Link>
-                  <Link to="/examination?tab=modify" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#29456D]">
+                  <Link to="/examination?tab=modify" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]">
                     <span>4. Modify Marks (Audit)</span>
                   </Link>
-                  <Link to="/examination?tab=cards" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#29456D]">
+                  <Link to="/examination?tab=cards" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]">
                     <span>5. Marks Card / Report</span>
                   </Link>
-                  <Link to="/examination?tab=individual" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#29456D]">
+                  <Link to="/examination?tab=individual" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]">
                     <span>6. Individual Marks Details</span>
                   </Link>
-                  <Link to="/examination?tab=cce" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#29456D]">
+                  <Link to="/examination?tab=cce" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]">
                     <span>7. CCE Skills & Test Types</span>
                   </Link>
-                  <Link to="/examination?tab=allocations" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#29456D]">
+                  <Link to="/examination?tab=allocations" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]">
                     <span>8. Score Sheet Allocation</span>
                   </Link>
-                  <Link to="/examination?tab=analytics" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#29456D]">
+                  <Link to="/examination?tab=analytics" onClick={handleLinkClick} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]">
                     <span>9. Result Analytics & Audit</span>
                   </Link>
                 </div>
@@ -967,7 +967,7 @@ const Sidebar = () => {
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer ${
                   location.pathname.startsWith('/online-exam')
                     ? 'text-indigo-950 bg-slate-100 font-bold'
-                    : 'text-[#F3F6FC] hover:text-white hover:bg-[#29456D]'
+                    : 'text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -979,7 +979,7 @@ const Sidebar = () => {
 
               {/* Online Exam Submenu List */}
               {isOnlineExamOpen && (
-                <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#29456D] ml-5 animate-fadeIn">
+                <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#2D4D77] ml-5 animate-fadeIn">
                   <Link to="/online-exam?tab=dashboard" onClick={handleLinkClick} className={getOnlineExamSubLinkClass('dashboard', true)}>
                     <span>1. Overview & Analytics</span>
                   </Link>
@@ -1013,7 +1013,7 @@ const Sidebar = () => {
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer ${
                   location.pathname === '/safe-pickup' || location.pathname === '/parent'
                     ? 'text-indigo-950 bg-slate-100 font-bold'
-                    : 'text-[#F3F6FC] hover:text-white hover:bg-[#29456D]'
+                    : 'text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77]'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -1025,7 +1025,7 @@ const Sidebar = () => {
 
               {/* Submenu List */}
               {isSafePickupOpen && (
-                <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#29456D] ml-5 animate-fadeIn">
+                <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#2D4D77] ml-5 animate-fadeIn">
                   <Link
                     to="/safe-pickup?tab=student-panel"
                     onClick={handleLinkClick}
@@ -1051,7 +1051,7 @@ const Sidebar = () => {
 
         {/* ── STUDENT & PARENT PORTAL LINKS (NEVER VISIBLE IN ADMIN OR TEACHER PANEL) ── */}
         {!isAdmin && !isTeacher && isParentOrStudent && (
-          <div className="space-y-1 pt-2 border-t border-[#29456D]">
+          <div className="space-y-1 pt-2 border-t border-[#2D4D77]">
             <span className="text-[10px] font-black text-[#93C5FD] uppercase tracking-widest block px-3 mb-2 opacity-90">
               STUDENT & PARENTS PORTAL
             </span>
@@ -1124,9 +1124,9 @@ const Sidebar = () => {
   return (
     <>
       {/* ── MOBILE STICKY TOP HEADER (< md) ── */}
-      <header className="md:hidden sticky top-0 z-40 w-full shrink-0 bg-[#172B4D] border-b border-[#29456D] px-4 py-2.5 flex items-center justify-between shadow-xs">
+      <header className="md:hidden sticky top-0 z-40 w-full shrink-0 bg-[#203B61] border-b border-[#2D4D77] px-4 py-2.5 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center p-1 border border-[#29456D] shadow-2xs shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center p-1 border border-[#2D4D77] shadow-2xs shrink-0">
             <img 
               src={companyLogo || "/logo.png"} 
               alt="Qelvora School CRM Logo" 
@@ -1137,7 +1137,7 @@ const Sidebar = () => {
             <span className="text-sm font-black text-white tracking-tight uppercase truncate max-w-[170px]">
               {companyName || 'Qelvora School CRM'}
             </span>
-            <span className="text-[9px] font-extrabold text-[#DBEAFE] uppercase tracking-wider">
+            <span className="text-[9px] font-extrabold text-[#DCEBFA] uppercase tracking-wider">
               {isAdmin ? 'ADMIN PORTAL' : isTeacher ? 'TEACHER PORTAL' : 'STUDENT / PARENT'}
             </span>
           </div>
@@ -1145,14 +1145,14 @@ const Sidebar = () => {
 
         <div className="flex items-center gap-2">
           {user?.role && (
-            <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-[#29456D] text-white border border-[#29456D]">
+            <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-[#2D4D77] text-white border border-[#2D4D77]">
               {user.role}
             </span>
           )}
           <button
             type="button"
             onClick={() => setIsMobileOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#29456D] hover:bg-[#172B4D] active:scale-95 text-white font-bold text-xs shadow-xs transition-all cursor-pointer border border-[#29456D]"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#2D4D77] hover:bg-[#203B61] active:scale-95 text-white font-bold text-xs shadow-xs transition-all cursor-pointer border border-[#2D4D77]"
             aria-label="Open Navigation Menu"
           >
             <Menu className="w-4 h-4" />
@@ -1172,11 +1172,11 @@ const Sidebar = () => {
           />
 
           {/* Slide-out Navigation Panel */}
-          <div className="relative w-[85%] max-w-xs bg-[#172B4D] text-[#F3F6FC] h-full flex flex-col justify-between z-10 shadow-2xl border-r border-[#29456D] font-sans overflow-hidden">
+          <div className="relative w-[85%] max-w-xs bg-[#203B61] text-[#F3F6FC] h-full flex flex-col justify-between z-10 shadow-2xl border-r border-[#2D4D77] font-sans overflow-hidden">
             {/* Drawer Header */}
-            <div className="p-4 border-b border-[#29456D] flex items-center justify-between bg-[#172B4D] shrink-0">
+            <div className="p-4 border-b border-[#2D4D77] flex items-center justify-between bg-[#203B61] shrink-0">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center p-1 border border-[#29456D] shadow-2xs shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center p-1 border border-[#2D4D77] shadow-2xs shrink-0">
                   <img 
                     src={companyLogo || "/logo.png"} 
                     alt="Logo" 
@@ -1187,7 +1187,7 @@ const Sidebar = () => {
                   <span className="text-xs font-black text-white uppercase tracking-tight truncate max-w-[160px]">
                     {companyName || 'Qelvora School CRM'}
                   </span>
-                  <span className="text-[9px] font-extrabold text-[#DBEAFE] uppercase tracking-wider">
+                  <span className="text-[9px] font-extrabold text-[#DCEBFA] uppercase tracking-wider">
                     {isAdmin ? 'ADMIN NAVIGATION' : isTeacher ? 'TEACHER NAVIGATION' : 'NAVIGATION'}
                   </span>
                 </div>
@@ -1196,7 +1196,7 @@ const Sidebar = () => {
               <button
                 type="button"
                 onClick={() => setIsMobileOpen(false)}
-                className="p-1.5 rounded-xl text-[#F3F6FC] hover:text-white hover:bg-[#29456D] transition-colors cursor-pointer"
+                className="p-1.5 rounded-xl text-[#F3F6FC] hover:text-white hover:bg-[#2D4D77] transition-colors cursor-pointer"
                 aria-label="Close Navigation Menu"
               >
                 <X className="w-5 h-5" />
@@ -1209,16 +1209,16 @@ const Sidebar = () => {
             </div>
 
             {/* Mobile Footer with User Profile & Logout */}
-            <div className="p-4 border-t border-[#29456D] bg-white flex items-center justify-between gap-3 shrink-0">
+            <div className="p-4 border-t border-[#2D4D77] bg-white flex items-center justify-between gap-3 shrink-0">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-9 h-9 rounded-full bg-[#29456D] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm border border-[#29456D]">
+                <div className="w-9 h-9 rounded-full bg-[#2D4D77] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm border border-[#2D4D77]">
                   {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                 </div>
                 <div className="flex flex-col min-w-0">
                   <span className="text-xs font-bold text-white truncate">
                     {user?.name || 'User'}
                   </span>
-                  <span className="text-[10px] font-extrabold text-[#DBEAFE] uppercase tracking-wider truncate">
+                  <span className="text-[10px] font-extrabold text-[#DCEBFA] uppercase tracking-wider truncate">
                     {user?.role || 'Admin'}
                   </span>
                 </div>
@@ -1238,11 +1238,11 @@ const Sidebar = () => {
       )}
 
       {/* ── DESKTOP FIXED/STICKY SIDEBAR (>= md) ── */}
-      <aside className="w-72 bg-[#172B4D] text-[#F3F6FC] h-screen sticky top-0 flex-shrink-0 flex flex-col justify-between hidden md:flex border-r border-[#29456D] shadow-sm font-sans z-30">
+      <aside className="w-72 bg-[#203B61] text-[#F3F6FC] h-screen sticky top-0 flex-shrink-0 flex flex-col justify-between hidden md:flex border-r border-[#2D4D77] shadow-sm font-sans z-30">
         <div className="flex-1 flex flex-col min-h-0">
           {/* Desktop Brand Header */}
-          <div className="p-5 border-b border-[#29456D] flex items-center gap-3.5 bg-[#172B4D]">
-            <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center p-1.5 border border-[#29456D] shadow-xs shrink-0">
+          <div className="p-5 border-b border-[#2D4D77] flex items-center gap-3.5 bg-[#203B61]">
+            <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center p-1.5 border border-[#2D4D77] shadow-xs shrink-0">
               <img 
                 src={companyLogo || "/logo.png"} 
                 alt="Qelvora School CRM Logo" 
@@ -1259,9 +1259,9 @@ const Sidebar = () => {
         </div>
 
         {/* Desktop User Footer */}
-        <div className="p-4 border-t border-[#29456D] bg-[#172B4D] flex items-center justify-between gap-3 shrink-0">
+        <div className="p-4 border-t border-[#2D4D77] bg-[#203B61] flex items-center justify-between gap-3 shrink-0">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-9 h-9 rounded-full bg-[#29456D] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm border border-[#29456D]">
+            <div className="w-9 h-9 rounded-full bg-[#2D4D77] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm border border-[#2D4D77]">
               {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
             </div>
             <div className="flex flex-col min-w-0">
@@ -1286,15 +1286,15 @@ const Sidebar = () => {
       </aside>
 
       {/* ── MOBILE STICKY BOTTOM NAVIGATION BAR (< md) ── */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#172B4D]/95 backdrop-blur-md border-t border-[#29456D] py-1 px-1 flex items-center justify-around shadow-[0_-4px_16px_rgba(0,0,0,0.06)] md:hidden pb-[max(0.25rem,env(safe-area-inset-bottom))]">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#203B61]/95 backdrop-blur-md border-t border-[#2D4D77] py-1 px-1 flex items-center justify-around shadow-[0_-4px_16px_rgba(0,0,0,0.06)] md:hidden pb-[max(0.25rem,env(safe-area-inset-bottom))]">
         <Link
           to="/dashboard"
           onClick={() => setIsMobileOpen(false)}
           className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[10px] font-bold transition-all ${
-            isDashboardActive ? 'bg-[#DBEAFE] text-[#172B4D] font-black' : 'text-[#CBD5E1] hover:text-[#DBEAFE] hover:bg-[#29456D]'
+            isDashboardActive ? 'bg-[#DCEBFA] text-[#203B61] font-black' : 'text-[#CBD5E1] hover:text-[#DCEBFA] hover:bg-[#2D4D77]'
           }`}
         >
-          <LayoutDashboard className={`w-4 h-4 ${isDashboardActive ? 'text-[#172B4D]' : 'text-[#F3F6FC]'}`} />
+          <LayoutDashboard className={`w-4 h-4 ${isDashboardActive ? 'text-[#203B61]' : 'text-[#F3F6FC]'}`} />
           <span>Dashboard</span>
         </Link>
 
@@ -1305,10 +1305,10 @@ const Sidebar = () => {
               to="/admin"
               onClick={() => setIsMobileOpen(false)}
               className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[10px] font-bold transition-all ${
-                isAdminSectionActive ? 'bg-[#DBEAFE] text-[#172B4D] font-black' : 'text-[#CBD5E1] hover:text-[#DBEAFE] hover:bg-[#29456D]'
+                isAdminSectionActive ? 'bg-[#DCEBFA] text-[#203B61] font-black' : 'text-[#CBD5E1] hover:text-[#DCEBFA] hover:bg-[#2D4D77]'
               }`}
             >
-              <Settings className={`w-4 h-4 ${isAdminSectionActive ? 'text-[#172B4D]' : 'text-[#F3F6FC]'}`} />
+              <Settings className={`w-4 h-4 ${isAdminSectionActive ? 'text-[#203B61]' : 'text-[#F3F6FC]'}`} />
               <span>Admin</span>
             </Link>
 
@@ -1316,10 +1316,10 @@ const Sidebar = () => {
               to="/fees"
               onClick={() => setIsMobileOpen(false)}
               className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[10px] font-bold transition-all ${
-                location.pathname === '/fees' ? 'bg-[#DBEAFE] text-[#172B4D] font-black' : 'text-[#CBD5E1] hover:text-[#DBEAFE] hover:bg-[#29456D]'
+                location.pathname === '/fees' ? 'bg-[#DCEBFA] text-[#203B61] font-black' : 'text-[#CBD5E1] hover:text-[#DCEBFA] hover:bg-[#2D4D77]'
               }`}
             >
-              <CreditCard className={`w-4 h-4 ${location.pathname === '/fees' ? 'text-[#DBEAFE]' : 'text-[#F3F6FC]'}`} />
+              <CreditCard className={`w-4 h-4 ${location.pathname === '/fees' ? 'text-[#DCEBFA]' : 'text-[#F3F6FC]'}`} />
               <span>Fees</span>
             </Link>
 
@@ -1327,10 +1327,10 @@ const Sidebar = () => {
               to="/student-promotion"
               onClick={() => setIsMobileOpen(false)}
               className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[10px] font-bold transition-all ${
-                location.pathname === '/student-promotion' ? 'bg-[#DBEAFE] text-[#172B4D] font-black' : 'text-[#CBD5E1] hover:text-[#DBEAFE] hover:bg-[#29456D]'
+                location.pathname === '/student-promotion' ? 'bg-[#DCEBFA] text-[#203B61] font-black' : 'text-[#CBD5E1] hover:text-[#DCEBFA] hover:bg-[#2D4D77]'
               }`}
             >
-              <TrendingUp className={`w-4 h-4 ${location.pathname === '/student-promotion' ? 'text-[#DBEAFE]' : 'text-[#F3F6FC]'}`} />
+              <TrendingUp className={`w-4 h-4 ${location.pathname === '/student-promotion' ? 'text-[#DCEBFA]' : 'text-[#F3F6FC]'}`} />
               <span>Promotion</span>
             </Link>
           </>
@@ -1343,10 +1343,10 @@ const Sidebar = () => {
               to="/teacher-section"
               onClick={() => setIsMobileOpen(false)}
               className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[10px] font-bold transition-all ${
-                location.pathname === '/teacher-section' ? 'bg-[#DBEAFE] text-[#172B4D] font-black' : 'text-[#CBD5E1] hover:text-[#DBEAFE] hover:bg-[#29456D]'
+                location.pathname === '/teacher-section' ? 'bg-[#DCEBFA] text-[#203B61] font-black' : 'text-[#CBD5E1] hover:text-[#DCEBFA] hover:bg-[#2D4D77]'
               }`}
             >
-              <GraduationCap className={`w-4 h-4 ${location.pathname === '/teacher-section' ? 'text-[#DBEAFE]' : 'text-[#F3F6FC]'}`} />
+              <GraduationCap className={`w-4 h-4 ${location.pathname === '/teacher-section' ? 'text-[#DCEBFA]' : 'text-[#F3F6FC]'}`} />
               <span>Teacher</span>
             </Link>
 
@@ -1354,10 +1354,10 @@ const Sidebar = () => {
               to="/qelvora-ai"
               onClick={() => setIsMobileOpen(false)}
               className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[10px] font-bold transition-all ${
-                location.pathname === '/qelvora-ai' ? 'bg-[#DBEAFE] text-[#172B4D] font-black' : 'text-[#CBD5E1] hover:text-[#DBEAFE] hover:bg-[#29456D]'
+                location.pathname === '/qelvora-ai' ? 'bg-[#DCEBFA] text-[#203B61] font-black' : 'text-[#CBD5E1] hover:text-[#DCEBFA] hover:bg-[#2D4D77]'
               }`}
             >
-              <FileText className={`w-4 h-4 ${location.pathname === '/qelvora-ai' ? 'text-[#DBEAFE]' : 'text-[#F3F6FC]'}`} />
+              <FileText className={`w-4 h-4 ${location.pathname === '/qelvora-ai' ? 'text-[#DCEBFA]' : 'text-[#F3F6FC]'}`} />
               <span>Paper AI</span>
             </Link>
 
@@ -1365,10 +1365,10 @@ const Sidebar = () => {
               to="/teacher-section?tab=attendance"
               onClick={() => setIsMobileOpen(false)}
               className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[10px] font-bold transition-all ${
-                location.pathname === '/teacher-section' && tab === 'attendance' ? 'bg-[#DBEAFE] text-[#172B4D] font-black' : 'text-[#CBD5E1] hover:text-[#DBEAFE] hover:bg-[#29456D]'
+                location.pathname === '/teacher-section' && tab === 'attendance' ? 'bg-[#DCEBFA] text-[#203B61] font-black' : 'text-[#CBD5E1] hover:text-[#DCEBFA] hover:bg-[#2D4D77]'
               }`}
             >
-              <UserCheck className={`w-4 h-4 ${location.pathname === '/teacher-section' && tab === 'attendance' ? 'text-[#DBEAFE]' : 'text-[#F3F6FC]'}`} />
+              <UserCheck className={`w-4 h-4 ${location.pathname === '/teacher-section' && tab === 'attendance' ? 'text-[#DCEBFA]' : 'text-[#F3F6FC]'}`} />
               <span>Attendance</span>
             </Link>
           </>
@@ -1381,10 +1381,10 @@ const Sidebar = () => {
               to="/student/profile"
               onClick={() => setIsMobileOpen(false)}
               className={`flex flex-col items-center gap-0.5 py-1 px-1.5 rounded-lg text-[9px] font-bold transition-all ${
-                location.pathname === '/student/profile' ? 'bg-[#DBEAFE] text-[#172B4D] font-black' : 'text-[#CBD5E1] hover:text-[#DBEAFE] hover:bg-[#29456D]'
+                location.pathname === '/student/profile' ? 'bg-[#DCEBFA] text-[#203B61] font-black' : 'text-[#CBD5E1] hover:text-[#DCEBFA] hover:bg-[#2D4D77]'
               }`}
             >
-              <GraduationCap className={`w-4 h-4 ${location.pathname === '/student/profile' ? 'text-[#DBEAFE]' : 'text-[#F3F6FC]'}`} />
+              <GraduationCap className={`w-4 h-4 ${location.pathname === '/student/profile' ? 'text-[#DCEBFA]' : 'text-[#F3F6FC]'}`} />
               <span>Profile</span>
             </Link>
 
@@ -1392,10 +1392,10 @@ const Sidebar = () => {
               to="/student/homework"
               onClick={() => setIsMobileOpen(false)}
               className={`flex flex-col items-center gap-0.5 py-1 px-1.5 rounded-lg text-[9px] font-bold transition-all ${
-                location.pathname === '/student/homework' ? 'bg-[#DBEAFE] text-[#172B4D] font-black' : 'text-[#CBD5E1] hover:text-[#DBEAFE] hover:bg-[#29456D]'
+                location.pathname === '/student/homework' ? 'bg-[#DCEBFA] text-[#203B61] font-black' : 'text-[#CBD5E1] hover:text-[#DCEBFA] hover:bg-[#2D4D77]'
               }`}
             >
-              <BookOpen className={`w-4 h-4 ${location.pathname === '/student/homework' ? 'text-[#DBEAFE]' : 'text-[#F3F6FC]'}`} />
+              <BookOpen className={`w-4 h-4 ${location.pathname === '/student/homework' ? 'text-[#DCEBFA]' : 'text-[#F3F6FC]'}`} />
               <span>Homework</span>
             </Link>
 
@@ -1403,10 +1403,10 @@ const Sidebar = () => {
               to="/student/examination"
               onClick={() => setIsMobileOpen(false)}
               className={`flex flex-col items-center gap-0.5 py-1 px-1.5 rounded-lg text-[9px] font-bold transition-all ${
-                location.pathname === '/student/examination' ? 'bg-[#DBEAFE] text-[#172B4D] font-black' : 'text-[#CBD5E1] hover:text-[#DBEAFE] hover:bg-[#29456D]'
+                location.pathname === '/student/examination' ? 'bg-[#DCEBFA] text-[#203B61] font-black' : 'text-[#CBD5E1] hover:text-[#DCEBFA] hover:bg-[#2D4D77]'
               }`}
             >
-              <Award className={`w-4 h-4 ${location.pathname === '/student/examination' ? 'text-[#DBEAFE]' : 'text-[#F3F6FC]'}`} />
+              <Award className={`w-4 h-4 ${location.pathname === '/student/examination' ? 'text-[#DCEBFA]' : 'text-[#F3F6FC]'}`} />
               <span>Exams</span>
             </Link>
 
@@ -1414,10 +1414,10 @@ const Sidebar = () => {
               to="/student/online-exam"
               onClick={() => setIsMobileOpen(false)}
               className={`flex flex-col items-center gap-0.5 py-1 px-1.5 rounded-lg text-[9px] font-bold transition-all ${
-                location.pathname.startsWith('/student/online-exam') ? 'bg-[#DBEAFE] text-[#172B4D] font-black' : 'text-[#CBD5E1] hover:text-[#DBEAFE] hover:bg-[#29456D]'
+                location.pathname.startsWith('/student/online-exam') ? 'bg-[#DCEBFA] text-[#203B61] font-black' : 'text-[#CBD5E1] hover:text-[#DCEBFA] hover:bg-[#2D4D77]'
               }`}
             >
-              <MonitorPlay className={`w-4 h-4 ${location.pathname.startsWith('/student/online-exam') ? 'text-[#DBEAFE]' : 'text-[#F3F6FC]'}`} />
+              <MonitorPlay className={`w-4 h-4 ${location.pathname.startsWith('/student/online-exam') ? 'text-[#DCEBFA]' : 'text-[#F3F6FC]'}`} />
               <span>Online</span>
             </Link>
 
@@ -1425,10 +1425,10 @@ const Sidebar = () => {
               to="/student/fees"
               onClick={() => setIsMobileOpen(false)}
               className={`flex flex-col items-center gap-0.5 py-1 px-1.5 rounded-lg text-[9px] font-bold transition-all ${
-                location.pathname === '/student/fees' ? 'bg-[#DBEAFE] text-[#172B4D] font-black' : 'text-[#CBD5E1] hover:text-[#DBEAFE] hover:bg-[#29456D]'
+                location.pathname === '/student/fees' ? 'bg-[#DCEBFA] text-[#203B61] font-black' : 'text-[#CBD5E1] hover:text-[#DCEBFA] hover:bg-[#2D4D77]'
               }`}
             >
-              <IndianRupee className={`w-4 h-4 ${location.pathname === '/student/fees' ? 'text-[#DBEAFE]' : 'text-[#F3F6FC]'}`} />
+              <IndianRupee className={`w-4 h-4 ${location.pathname === '/student/fees' ? 'text-[#DCEBFA]' : 'text-[#F3F6FC]'}`} />
               <span>Fees</span>
             </Link>
 
@@ -1436,10 +1436,10 @@ const Sidebar = () => {
               to="/student/safe-pickup"
               onClick={() => setIsMobileOpen(false)}
               className={`flex flex-col items-center gap-0.5 py-1 px-1.5 rounded-lg text-[9px] font-bold transition-all ${
-                location.pathname === '/student/safe-pickup' ? 'bg-[#DBEAFE] text-[#172B4D] font-black' : 'text-[#CBD5E1] hover:text-[#DBEAFE] hover:bg-[#29456D]'
+                location.pathname === '/student/safe-pickup' ? 'bg-[#DCEBFA] text-[#203B61] font-black' : 'text-[#CBD5E1] hover:text-[#DCEBFA] hover:bg-[#2D4D77]'
               }`}
             >
-              <ShieldCheck className={`w-4 h-4 ${location.pathname === '/student/safe-pickup' ? 'text-[#DBEAFE]' : 'text-[#F3F6FC]'}`} />
+              <ShieldCheck className={`w-4 h-4 ${location.pathname === '/student/safe-pickup' ? 'text-[#DCEBFA]' : 'text-[#F3F6FC]'}`} />
               <span>Pickup</span>
             </Link>
           </>
