@@ -1934,16 +1934,22 @@ const AdminPage = () => {
     if (activeTab === 'classes') {
       fetchClasses();
       fetchEmployees();
+      fetchSubjects();
+      fetchTimetable();
+      fetchMappings();
     }
     if (activeTab === 'subjects') {
       fetchSubjects();
       fetchClasses();
+      fetchMappings();
+      fetchTimetable();
     }
     if (activeTab === 'mappings') {
       fetchMappings();
       fetchClasses();
       fetchSubjects();
       fetchEmployees();
+      fetchTimetable();
     }
     if (activeTab === 'timetable') {
       fetchTimetable();
@@ -7723,6 +7729,37 @@ Office of the Principal / Academic Administration`
                         {filteredClasses.map((cls) => {
                           const boardName = cls.board || 'CBSE';
                           const isBeingEdited = editingClass && (editingClass.id === cls.id || editingClass._id === cls._id);
+                          const classStdNorm = (cls.standard || '').toString().toLowerCase().trim();
+                          const classSecNorm = (cls.section || '').toString().toLowerCase().trim();
+                          const clsIdStr = (cls._id || cls.id)?.toString();
+
+                          // Interconnected Counts
+                          const classSubjectsCount = (subjects || []).filter(s => {
+                            if (!s.standard || s.standard === 'All') return true;
+                            return s.standard.toString().toLowerCase().trim() === classStdNorm;
+                          }).length;
+
+                          const classSlotsCount = (weeklyTimetable || []).filter(slot => {
+                            const cid = slot.class?._id || slot.class?.id || slot.class || slot.classId;
+                            const idMatch = Boolean(cid && clsIdStr && cid.toString() === clsIdStr);
+                            const stdSecMatch = Boolean(
+                              slot.standard && slot.section &&
+                              slot.standard.toString().toLowerCase().trim() === classStdNorm &&
+                              slot.section.toString().toLowerCase().trim() === classSecNorm
+                            );
+                            return idMatch || stdSecMatch;
+                          }).length;
+
+                          const classMappingsCount = (mappings || []).filter(m => {
+                            const cid = m.class?._id || m.class?.id || m.classId || m.class;
+                            const idMatch = Boolean(cid && clsIdStr && cid.toString() === clsIdStr);
+                            const stdSecMatch = Boolean(
+                              m.standard && m.section &&
+                              m.standard.toString().toLowerCase().trim() === classStdNorm &&
+                              m.section.toString().toLowerCase().trim() === classSecNorm
+                            );
+                            return idMatch || stdSecMatch;
+                          }).length;
 
                           return (
                             <tr 
@@ -7743,6 +7780,46 @@ Office of the Principal / Academic Administration`
                                     📍 {cls.roomNumber}
                                   </div>
                                 )}
+                                {/* Linked Badges */}
+                                <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setSubjectClassFilter(cls.standard);
+                                      setActiveTab('subjects');
+                                    }}
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 hover:bg-blue-100 text-[#172B4D] border border-blue-200 text-[10px] font-bold transition-all cursor-pointer shadow-2xs"
+                                    title={`View ${classSubjectsCount} subjects registered for Class ${cls.standard}`}
+                                  >
+                                    <BookOpen className="w-2.5 h-2.5 text-[#172B4D]" />
+                                    <span>{classSubjectsCount} Subjects</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedViewType('class');
+                                      setSelectedClassForGrid(cls._id || cls.id);
+                                      setActiveTab('timetable');
+                                    }}
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-bold transition-all cursor-pointer shadow-2xs"
+                                    title={`View ${classSlotsCount} timetable slots for Class ${cls.standard}-${cls.section}`}
+                                  >
+                                    <CalendarDays className="w-2.5 h-2.5 text-emerald-700" />
+                                    <span>{classSlotsCount} Periods/Wk</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setMappingClassFilter(cls._id || cls.id);
+                                      setActiveTab('mappings');
+                                    }}
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[10px] font-bold transition-all cursor-pointer shadow-2xs"
+                                    title={`View ${classMappingsCount} faculty assignments for Class ${cls.standard}-${cls.section}`}
+                                  >
+                                    <Link2 className="w-2.5 h-2.5 text-purple-700" />
+                                    <span>{classMappingsCount} Mappings</span>
+                                  </button>
+                                </div>
                               </td>
                               <td className="px-4 py-3.5">
                                 <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-bold border tracking-wide ${
@@ -7780,6 +7857,33 @@ Office of the Principal / Academic Administration`
                               </td>
                               <td className="px-4 py-3.5 text-center">
                                 <div className="flex items-center justify-center gap-1.5">
+                                  {/* Quick Assign Faculty */}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setMappingForm({ teacherId: '', classId: cls._id || cls.id, subjectId: '' });
+                                      setActiveTab('mappings');
+                                    }}
+                                    className="w-8 h-8 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 transition-colors flex items-center justify-center cursor-pointer shadow-2xs active:scale-95"
+                                    title="Assign Faculty & Subject to this Class"
+                                  >
+                                    <Link2 className="w-3.5 h-3.5" />
+                                  </button>
+
+                                  {/* Quick Open Timetable */}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedViewType('class');
+                                      setSelectedClassForGrid(cls._id || cls.id);
+                                      setActiveTab('timetable');
+                                    }}
+                                    className="w-8 h-8 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 transition-colors flex items-center justify-center cursor-pointer shadow-2xs active:scale-95"
+                                    title="Open Weekly Timetable for this Class"
+                                  >
+                                    <CalendarDays className="w-3.5 h-3.5" />
+                                  </button>
+
                                   {/* Edit Button */}
                                   <button
                                     type="button"
@@ -8247,6 +8351,26 @@ Office of the Principal / Academic Administration`
                               <td className="px-4 py-3.5 text-center">
                                 <div className="flex items-center justify-center gap-1.5">
                                   <button
+                                    type="button"
+                                    onClick={() => {
+                                      let matchedClassId = '';
+                                      if (sub.standard && sub.standard !== 'All') {
+                                        const clsMatch = classes.find(c => c.standard?.toLowerCase().trim() === sub.standard?.toLowerCase().trim());
+                                        if (clsMatch) matchedClassId = clsMatch._id || clsMatch.id;
+                                      }
+                                      setMappingForm({
+                                        teacherId: '',
+                                        classId: matchedClassId,
+                                        subjectId: sub.id || sub._id
+                                      });
+                                      setActiveTab('mappings');
+                                    }}
+                                    className="w-8 h-8 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200/80 transition-all flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105"
+                                    title="Assign Faculty to this Subject in Mappings"
+                                  >
+                                    <Link2 className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
                                     onClick={() => handleStartEditSubject(sub)}
                                     className="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#172B4D] border border-blue-200/80 transition-all flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105"
                                     title="Edit Subject"
@@ -8458,18 +8582,43 @@ Office of the Principal / Academic Administration`
                         {subjects.length} Subjects Registered
                       </span>
                     </label>
-                    <select
-                      value={mappingForm.subjectId}
-                      onChange={(e) => setMappingForm(prev => ({ ...prev, subjectId: e.target.value }))}
-                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs cursor-pointer shadow-2xs"
-                    >
-                      <option value="">-- Select Subject (from Subject Management) --</option>
-                      {subjects.map(sub => (
-                        <option key={sub.id || sub._id} value={sub.id || sub._id}>
-                          {sub.name} {sub.code ? `(${sub.code})` : ''} {sub.standard ? `• Class ${sub.standard}` : '• Universal'}
-                        </option>
-                      ))}
-                    </select>
+                    {(() => {
+                      const selClassForMap = classes.find(c => (c._id || c.id)?.toString() === mappingForm.classId?.toString());
+                      const sortedSubList = [...(subjects || [])].sort((a, b) => {
+                        if (!selClassForMap) return 0;
+                        const aMatch = (!a.standard || a.standard === 'All' || a.standard.toString().toLowerCase().trim() === selClassForMap.standard.toString().toLowerCase().trim()) ? 1 : 0;
+                        const bMatch = (!b.standard || b.standard === 'All' || b.standard.toString().toLowerCase().trim() === selClassForMap.standard.toString().toLowerCase().trim()) ? 1 : 0;
+                        return bMatch - aMatch;
+                      });
+
+                      return (
+                        <>
+                          <select
+                            value={mappingForm.subjectId}
+                            onChange={(e) => setMappingForm(prev => ({ ...prev, subjectId: e.target.value }))}
+                            className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs cursor-pointer shadow-2xs"
+                          >
+                            <option value="">-- Select Subject (from Subject Management) --</option>
+                            {sortedSubList.map(sub => {
+                              const isClassMatch = selClassForMap && (!sub.standard || sub.standard === 'All' || sub.standard.toString().toLowerCase().trim() === selClassForMap.standard.toString().toLowerCase().trim());
+                              return (
+                                <option key={sub.id || sub._id} value={sub.id || sub._id}>
+                                  {isClassMatch ? '⭐ ' : ''}{sub.name} {sub.code ? `(${sub.code})` : ''} {sub.standard ? `• Class ${sub.standard}` : '• Universal'}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          {subjects.length === 0 && (
+                            <div className="mt-2 p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-[11px] flex items-center justify-between">
+                              <span>No subjects in database.</span>
+                              <button type="button" onClick={() => setActiveTab('subjects')} className="font-bold underline cursor-pointer">
+                                + Add in Subject Management
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
 
                   {/* Form Action Buttons */}
@@ -8689,6 +8838,21 @@ Office of the Principal / Academic Administration`
                               {/* Actions Column */}
                               <td className="px-4 py-3.5 text-center">
                                 <div className="flex items-center justify-center gap-1.5">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const cid = map.classId || map.class?._id || map.class?.id;
+                                      if (cid) {
+                                        setSelectedViewType('class');
+                                        setSelectedClassForGrid(cid);
+                                      }
+                                      setActiveTab('timetable');
+                                    }}
+                                    className="w-8 h-8 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/80 transition-all flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105"
+                                    title="Schedule / View in Timetable"
+                                  >
+                                    <CalendarDays className="w-3.5 h-3.5" />
+                                  </button>
                                   <button
                                     onClick={() => handleStartEditMapping(map)}
                                     className="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#172B4D] border border-blue-200/80 transition-all flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105"

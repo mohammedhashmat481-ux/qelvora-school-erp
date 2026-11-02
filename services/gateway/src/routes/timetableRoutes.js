@@ -18,30 +18,61 @@ router.get('/', async (req, res) => {
 
     if (teacherId && teacherId !== 'All') {
       try {
-        let lookupId = String(teacherId);
+        let lookupId = String(teacherId).trim();
 
-        const matchedTeacherObj = await prisma.teacher.findFirst({
-          where: {
-            OR: [
-              { id: lookupId },
-              { userId: lookupId },
-              { employeeId: lookupId },
-              { name: lookupId }
-            ]
-          }
-        });
+        const [matchedTeacherObj, matchedUserObj] = await Promise.all([
+          prisma.teacher.findFirst({
+            where: {
+              OR: [
+                { id: lookupId },
+                { userId: lookupId },
+                { employeeId: lookupId },
+                { name: lookupId }
+              ]
+            }
+          }).catch(() => null),
+          prisma.user.findFirst({
+            where: {
+              OR: [
+                { id: lookupId },
+                { employeeId: lookupId },
+                { name: lookupId }
+              ]
+            }
+          }).catch(() => null)
+        ]);
+
+        const possibleIds = new Set([lookupId]);
+        const possibleNames = new Set();
+        const possibleEmpIds = new Set();
+
         if (matchedTeacherObj) {
-          where.OR = [
-            { teacherId: matchedTeacherObj.id },
-            { teacher: matchedTeacherObj.name },
-            { employeeId: matchedTeacherObj.employeeId }
-          ];
-        } else {
-          where.OR = [
-            { teacherId: lookupId },
-            { teacher: { contains: lookupId, mode: 'insensitive' } }
-          ];
+          if (matchedTeacherObj.id) possibleIds.add(matchedTeacherObj.id);
+          if (matchedTeacherObj.userId) possibleIds.add(matchedTeacherObj.userId);
+          if (matchedTeacherObj.name) possibleNames.add(matchedTeacherObj.name.trim());
+          if (matchedTeacherObj.employeeId) possibleEmpIds.add(matchedTeacherObj.employeeId.trim());
         }
+
+        if (matchedUserObj) {
+          if (matchedUserObj.id) possibleIds.add(matchedUserObj.id);
+          if (matchedUserObj.name) possibleNames.add(matchedUserObj.name.trim());
+          if (matchedUserObj.employeeId) possibleEmpIds.add(matchedUserObj.employeeId.trim());
+        }
+
+        const orConditions = [
+          { teacherId: { in: Array.from(possibleIds) } }
+        ];
+
+        possibleNames.forEach(n => {
+          orConditions.push({ teacher: { equals: n, mode: 'insensitive' } });
+          orConditions.push({ teacher: { contains: n, mode: 'insensitive' } });
+        });
+
+        possibleEmpIds.forEach(emp => {
+          orConditions.push({ employeeId: { equals: emp, mode: 'insensitive' } });
+        });
+
+        where.OR = orConditions;
       } catch (_) {
         where.teacherId = String(teacherId);
       }

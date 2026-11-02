@@ -4,7 +4,7 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { 
-  getProfile, updateTeacherProfile, getTimetables, getAttendanceLogs, 
+  getProfile, getCompanySettings, updateTeacherProfile, getTimetables, getAttendanceLogs, 
   getMyLeaveRequests, requestLeave, getTeacherDashboard, classLogin, 
   classLogout, getTeacherFeedbackAnalytics, getDetailsReport, 
   exportAttendanceExcel, getStudentsList, getMyTeacherAllocations,
@@ -34,6 +34,86 @@ const TeacherSectionPage = () => {
   const [timetable, setTimetable] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [todaySchedule, setTodaySchedule] = useState([]);
+  const [schoolSettings, setSchoolSettings] = useState(null);
+
+  // Dynamic period calculations from school settings
+  const calculatedPeriods = useMemo(() => {
+    const startStr = schoolSettings?.office_start_time || '08:30';
+    const endStr = schoolSettings?.office_end_time || '16:00';
+    const periodMins = schoolSettings?.period_duration_mins || 45;
+    const smallBreakStart = schoolSettings?.small_break_start || '10:30';
+    const smallBreakMins = schoolSettings?.small_break_mins || 15;
+    const lunchBreakStart = schoolSettings?.lunch_break_start || '12:00';
+    const lunchBreakMins = schoolSettings?.lunch_break_mins || 45;
+
+    const parseTime = (str) => {
+      const [h, m] = (str || '09:00').split(':').map(Number);
+      return (h || 0) * 60 + (m || 0);
+    };
+    const formatTime = (mins) => {
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    };
+
+    const start = parseTime(startStr);
+    const end = parseTime(endStr);
+    const sBreak = parseTime(smallBreakStart);
+    const lBreak = parseTime(lunchBreakStart);
+
+    let current = start;
+    const list = [];
+    let periodIndex = 1;
+
+    while (current + periodMins <= end) {
+      if (current >= sBreak && current < sBreak + smallBreakMins) {
+        list.push({
+          period: `break-${periodIndex}`,
+          label: 'SHORT BREAK',
+          timeSlot: `${formatTime(sBreak)} - ${formatTime(sBreak + smallBreakMins)}`,
+          isBreak: true
+        });
+        current = sBreak + smallBreakMins;
+        continue;
+      }
+      if (current >= lBreak && current < lBreak + lunchBreakMins) {
+        list.push({
+          period: 'lunch',
+          label: 'LUNCH BREAK',
+          timeSlot: `${formatTime(lBreak)} - ${formatTime(lBreak + lunchBreakMins)}`,
+          isBreak: true
+        });
+        current = lBreak + lunchBreakMins;
+        continue;
+      }
+
+      const pStart = current;
+      const pEnd = current + periodMins;
+      list.push({
+        period: periodIndex++,
+        timeSlot: `${formatTime(pStart)} - ${formatTime(pEnd)}`,
+        isBreak: false
+      });
+      current = pEnd;
+    }
+
+    if (list.length === 0) {
+      return [
+        { period: 1, timeSlot: '08:30 - 09:15', isBreak: false },
+        { period: 2, timeSlot: '09:15 - 10:00', isBreak: false },
+        { period: 'break1', label: 'SHORT BREAK', timeSlot: '10:00 - 10:15', isBreak: true },
+        { period: 3, timeSlot: '10:15 - 11:00', isBreak: false },
+        { period: 4, timeSlot: '11:00 - 11:45', isBreak: false },
+        { period: 'lunch', label: 'LUNCH BREAK', timeSlot: '11:45 - 12:30', isBreak: true },
+        { period: 5, timeSlot: '12:30 - 13:15', isBreak: false },
+        { period: 6, timeSlot: '13:15 - 14:00', isBreak: false },
+        { period: 7, timeSlot: '14:00 - 14:45', isBreak: false },
+        { period: 8, timeSlot: '14:45 - 15:30', isBreak: false },
+      ];
+    }
+
+    return list;
+  }, [schoolSettings]);
   const [currentPeriod, setCurrentPeriod] = useState(null);
   const [activeTimetableTab, setActiveTimetableTab] = useState('today'); // 'today' | 'weekly'
   
@@ -157,6 +237,21 @@ const TeacherSectionPage = () => {
         if (dashRes?.status && dashRes.data) {
           setTodaySchedule(dashRes.data.schedule || []);
           setCurrentPeriod(dashRes.data.currentPeriod || null);
+        }
+
+        // Load School Settings for dynamic timetable slot timings
+        getCompanySettings().then(sRes => {
+          if (sRes?.data) setSchoolSettings(sRes.data);
+        }).catch(() => {});
+
+        // Fallback: If dashRes has no schedule for today, derive from weekly timetable slots
+        if ((!dashRes?.data?.schedule || dashRes.data.schedule.length === 0) && timeRes?.status && Array.isArray(timeRes.data)) {
+          const daysMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+          const todayName = daysMap[new Date().getDay()];
+          const matchingToday = timeRes.data.filter(s => s.day === todayName);
+          if (matchingToday.length > 0) {
+            setTodaySchedule(matchingToday);
+          }
         }
 
         if (activeTab === 'attendance') {
@@ -485,8 +580,19 @@ const TeacherSectionPage = () => {
             toast.error(err.response?.data?.message || err.message || 'Class login failed.', { id: toastId });
           }
         },
-        (error) => {
-          toast.error('Failed to get your location. Please check GPS settings.', { id: toastId });
+        async (error) => {
+          console.warn('GPS location unavailable, completing direct class login:', error);
+          try {
+            const res = await classLogin(classId, period, subjectId, { latitude: 0, longitude: 0, isDirect: true });
+            if (res.status) {
+              toast.success('Successfully logged into class!', { id: toastId });
+              fetchData();
+            } else {
+              toast.error(res.message || 'Class login failed.', { id: toastId });
+            }
+          } catch (err) {
+            toast.error(err.response?.data?.message || err.message || 'Class login failed.', { id: toastId });
+          }
         },
         { timeout: 6000 }
       );
@@ -517,8 +623,19 @@ const TeacherSectionPage = () => {
             toast.error(err.response?.data?.message || err.message || 'Class logout failed.', { id: toastId });
           }
         },
-        (error) => {
-          toast.error('Failed to get your location. Please check GPS settings.', { id: toastId });
+        async (error) => {
+          console.warn('GPS location unavailable, completing direct class logout:', error);
+          try {
+            const res = await classLogout(classId, period, { latitude: 0, longitude: 0, isDirect: true });
+            if (res.status) {
+              toast.success('Class session concluded!', { id: toastId });
+              fetchData();
+            } else {
+              toast.error(res.message || 'Class logout failed.', { id: toastId });
+            }
+          } catch (err) {
+            toast.error(err.response?.data?.message || err.message || 'Class logout failed.', { id: toastId });
+          }
         },
         { timeout: 6000 }
       );
@@ -1134,7 +1251,7 @@ const TeacherSectionPage = () => {
                                   Class {slot.standard} - {slot.section} <span className="text-[10px] text-stone-400 font-normal">({slot.board})</span>
                                 </td>
                                 <td className="py-3.5 px-4 font-semibold text-stone-700">
-                                  {slot.subject}
+                                  {slot.subjectName || slot.subject?.name || (typeof slot.subject === 'string' ? slot.subject : 'Subject')}
                                   {slot.type === 'substitute' && (
                                     <span className="inline-block ml-2 text-[8px] bg-stone-100 text-stone-800 px-1.5 py-0.5 rounded-full uppercase tracking-wider font-extrabold border border-stone-200">
                                       Substitute
@@ -1215,22 +1332,7 @@ const TeacherSectionPage = () => {
                       <thead>
                         <tr className="bg-stone-50 border-b border-stone-250 text-stone-600 font-extrabold uppercase text-[10px]">
                           <th className="py-3.5 px-3 border-r border-stone-250 bg-stone-50">Day</th>
-                          {[
-                            { period: 1, timeSlot: '8:20 - 9:00' },
-                            { period: 2, timeSlot: '9:00 - 9:40' },
-                            { period: 'break1', label: 'SHORT BREAK-1', timeSlot: '9:40 - 9:50', isBreak: true },
-                            { period: 3, timeSlot: '9:50 - 10:30' },
-                            { period: 4, timeSlot: '10:30 - 11:10' },
-                            { period: 5, timeSlot: '11:10 - 11:50' },
-                            { period: 6, timeSlot: '11:50 - 12:30' },
-                            { period: 'lunch', label: 'LUNCH BREAK', timeSlot: '12:30 - 13:00', isBreak: true },
-                            { period: 7, timeSlot: '13:00 - 13:40' },
-                            { period: 8, timeSlot: '13:40 - 14:20' },
-                            { period: 9, timeSlot: '14:20 - 15:00' },
-                            { period: 'break2', label: 'SHORT BREAK-2', timeSlot: '15:00 - 15:10', isBreak: true },
-                            { period: 10, timeSlot: '15:10 - 15:40' },
-                            { period: 11, timeSlot: '15:40 - 18:00' }
-                          ].map((col, idx) => (
+                          {calculatedPeriods.map((col, idx) => (
                             <th key={idx} className="py-2.5 px-2 border-r border-stone-250 min-w-[100px]">
                               {col.isBreak ? (
                                 <div className="flex flex-col items-center">
@@ -1256,22 +1358,7 @@ const TeacherSectionPage = () => {
                             </td>
 
                             {/* Periods and Break Mapping */}
-                            {[
-                              { period: 1, isBreak: false },
-                              { period: 2, isBreak: false },
-                              { period: 'break1', label: 'SHORT BREAK-1', isBreak: true },
-                              { period: 3, isBreak: false },
-                              { period: 4, isBreak: false },
-                              { period: 5, isBreak: false },
-                              { period: 6, isBreak: false },
-                              { period: 'lunch', label: 'LUNCH BREAK', isBreak: true },
-                              { period: 7, isBreak: false },
-                              { period: 8, isBreak: false },
-                              { period: 9, isBreak: false },
-                              { period: 'break2', label: 'SHORT BREAK-2', isBreak: true },
-                              { period: 10, isBreak: false },
-                              { period: 11, isBreak: false }
-                            ].map((col, colIdx) => {
+                            {calculatedPeriods.map((col, colIdx) => {
                               if (col.isBreak) {
                                 // Break columns span vertically (rowSpan=6) on the first day (Monday)
                                 if (dayIdx === 0) {
@@ -1299,15 +1386,20 @@ const TeacherSectionPage = () => {
                               );
 
                               return (
-                                <td key={colIdx} className="py-4 px-2 border-r border-stone-200 last:border-r-0 min-h-[50px] align-middle">
+                                <td key={colIdx} className="py-3 px-2 border-r border-stone-200 last:border-r-0 min-h-[50px] align-middle">
                                   {slot ? (
-                                    <div className="animate-fadeIn">
-                                      <div className="font-extrabold text-[11px] text-stone-850 uppercase">
-                                        {slot.subject?.name}
+                                    <div className="p-2 rounded-xl bg-blue-50/70 border border-blue-200/80 shadow-2xs text-center">
+                                      <div className="font-extrabold text-[11px] text-[#172B4D] uppercase truncate" title={slot.subjectName || slot.subject || ''}>
+                                        {slot.subjectName || slot.subject?.name || (typeof slot.subject === 'string' ? slot.subject : 'Subject')}
                                       </div>
-                                      <div className="text-[9px] text-[#172B4D] font-black mt-0.5 uppercase font-mono">
-                                        {slot.class ? `${slot.class.standard} ${slot.class.section}` : ''}
+                                      <div className="text-[10px] text-[#29456D] font-black mt-0.5 uppercase font-mono">
+                                        {slot.class?.standard ? `Class ${slot.class.standard}-${slot.class.section}` : (slot.standard ? `Class ${slot.standard}-${slot.section}` : '')}
                                       </div>
+                                      {slot.room && (
+                                        <div className="text-[9px] text-slate-500 font-semibold mt-0.5">
+                                          📍 {slot.room}
+                                        </div>
+                                      )}
                                     </div>
                                   ) : (
                                     <span className="text-[10px] text-stone-300 font-medium">—</span>
