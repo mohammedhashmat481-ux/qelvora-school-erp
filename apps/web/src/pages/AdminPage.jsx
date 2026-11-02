@@ -3076,6 +3076,32 @@ Office of the Principal / Academic Administration`
       } else {
         setSettings(prev => ({ ...prev, ...settingsPayload }));
       }
+      try {
+        if (settingsPayload.schoolName) localStorage.setItem('school_crm_cached_name', settingsPayload.schoolName);
+        if (settingsPayload.schoolLogo) localStorage.setItem('school_crm_cached_logo', settingsPayload.schoolLogo);
+        if (settingsPayload.logoSubtext) localStorage.setItem('school_crm_cached_subtext', settingsPayload.logoSubtext);
+      } catch (_) {}
+
+      // Update browser tab title immediately
+      if (settingsPayload.schoolName && typeof settingsPayload.schoolName === 'string') {
+        const trimmed = settingsPayload.schoolName.trim();
+        document.title = (trimmed.toLowerCase().includes('erp') || trimmed.toLowerCase().includes('school'))
+          ? trimmed
+          : `${trimmed} — School ERP`;
+      }
+
+      // Update browser favicon immediately
+      if (settingsPayload.schoolLogo && typeof settingsPayload.schoolLogo === 'string' && settingsPayload.schoolLogo.trim()) {
+        let favicon = document.querySelector("link[rel*='icon']");
+        if (!favicon) {
+          favicon = document.createElement('link');
+          favicon.rel = 'icon';
+          document.head.appendChild(favicon);
+        }
+        favicon.href = settingsPayload.schoolLogo.trim();
+      }
+
+      window.dispatchEvent(new CustomEvent('schoolSettingsUpdated', { detail: settingsPayload }));
       window.dispatchEvent(new Event('schoolSettingsUpdated'));
       toast.success("School configuration & branding saved successfully!");
       setShowSaveSuccessModal(true);

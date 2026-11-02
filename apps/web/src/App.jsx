@@ -1,4 +1,5 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
+import { getCompanySettings } from './services/authService';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
@@ -64,6 +65,86 @@ function PageLoader() {
 }
 
 function App() {
+  // Global school name & browser tab title synchronization
+  useEffect(() => {
+    const syncSchoolBranding = (customName, customLogo) => {
+      let name = customName;
+      let logo = customLogo;
+
+      if (!name) {
+        try {
+          name = localStorage.getItem('school_crm_cached_name') || '';
+        } catch (_) {}
+      }
+
+      if (!logo) {
+        try {
+          logo = localStorage.getItem('school_crm_cached_logo') || '';
+        } catch (_) {}
+      }
+
+      // Dynamic Document Title Auto-Reflection derived dynamically from database
+      if (name && typeof name === 'string' && name.trim()) {
+        const trimmed = name.trim();
+        document.title = (trimmed.toLowerCase().includes('erp') || trimmed.toLowerCase().includes('school'))
+          ? trimmed
+          : `${trimmed} — School ERP`;
+      } else {
+        document.title = 'Qelvora School CRM — Secure School Management';
+      }
+
+      // Dynamic Browser Tab Favicon
+      if (logo && typeof logo === 'string' && logo.trim()) {
+        let favicon = document.querySelector("link[rel*='icon']");
+        if (!favicon) {
+          favicon = document.createElement('link');
+          favicon.rel = 'icon';
+          document.head.appendChild(favicon);
+        }
+        favicon.href = logo.trim();
+      }
+    };
+
+    // 1. Initial synchronous sync from cache on first render
+    syncSchoolBranding();
+
+    // 2. Fetch fresh SchoolSettings from backend on app launch
+    getCompanySettings()
+      .then(res => {
+        const data = res?.data;
+        if (data) {
+          if (data.schoolName) {
+            try { localStorage.setItem('school_crm_cached_name', data.schoolName); } catch (_) {}
+          }
+          if (data.schoolLogo) {
+            try { localStorage.setItem('school_crm_cached_logo', data.schoolLogo); } catch (_) {}
+          }
+          if (data.logoSubtext) {
+            try { localStorage.setItem('school_crm_cached_subtext', data.logoSubtext); } catch (_) {}
+          }
+          syncSchoolBranding(data.schoolName, data.schoolLogo);
+        }
+      })
+      .catch(() => {});
+
+    // 3. Listen to live schoolSettingsUpdated event
+    const handleSettingsUpdate = (e) => {
+      const detail = e?.detail;
+      if (detail && (detail.schoolName || detail.schoolLogo)) {
+        syncSchoolBranding(detail.schoolName, detail.schoolLogo);
+      } else {
+        syncSchoolBranding();
+        getCompanySettings().then(res => {
+          if (res?.data) {
+            syncSchoolBranding(res.data.schoolName, res.data.schoolLogo);
+          }
+        }).catch(() => {});
+      }
+    };
+
+    window.addEventListener('schoolSettingsUpdated', handleSettingsUpdate);
+    return () => window.removeEventListener('schoolSettingsUpdated', handleSettingsUpdate);
+  }, []);
   return (
     <AuthProvider>
       <ModalProvider>
