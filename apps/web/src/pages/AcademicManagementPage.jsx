@@ -689,12 +689,12 @@ export default function AcademicManagementPage() {
   }, [students]);
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-[#F5F8FC] font-sans text-[#253858] antialiased overflow-x-hidden">
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-[#F5F8FC] font-sans text-[#253858] antialiased">
       {/* ── Platform Sidebar ── */}
       <Sidebar />
 
-      {/* ── Main Content Container ── */}
-      <div className="flex-1 flex flex-col min-w-0 pb-28 md:pb-16 overflow-y-auto">
+      {/* ── Main Content Container (Independently Scrollable) ── */}
+      <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden flex flex-col min-w-0 pb-28 md:pb-16">
         
         {/* ── Header Bar ── */}
         <header className="bg-[#203B61] text-white px-4 sm:px-6 py-4 sm:py-5 border-b border-[#2D4D77] shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">

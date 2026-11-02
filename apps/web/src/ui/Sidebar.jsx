@@ -1238,7 +1238,7 @@ const Sidebar = () => {
       )}
 
       {/* ── DESKTOP FIXED/STICKY SIDEBAR (>= md) ── */}
-      <aside className="w-72 bg-[#203B61] text-[#F3F6FC] h-screen sticky top-0 flex-shrink-0 flex flex-col justify-between hidden md:flex border-r border-[#2D4D77] shadow-sm font-sans z-30">
+      <aside className="w-72 bg-[#203B61] text-[#F3F6FC] h-screen sticky top-0 flex-shrink-0 flex flex-col justify-between hidden md:flex border-r border-[#2D4D77] shadow-sm font-sans z-30 max-h-screen overflow-hidden">
         <div className="flex-1 flex flex-col min-h-0">
           {/* Desktop Brand Header */}
           <div className="p-5 border-b border-[#2D4D77] flex items-center gap-3.5 bg-[#203B61]">
