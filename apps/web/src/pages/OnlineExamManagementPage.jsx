@@ -708,23 +708,23 @@ const OnlineExamManagementPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] font-sans text-[#334155] flex flex-col md:flex-row">
+    <div className="h-screen overflow-hidden bg-[#F5F8FC] font-sans text-[#253858] flex flex-col md:flex-row">
       {/* ─── Platform Main Sidebar ─── */}
       <Sidebar />
 
       {/* ─── Main Content Area ─── */}
       <div className="flex-1 flex flex-col min-w-0 pb-16">
       {/* ─── Top Header Ribbon ──────────────────────────────────────────────── */}
-      <div className="bg-[#172B4D] border-b border-[#29456D] text-white sticky top-0 z-20 shadow-2xs">
+      <div className="bg-[#203B61] border-b border-[#2D4D77] text-white sticky top-0 z-20 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-[#29456D] border border-[#29456D] flex items-center justify-center text-[#F3F6FC] shadow-md">
+            <div className="w-11 h-11 rounded-2xl bg-[#2D4D77] border border-[#2D4D77] flex items-center justify-center text-[#F3F6FC] shadow-md">
               <MonitorPlay className="w-6 h-6 text-[#F3F6FC]" />
             </div>
             <div>
               <div className="flex items-center gap-2.5">
                 <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">Online Exam System</h1>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#DBEAFE] text-[#172B4D] text-[10px] font-black uppercase tracking-wider border border-[#93C5FD]">
+                <span className="px-2.5 py-0.5 rounded-full bg-[#DCEBFA] text-[#203B61] text-[10px] font-black uppercase tracking-wider border border-[#93C5FD]">
                   MCQ Engine Active
                 </span>
               </div>
@@ -737,7 +737,7 @@ const OnlineExamManagementPage = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate('/dashboard')}
-              className="px-3.5 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white hover:text-[#DBEAFE] text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer border border-[#29456D]"
+              className="px-3.5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white hover:text-[#DCEBFA] text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer border border-[#2D4D77]"
               title="Return to Main Menu / Dashboard"
             >
               <LayoutDashboard className="w-4 h-4 text-[#F3F6FC]" />
@@ -745,14 +745,14 @@ const OnlineExamManagementPage = () => {
             </button>
             <button
               onClick={() => navigate('/student/online-exam')}
-              className="px-3.5 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white hover:text-[#DBEAFE] text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer border border-[#29456D]"
+              className="px-3.5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white hover:text-[#DCEBFA] text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer border border-[#2D4D77]"
             >
               <Eye className="w-4 h-4 text-[#F3F6FC]" />
               <span>Student View Portal</span>
             </button>
             <button
               onClick={handleOpenAddExam}
-              className="px-4 py-2 bg-[#29456D] hover:bg-[#172B4D] active:scale-95 text-white hover:text-[#DBEAFE] text-xs font-bold rounded-xl flex items-center gap-2 shadow-sm transition-all cursor-pointer border border-[#29456D]"
+              className="px-4 py-2 bg-[#2D4D77] hover:bg-[#203B61] active:scale-95 text-white hover:text-[#DCEBFA] text-xs font-bold rounded-xl flex items-center gap-2 shadow-sm transition-all cursor-pointer border border-[#2D4D77]"
             >
               <Plus className="w-4 h-4 text-[#F3F6FC]" />
               <span>Create Online Exam</span>
@@ -761,7 +761,7 @@ const OnlineExamManagementPage = () => {
         </div>
 
         {/* ─── Modern Tabs Bar ─────────────────────────────────────────────────── */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center gap-2 overflow-x-auto scrollbar-none border-t border-[#29456D]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center gap-2 overflow-x-auto scrollbar-none border-t border-[#2D4D77]">
           {[
             { id: 'dashboard', label: 'Overview & Analytics', icon: <TrendingUp className="w-4 h-4" /> },
             { id: 'exams', label: 'Exam Management', icon: <Layers className="w-4 h-4" /> },

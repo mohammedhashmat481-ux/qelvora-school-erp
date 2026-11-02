@@ -789,7 +789,7 @@ export default function PaperPage() {
   }, [settings.chaptersBySubject]);
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col md:flex-row font-sans">
+    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
       {/* Platform Sidebar */}
       <div className="no-print">
         <Sidebar />
@@ -797,7 +797,7 @@ export default function PaperPage() {
 
       <div className="flex-1 flex flex-col min-h-screen overflow-y-auto">
         {/* Top Header Bar */}
-        <header className="bg-[#172B4D] border-b border-[#29456D] text-white px-6 py-4 sticky top-0 z-30 shadow-xs no-print">
+        <header className="bg-[#203B61] border-b border-[#2D4D77] text-white px-6 py-4 sticky top-0 z-30 shadow-xs no-print">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             {/* Back Button & Breadcrumb */}
             <div className="flex items-center gap-3">
@@ -805,7 +805,7 @@ export default function PaperPage() {
                 type="button"
                 onClick={handleBack}
                 aria-label="Navigate back"
-                className="p-2 bg-[#29456D] hover:bg-[#172B4D] rounded-xl text-white hover:text-[#DBEAFE] border border-[#29456D] transition-colors flex items-center gap-1.5 text-xs font-bold cursor-pointer"
+                className="p-2 bg-[#2D4D77] hover:bg-[#203B61] rounded-xl text-white hover:text-[#DCEBFA] border border-[#2D4D77] transition-colors flex items-center gap-1.5 text-xs font-bold cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4 text-[#F3F6FC]" />
                 <span>Back</span>
@@ -825,12 +825,12 @@ export default function PaperPage() {
               <button
                 type="button"
                 onClick={() => setShowLibraryModal(true)}
-                className="px-3.5 py-1.5 rounded-xl border border-[#29456D] bg-[#29456D] hover:bg-[#172B4D] text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl border border-[#2D4D77] bg-[#2D4D77] hover:bg-[#203B61] text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
               >
                 <BookOpen className="w-3.5 h-3.5 text-[#F3F6FC]" />
                 <span>Study Material Library</span>
                 {libraryCount > 0 && (
-                  <span className="w-4 h-4 rounded-full bg-[#172B4D] text-[#DBEAFE] text-[9px] flex items-center justify-center font-bold">
+                  <span className="w-4 h-4 rounded-full bg-[#203B61] text-[#DCEBFA] text-[9px] flex items-center justify-center font-bold">
                     {libraryCount}
                   </span>
                 )}
@@ -842,7 +842,7 @@ export default function PaperPage() {
                   setShowHistory(true);
                   loadHistory();
                 }}
-                className="px-3.5 py-1.5 rounded-xl border border-[#29456D] bg-[#29456D] hover:bg-[#172B4D] text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl border border-[#2D4D77] bg-[#2D4D77] hover:bg-[#203B61] text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
               >
                 <History className="w-3.5 h-3.5 text-[#F3F6FC]" />
                 <span>Paper History</span>
@@ -852,7 +852,7 @@ export default function PaperPage() {
                 type="button"
                 onClick={handleReset}
                 title="Reset all settings to default"
-                className="p-2 rounded-xl border border-[#29456D] bg-[#29456D] hover:bg-[#172B4D] text-[#F3F6FC] hover:text-[#DBEAFE] text-xs transition-all cursor-pointer"
+                className="p-2 rounded-xl border border-[#2D4D77] bg-[#2D4D77] hover:bg-[#203B61] text-[#F3F6FC] hover:text-[#DCEBFA] text-xs transition-all cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5 text-[#F3F6FC]" />
               </button>
@@ -865,7 +865,7 @@ export default function PaperPage() {
           {/* Page Title & Status Strip */}
           <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-3 no-print">
             <div>
-              <span className="text-[10px] font-bold text-[#172B4D] uppercase tracking-widest block mb-0.5">
+              <span className="text-[10px] font-bold text-[#203B61] uppercase tracking-widest block mb-0.5">
                 Qelvora AI &bull; INTELLIGENT EXAM STUDIO
               </span>
               <h1 className="text-2xl font-black text-slate-900 tracking-tight">
@@ -878,7 +878,7 @@ export default function PaperPage() {
 
             {/* Progress summary chip bar */}
             <div className="flex flex-wrap items-center gap-2 bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-2xs text-xs font-medium text-slate-600">
-              <span className="font-bold text-[#172B4D] bg-blue-50 px-2 py-0.5 rounded-md">Class {settings.classLevel}</span>
+              <span className="font-bold text-[#203B61] bg-blue-50 px-2 py-0.5 rounded-md">Class {settings.classLevel}</span>
               <span>&bull;</span>
               <span className="font-semibold text-slate-800">{settings.subjects.join(', ')}</span>
               <span>&bull;</span>
@@ -901,7 +901,7 @@ export default function PaperPage() {
               {/* STEP 1: CLASS & BOARD */}
               <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
                 <div className="flex items-center gap-2.5 mb-3.5">
-                  <span className="w-6 h-6 rounded-full bg-[#29456D] text-white flex items-center justify-center font-bold text-xs">1</span>
+                  <span className="w-6 h-6 rounded-full bg-[#2D4D77] text-white flex items-center justify-center font-bold text-xs">1</span>
                   <h2 className="text-sm font-bold text-slate-900">Class & Curriculum Board</h2>
                 </div>
 
@@ -919,7 +919,7 @@ export default function PaperPage() {
                         }));
                         toast.success(`Switched to Class ${newClass}. Chapters refreshed.`);
                       }}
-                      className="w-full h-9 px-3 rounded-lg border border-slate-300 bg-white font-bold text-slate-800 outline-none focus:border-[#29456D]"
+                      className="w-full h-9 px-3 rounded-lg border border-slate-300 bg-white font-bold text-slate-800 outline-none focus:border-[#2D4D77]"
                     >
                       {curriculumOpts.standards.map(std => (
                         <option key={std} value={std}>Class {std}</option>
@@ -932,7 +932,7 @@ export default function PaperPage() {
                     <select
                       value={settings.syllabus}
                       onChange={(e) => setSettings(prev => ({ ...prev, syllabus: e.target.value }))}
-                      className="w-full h-9 px-3 rounded-lg border border-slate-300 bg-white font-bold text-slate-800 outline-none focus:border-[#29456D]"
+                      className="w-full h-9 px-3 rounded-lg border border-slate-300 bg-white font-bold text-slate-800 outline-none focus:border-[#2D4D77]"
                     >
                       {curriculumOpts.syllabuses.map(s => (
                         <option key={s} value={s}>{s}</option>
@@ -946,7 +946,7 @@ export default function PaperPage() {
               <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
                 <div className="flex items-center justify-between mb-3.5">
                   <div className="flex items-center gap-2.5">
-                    <span className="w-6 h-6 rounded-full bg-[#29456D] text-white flex items-center justify-center font-bold text-xs">2</span>
+                    <span className="w-6 h-6 rounded-full bg-[#2D4D77] text-white flex items-center justify-center font-bold text-xs">2</span>
                     <h2 className="text-sm font-bold text-slate-900">Select Subject(s)</h2>
                   </div>
                   <button
@@ -958,7 +958,7 @@ export default function PaperPage() {
                         subjects: prev.subjects.length === all.length ? ['Physics'] : all
                       }));
                     }}
-                    className="text-[11px] font-bold text-[#172B4D] hover:underline"
+                    className="text-[11px] font-bold text-[#203B61] hover:underline"
                   >
                     {settings.subjects.length === curriculumOpts.subjects.length ? 'Clear Selection' : 'Select All'}
                   </button>
@@ -974,7 +974,7 @@ export default function PaperPage() {
                         onClick={() => toggleSubject(subj)}
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border ${
                           isSelected
-                            ? 'bg-[#29456D] text-white border-[#29456D] shadow-xs'
+                            ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-xs'
                             : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
                         }`}
                       >
@@ -990,7 +990,7 @@ export default function PaperPage() {
               <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <span className="w-6 h-6 rounded-full bg-[#29456D] text-white flex items-center justify-center font-bold text-xs">3</span>
+                    <span className="w-6 h-6 rounded-full bg-[#2D4D77] text-white flex items-center justify-center font-bold text-xs">3</span>
                     <h2 className="text-sm font-bold text-slate-900">Select Chapters</h2>
                   </div>
                   <span className="text-[11px] font-bold text-slate-400 bg-slate-100 px-2.5 py-0.5 rounded-full">
@@ -1014,7 +1014,7 @@ export default function PaperPage() {
                             {selectedForSubj.length}/{chapters.length}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-[#172B4D]">
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-[#203B61]">
                           <button type="button" onClick={() => selectAllChapters(subj)} className="hover:underline">All</button>
                           <span>&bull;</span>
                           <button type="button" onClick={() => clearChapters(subj)} className="text-slate-500 hover:underline">Clear</button>
@@ -1029,7 +1029,7 @@ export default function PaperPage() {
                           placeholder={`Search ${subj} chapters...`}
                           value={chapterSearchQuery[subj] || ''}
                           onChange={(e) => setChapterSearchQuery(prev => ({ ...prev, [subj]: e.target.value }))}
-                          className="w-full pl-7 pr-3 py-1 text-xs bg-white border border-slate-200 rounded-md outline-none focus:border-[#29456D]"
+                          className="w-full pl-7 pr-3 py-1 text-xs bg-white border border-slate-200 rounded-md outline-none focus:border-[#2D4D77]"
                         />
                       </div>
 
@@ -1055,7 +1055,7 @@ export default function PaperPage() {
                                   type="checkbox"
                                   checked={isChecked}
                                   onChange={() => toggleChapter(subj, chap)}
-                                  className="mt-0.5 rounded text-[#172B4D] focus:ring-0"
+                                  className="mt-0.5 rounded text-[#203B61] focus:ring-0"
                                 />
                                 <span className="line-clamp-1 leading-snug">{chap}</span>
                               </label>
@@ -1072,13 +1072,13 @@ export default function PaperPage() {
               <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2.5">
-                    <span className="w-6 h-6 rounded-full bg-[#29456D] text-white flex items-center justify-center font-bold text-xs">4</span>
+                    <span className="w-6 h-6 rounded-full bg-[#2D4D77] text-white flex items-center justify-center font-bold text-xs">4</span>
                     <h2 className="text-sm font-bold text-slate-900">Shared Study Material Library & PYQs</h2>
                   </div>
                   <button
                     type="button"
                     onClick={() => setShowLibraryModal(true)}
-                    className="text-[11px] font-bold text-[#172B4D] hover:underline flex items-center gap-1 cursor-pointer"
+                    className="text-[11px] font-bold text-[#203B61] hover:underline flex items-center gap-1 cursor-pointer"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Upload to Shared Library</span>
@@ -1098,7 +1098,7 @@ export default function PaperPage() {
                     <button
                       type="button"
                       onClick={() => setShowLibraryModal(true)}
-                      className="mt-1 px-3 py-1 bg-white border border-[#29456D] text-[#172B4D] hover:bg-blue-50 rounded-lg text-xs font-bold transition-all inline-flex items-center gap-1 cursor-pointer"
+                      className="mt-1 px-3 py-1 bg-white border border-[#2D4D77] text-[#203B61] hover:bg-blue-50 rounded-lg text-xs font-bold transition-all inline-flex items-center gap-1 cursor-pointer"
                     >
                       <FileUp className="w-3.5 h-3.5" />
                       <span>Upload Textbook PDF or PYQ</span>
@@ -1115,7 +1115,7 @@ export default function PaperPage() {
                           key={res.id}
                           className={`flex items-start gap-2.5 p-2.5 rounded-xl border text-xs cursor-pointer transition-all ${
                             isChecked
-                              ? 'bg-blue-50/70 border-[#29456D]/50 text-slate-900 font-semibold'
+                              ? 'bg-blue-50/70 border-[#2D4D77]/50 text-slate-900 font-semibold'
                               : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
                           }`}
                         >
@@ -1127,7 +1127,7 @@ export default function PaperPage() {
                                 isChecked ? prev.filter(id => id !== res.id) : [...prev, res.id]
                               );
                             }}
-                            className="mt-0.5 rounded text-[#172B4D] focus:ring-0"
+                            className="mt-0.5 rounded text-[#203B61] focus:ring-0"
                           />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between gap-1">
@@ -1152,7 +1152,7 @@ export default function PaperPage() {
               {/* STEP 5: EXAM PATTERN PRESETS */}
               <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
                 <div className="flex items-center gap-2.5 mb-3.5">
-                  <span className="w-6 h-6 rounded-full bg-[#29456D] text-white flex items-center justify-center font-bold text-xs">5</span>
+                  <span className="w-6 h-6 rounded-full bg-[#2D4D77] text-white flex items-center justify-center font-bold text-xs">5</span>
                   <h2 className="text-sm font-bold text-slate-900">Exam Pattern Preset</h2>
                 </div>
 
@@ -1166,7 +1166,7 @@ export default function PaperPage() {
                         onClick={() => applyPreset(preset.id)}
                         className={`text-left p-2.5 rounded-xl border transition-all text-xs flex justify-between items-center ${
                           isSelected
-                            ? 'bg-blue-50/80 border-[#29456D] text-slate-900 font-bold shadow-2xs'
+                            ? 'bg-blue-50/80 border-[#2D4D77] text-slate-900 font-bold shadow-2xs'
                             : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                         }`}
                       >
@@ -1186,7 +1186,7 @@ export default function PaperPage() {
               {/* STEP 6: MARKS & DURATION */}
               <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
                 <div className="flex items-center gap-2.5 mb-3.5">
-                  <span className="w-6 h-6 rounded-full bg-[#29456D] text-white flex items-center justify-center font-bold text-xs">6</span>
+                  <span className="w-6 h-6 rounded-full bg-[#2D4D77] text-white flex items-center justify-center font-bold text-xs">6</span>
                   <h2 className="text-sm font-bold text-slate-900">Marks & Duration</h2>
                 </div>
 
@@ -1199,7 +1199,7 @@ export default function PaperPage() {
                       max={360}
                       value={settings.totalMarks}
                       onChange={(e) => setSettings(prev => ({ ...prev, totalMarks: parseInt(e.target.value || '0', 10) }))}
-                      className="w-full h-9 px-3 rounded-lg border border-slate-300 font-bold text-slate-800 text-sm outline-none focus:border-[#29456D]"
+                      className="w-full h-9 px-3 rounded-lg border border-slate-300 font-bold text-slate-800 text-sm outline-none focus:border-[#2D4D77]"
                     />
                   </div>
                   <div>
@@ -1210,7 +1210,7 @@ export default function PaperPage() {
                       max={360}
                       value={settings.durationMinutes}
                       onChange={(e) => setSettings(prev => ({ ...prev, durationMinutes: parseInt(e.target.value || '0', 10) }))}
-                      className="w-full h-9 px-3 rounded-lg border border-slate-300 font-bold text-slate-800 text-sm outline-none focus:border-[#29456D]"
+                      className="w-full h-9 px-3 rounded-lg border border-slate-300 font-bold text-slate-800 text-sm outline-none focus:border-[#2D4D77]"
                     />
                   </div>
                 </div>
@@ -1220,7 +1220,7 @@ export default function PaperPage() {
               <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <span className="w-6 h-6 rounded-full bg-[#29456D] text-white flex items-center justify-center font-bold text-xs">7</span>
+                    <span className="w-6 h-6 rounded-full bg-[#2D4D77] text-white flex items-center justify-center font-bold text-xs">7</span>
                     <h2 className="text-sm font-bold text-slate-900">Question Distribution</h2>
                     <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                       Optional
@@ -1234,7 +1234,7 @@ export default function PaperPage() {
                       onClick={() => setDistributionMode('ai_auto')}
                       className={`px-2.5 py-1 rounded-md font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                         distributionMode === 'ai_auto'
-                          ? 'bg-[#29456D] text-white shadow-xs'
+                          ? 'bg-[#2D4D77] text-white shadow-xs'
                           : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
@@ -1246,7 +1246,7 @@ export default function PaperPage() {
                       onClick={() => setDistributionMode('custom')}
                       className={`px-2.5 py-1 rounded-md font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                         distributionMode === 'custom'
-                          ? 'bg-[#29456D] text-white shadow-xs'
+                          ? 'bg-[#2D4D77] text-white shadow-xs'
                           : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
@@ -1259,13 +1259,13 @@ export default function PaperPage() {
                 {distributionMode === 'ai_auto' ? (
                   <div className="p-4 rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50/70 via-indigo-50/40 to-slate-50 space-y-3">
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-[#29456D] text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                      <div className="w-8 h-8 rounded-lg bg-[#2D4D77] text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
                         <Sparkles className="w-4 h-4" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="text-xs font-bold text-slate-900">AI Intelligent Question Balancing Active</h3>
                         <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
-                          You don't need to configure questions manually. The AI will formulate standard sections (A to E: MCQs, Short, Long, Case-based) aligned with <span className="font-semibold text-slate-800">{settings.syllabus}</span> guidelines and balanced to exactly <span className="font-bold text-[#172B4D]">{settings.totalMarks} Marks</span>.
+                          You don't need to configure questions manually. The AI will formulate standard sections (A to E: MCQs, Short, Long, Case-based) aligned with <span className="font-semibold text-slate-800">{settings.syllabus}</span> guidelines and balanced to exactly <span className="font-bold text-[#203B61]">{settings.totalMarks} Marks</span>.
                         </p>
                       </div>
                     </div>
@@ -1276,7 +1276,7 @@ export default function PaperPage() {
                         type="button"
                         onClick={handlePlanBlueprint}
                         disabled={planningBlueprint}
-                        className="px-3 py-1.5 bg-white text-[#172B4D] border border-blue-300 hover:border-[#29456D] hover:bg-blue-50/50 rounded-lg font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                        className="px-3 py-1.5 bg-white text-[#203B61] border border-blue-300 hover:border-[#2D4D77] hover:bg-blue-50/50 rounded-lg font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                       >
                         {planningBlueprint ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Eye className="w-3.5 h-3.5" />}
                         <span>{planningBlueprint ? 'Planning Blueprint...' : 'Preview Blueprint Plan'}</span>
@@ -1290,7 +1290,7 @@ export default function PaperPage() {
                       <button
                         type="button"
                         onClick={handleAutoBalance}
-                        className="text-[11px] font-bold text-[#172B4D] hover:bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200 transition-colors ml-auto cursor-pointer"
+                        className="text-[11px] font-bold text-[#203B61] hover:bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200 transition-colors ml-auto cursor-pointer"
                       >
                         Auto-balance Marks
                       </button>
@@ -1335,7 +1335,7 @@ export default function PaperPage() {
                                     }
                                   }));
                                 }}
-                                className="rounded text-[#172B4D] focus:ring-0"
+                                className="rounded text-[#203B61] focus:ring-0"
                               />
                               <span className="truncate font-semibold text-slate-800">{label}</span>
                             </label>
@@ -1391,7 +1391,7 @@ export default function PaperPage() {
               {/* STEP 8: ADDITIONAL INSTRUCTIONS FOR AI (ESSENTIAL FEATURE) */}
               <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
                 <div className="flex items-center gap-2.5 mb-2">
-                  <span className="w-6 h-6 rounded-full bg-[#29456D] text-white flex items-center justify-center font-bold text-xs">8</span>
+                  <span className="w-6 h-6 rounded-full bg-[#2D4D77] text-white flex items-center justify-center font-bold text-xs">8</span>
                   <h2 className="text-sm font-bold text-slate-900">Additional Instructions for AI</h2>
                 </div>
                 <p className="text-[11px] text-slate-500 mb-2.5 leading-relaxed">
@@ -1402,7 +1402,7 @@ export default function PaperPage() {
                   value={teacherInstructions}
                   onChange={(e) => setTeacherInstructions(e.target.value)}
                   placeholder="Tell the AI how you want your question paper to be prepared. For example: Refer to the previous five years' question papers, follow the official CBSE pattern, give more weightage to Electricity, include application-based questions, and avoid repeating questions."
-                  className="w-full p-3 border border-slate-200 rounded-xl text-xs text-slate-800 outline-none focus:border-[#29456D] focus:ring-1 focus:ring-[#93C5FD]/30 leading-relaxed bg-slate-50/50"
+                  className="w-full p-3 border border-slate-200 rounded-xl text-xs text-slate-800 outline-none focus:border-[#2D4D77] focus:ring-1 focus:ring-[#93C5FD]/30 leading-relaxed bg-slate-50/50"
                 />
 
                 {/* Prompt Quick Chips */}
@@ -1418,7 +1418,7 @@ export default function PaperPage() {
                       key={idx}
                       type="button"
                       onClick={() => setTeacherInstructions(prev => prev ? `${prev}. ${chip}` : chip)}
-                      className="text-[10px] bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-[#172B4D] px-2 py-0.5 rounded-full border border-slate-200 transition-colors cursor-pointer"
+                      className="text-[10px] bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-[#203B61] px-2 py-0.5 rounded-full border border-slate-200 transition-colors cursor-pointer"
                     >
                       + {chip}
                     </button>
@@ -1429,7 +1429,7 @@ export default function PaperPage() {
               {/* STEP 9: DIFFICULTY & FORMATTING OPTIONS */}
               <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
                 <div className="flex items-center gap-2.5">
-                  <span className="w-6 h-6 rounded-full bg-[#29456D] text-white flex items-center justify-center font-bold text-xs">9</span>
+                  <span className="w-6 h-6 rounded-full bg-[#2D4D77] text-white flex items-center justify-center font-bold text-xs">9</span>
                   <h2 className="text-sm font-bold text-slate-900">Difficulty Mix & Options</h2>
                 </div>
 
@@ -1465,7 +1465,7 @@ export default function PaperPage() {
                       type="text"
                       value={settings.schoolName}
                       onChange={(e) => setSettings(prev => ({ ...prev, schoolName: e.target.value }))}
-                      className="w-full h-8 px-3 rounded-lg border border-slate-300 bg-white text-xs font-semibold outline-none focus:border-[#29456D]"
+                      className="w-full h-8 px-3 rounded-lg border border-slate-300 bg-white text-xs font-semibold outline-none focus:border-[#2D4D77]"
                     />
                   </div>
                   <div>
@@ -1474,7 +1474,7 @@ export default function PaperPage() {
                       type="text"
                       value={settings.paperTitle}
                       onChange={(e) => setSettings(prev => ({ ...prev, paperTitle: e.target.value }))}
-                      className="w-full h-8 px-3 rounded-lg border border-slate-300 bg-white text-xs font-semibold outline-none focus:border-[#29456D]"
+                      className="w-full h-8 px-3 rounded-lg border border-slate-300 bg-white text-xs font-semibold outline-none focus:border-[#2D4D77]"
                     />
                   </div>
                 </div>
@@ -1486,7 +1486,7 @@ export default function PaperPage() {
                       type="checkbox"
                       checked={settings.options.includeAnswerKey}
                       onChange={(e) => setSettings(prev => ({ ...prev, options: { ...prev.options, includeAnswerKey: e.target.checked } }))}
-                      className="rounded text-[#172B4D] focus:ring-0"
+                      className="rounded text-[#203B61] focus:ring-0"
                     />
                     <span className="font-semibold text-slate-700">Include Official Answer Key</span>
                   </label>
@@ -1495,7 +1495,7 @@ export default function PaperPage() {
                       type="checkbox"
                       checked={settings.options.includeStepWiseSolutions}
                       onChange={(e) => setSettings(prev => ({ ...prev, options: { ...prev.options, includeStepWiseSolutions: e.target.checked } }))}
-                      className="rounded text-[#172B4D] focus:ring-0"
+                      className="rounded text-[#203B61] focus:ring-0"
                     />
                     <span className="font-semibold text-slate-700">Include Step-by-Step Marking Steps</span>
                   </label>
@@ -1504,7 +1504,7 @@ export default function PaperPage() {
                       type="checkbox"
                       checked={settings.options.includeMarkingScheme}
                       onChange={(e) => setSettings(prev => ({ ...prev, options: { ...prev.options, includeMarkingScheme: e.target.checked } }))}
-                      className="rounded text-[#172B4D] focus:ring-0"
+                      className="rounded text-[#203B61] focus:ring-0"
                     />
                     <span className="font-semibold text-slate-700">Include Criteria Points Breakdown</span>
                   </label>
@@ -1517,7 +1517,7 @@ export default function PaperPage() {
                   type="button"
                   onClick={handleGenerate}
                   disabled={generating || !isDistributionReady}
-                  className="w-full py-3.5 px-4 bg-[#29456D] hover:bg-[#172B4D] text-white rounded-2xl font-black text-sm shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  className="w-full py-3.5 px-4 bg-[#2D4D77] hover:bg-[#203B61] text-white rounded-2xl font-black text-sm shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {generating ? (
                     <>
@@ -1536,7 +1536,7 @@ export default function PaperPage() {
                   type="button"
                   onClick={handlePlanBlueprint}
                   disabled={planningBlueprint || generating}
-                  className="w-full py-2.5 px-4 bg-slate-50 hover:bg-blue-50/60 text-[#172B4D] border border-blue-200 hover:border-blue-400 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer shadow-2xs"
+                  className="w-full py-2.5 px-4 bg-slate-50 hover:bg-blue-50/60 text-[#203B61] border border-blue-200 hover:border-blue-400 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer shadow-2xs"
                 >
                   {planningBlueprint ? (
                     <>
@@ -1614,7 +1614,7 @@ export default function PaperPage() {
                       type="button"
                       onClick={() => setPreviewMode('editor')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
-                        previewMode === 'editor' ? 'bg-white text-[#172B4D] shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                        previewMode === 'editor' ? 'bg-white text-[#203B61] shadow-2xs' : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
                       <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
@@ -1664,10 +1664,10 @@ export default function PaperPage() {
                     <button
                       type="button"
                       onClick={handleDownloadWord}
-                      className="px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-[#172B4D] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-[#203B61] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                       title="Download formatted Microsoft Word document (.doc) with authentic CBSE tables and layout"
                     >
-                      <FileText className="w-3.5 h-3.5 text-[#172B4D]" />
+                      <FileText className="w-3.5 h-3.5 text-[#203B61]" />
                       <span>Word (.doc)</span>
                     </button>
 
@@ -1684,7 +1684,7 @@ export default function PaperPage() {
                     <button
                       type="button"
                       onClick={handlePrint}
-                      className="px-4 py-1.5 rounded-lg bg-[#29456D] hover:bg-[#172B4D] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                      className="px-4 py-1.5 rounded-lg bg-[#2D4D77] hover:bg-[#203B61] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
                     >
                       <Printer className="w-3.5 h-3.5" />
                       <span>Print / PDF</span>
@@ -1696,7 +1696,7 @@ export default function PaperPage() {
               {/* Empty state */}
               {!paperResult && !generating && !errorMessage && (
                 <div className="flex-1 flex flex-col items-center justify-center p-12 text-center my-auto no-print">
-                  <div className="w-16 h-16 rounded-3xl bg-blue-50 border border-blue-200 flex items-center justify-center text-[#172B4D] mb-4 shadow-inner">
+                  <div className="w-16 h-16 rounded-3xl bg-blue-50 border border-blue-200 flex items-center justify-center text-[#203B61] mb-4 shadow-inner">
                     <FileText className="w-8 h-8" strokeWidth={1.5} />
                   </div>
                   <h3 className="font-extrabold text-slate-800 text-lg mb-2">No Generated Paper</h3>
@@ -1709,7 +1709,7 @@ export default function PaperPage() {
               {/* Skeleton / Progress Loading state */}
               {generating && (
                 <div className="flex-1 flex flex-col items-center justify-center p-12 text-center my-auto space-y-4 no-print">
-                  <div className="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-[#172B4D] animate-pulse">
+                  <div className="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-[#203B61] animate-pulse">
                     <Loader2 className="w-7 h-7 animate-spin" />
                   </div>
                   <div>
@@ -1744,7 +1744,7 @@ export default function PaperPage() {
                   <button
                     type="button"
                     onClick={handleGenerate}
-                    className="px-4 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                    className="px-4 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
                   >
                     Retry Generation
                   </button>
@@ -1800,7 +1800,7 @@ export default function PaperPage() {
                             setPaperResult(prev => ({ ...prev, marking_scheme: e.target.value }));
                           }
                         }}
-                        className="w-full flex-1 min-h-[500px] p-4 font-mono text-xs border border-slate-300 rounded-xl outline-none focus:border-[#29456D] leading-relaxed bg-slate-50"
+                        className="w-full flex-1 min-h-[500px] p-4 font-mono text-xs border border-slate-300 rounded-xl outline-none focus:border-[#2D4D77] leading-relaxed bg-slate-50"
                       />
                     </div>
                   ) : (
@@ -1871,7 +1871,7 @@ export default function PaperPage() {
               type="button"
               onClick={handlePlanBlueprint}
               disabled={planningBlueprint || generating}
-              className="py-2.5 px-3 bg-slate-100 hover:bg-blue-50 text-[#172B4D] rounded-xl font-bold text-xs border border-slate-300 transition-all flex items-center gap-1.5 cursor-pointer"
+              className="py-2.5 px-3 bg-slate-100 hover:bg-blue-50 text-[#203B61] rounded-xl font-bold text-xs border border-slate-300 transition-all flex items-center gap-1.5 cursor-pointer"
             >
               {planningBlueprint ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Eye className="w-3.5 h-3.5" />}
               <span>Plan</span>
@@ -1880,7 +1880,7 @@ export default function PaperPage() {
               type="button"
               onClick={handleGenerate}
               disabled={generating || !isDistributionReady}
-              className="py-2.5 px-4 bg-[#29456D] hover:bg-[#172B4D] text-white rounded-xl font-black text-xs shadow-md transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="py-2.5 px-4 bg-[#2D4D77] hover:bg-[#203B61] text-white rounded-xl font-black text-xs shadow-md transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
               <span>{generating ? 'Generating...' : 'Generate Paper'}</span>
@@ -1896,7 +1896,7 @@ export default function PaperPage() {
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 no-print animate-fadeIn">
           <div className="w-full max-w-3xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh] animate-scaleUp">
             {/* Modal Header */}
-            <div className="px-6 py-4 bg-gradient-to-r from-[#172B4D] via-[#1D4ED8] to-blue-700 text-white flex items-center justify-between">
+            <div className="px-6 py-4 bg-gradient-to-r from-[#203B61] via-[#1D4ED8] to-blue-700 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center text-white">
                   <Sparkles className="w-5 h-5 text-amber-300" />
@@ -1935,7 +1935,7 @@ export default function PaperPage() {
               {/* Section Breakdown Table */}
               <div>
                 <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                  <Layers className="w-4 h-4 text-[#172B4D]" />
+                  <Layers className="w-4 h-4 text-[#203B61]" />
                   <span>Proposed Sections & Question Breakdown</span>
                 </h4>
                 <div className="border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
@@ -1952,7 +1952,7 @@ export default function PaperPage() {
                     <tbody className="divide-y divide-slate-100">
                       {blueprintPlan.sections.map((sec, idx) => (
                         <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
-                          <td className="py-2 px-3 font-mono font-bold text-[#172B4D]">
+                          <td className="py-2 px-3 font-mono font-bold text-[#203B61]">
                             Sec {sec.section}
                           </td>
                           <td className="py-2 px-3">
@@ -2014,7 +2014,7 @@ export default function PaperPage() {
                           <div className="font-bold text-slate-800 truncate">{ch.chapter}</div>
                           <div className="text-[10px] text-slate-500">{ch.focus}</div>
                         </div>
-                        <span className="font-mono font-extrabold text-[#172B4D] shrink-0 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                        <span className="font-mono font-extrabold text-[#203B61] shrink-0 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
                           ~{ch.marks}M ({ch.weightage})
                         </span>
                       </div>
@@ -2054,7 +2054,7 @@ export default function PaperPage() {
                   <button
                     type="button"
                     onClick={() => handleAdoptPlanToMatrix(blueprintPlan.distribution)}
-                    className="px-3 py-2 text-xs font-bold text-[#172B4D] hover:bg-blue-50 rounded-xl border border-blue-200 transition-colors cursor-pointer"
+                    className="px-3 py-2 text-xs font-bold text-[#203B61] hover:bg-blue-50 rounded-xl border border-blue-200 transition-colors cursor-pointer"
                   >
                     Adopt into Custom Matrix
                   </button>
@@ -2092,7 +2092,7 @@ export default function PaperPage() {
           <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col p-6 animate-slideLeft">
             <div className="flex items-center justify-between pb-4 border-b border-slate-200">
               <div className="flex items-center gap-2">
-                <History className="w-5 h-5 text-[#172B4D]" />
+                <History className="w-5 h-5 text-[#203B61]" />
                 <h3 className="font-extrabold text-base text-slate-900">Examination Papers History</h3>
               </div>
               <button
@@ -2113,7 +2113,7 @@ export default function PaperPage() {
                 <div className="py-12 text-center text-xs text-slate-400 italic">No past papers saved yet.</div>
               ) : (
                 historyList.map(item => (
-                  <div key={item.id} className="p-4 rounded-xl border border-slate-200 hover:border-[#29456D]/50 bg-slate-50/50 transition-all space-y-2">
+                  <div key={item.id} className="p-4 rounded-xl border border-slate-200 hover:border-[#2D4D77]/50 bg-slate-50/50 transition-all space-y-2">
                     <div className="flex justify-between items-start">
                       <p className="font-extrabold text-xs text-slate-800 line-clamp-1">{item.title}</p>
                       <span className="text-[10px] font-mono text-slate-400 bg-white px-1.5 py-0.5 rounded border border-slate-200">{item.id}</span>
@@ -2138,7 +2138,7 @@ export default function PaperPage() {
                           setShowHistory(false);
                           toast.success('Loaded saved paper!');
                         }}
-                        className="px-2.5 py-1 bg-white hover:bg-[#29456D] hover:text-white border border-slate-200 rounded text-[11px] font-bold text-slate-700 transition-colors cursor-pointer"
+                        className="px-2.5 py-1 bg-white hover:bg-[#2D4D77] hover:text-white border border-slate-200 rounded text-[11px] font-bold text-slate-700 transition-colors cursor-pointer"
                       >
                         Open Paper
                       </button>

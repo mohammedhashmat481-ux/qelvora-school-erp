@@ -364,7 +364,7 @@ const AttendancePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col md:flex-row font-sans">
+    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
       <Sidebar />
       <div className="flex-1 bg-[#f3f3f9] p-4 sm:p-6 lg:p-8 overflow-y-auto">
         
@@ -379,7 +379,7 @@ const AttendancePage = () => {
             </p>
           </div>
           <div className="text-right">
-            <span className="text-lg font-bold font-mono text-[#172B4D] block">{currentTime.toLocaleTimeString()}</span>
+            <span className="text-lg font-bold font-mono text-[#203B61] block">{currentTime.toLocaleTimeString()}</span>
             <span className="text-xs text-stone-500">{currentTime.toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'short' })}</span>
           </div>
         </div>
@@ -390,7 +390,7 @@ const AttendancePage = () => {
             onClick={() => { setActiveTab('teacher-punch'); setShowFaceScanner(false); }}
             className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
               activeTab === 'teacher-punch'
-                ? 'bg-[#29456D] text-white border-[#29456D] shadow-sm'
+                ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-sm'
                 : 'bg-white text-stone-500 border-stone-200 hover:bg-stone-50 hover:text-stone-700'
             }`}
           >
@@ -402,7 +402,7 @@ const AttendancePage = () => {
               onClick={() => { setActiveTab('student-grid'); setShowFaceScanner(false); }}
               className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
                 activeTab === 'student-grid'
-                  ? 'bg-[#29456D] text-white border-[#29456D] shadow-sm'
+                  ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-sm'
                   : 'bg-white text-stone-500 border-stone-200 hover:bg-stone-50 hover:text-stone-700'
               }`}
             >
@@ -414,7 +414,7 @@ const AttendancePage = () => {
             onClick={() => { setActiveTab('logs'); setShowFaceScanner(false); }}
             className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
               activeTab === 'logs'
-                ? 'bg-[#29456D] text-white border-[#29456D] shadow-sm'
+                ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-sm'
                 : 'bg-white text-stone-500 border-stone-200 hover:bg-stone-50 hover:text-stone-700'
             }`}
           >
@@ -459,7 +459,7 @@ const AttendancePage = () => {
                           <span>GPS Ready: {typeof geoPosition?.latitude === 'number' ? geoPosition.latitude.toFixed(5) : (geoPosition?.latitude || '0.00000')}, {typeof geoPosition?.longitude === 'number' ? geoPosition.longitude.toFixed(5) : (geoPosition?.longitude || '0.00000')}</span>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-2 text-xs text-[#172B4D] font-mono bg-stone-50 text-stone-800 p-3 rounded border border-amber-200 animate-pulse">
+                        <div className="flex items-center gap-2 text-xs text-[#203B61] font-mono bg-stone-50 text-stone-800 p-3 rounded border border-amber-200 animate-pulse">
                           <span className="w-1.5 h-1.5 bg-stone-500 rounded-full" />
                           <span>Acquiring GPS Signal...</span>
                         </div>
@@ -470,7 +470,7 @@ const AttendancePage = () => {
                   <div className="space-y-3">
                     <button
                       onClick={handlePersonalScanTrigger}
-                      className="w-full py-3.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold text-xs rounded-xl transition-all shadow-sm cursor-pointer"
+                      className="w-full py-3.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-bold text-xs rounded-xl transition-all shadow-sm cursor-pointer"
                     >
                       📷 Biometric Face Punch-In
                     </button>
@@ -505,13 +505,13 @@ const AttendancePage = () => {
                         placeholder="e.g. TCH-123456 or STF-123456"
                         value={kioskEmpId}
                         onChange={(e) => setKioskEmpId(e.target.value)}
-                        className="w-full bg-white border border-stone-200 rounded px-4 py-2.5 text-stone-800 text-sm outline-none focus:border-[#29456D] placeholder-stone-400 font-mono uppercase"
+                        className="w-full bg-white border border-stone-200 rounded px-4 py-2.5 text-stone-800 text-sm outline-none focus:border-[#2D4D77] placeholder-stone-400 font-mono uppercase"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         type="submit"
-                        className="py-3 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold text-xs rounded-xl transition-all cursor-pointer shadow-sm"
+                        className="py-3 bg-[#2D4D77] hover:bg-[#203B61] text-white font-bold text-xs rounded-xl transition-all cursor-pointer shadow-sm"
                       >
                         📷 Scan Face (Punch-In)
                       </button>
@@ -544,7 +544,7 @@ const AttendancePage = () => {
                   <select
                     value={selectedClassId}
                     onChange={(e) => setSelectedClassId(e.target.value)}
-                    className="bg-white border border-stone-200 text-stone-700 text-xs rounded px-3 py-2 outline-none focus:border-[#29456D] w-44 font-semibold"
+                    className="bg-white border border-stone-200 text-stone-700 text-xs rounded px-3 py-2 outline-none focus:border-[#2D4D77] w-44 font-semibold"
                   >
                     {classesList.map(c => (
                       <option key={c._id} value={c._id}>Class {c.standard} - {c.section}</option>
@@ -558,7 +558,7 @@ const AttendancePage = () => {
                     value={attendanceDate}
                     max={new Date().toISOString().split('T')[0]}
                     onChange={(e) => setAttendanceDate(e.target.value)}
-                    className="bg-white border border-stone-200 text-stone-700 text-xs rounded px-3 py-1.5 outline-none focus:border-[#29456D] font-semibold"
+                    className="bg-white border border-stone-200 text-stone-700 text-xs rounded px-3 py-1.5 outline-none focus:border-[#2D4D77] font-semibold"
                   />
                 </div>
               </div>
@@ -566,7 +566,7 @@ const AttendancePage = () => {
               <button
                 onClick={handleSaveStudentAttendance}
                 disabled={isSavingStudentAtt || studentsData.length === 0}
-                className="px-5 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold text-xs rounded transition-all shadow-sm disabled:opacity-50"
+                className="px-5 py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-bold text-xs rounded transition-all shadow-sm disabled:opacity-50"
               >
                 {isSavingStudentAtt ? 'Saving Matrix...' : '💾 Save Attendance Grid'}
               </button>
@@ -594,7 +594,7 @@ const AttendancePage = () => {
                   <tbody>
                     {studentsData.map((student, idx) => (
                       <tr key={idx} className="border-b border-stone-200/50 hover:bg-stone-50/80 text-stone-700 transition-colors">
-                        <td className="py-3.5 px-4 font-mono font-bold text-[#172B4D]">
+                        <td className="py-3.5 px-4 font-mono font-bold text-[#203B61]">
                           <span className="bg-stone-100 px-2 py-1 rounded text-stone-800 border border-stone-200">
                             {student.rollNumber || String(idx + 1).padStart(2, '0')}
                           </span>
@@ -660,7 +660,7 @@ const AttendancePage = () => {
                 <select value={reportYear} onChange={e => setReportYear(+e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 text-gray-805 font-bold">
                   {[2024,2025,2026,2027].map(y => <option key={y} value={y}>{y}</option>)}
                 </select>
-                <button onClick={fetchDetails} className="px-4 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white rounded-lg text-sm font-bold transition-all">Load Report</button>
+                <button onClick={fetchDetails} className="px-4 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white rounded-lg text-sm font-bold transition-all">Load Report</button>
                 <button onClick={() => handleExport('details')} disabled={exportingType==='details'} className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 disabled:opacity-50 flex items-center gap-1 shadow-md">
                   {exportingType==='details' ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span> : '📥'} Export to Excel
                 </button>
@@ -833,7 +833,7 @@ const AttendancePage = () => {
               <div className="bg-stone-50 p-4 rounded-2xl border border-stone-200 flex items-center justify-between">
                 <div>
                   <div className="font-extrabold text-stone-900 text-sm">{editAttEmployee.name}</div>
-                  <div className="text-xs font-mono text-[#172B4D] font-bold">{editAttEmployee.employee_id} • {editAttEmployee.department}</div>
+                  <div className="text-xs font-mono text-[#203B61] font-bold">{editAttEmployee.employee_id} • {editAttEmployee.department}</div>
                 </div>
                 <div className="text-right">
                   <div className="text-xs font-bold text-stone-800">{editAttDayData.date}</div>
@@ -894,7 +894,7 @@ const AttendancePage = () => {
                 type="button"
                 onClick={handleSaveAttendanceStatus}
                 disabled={isSavingAttStatus}
-                className="px-5 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white font-black text-xs rounded-xl transition-all shadow-md disabled:opacity-50 cursor-pointer"
+                className="px-5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white font-black text-xs rounded-xl transition-all shadow-md disabled:opacity-50 cursor-pointer"
               >
                 {isSavingAttStatus ? 'Saving...' : '💾 Save Attendance'}
               </button>

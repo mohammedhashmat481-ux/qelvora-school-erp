@@ -834,16 +834,16 @@ A mobile/web app connecting Parents, Authorized Third Parties, and School Staff 
   const isTeacherView = activeTab === 'teacher-panel' || activeTab === 'logs' || (activeTab === 'settings' && lastSection === 'teacher');
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col md:flex-row font-sans">
+    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
       {/* Left Navigation Sidebar */}
       <Sidebar />
 
       {/* Main Workspace Area */}
-      <main className="flex-1 min-w-0 bg-[#F7F9FC] p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8">
+      <main className="flex-1 min-w-0 bg-[#F5F8FC] p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8">
         <div className="max-w-7xl mx-auto space-y-6">
 
             {/* ── HEADER BANNER (DEDICATED PER PAGE: STUDENT PANEL vs TEACHER PANEL) ── */}
-            <div className="bg-[#172B4D] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden border border-[#29456D]">
+            <div className="bg-[#203B61] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden border border-[#2D4D77]">
               <div className="absolute top-0 right-0 -mt-10 -mr-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
               
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">

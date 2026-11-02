@@ -259,8 +259,8 @@ export default function SummaryPage() {
 
     // Headings
     html = html.replace(/^### (.*$)/gim, '<h3 class="text-base font-bold text-slate-900 mt-5 mb-2.5 flex items-center gap-2"><span class="w-1.5 h-4 bg-amber-500 rounded-full inline-block"></span>$1</h3>');
-    html = html.replace(/^## (.*$)/gim, '<h2 class="text-lg font-extrabold text-slate-900 mt-6 mb-3 border-b border-slate-200 pb-2 flex items-center gap-2"><span class="w-2 h-5 bg-[#29456D] rounded-full inline-block"></span>$1</h2>');
-    html = html.replace(/^# (.*$)/gim, '<h1 class="text-xl font-black text-slate-900 mt-6 mb-4 text-[#172B4D]">$1</h1>');
+    html = html.replace(/^## (.*$)/gim, '<h2 class="text-lg font-extrabold text-slate-900 mt-6 mb-3 border-b border-slate-200 pb-2 flex items-center gap-2"><span class="w-2 h-5 bg-[#2D4D77] rounded-full inline-block"></span>$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1 class="text-xl font-black text-slate-900 mt-6 mb-4 text-[#203B61]">$1</h1>');
 
     // Bold & Italics
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>');
@@ -334,10 +334,10 @@ export default function SummaryPage() {
             body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #0f172a; padding: 20px; }
             h1 { font-size: 1.5rem; font-weight: 800; color: #1e3a8a; margin-top: 1.25rem; margin-bottom: 0.5rem; }
             h2 { font-size: 1.2rem; font-weight: 700; color: #0f172a; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 0.25rem; margin-top: 1.25rem; margin-bottom: 0.5rem; }
-            h3 { font-size: 1rem; font-weight: 700; color: #334155; margin-top: 1rem; margin-bottom: 0.25rem; }
-            p { font-size: 0.9rem; line-height: 1.6; margin-top: 0.5rem; color: #334155; }
+            h3 { font-size: 1rem; font-weight: 700; color: #253858; margin-top: 1rem; margin-bottom: 0.25rem; }
+            p { font-size: 0.9rem; line-height: 1.6; margin-top: 0.5rem; color: #253858; }
             ul { list-style-type: disc; padding-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
-            li { font-size: 0.9rem; line-height: 1.6; color: #334155; margin-bottom: 0.25rem; }
+            li { font-size: 0.9rem; line-height: 1.6; color: #253858; margin-bottom: 0.25rem; }
             pre { background-color: #f1f5f9; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; overflow-x: auto; border: 1px solid #e2e8f0; }
             code { background-color: #fef3c7; color: #92400e; padding: 2px 4px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; }
             .header-box { border-bottom: 2px solid #1e3a8a; padding-bottom: 12px; margin-bottom: 16px; }
@@ -376,13 +376,13 @@ export default function SummaryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col md:flex-row font-sans">
+    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
       <Sidebar />
-      <div className="flex-1 min-w-0 bg-[#F7F9FC] p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8">
+      <div className="flex-1 min-w-0 bg-[#F5F8FC] p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8">
         <div className="max-w-6xl mx-auto space-y-6">
 
           {/* Centralized Study Material Library Shared Banner */}
-          <div className="bg-[#172B4D] text-white rounded-3xl p-6 shadow-xl relative overflow-hidden border border-[#29456D]">
+          <div className="bg-[#203B61] text-white rounded-3xl p-6 shadow-xl relative overflow-hidden border border-[#2D4D77]">
             <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-radial from-amber-400/10 to-transparent pointer-events-none" />
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
               <div className="space-y-1.5">
@@ -431,7 +431,7 @@ export default function SummaryPage() {
               <div className="bg-white border border-slate-200 shadow-xs rounded-3xl p-5 sm:p-6 space-y-5">
                 <div className="flex items-center justify-between border-b border-slate-150 pb-3">
                   <h2 className="text-xs font-black uppercase tracking-wider text-slate-500 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-[#172B4D]" />
+                    <Sparkles className="w-4 h-4 text-[#203B61]" />
                     <span>Summary Generator Parameters</span>
                   </h2>
                 </div>
@@ -516,7 +516,7 @@ export default function SummaryPage() {
                             onClick={() => setStyle(st.id)}
                             className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer ${
                               isSelected
-                                ? 'bg-[#29456D] text-white border-[#29456D] shadow-md shadow-blue-900/10'
+                                ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-md shadow-blue-900/10'
                                 : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-white'
                             }`}
                           >
@@ -534,7 +534,7 @@ export default function SummaryPage() {
                   <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
-                        <BookOpen className="w-3.5 h-3.5 text-[#172B4D]" />
+                        <BookOpen className="w-3.5 h-3.5 text-[#203B61]" />
                         <span className="text-xs font-black text-slate-800">
                           Shared Library Documents ({availableResources.length})
                         </span>
@@ -542,7 +542,7 @@ export default function SummaryPage() {
                       <button
                         type="button"
                         onClick={() => setShowKnowledgeModal(true)}
-                        className="text-[11px] font-bold text-[#172B4D] hover:underline flex items-center gap-1 cursor-pointer"
+                        className="text-[11px] font-bold text-[#203B61] hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         <span>+ Upload / Manage</span>
                         <ExternalLink className="w-3 h-3" />
@@ -562,7 +562,7 @@ export default function SummaryPage() {
                         <button
                           type="button"
                           onClick={() => setShowKnowledgeModal(true)}
-                          className="mt-1.5 text-xs font-bold text-[#172B4D] hover:text-blue-700 underline cursor-pointer"
+                          className="mt-1.5 text-xs font-bold text-[#203B61] hover:text-blue-700 underline cursor-pointer"
                         >
                           Upload textbook or chapter PDF
                         </button>
@@ -590,7 +590,7 @@ export default function SummaryPage() {
                                     setSelectedResourceIds(prev => prev.filter(id => id !== res.id));
                                   }
                                 }}
-                                className="mt-0.5 rounded text-[#172B4D] focus:ring-[#93C5FD]"
+                                className="mt-0.5 rounded text-[#203B61] focus:ring-[#93C5FD]"
                               />
                               <div className="flex-1 min-w-0">
                                 <div className="font-bold truncate text-[11px]">{res.title}</div>
@@ -645,7 +645,7 @@ export default function SummaryPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3 bg-gradient-to-r from-[#172B4D] via-blue-700 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 text-white rounded-2xl text-xs sm:text-sm font-black shadow-lg shadow-blue-900/20 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-3 bg-gradient-to-r from-[#203B61] via-blue-700 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 text-white rounded-2xl text-xs sm:text-sm font-black shadow-lg shadow-blue-900/20 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {loading ? (
                       <>
@@ -739,7 +739,7 @@ export default function SummaryPage() {
                       <button
                         type="button"
                         onClick={handlePrint}
-                        className="px-2.5 py-1.5 bg-[#29456D] hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1 shadow-xs cursor-pointer"
+                        className="px-2.5 py-1.5 bg-[#2D4D77] hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1 shadow-xs cursor-pointer"
                         title="Save as PDF or Print"
                       >
                         <Printer className="w-3.5 h-3.5" />
@@ -771,7 +771,7 @@ export default function SummaryPage() {
                   {loading ? (
                     <div className="text-center py-20 my-auto">
                       <div className="relative inline-block mb-4">
-                        <Spinner size="lg" className="mx-auto text-[#172B4D]" />
+                        <Spinner size="lg" className="mx-auto text-[#203B61]" />
                       </div>
                       <p className="text-slate-800 font-bold text-sm">
                         Retrieving relevant passages from shared knowledge library...
@@ -820,7 +820,7 @@ export default function SummaryPage() {
                     </div>
                   ) : (
                     <div className="text-center py-20 my-auto text-slate-400">
-                      <div className="w-16 h-16 rounded-3xl bg-blue-50 text-[#172B4D] flex items-center justify-center mx-auto mb-4 shadow-sm border border-blue-100">
+                      <div className="w-16 h-16 rounded-3xl bg-blue-50 text-[#203B61] flex items-center justify-center mx-auto mb-4 shadow-sm border border-blue-100">
                         <BookOpen className="w-8 h-8" />
                       </div>
                       <p className="text-base font-black text-slate-800">
@@ -847,7 +847,7 @@ export default function SummaryPage() {
           <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col border-l border-slate-200 animate-slideLeft">
             <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <History className="w-5 h-5 text-[#172B4D]" />
+                <History className="w-5 h-5 text-[#203B61]" />
                 <h3 className="font-black text-slate-900 text-sm">Saved Topic Summaries</h3>
               </div>
               <button
@@ -874,10 +874,10 @@ export default function SummaryPage() {
                   <div
                     key={item.id}
                     onClick={() => handleLoadFromHistory(item)}
-                    className="p-3.5 rounded-2xl border border-slate-200 hover:border-[#29456D] hover:bg-blue-50/40 transition-all cursor-pointer group flex items-start justify-between gap-3"
+                    className="p-3.5 rounded-2xl border border-slate-200 hover:border-[#2D4D77] hover:bg-blue-50/40 transition-all cursor-pointer group flex items-start justify-between gap-3"
                   >
                     <div className="flex-1 min-w-0">
-                      <div className="font-bold text-slate-900 text-xs truncate group-hover:text-[#172B4D]">
+                      <div className="font-bold text-slate-900 text-xs truncate group-hover:text-[#203B61]">
                         {item.topic || item.title}
                       </div>
                       <div className="text-[11px] text-slate-500 mt-1 flex items-center gap-2">

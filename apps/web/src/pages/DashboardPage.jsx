@@ -1709,7 +1709,7 @@ Office of the Principal / Academic Administration`
                         <button
                           type="button"
                           onClick={() => handleOpenEditCellModal(d, p.period)}
-                          className="text-stone-400 hover:text-[#172B4D] hover:border-[#29456D] font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-1.5 mx-auto py-1.5 px-3 rounded-xl border border-dashed border-stone-200 bg-stone-50/30 hover:bg-[#29456D]/5 transition-all cursor-pointer"
+                          className="text-stone-400 hover:text-[#203B61] hover:border-[#2D4D77] font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-1.5 mx-auto py-1.5 px-3 rounded-xl border border-dashed border-stone-200 bg-stone-50/30 hover:bg-[#2D4D77]/5 transition-all cursor-pointer"
                         >
                           ➕ Add Period
                         </button>
@@ -1919,7 +1919,7 @@ Office of the Principal / Academic Administration`
                     } else if (slot.color === 'red') {
                       subjectColorClass = 'bg-rose-500 text-white font-extrabold shadow-sm border-rose-600';
                     } else if (slot.color === 'gold') {
-                      subjectColorClass = 'bg-amber-400 text-amber-950 font-extrabold shadow-sm border-[#29456D]';
+                      subjectColorClass = 'bg-amber-400 text-amber-950 font-extrabold shadow-sm border-[#2D4D77]';
                     }
                   }
 
@@ -1980,20 +1980,20 @@ Office of the Principal / Academic Administration`
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col md:flex-row font-sans">
+    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
       <Sidebar />
 
-      <div className="flex-1 bg-[#F7F9FC] p-6 lg:p-8 overflow-y-auto">
+      <div className="flex-1 bg-[#F5F8FC] p-6 lg:p-8 overflow-y-auto">
         
         {/* Top welcome banner with dynamic School / College Name from School Settings */}
-        <header className="mb-6 bg-[#172B4D] border border-[#29456D] shadow-md rounded-2xl px-5 py-4 transition-all relative overflow-hidden text-white">
+        <header className="mb-6 bg-[#203B61] border border-[#2D4D77] shadow-md rounded-2xl px-5 py-4 transition-all relative overflow-hidden text-white">
           {/* Subtle decorative background accent */}
-          <div className="absolute top-0 right-0 w-80 h-32 bg-gradient-to-bl from-[#29456D]/40 via-blue-900/10 to-transparent pointer-events-none rounded-bl-full" />
+          <div className="absolute top-0 right-0 w-80 h-32 bg-gradient-to-bl from-[#2D4D77]/40 via-blue-900/10 to-transparent pointer-events-none rounded-bl-full" />
 
           <div className="relative z-10 space-y-3">
             {/* Top row: All 4 status badges in one line across full card width — no cutoff */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#29456D] text-white border border-[#29456D] text-[10px] font-black uppercase tracking-wider shrink-0 shadow-2xs">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#2D4D77] text-white border border-[#2D4D77] text-[10px] font-black uppercase tracking-wider shrink-0 shadow-2xs">
                 <Building2 className="w-3 h-3 text-[#F3F6FC]" />
                 <span>
                   {isStudentOrParentRole
@@ -2004,25 +2004,25 @@ Office of the Principal / Academic Administration`
                 </span>
               </span>
 
-              <span className="text-[#29456D] text-xs shrink-0">·</span>
+              <span className="text-[#2D4D77] text-xs shrink-0">·</span>
 
               {schoolSettings?.board && (
                 <>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#29456D] text-[#CBD5E1] text-[10px] font-bold border border-[#29456D] shrink-0">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#2D4D77] text-[#CBD5E1] text-[10px] font-bold border border-[#2D4D77] shrink-0">
                     <School className="w-3 h-3 text-[#F3F6FC]" />
                     <span>{schoolSettings.board} Board</span>
                   </span>
-                  <span className="text-[#29456D] text-xs shrink-0">·</span>
+                  <span className="text-[#2D4D77] text-xs shrink-0">·</span>
                 </>
               )}
 
               {schoolSettings?.academicYear && (
                 <>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#29456D] text-[#CBD5E1] text-[10px] font-bold border border-[#29456D] shrink-0">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#2D4D77] text-[#CBD5E1] text-[10px] font-bold border border-[#2D4D77] shrink-0">
                     <Calendar className="w-3 h-3 text-[#F3F6FC]" />
                     <span>Session {schoolSettings.academicYear}</span>
                   </span>
-                  <span className="text-[#29456D] text-xs shrink-0">·</span>
+                  <span className="text-[#2D4D77] text-xs shrink-0">·</span>
                 </>
               )}
 
@@ -2041,10 +2041,10 @@ Office of the Principal / Academic Administration`
                     <img
                       src={schoolSettings.schoolLogo}
                       alt={schoolSettings.schoolName || 'Institution Logo'}
-                      className="w-10 h-10 object-contain rounded-xl border border-[#29456D] bg-white p-1 shadow-xs shrink-0"
+                      className="w-10 h-10 object-contain rounded-xl border border-[#2D4D77] bg-white p-1 shadow-xs shrink-0"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-xl bg-[#29456D] text-white flex items-center justify-center shadow-sm border border-[#29456D] shrink-0">
+                    <div className="w-10 h-10 rounded-xl bg-[#2D4D77] text-white flex items-center justify-center shadow-sm border border-[#2D4D77] shrink-0">
                       <School className="w-5 h-5 text-[#F3F6FC]" />
                     </div>
                   )}
@@ -2064,15 +2064,15 @@ Office of the Principal / Academic Administration`
                 {/* User meta footer */}
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-[#CBD5E1] font-medium">
                   <span className="flex items-center gap-1 font-semibold text-white">
-                    <UserCheck className="w-3.5 h-3.5 text-[#DBEAFE]" />
+                    <UserCheck className="w-3.5 h-3.5 text-[#DCEBFA]" />
                     <span>Logged in as <strong className="text-white">{user?.name}</strong></span>
                     <span className="text-[#CBD5E1] font-normal">
                       ({user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Administrator'})
                     </span>
                   </span>
-                  <span className="text-[#29456D] hidden sm:inline">·</span>
+                  <span className="text-[#2D4D77] hidden sm:inline">·</span>
                   <span className="flex items-center gap-1 text-[#CBD5E1]">
-                    <Clock className="w-3 h-3 text-[#DBEAFE]" />
+                    <Clock className="w-3 h-3 text-[#DCEBFA]" />
                     <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
                   </span>
                 </div>
@@ -2083,7 +2083,7 @@ Office of the Principal / Academic Administration`
                 <button
                   onClick={() => refreshDashboard(true)}
                   disabled={loading}
-                  className="px-3.5 py-2 bg-[#29456D] hover:bg-[#172B4D] border border-[#29456D] rounded-xl text-[11px] font-bold text-white hover:text-[#DBEAFE] shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                  className="px-3.5 py-2 bg-[#2D4D77] hover:bg-[#203B61] border border-[#2D4D77] rounded-xl text-[11px] font-bold text-white hover:text-[#DCEBFA] shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
                   title="Refresh Live Data"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 text-[#F3F6FC] ${loading ? 'animate-spin' : ''}`} />
@@ -2093,7 +2093,7 @@ Office of the Principal / Academic Administration`
                 {isAdminRole && (
                   <button
                     onClick={() => navigate('/admin?tab=settings')}
-                    className="px-3.5 py-2 bg-[#29456D] hover:bg-[#172B4D] border border-[#29456D] rounded-xl text-[11px] font-bold text-white hover:text-[#DBEAFE] shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                    className="px-3.5 py-2 bg-[#2D4D77] hover:bg-[#203B61] border border-[#2D4D77] rounded-xl text-[11px] font-bold text-white hover:text-[#DCEBFA] shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
                     title="Configure School & Branding Settings"
                   >
                     <School className="w-3.5 h-3.5 text-[#F3F6FC]" />
@@ -2126,7 +2126,7 @@ Office of the Principal / Academic Administration`
                 </div>
                 <div className="space-y-1">
                   <h3 className="text-lg font-black text-stone-850">{studentProfile.name}</h3>
-                  <span className="inline-block px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide bg-[#29456D]/10 text-[#172B4D] border border-[#29456D]/20">
+                  <span className="inline-block px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide bg-[#2D4D77]/10 text-[#203B61] border border-[#2D4D77]/20">
                     {selectedProfile === 'parent' ? 'Parent Profile' : 'Student Profile'}
                   </span>
                 </div>
@@ -2166,7 +2166,7 @@ Office of the Principal / Academic Administration`
               <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <button
                   onClick={() => navigate('/videos')}
-                  className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 hover:border-[#29456D] transition-all hover:scale-[1.02] text-left space-y-3 active:scale-95"
+                  className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 hover:border-[#2D4D77] transition-all hover:scale-[1.02] text-left space-y-3 active:scale-95"
                 >
                   <div className="w-12 h-12 bg-red-50 text-red-500 rounded-xl flex items-center justify-center text-2xl border border-red-100">
                     🎥
@@ -2262,7 +2262,7 @@ Office of the Principal / Academic Administration`
                   onClick={() => setActiveTeacherTab('todayTimetable')}
                   className={`flex items-center gap-2 px-5 py-3.5 text-xs font-bold whitespace-nowrap transition-all border-b-2 ${
                     activeTeacherTab === 'todayTimetable'
-                      ? 'border-[#29456D] text-[#172B4D] bg-white border-b-2'
+                      ? 'border-[#2D4D77] text-[#203B61] bg-white border-b-2'
                       : 'border-transparent text-stone-500 hover:text-stone-700 hover:bg-white/50'
                   }`}
                 >
@@ -2272,7 +2272,7 @@ Office of the Principal / Academic Administration`
                   onClick={() => setActiveTeacherTab('weeklyTimetable')}
                   className={`flex items-center gap-2 px-5 py-3.5 text-xs font-bold whitespace-nowrap transition-all border-b-2 ${
                     activeTeacherTab === 'weeklyTimetable'
-                      ? 'border-[#29456D] text-[#172B4D] bg-white border-b-2'
+                      ? 'border-[#2D4D77] text-[#203B61] bg-white border-b-2'
                       : 'border-transparent text-stone-500 hover:text-stone-700 hover:bg-white/50'
                   }`}
                 >
@@ -2584,7 +2584,7 @@ Office of the Principal / Academic Administration`
                         value={leaveDate}
                         min={new Date().toISOString().split('T')[0]}
                         onChange={(e) => setLeaveDate(e.target.value)}
-                        className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#29456D] text-white font-medium"
+                        className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#2D4D77] text-white font-medium"
                       />
                     </div>
                     <div>
@@ -2594,13 +2594,13 @@ Office of the Principal / Academic Administration`
                         value={leaveReason}
                         placeholder="Family emergency, medical reasons..."
                         onChange={(e) => setLeaveReason(e.target.value)}
-                        className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#29456D] text-white placeholder-stone-400 resize-none"
+                        className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#2D4D77] text-white placeholder-stone-400 resize-none"
                       ></textarea>
                     </div>
                     <button
                       type="submit"
                       disabled={isSubmittingLeave}
-                      className="w-full py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-black text-xs rounded-xl shadow-md transition-all disabled:opacity-50"
+                      className="w-full py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-black text-xs rounded-xl shadow-md transition-all disabled:opacity-50"
                     >
                       {isSubmittingLeave ? 'Filing leave...' : 'Submit Request'}
                     </button>
@@ -2623,17 +2623,17 @@ Office of the Principal / Academic Administration`
               {/* Total Teachers Card */}
               <div 
                 onClick={() => setActiveCardModal('total_teachers')}
-                className="bg-[#FFFFFF] border border-slate-200 shadow-xs rounded-2xl p-5 flex flex-col justify-between hover:border-[#29456D] hover:shadow-md transition-all cursor-pointer group"
+                className="bg-[#FFFFFF] border border-slate-200 shadow-xs rounded-2xl p-5 flex flex-col justify-between hover:border-[#2D4D77] hover:shadow-md transition-all cursor-pointer group"
               >
                 <div className="flex justify-between items-center">
                   <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-[0.8px]">TOTAL TEACHERS</span>
-                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-[#172B4D] flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform shrink-0">
-                    <UsersRound className="w-5 h-5 text-[#172B4D]" />
+                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-[#203B61] flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform shrink-0">
+                    <UsersRound className="w-5 h-5 text-[#203B61]" />
                   </div>
                 </div>
                 <div className="flex items-baseline justify-between mt-4">
-                  <span className="text-2xl lg:text-3xl font-black text-[#172B4D]">{adminData.allTeachers?.length || adminData.stats?.totalTeachers || 0}</span>
-                  <span className="text-[10px] font-bold text-[#172B4D] bg-blue-50/80 hover:bg-blue-100/90 border border-blue-200/80 rounded-full px-3 py-1 transition-all inline-flex items-center gap-1">
+                  <span className="text-2xl lg:text-3xl font-black text-[#203B61]">{adminData.allTeachers?.length || adminData.stats?.totalTeachers || 0}</span>
+                  <span className="text-[10px] font-bold text-[#203B61] bg-blue-50/80 hover:bg-blue-100/90 border border-blue-200/80 rounded-full px-3 py-1 transition-all inline-flex items-center gap-1">
                     View List <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
@@ -2642,17 +2642,17 @@ Office of the Principal / Academic Administration`
               {/* Present Card */}
               <div 
                 onClick={() => setActiveCardModal('present_teachers')}
-                className="bg-[#FFFFFF] border border-slate-200 shadow-xs rounded-2xl p-5 flex flex-col justify-between hover:border-[#29456D] hover:shadow-md transition-all cursor-pointer group"
+                className="bg-[#FFFFFF] border border-slate-200 shadow-xs rounded-2xl p-5 flex flex-col justify-between hover:border-[#2D4D77] hover:shadow-md transition-all cursor-pointer group"
               >
                 <div className="flex justify-between items-center">
                   <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-[0.8px]">PRESENT</span>
-                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-[#172B4D] flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform shrink-0">
-                    <UserCheck className="w-5 h-5 text-[#172B4D]" />
+                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-[#203B61] flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform shrink-0">
+                    <UserCheck className="w-5 h-5 text-[#203B61]" />
                   </div>
                 </div>
                 <div className="flex items-baseline justify-between mt-4">
-                  <span className="text-2xl lg:text-3xl font-black text-[#172B4D]">{adminData.stats?.presentTeachers || 0}</span>
-                  <span className="text-[10px] font-bold text-[#172B4D] bg-blue-50/80 hover:bg-blue-100/90 border border-blue-200/80 rounded-full px-3 py-1 transition-all inline-flex items-center gap-1">
+                  <span className="text-2xl lg:text-3xl font-black text-[#203B61]">{adminData.stats?.presentTeachers || 0}</span>
+                  <span className="text-[10px] font-bold text-[#203B61] bg-blue-50/80 hover:bg-blue-100/90 border border-blue-200/80 rounded-full px-3 py-1 transition-all inline-flex items-center gap-1">
                     View List <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
@@ -2661,17 +2661,17 @@ Office of the Principal / Academic Administration`
               {/* Absent Card */}
               <div 
                 onClick={() => setActiveCardModal('absent_teachers')}
-                className="bg-[#FFFFFF] border border-slate-200 shadow-xs rounded-2xl p-5 flex flex-col justify-between hover:border-[#29456D] hover:shadow-md transition-all cursor-pointer group"
+                className="bg-[#FFFFFF] border border-slate-200 shadow-xs rounded-2xl p-5 flex flex-col justify-between hover:border-[#2D4D77] hover:shadow-md transition-all cursor-pointer group"
               >
                 <div className="flex justify-between items-center">
                   <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-[0.8px]">ABSENT</span>
-                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-[#172B4D] flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform shrink-0">
-                    <UserX className="w-5 h-5 text-[#172B4D]" />
+                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-[#203B61] flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform shrink-0">
+                    <UserX className="w-5 h-5 text-[#203B61]" />
                   </div>
                 </div>
                 <div className="flex items-baseline justify-between mt-4">
-                  <span className="text-2xl lg:text-3xl font-black text-[#172B4D]">{adminData.stats?.absentTeachers || 0}</span>
-                  <span className="text-[10px] font-bold text-[#172B4D] bg-blue-50/80 hover:bg-blue-100/90 border border-blue-200/80 rounded-full px-3 py-1 transition-all inline-flex items-center gap-1">
+                  <span className="text-2xl lg:text-3xl font-black text-[#203B61]">{adminData.stats?.absentTeachers || 0}</span>
+                  <span className="text-[10px] font-bold text-[#203B61] bg-blue-50/80 hover:bg-blue-100/90 border border-blue-200/80 rounded-full px-3 py-1 transition-all inline-flex items-center gap-1">
                     View List <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
@@ -2680,17 +2680,17 @@ Office of the Principal / Academic Administration`
               {/* Logged In Card */}
               <div 
                 onClick={() => setActiveCardModal('logged_in_classes')}
-                className="bg-[#FFFFFF] border border-slate-200 shadow-xs rounded-2xl p-5 flex flex-col justify-between hover:border-[#29456D] hover:shadow-md transition-all cursor-pointer group"
+                className="bg-[#FFFFFF] border border-slate-200 shadow-xs rounded-2xl p-5 flex flex-col justify-between hover:border-[#2D4D77] hover:shadow-md transition-all cursor-pointer group"
               >
                 <div className="flex justify-between items-center">
                   <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-[0.8px]">LOGGED IN</span>
-                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-[#172B4D] flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform shrink-0">
-                    <LogIn className="w-5 h-5 text-[#172B4D]" />
+                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-[#203B61] flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform shrink-0">
+                    <LogIn className="w-5 h-5 text-[#203B61]" />
                   </div>
                 </div>
                 <div className="flex items-baseline justify-between mt-4">
-                  <span className="text-2xl lg:text-3xl font-black text-[#172B4D]">{adminData.stats?.greenClasses || 0}</span>
-                  <span className="text-[10px] font-bold text-[#172B4D] bg-blue-50/80 hover:bg-blue-100/90 border border-blue-200/80 rounded-full px-3 py-1 transition-all inline-flex items-center gap-1">
+                  <span className="text-2xl lg:text-3xl font-black text-[#203B61]">{adminData.stats?.greenClasses || 0}</span>
+                  <span className="text-[10px] font-bold text-[#203B61] bg-blue-50/80 hover:bg-blue-100/90 border border-blue-200/80 rounded-full px-3 py-1 transition-all inline-flex items-center gap-1">
                     View List <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
@@ -2699,17 +2699,17 @@ Office of the Principal / Academic Administration`
               {/* Logged Out / Missed Card */}
               <div 
                 onClick={() => setActiveCardModal('missed_classes')}
-                className="bg-[#FFFFFF] border border-slate-200 shadow-xs rounded-2xl p-5 flex flex-col justify-between hover:border-[#29456D] hover:shadow-md transition-all cursor-pointer group"
+                className="bg-[#FFFFFF] border border-slate-200 shadow-xs rounded-2xl p-5 flex flex-col justify-between hover:border-[#2D4D77] hover:shadow-md transition-all cursor-pointer group"
               >
                 <div className="flex justify-between items-center">
                   <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-[0.8px]">LOGGED OUT / MISSED</span>
-                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-[#172B4D] flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform shrink-0">
-                    <LogOut className="w-5 h-5 text-[#172B4D]" />
+                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-[#203B61] flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform shrink-0">
+                    <LogOut className="w-5 h-5 text-[#203B61]" />
                   </div>
                 </div>
                 <div className="flex items-baseline justify-between mt-4">
-                  <span className="text-2xl lg:text-3xl font-black text-[#172B4D]">{adminData.stats?.redClasses || 0}</span>
-                  <span className="text-[10px] font-bold text-[#172B4D] bg-blue-50/80 hover:bg-blue-100/90 border border-blue-200/80 rounded-full px-3 py-1 transition-all inline-flex items-center gap-1">
+                  <span className="text-2xl lg:text-3xl font-black text-[#203B61]">{adminData.stats?.redClasses || 0}</span>
+                  <span className="text-[10px] font-bold text-[#203B61] bg-blue-50/80 hover:bg-blue-100/90 border border-blue-200/80 rounded-full px-3 py-1 transition-all inline-flex items-center gap-1">
                     View Missed <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
@@ -2718,17 +2718,17 @@ Office of the Principal / Academic Administration`
               {/* Substitute Arranged Card */}
               <div 
                 onClick={() => setActiveCardModal('substitute_arranged')}
-                className="bg-[#FFFFFF] border border-slate-200 shadow-xs rounded-2xl p-5 flex flex-col justify-between hover:border-[#29456D] hover:shadow-md transition-all cursor-pointer group"
+                className="bg-[#FFFFFF] border border-slate-200 shadow-xs rounded-2xl p-5 flex flex-col justify-between hover:border-[#2D4D77] hover:shadow-md transition-all cursor-pointer group"
               >
                 <div className="flex justify-between items-center">
                   <span className="text-slate-500 text-[11px] font-semibold uppercase tracking-[0.8px]">SUBSTITUTE ARRANGED</span>
-                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-[#172B4D] flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform shrink-0">
-                    <UserRoundCheck className="w-5 h-5 text-[#172B4D]" />
+                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 text-[#203B61] flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform shrink-0">
+                    <UserRoundCheck className="w-5 h-5 text-[#203B61]" />
                   </div>
                 </div>
                 <div className="flex items-baseline justify-between mt-4">
-                  <span className="text-2xl lg:text-3xl font-black text-[#172B4D]">{adminData.stats?.goldClasses || 0}</span>
-                  <span className="text-[10px] font-bold text-[#172B4D] bg-blue-50/80 hover:bg-blue-100/90 border border-blue-200/80 rounded-full px-3 py-1 transition-all inline-flex items-center gap-1">
+                  <span className="text-2xl lg:text-3xl font-black text-[#203B61]">{adminData.stats?.goldClasses || 0}</span>
+                  <span className="text-[10px] font-bold text-[#203B61] bg-blue-50/80 hover:bg-blue-100/90 border border-blue-200/80 rounded-full px-3 py-1 transition-all inline-flex items-center gap-1">
                     View Details <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
@@ -2740,12 +2740,12 @@ Office of the Principal / Academic Administration`
               
               {/* Real-time pending leaves queue */}
               <div className="bg-[#FFFFFF] border border-slate-200 shadow-xs rounded-2xl p-6">
-                <h4 className="text-xs font-black text-[#172B4D] uppercase tracking-widest mb-5 flex items-center justify-between">
+                <h4 className="text-xs font-black text-[#203B61] uppercase tracking-widest mb-5 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <CalendarClock className="w-4 h-4 text-[#172B4D]" />
+                    <CalendarClock className="w-4 h-4 text-[#203B61]" />
                     <span>PENDING LEAVE REQUESTS</span>
                   </div>
-                  <span className="text-xs font-bold text-[#172B4D] bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
+                  <span className="text-xs font-bold text-[#203B61] bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
                     {leaveRequests.filter(r => r.status === 'Pending').length}
                   </span>
                 </h4>
@@ -2767,7 +2767,7 @@ Office of the Principal / Academic Administration`
                         <p className="text-slate-500 italic text-[11px] line-clamp-3">"{req.reason}"</p>
                         <button
                           onClick={() => handleReviewLeave(req)}
-                          className="w-full mt-1.5 py-2 bg-blue-50 hover:bg-[#29456D] hover:text-white text-[#172B4D] font-bold rounded-xl text-center text-xs border border-blue-200 transition-all cursor-pointer shadow-xs"
+                          className="w-full mt-1.5 py-2 bg-blue-50 hover:bg-[#2D4D77] hover:text-white text-[#203B61] font-bold rounded-xl text-center text-xs border border-blue-200 transition-all cursor-pointer shadow-xs"
                         >
                           Review & Allocate Alternate
                         </button>
@@ -2779,8 +2779,8 @@ Office of the Principal / Academic Administration`
 
               {/* Historic Leave Logs */}
               <div className="xl:col-span-2 bg-[#FFFFFF] border border-slate-200 shadow-xs rounded-2xl p-6">
-                <h3 className="text-sm font-black text-[#172B4D] uppercase tracking-widest mb-5 flex items-center gap-2">
-                  <HistoryIcon className="w-4 h-4 text-[#172B4D]" />
+                <h3 className="text-sm font-black text-[#203B61] uppercase tracking-widest mb-5 flex items-center gap-2">
+                  <HistoryIcon className="w-4 h-4 text-[#203B61]" />
                   <span>HISTORIC LEAVE LOGS</span>
                 </h3>
                 <div className="overflow-x-auto">
@@ -2801,13 +2801,13 @@ Office of the Principal / Academic Administration`
                       ) : (
                         leaveRequests.filter(r => r.status !== 'Pending').slice(0, 15).map((req, idx) => (
                           <tr key={idx} className="border-b border-slate-200/60 hover:bg-slate-50/50 text-slate-800">
-                            <td className="py-3 px-4 font-bold text-[#172B4D]">{req.teacher?.name || req.teacherName || req.name || 'Faculty Member'}</td>
+                            <td className="py-3 px-4 font-bold text-[#203B61]">{req.teacher?.name || req.teacherName || req.name || 'Faculty Member'}</td>
                             <td className="py-3 px-4 font-mono text-slate-500">{req.leaveDate}</td>
                             <td className="py-3 px-4 text-slate-800">{req.reason}</td>
                             <td className="py-3 px-4 text-center">
                               <span className={`inline-block px-2.5 py-0.5 rounded-full font-bold uppercase text-[9px] border ${
                                 req.status === 'Approved'
-                                  ? 'bg-blue-50 text-[#172B4D] border-blue-200 font-bold'
+                                  ? 'bg-blue-50 text-[#203B61] border-blue-200 font-bold'
                                   : 'bg-rose-50 text-rose-800 border-rose-200'
                               }`}>
                                 {req.status}
@@ -2833,8 +2833,8 @@ Office of the Principal / Academic Administration`
                     onClick={() => { setActiveAdminTab(tab.id); setAdminTabSearch(''); setWeeklyExpandedTeacher(null); }}
                     className={`flex items-center gap-2 px-5 py-3.5 text-xs font-bold whitespace-nowrap transition-all border-b-2 ${
                       activeAdminTab === tab.id
-                        ? 'border-[#29456D] text-[#172B4D] bg-white border-b-2 font-extrabold'
-                        : 'border-transparent text-slate-500 hover:text-[#172B4D] hover:bg-white/50'
+                        ? 'border-[#2D4D77] text-[#203B61] bg-white border-b-2 font-extrabold'
+                        : 'border-transparent text-slate-500 hover:text-[#203B61] hover:bg-white/50'
                     }`}
                   >
                     <span>{tab.icon}</span> {tab.label}
@@ -2848,13 +2848,13 @@ Office of the Principal / Academic Administration`
                   {/* Class Filter Dropdown */}
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-1">
-                      <School className="w-3.5 h-3.5 text-[#172B4D]" />
+                      <School className="w-3.5 h-3.5 text-[#203B61]" />
                       <span>Class:</span>
                     </span>
                     <select
                       value={dashboardClassFilter}
                       onChange={(e) => setDashboardClassFilter(e.target.value)}
-                      className="bg-white border border-stone-300 rounded-xl px-3 py-1.5 text-xs font-bold outline-none text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] shadow-2xs cursor-pointer min-w-[200px]"
+                      className="bg-white border border-stone-300 rounded-xl px-3 py-1.5 text-xs font-bold outline-none text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] shadow-2xs cursor-pointer min-w-[200px]"
                     >
                       <option value="All">All Classes ({allClasses.length})</option>
                       {allClasses.map(cls => (
@@ -2868,13 +2868,13 @@ Office of the Principal / Academic Administration`
                   {/* Day Filter Dropdown */}
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5 text-[#172B4D]" />
+                      <Calendar className="w-3.5 h-3.5 text-[#203B61]" />
                       <span>Day:</span>
                     </span>
                     <select
                       value={dashboardDayFilter}
                       onChange={(e) => setDashboardDayFilter(e.target.value)}
-                      className="bg-white border border-stone-300 rounded-xl px-3 py-1.5 text-xs font-bold outline-none text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] shadow-2xs cursor-pointer"
+                      className="bg-white border border-stone-300 rounded-xl px-3 py-1.5 text-xs font-bold outline-none text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] shadow-2xs cursor-pointer"
                     >
                       <option value="Today">Today ({weekdays[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1] || 'Wednesday'})</option>
                       <option value="All Days">All Days (Full Week)</option>
@@ -2888,7 +2888,7 @@ Office of the Principal / Academic Administration`
                     <button
                       type="button"
                       onClick={() => setDashboardClassFilter('All')}
-                      className="text-[11px] font-bold text-[#172B4D] hover:underline cursor-pointer"
+                      className="text-[11px] font-bold text-[#203B61] hover:underline cursor-pointer"
                     >
                       Reset Class Filter
                     </button>
@@ -2903,7 +2903,7 @@ Office of the Principal / Academic Administration`
                       value={adminTabSearch}
                       onChange={(e) => setAdminTabSearch(e.target.value)}
                       placeholder="🔍 Search educator or subject..."
-                      className="w-full sm:w-56 bg-white border border-stone-300 rounded-xl px-3.5 py-1.5 text-xs outline-none focus:border-[#29456D] text-stone-800 placeholder-stone-400 font-medium shadow-2xs"
+                      className="w-full sm:w-56 bg-white border border-stone-300 rounded-xl px-3.5 py-1.5 text-xs outline-none focus:border-[#2D4D77] text-stone-800 placeholder-stone-400 font-medium shadow-2xs"
                     />
                   </div>
                 )}
@@ -2922,16 +2922,16 @@ Office of the Principal / Academic Administration`
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-600 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600"></span>
                           </span>
-                          <span className="text-[11px] font-extrabold uppercase tracking-[1.2px] text-[#172B4D]">
+                          <span className="text-[11px] font-extrabold uppercase tracking-[1.2px] text-[#203B61]">
                             Live Faculty & Classroom Tracking
                           </span>
                         </div>
-                        <h3 className="text-xl font-bold text-[#172B4D] tracking-tight">
+                        <h3 className="text-xl font-bold text-[#203B61] tracking-tight">
                           Today's Running Classes & Real-Time Monitor
                         </h3>
                         <p className="text-xs text-slate-500 font-medium">
                           Real-time attendance check-ins, punctuality verification & vacancy alerts for{' '}
-                          <span className="font-bold text-[#172B4D] bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+                          <span className="font-bold text-[#203B61] bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
                             {runningClassesPeriodFilter === 'all' ? "All Today's Periods" : `Period ${activeMonitorPeriodNum || currentPeriodNum || 1} (${activePeriodSlotInfo.timeSlot})`}
                           </span>
                         </p>
@@ -2941,10 +2941,10 @@ Office of the Principal / Academic Administration`
                         <button
                           type="button"
                           onClick={() => refreshDashboard(true)}
-                          className="flex items-center gap-2 px-3.5 py-2 bg-[#FFFFFF] hover:bg-slate-100 text-[#172B4D] rounded-xl text-xs font-bold border border-slate-200 shadow-xs transition-all cursor-pointer"
+                          className="flex items-center gap-2 px-3.5 py-2 bg-[#FFFFFF] hover:bg-slate-100 text-[#203B61] rounded-xl text-xs font-bold border border-slate-200 shadow-xs transition-all cursor-pointer"
                           title="Refresh live classroom logs"
                         >
-                          <RefreshCw className="w-3.5 h-3.5 text-[#172B4D]" />
+                          <RefreshCw className="w-3.5 h-3.5 text-[#203B61]" />
                           <span>Sync Live Status</span>
                         </button>
                       </div>
@@ -2958,12 +2958,12 @@ Office of the Principal / Academic Administration`
                         onClick={() => setRunningClassesPunctualityFilter('All')}
                         className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer shadow-xs ${
                           runningClassesPunctualityFilter === 'All'
-                            ? 'bg-slate-50 border-[#29456D] ring-2 ring-[#1E3A8A]/20'
+                            ? 'bg-slate-50 border-[#2D4D77] ring-2 ring-[#1E3A8A]/20'
                             : 'bg-[#FFFFFF] hover:bg-slate-50 border-slate-200'
                         }`}
                       >
                         <div className="text-[10px] uppercase font-extrabold tracking-wider text-slate-500">All Tracked</div>
-                        <div className="text-2xl font-black mt-1 text-[#172B4D]">{rcStats.total}</div>
+                        <div className="text-2xl font-black mt-1 text-[#203B61]">{rcStats.total}</div>
                         <div className="text-[10px] text-slate-500 mt-0.5 font-medium">Running Classes</div>
                       </button>
 
@@ -3077,14 +3077,14 @@ Office of the Principal / Academic Administration`
                         <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
                           {/* Period Selector */}
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-[#172B4D] uppercase tracking-wide flex items-center gap-1.5">
-                              <Clock className="w-3.5 h-3.5 text-[#172B4D]" />
+                            <span className="text-xs font-bold text-[#203B61] uppercase tracking-wide flex items-center gap-1.5">
+                              <Clock className="w-3.5 h-3.5 text-[#203B61]" />
                               <span>Period:</span>
                             </span>
                             <select
                               value={runningClassesPeriodFilter}
                               onChange={(e) => setRunningClassesPeriodFilter(e.target.value)}
-                              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold outline-none text-[#172B4D] focus:ring-2 focus:ring-[#93C5FD]/15 focus:border-[#29456D] cursor-pointer"
+                              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold outline-none text-[#203B61] focus:ring-2 focus:ring-[#93C5FD]/15 focus:border-[#2D4D77] cursor-pointer"
                             >
                               <option value="current">⚡ Current Period {currentPeriodNum ? `(P${currentPeriodNum})` : ''}</option>
                               <option value="all">All Today's Periods</option>
@@ -3098,8 +3098,8 @@ Office of the Principal / Academic Administration`
 
                           {/* Multi-Class Quick Select Dropdown for Principal */}
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-[#172B4D] uppercase tracking-wide flex items-center gap-1.5">
-                              <School className="w-3.5 h-3.5 text-[#172B4D]" />
+                            <span className="text-xs font-bold text-[#203B61] uppercase tracking-wide flex items-center gap-1.5">
+                              <School className="w-3.5 h-3.5 text-[#203B61]" />
                               <span>Filter Classes:</span>
                             </span>
                             <select
@@ -3113,7 +3113,7 @@ Office of the Principal / Academic Administration`
                                 }
                                 e.target.value = '';
                               }}
-                              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold outline-none text-[#172B4D] focus:ring-2 focus:ring-[#93C5FD]/15 focus:border-[#29456D] cursor-pointer"
+                              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold outline-none text-[#203B61] focus:ring-2 focus:ring-[#93C5FD]/15 focus:border-[#2D4D77] cursor-pointer"
                               defaultValue=""
                             >
                               <option value="" disabled>+ Add Class to View...</option>
@@ -3141,13 +3141,13 @@ Office of the Principal / Academic Administration`
                               value={adminTabSearch}
                               onChange={(e) => setAdminTabSearch(e.target.value)}
                               placeholder="Search teacher, subject..."
-                              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-1.5 text-xs font-medium outline-none focus:border-[#29456D] text-[#172B4D] placeholder-slate-400"
+                              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-1.5 text-xs font-medium outline-none focus:border-[#2D4D77] text-[#203B61] placeholder-slate-400"
                             />
                             {adminTabSearch && (
                               <button
                                 type="button"
                                 onClick={() => setAdminTabSearch('')}
-                                className="absolute right-2.5 top-2 text-slate-500 hover:text-[#172B4D]"
+                                className="absolute right-2.5 top-2 text-slate-500 hover:text-[#203B61]"
                               >
                                 <X className="w-3.5 h-3.5" />
                               </button>
@@ -3161,8 +3161,8 @@ Office of the Principal / Academic Administration`
                               onClick={() => setRunningClassesViewMode('cards')}
                               className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                                 runningClassesViewMode === 'cards'
-                                  ? 'bg-[#FFFFFF] text-[#172B4D] shadow-xs'
-                                  : 'text-slate-500 hover:text-[#172B4D]'
+                                  ? 'bg-[#FFFFFF] text-[#203B61] shadow-xs'
+                                  : 'text-slate-500 hover:text-[#203B61]'
                               }`}
                               title="Grid Cards View"
                             >
@@ -3174,8 +3174,8 @@ Office of the Principal / Academic Administration`
                               onClick={() => setRunningClassesViewMode('table')}
                               className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                                 runningClassesViewMode === 'table'
-                                  ? 'bg-[#FFFFFF] text-[#172B4D] shadow-xs'
-                                  : 'text-slate-500 hover:text-[#172B4D]'
+                                  ? 'bg-[#FFFFFF] text-[#203B61] shadow-xs'
+                                  : 'text-slate-500 hover:text-[#203B61]'
                               }`}
                               title="Compact Table View"
                             >
@@ -3195,7 +3195,7 @@ Office of the Principal / Academic Administration`
                           {selectedRunningClasses.map(clsKey => (
                             <span
                               key={clsKey}
-                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-[#172B4D] border border-slate-200"
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-[#203B61] border border-slate-200"
                             >
                               <span>Class {clsKey}</span>
                               <button
@@ -3221,10 +3221,10 @@ Office of the Principal / Academic Administration`
                     {/* Classes Display: Grid View or Table View */}
                     {filteredRunningClasses.length === 0 ? (
                       <div className="bg-[#FFFFFF] border border-dashed border-slate-200 rounded-2xl p-12 text-center space-y-3">
-                        <div className="w-12 h-12 bg-slate-50 text-[#172B4D] rounded-full flex items-center justify-center text-xl mx-auto border border-slate-200">
+                        <div className="w-12 h-12 bg-slate-50 text-[#203B61] rounded-full flex items-center justify-center text-xl mx-auto border border-slate-200">
                           🔍
                         </div>
-                        <h4 className="text-base font-bold text-[#172B4D]">No Classes Matching Current Filters</h4>
+                        <h4 className="text-base font-bold text-[#203B61]">No Classes Matching Current Filters</h4>
                         <p className="text-xs text-slate-500 max-w-md mx-auto">
                           No active classroom sessions match your punctuality status or class selection filter.
                         </p>
@@ -3236,7 +3236,7 @@ Office of the Principal / Academic Administration`
                               setSelectedRunningClasses([]);
                               setAdminTabSearch('');
                             }}
-                            className="px-4 py-2 bg-[#29456D] hover:bg-blue-900 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-xs"
+                            className="px-4 py-2 bg-[#2D4D77] hover:bg-blue-900 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-xs"
                           >
                             Reset All Filters
                           </button>
@@ -3291,10 +3291,10 @@ Office of the Principal / Academic Administration`
                                 <div className="flex justify-between items-start gap-2 mb-2">
                                   <div>
                                     <div className="flex items-center gap-1.5">
-                                      <h4 className="font-bold text-base text-[#172B4D]">{item.className}</h4>
+                                      <h4 className="font-bold text-base text-[#203B61]">{item.className}</h4>
                                       <span className="text-[10px] font-semibold text-slate-500 font-mono">({item.room})</span>
                                     </div>
-                                    <span className="text-[11px] text-[#172B4D] font-semibold font-mono">
+                                    <span className="text-[11px] text-[#203B61] font-semibold font-mono">
                                       Period {item.period} • {item.timeSlot}
                                     </span>
                                   </div>
@@ -3305,8 +3305,8 @@ Office of the Principal / Academic Administration`
 
                                 {/* Subject */}
                                 <div className="my-2.5 pt-2 border-t border-slate-200/70">
-                                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#172B4D]">
-                                    <BookOpen className="w-3.5 h-3.5 text-[#172B4D]" />
+                                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#203B61]">
+                                    <BookOpen className="w-3.5 h-3.5 text-[#203B61]" />
                                     <span>{item.subjectName}</span>
                                   </div>
                                 </div>
@@ -3325,8 +3325,8 @@ Office of the Principal / Academic Administration`
                                 ) : (
                                   <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-xs my-2 space-y-1.5">
                                     <div className="flex items-center justify-between">
-                                      <div className="font-bold text-[#172B4D] flex items-center gap-2">
-                                        <div className="w-5 h-5 rounded-full bg-[#e2e8f0] text-[#172B4D] flex items-center justify-center text-[10px] font-black">
+                                      <div className="font-bold text-[#203B61] flex items-center gap-2">
+                                        <div className="w-5 h-5 rounded-full bg-[#e2e8f0] text-[#203B61] flex items-center justify-center text-[10px] font-black">
                                           {item.teacherName.charAt(0)}
                                         </div>
                                         <span className="truncate max-w-[150px]">{item.teacherName}</span>
@@ -3345,7 +3345,7 @@ Office of the Principal / Academic Administration`
                                     {item.checkInTime && (
                                       <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-slate-200/60">
                                         <span className="text-slate-500">Check-In:</span>
-                                        <span className="font-mono font-bold text-[#172B4D]">{item.checkInTime}</span>
+                                        <span className="font-mono font-bold text-[#203B61]">{item.checkInTime}</span>
                                       </div>
                                     )}
 
@@ -3387,9 +3387,9 @@ Office of the Principal / Academic Administration`
                                         getLocalDateString(),
                                         item.periodEntryId || item.id
                                       )}
-                                      className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-[#29456D] hover:bg-blue-900 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs"
+                                      className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-[#2D4D77] hover:bg-blue-900 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs"
                                     >
-                                      <RefreshCw className="w-3.5 h-3.5 text-[#172B4D]" />
+                                      <RefreshCw className="w-3.5 h-3.5 text-[#203B61]" />
                                       <span>Assign Substitute Faculty</span>
                                     </button>
                                   </div>
@@ -3474,7 +3474,7 @@ Office of the Principal / Academic Administration`
                         <div className="overflow-x-auto">
                           <table className="w-full text-left text-xs border-collapse">
                             <thead>
-                              <tr className="bg-slate-50 border-b border-slate-200 text-[#172B4D] font-extrabold uppercase tracking-wider text-[11px]">
+                              <tr className="bg-slate-50 border-b border-slate-200 text-[#203B61] font-extrabold uppercase tracking-wider text-[11px]">
                                 <th className="py-3 px-4">Class & Room</th>
                                 <th className="py-3 px-4">Period & Time</th>
                                 <th className="py-3 px-4">Subject</th>
@@ -3496,25 +3496,25 @@ Office of the Principal / Academic Administration`
                                       item.isVacant ? 'bg-[#FEF2F2]/50' : ''
                                     }`}
                                   >
-                                    <td className="py-3.5 px-4 font-bold text-[#172B4D]">
-                                      <div className="font-bold text-sm text-[#172B4D]">{item.className}</div>
+                                    <td className="py-3.5 px-4 font-bold text-[#203B61]">
+                                      <div className="font-bold text-sm text-[#203B61]">{item.className}</div>
                                       <div className="text-[10px] text-slate-500 font-mono">{item.room} • {item.board}</div>
                                     </td>
                                     <td className="py-3.5 px-4 font-mono">
-                                      <div className="font-bold text-[#172B4D]">Period {item.period}</div>
+                                      <div className="font-bold text-[#203B61]">Period {item.period}</div>
                                       <div className="text-[10px] text-slate-500">{item.timeSlot}</div>
                                     </td>
-                                    <td className="py-3.5 px-4 font-semibold text-[#172B4D]">
+                                    <td className="py-3.5 px-4 font-semibold text-[#203B61]">
                                       {item.subjectName}
                                     </td>
                                     <td className="py-3.5 px-4">
-                                      <div className="font-bold text-[#172B4D]">{item.teacherName}</div>
+                                      <div className="font-bold text-[#203B61]">{item.teacherName}</div>
                                       <div className="text-[10px] font-mono text-slate-500">{item.employeeId}</div>
                                       {item.isSubstitute && (
                                         <div className="text-[10px] text-[#6B46C1] font-semibold">↳ Sub: {item.substituteName}</div>
                                       )}
                                     </td>
-                                    <td className="py-3.5 px-4 font-mono font-medium text-[#172B4D]">
+                                    <td className="py-3.5 px-4 font-mono font-medium text-[#203B61]">
                                       {item.checkInTime || '—'}
                                     </td>
                                     <td className="py-3.5 px-4 text-center">
@@ -3560,7 +3560,7 @@ Office of the Principal / Academic Administration`
                                             getLocalDateString(),
                                             item.periodEntryId || item.id
                                           )}
-                                          className="px-3.5 py-1.5 bg-[#29456D] hover:bg-blue-900 text-white font-bold text-xs rounded-xl transition-all cursor-pointer shadow-xs"
+                                          className="px-3.5 py-1.5 bg-[#2D4D77] hover:bg-blue-900 text-white font-bold text-xs rounded-xl transition-all cursor-pointer shadow-xs"
                                         >
                                           🔄 Assign Sub
                                         </button>
@@ -3640,7 +3640,7 @@ Office of the Principal / Academic Administration`
                                 📋 {dashboardDayFilter === 'Today' ? `Today's Timetable (${effectiveGridDay})` : `${dashboardDayFilter}'s Timetable`}
                               </h3>
                               {dashboardClassFilter !== 'All' && targetClassObj && (
-                                <span className="text-xs bg-blue-50 text-[#172B4D] font-bold px-3 py-1 rounded-full border border-blue-200 shadow-2xs">
+                                <span className="text-xs bg-blue-50 text-[#203B61] font-bold px-3 py-1 rounded-full border border-blue-200 shadow-2xs">
                                   Class {targetClassObj.standard} - {targetClassObj.section}
                                 </span>
                               )}
@@ -3649,7 +3649,7 @@ Office of the Principal / Academic Administration`
                               <button
                                 type="button"
                                 onClick={() => setActiveAdminTab('weeklyTimetable')}
-                                className="text-xs font-bold text-[#172B4D] bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3.5 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                                className="text-xs font-bold text-[#203B61] bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3.5 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
                               >
                                 <span>📅</span> View Full Weekly Timetable
                               </button>
@@ -3684,7 +3684,7 @@ Office of the Principal / Academic Administration`
                                 <button
                                   type="button"
                                   onClick={() => setActiveAdminTab('weeklyTimetable')}
-                                  className="px-3 py-1.5 bg-[#29456D] hover:bg-[#29456D]/90 text-white font-bold text-xs rounded-xl transition-all shadow-2xs cursor-pointer"
+                                  className="px-3 py-1.5 bg-[#2D4D77] hover:bg-[#2D4D77]/90 text-white font-bold text-xs rounded-xl transition-all shadow-2xs cursor-pointer"
                                 >
                                   🗓️ Weekly Matrix
                                 </button>
@@ -3700,7 +3700,7 @@ Office of the Principal / Academic Administration`
                                 <button
                                   type="button"
                                   onClick={() => setActiveAdminTab('weeklyTimetable')}
-                                  className="px-4 py-2 bg-[#29456D] text-white rounded-xl text-xs font-bold shadow-xs hover:bg-[#29456D]/90 transition-all cursor-pointer"
+                                  className="px-4 py-2 bg-[#2D4D77] text-white rounded-xl text-xs font-bold shadow-xs hover:bg-[#2D4D77]/90 transition-all cursor-pointer"
                                 >
                                   📅 Open Weekly Timetable
                                 </button>
@@ -3731,7 +3731,7 @@ Office of the Principal / Academic Administration`
                       </div>
                       <div className="flex items-center gap-2">
                         {dashboardClassFilter !== 'All' && (
-                          <span className="text-xs bg-blue-50 text-[#172B4D] font-bold px-3 py-1 rounded-full border border-blue-200 shadow-2xs">
+                          <span className="text-xs bg-blue-50 text-[#203B61] font-bold px-3 py-1 rounded-full border border-blue-200 shadow-2xs">
                             Filtered: {dashboardClassFilter}
                           </span>
                         )}
@@ -3774,7 +3774,7 @@ Office of the Principal / Academic Administration`
                                   <tr key={idx} className="hover:bg-blue-50/20 transition-colors">
                                     <td className="py-3.5 px-4">
                                       <div className="flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#172B4D] to-[#29456D] text-white flex items-center justify-center text-xs font-black shadow-xs shrink-0">
+                                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#203B61] to-[#2D4D77] text-white flex items-center justify-center text-xs font-black shadow-xs shrink-0">
                                           {initials}
                                         </div>
                                         <div>
@@ -3799,7 +3799,7 @@ Office of the Principal / Academic Administration`
                                           t.subjects.map((s, i) => (
                                             <span
                                               key={i}
-                                              className="bg-blue-50 text-[#172B4D] border border-blue-200/80 px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-2xs flex items-center gap-1"
+                                              className="bg-blue-50 text-[#203B61] border border-blue-200/80 px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-2xs flex items-center gap-1"
                                             >
                                               <span>📖</span> {s.name}
                                             </span>
@@ -3843,7 +3843,7 @@ Office of the Principal / Academic Administration`
                           🏫 Class Schedule — {dashboardDayFilter === 'Today' ? 'Today' : dashboardDayFilter}
                         </h3>
                         {dashboardClassFilter !== 'All' && (
-                          <span className="text-xs bg-blue-50 text-[#172B4D] font-bold px-3 py-1 rounded-full border border-blue-200 shadow-2xs">
+                          <span className="text-xs bg-blue-50 text-[#203B61] font-bold px-3 py-1 rounded-full border border-blue-200 shadow-2xs">
                             {(() => {
                               const c = (allClasses || adminData?.allClasses || []).find(x => x._id?.toString() === dashboardClassFilter || x.id?.toString() === dashboardClassFilter || `${x.standard}-${x.section}` === dashboardClassFilter);
                               return c ? `Class ${c.standard}-${c.section} (${c.board || 'CBSE'})` : dashboardClassFilter;
@@ -3871,7 +3871,7 @@ Office of the Principal / Academic Administration`
                                   {cls.roomNumber && <span className="text-xs font-normal text-stone-500 bg-white border border-stone-200 px-2 py-0.5 rounded-md">Room: {cls.roomNumber}</span>}
                                 </h4>
                                 <p className="text-xs text-stone-500 mt-1">
-                                  Total Students: <strong className="text-stone-800">{cls.strength}</strong> • Scheduled Periods: <strong className="text-[#172B4D]">{cls.periods.length}</strong>
+                                  Total Students: <strong className="text-stone-800">{cls.strength}</strong> • Scheduled Periods: <strong className="text-[#203B61]">{cls.periods.length}</strong>
                                 </p>
                               </div>
                               <span className="text-xs font-bold text-stone-600 bg-white border border-stone-200 px-3 py-1 rounded-xl">
@@ -3914,7 +3914,7 @@ Office of the Principal / Academic Administration`
                                       <button
                                         type="button"
                                         onClick={() => setActiveAdminTab('weeklyTimetable')}
-                                        className="px-2.5 py-1 bg-[#29456D] hover:bg-[#29456D]/90 text-white font-bold text-xs rounded-lg transition-all shadow-2xs cursor-pointer"
+                                        className="px-2.5 py-1 bg-[#2D4D77] hover:bg-[#2D4D77]/90 text-white font-bold text-xs rounded-lg transition-all shadow-2xs cursor-pointer"
                                       >
                                         Weekly Matrix
                                       </button>
@@ -3956,7 +3956,7 @@ Office of the Principal / Academic Administration`
                                         </p>
                                         <div className="pt-1">
                                           <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-extrabold ${
-                                            pEntry.taken ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-blue-100 text-[#172B4D] border border-blue-200'
+                                            pEntry.taken ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-blue-100 text-[#203B61] border border-blue-200'
                                           }`}>
                                             {pEntry.taken ? '✓ Taken' : 'Scheduled'}
                                           </span>
@@ -4016,7 +4016,7 @@ Office of the Principal / Academic Administration`
                                             <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-extrabold border ${
                                               pEntry.taken
                                                 ? 'bg-emerald-100/90 text-emerald-800 border-emerald-300'
-                                                : 'bg-blue-100/80 text-[#172B4D] border-blue-200'
+                                                : 'bg-blue-100/80 text-[#203B61] border-blue-200'
                                             }`}>
                                               {pEntry.taken ? '✓ Taken' : 'Scheduled'}
                                             </span>
@@ -4092,12 +4092,12 @@ Office of the Principal / Academic Administration`
                       </div>
 
                       <div className="bg-white border border-stone-200 rounded-xl p-3 shadow-2xs flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-blue-50 text-[#172B4D] flex items-center justify-center font-bold text-base">
+                        <div className="w-9 h-9 rounded-lg bg-blue-50 text-[#203B61] flex items-center justify-center font-bold text-base">
                           📚
                         </div>
                         <div>
                           <div className="text-[10px] uppercase font-bold text-stone-400">Active Sessions</div>
-                          <div className="text-base font-black text-[#172B4D]">
+                          <div className="text-base font-black text-[#203B61]">
                             {activityLogsList.reduce((acc, cur) => acc + (cur.classLogins?.length || 0), 0)} Logged
                           </div>
                         </div>
@@ -4125,7 +4125,7 @@ Office of the Principal / Academic Administration`
                             <div key={idx} className="border border-stone-200 rounded-2xl bg-white shadow-2xs overflow-hidden transition-all hover:shadow-xs">
                               <div className="bg-stone-50/70 px-4 py-3.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-stone-200/60">
                                 <div className="flex items-center gap-3">
-                                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#172B4D] to-[#29456D] text-white flex items-center justify-center text-xs font-black shadow-2xs shrink-0">
+                                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#203B61] to-[#2D4D77] text-white flex items-center justify-center text-xs font-black shadow-2xs shrink-0">
                                     {initials}
                                   </div>
                                   <div>
@@ -4165,9 +4165,9 @@ Office of the Principal / Academic Administration`
                                     <strong className="font-mono text-stone-900">{t.schoolLogout}</strong>
                                   </div>
 
-                                  <div className="flex items-center gap-1.5 bg-blue-50/70 border border-blue-200 px-3 py-1 rounded-xl text-[#172B4D] text-xs font-bold">
+                                  <div className="flex items-center gap-1.5 bg-blue-50/70 border border-blue-200 px-3 py-1 rounded-xl text-[#203B61] text-xs font-bold">
                                     <span>📚 Classes:</span>
-                                    <strong className="text-[#172B4D]">{t.totalClassesTaken}</strong>
+                                    <strong className="text-[#203B61]">{t.totalClassesTaken}</strong>
                                   </div>
                                 </div>
                               </div>
@@ -4272,7 +4272,7 @@ Office of the Principal / Academic Administration`
                                     <tr key={idx} className="hover:bg-blue-50/20 transition-colors">
                                       <td className="py-3.5 px-4">
                                         <div className="flex items-center gap-3">
-                                          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#172B4D] to-[#29456D] text-white flex items-center justify-center text-xs font-black shadow-2xs shrink-0">
+                                          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#203B61] to-[#2D4D77] text-white flex items-center justify-center text-xs font-black shadow-2xs shrink-0">
                                             {initials}
                                           </div>
                                           <div>
@@ -4312,7 +4312,7 @@ Office of the Principal / Academic Administration`
                                           onClick={() => handleReviewLeave(req)}
                                           className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all shadow-2xs cursor-pointer inline-flex items-center gap-1.5 ${
                                             isPending
-                                              ? 'bg-[#172B4D] hover:bg-[#29456D] text-white shadow-xs'
+                                              ? 'bg-[#203B61] hover:bg-[#2D4D77] text-white shadow-xs'
                                               : 'bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200'
                                           }`}
                                         >
@@ -4364,14 +4364,14 @@ Office of the Principal / Academic Administration`
 
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <h4 className="text-xs font-bold text-[#172B4D] uppercase tracking-widest">
+                  <h4 className="text-xs font-bold text-[#203B61] uppercase tracking-widest">
                     Allocate Alternative Period Substitute Teachers
                   </h4>
                   {suggestions.length > 0 && !showManualAlternate && (
                     <button
                       type="button"
                       onClick={() => setShowManualAlternate(true)}
-                      className="text-[#172B4D] hover:text-[#172B4D] text-[10px] font-bold underline focus:outline-none"
+                      className="text-[#203B61] hover:text-[#203B61] text-[10px] font-bold underline focus:outline-none"
                     >
                       ➕ Create Manually
                     </button>
@@ -4401,7 +4401,7 @@ Office of the Principal / Academic Administration`
                         <select
                           value={manualClassId}
                           onChange={(e) => setManualClassId(e.target.value)}
-                          className="bg-white border border-stone-200 text-stone-850 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#29456D] font-bold"
+                          className="bg-white border border-stone-200 text-stone-850 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#2D4D77] font-bold"
                         >
                           <option value="">-- Select Class --</option>
                           {allClasses.map(cls => (
@@ -4418,7 +4418,7 @@ Office of the Principal / Academic Administration`
                         <select
                           value={manualPeriod}
                           onChange={(e) => setManualPeriod(Number(e.target.value))}
-                          className="bg-white border border-stone-200 text-stone-850 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#29456D] font-bold"
+                          className="bg-white border border-stone-200 text-stone-850 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#2D4D77] font-bold"
                         >
                           {[1, 2, 3, 4, 5, 6].map(pNum => (
                             <option key={pNum} value={pNum}>
@@ -4436,7 +4436,7 @@ Office of the Principal / Academic Administration`
                           value={manualSubjectName}
                           onChange={(e) => setManualSubjectName(e.target.value)}
                           placeholder="e.g. maths, science"
-                          className="bg-white border border-stone-200 text-stone-850 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#29456D] font-bold"
+                          className="bg-white border border-stone-200 text-stone-850 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#2D4D77] font-bold"
                         />
                       </div>
 
@@ -4446,7 +4446,7 @@ Office of the Principal / Academic Administration`
                         <select
                           value={manualTeacherId}
                           onChange={(e) => setManualTeacherId(e.target.value)}
-                          className="bg-white border border-stone-200 text-stone-850 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#29456D] font-bold"
+                          className="bg-white border border-stone-200 text-stone-850 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#2D4D77] font-bold"
                         >
                           <option value="">-- Select Teacher --</option>
                           {adminData?.allTeachers?.map(teacher => (
@@ -4461,7 +4461,7 @@ Office of the Principal / Academic Administration`
                       <button
                         type="button"
                         onClick={() => setShowManualAlternate(false)}
-                        className="text-[#172B4D] hover:text-[#172B4D] text-[10px] font-bold underline"
+                        className="text-[#203B61] hover:text-[#203B61] text-[10px] font-bold underline"
                       >
                         ← Back to Auto Suggestions
                       </button>
@@ -4488,7 +4488,7 @@ Office of the Principal / Academic Administration`
                                   ...prev,
                                   [slot.periodEntryId]: e.target.value
                                 }))}
-                                className="bg-white border border-stone-200 text-stone-800 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#29456D] w-48 font-bold"
+                                className="bg-white border border-stone-200 text-stone-800 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#2D4D77] w-48 font-bold"
                               >
                                 <option value="">-- Select Teacher --</option>
                                 {adminData?.allTeachers?.map(teacher => (
@@ -4505,7 +4505,7 @@ Office of the Principal / Academic Administration`
                                   [slot.periodEntryId]: e.target.value
                                 }))}
                                 placeholder="Subject Name"
-                                className="bg-white border border-stone-200 text-stone-800 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#29456D] w-40 font-bold"
+                                className="bg-white border border-stone-200 text-stone-800 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#2D4D77] w-40 font-bold"
                               />
                             </>
                           ) : (
@@ -4521,7 +4521,7 @@ Office of the Principal / Academic Administration`
                                     ...prev,
                                     [slot.periodEntryId]: e.target.value
                                   }))}
-                                  className="bg-white border border-stone-200 text-stone-800 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#29456D] w-48 font-bold"
+                                  className="bg-white border border-stone-200 text-stone-800 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#2D4D77] w-48 font-bold"
                                 >
                                   {slot.candidates.map(candidate => (
                                     <option key={candidate.teacherId} value={candidate.teacherId}>
@@ -4538,7 +4538,7 @@ Office of the Principal / Academic Administration`
                                   [slot.periodEntryId]: e.target.value
                                 }))}
                                 placeholder="Subject Name"
-                                className="bg-white border border-stone-200 text-stone-800 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#29456D] w-40 font-bold"
+                                className="bg-white border border-stone-200 text-stone-800 text-xs rounded-lg px-3 py-2 outline-none focus:border-[#2D4D77] w-40 font-bold"
                               />
                             </>
                           )}
@@ -4573,7 +4573,7 @@ Office of the Principal / Academic Administration`
                 <button
                   onClick={activeRequest.isDirect ? handleSaveDirectSubstitute : () => handleApproveLeave('Approved')}
                   disabled={isApprovingLeave || (!showManualAlternate && suggestions.length === 0 && !activeRequest.isDirect)}
-                  className="px-4 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white font-black text-xs rounded-xl transition-all shadow-md disabled:opacity-50"
+                  className="px-4 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white font-black text-xs rounded-xl transition-all shadow-md disabled:opacity-50"
                 >
                   {isApprovingLeave ? 'Processing...' : activeRequest.isDirect ? 'Arrange Alternate' : 'Approve & Arrange'}
                 </button>
@@ -4628,7 +4628,7 @@ Office of the Principal / Academic Administration`
                           setDismissedAlerts(prev => [...prev, alert._id]);
                           handleArrangeSubstituteDirect(alert.teacherId, alert.teacher, todayStr, alert._id);
                         }}
-                        className="px-3 py-1.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-black rounded-lg text-[10px] shadow-sm transition-all"
+                        className="px-3 py-1.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-black rounded-lg text-[10px] shadow-sm transition-all"
                       >
                         🔄 Arrange Substitute
                       </button>
@@ -4682,7 +4682,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={schedTeacherId}
                       onChange={(e) => setSchedTeacherId(e.target.value)}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#29456D] text-stone-800 font-medium"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#2D4D77] text-stone-800 font-medium"
                     >
                       {adminData?.allTeachers?.map(t => (
                         <option key={t._id} value={t._id}>{t.name} ({t.employeeId})</option>
@@ -4697,7 +4697,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={schedStandard}
                       onChange={(e) => setSchedStandard(e.target.value)}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#29456D] text-stone-800 font-medium"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#2D4D77] text-stone-800 font-medium"
                     >
                       {['Nursery', 'LKG', 'UKG', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'].map(std => (
                         <option key={std} value={std}>{std} Class</option>
@@ -4709,7 +4709,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={schedSection}
                       onChange={(e) => setSchedSection(e.target.value)}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#29456D] text-stone-800 font-medium"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#2D4D77] text-stone-800 font-medium"
                     >
                       {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'].map(sec => (
                         <option key={sec} value={sec}>Section {sec}</option>
@@ -4728,7 +4728,7 @@ Office of the Principal / Academic Administration`
                         onClick={() => setSchedBoard(b)}
                         className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
                           schedBoard === b
-                            ? 'bg-[#29456D]/10 border-[#29456D] text-[#172B4D] shadow-md'
+                            ? 'bg-[#2D4D77]/10 border-[#2D4D77] text-[#203B61] shadow-md'
                             : 'bg-stone-50 border-stone-200 text-stone-600 hover:border-stone-300'
                         }`}
                       >
@@ -4746,7 +4746,7 @@ Office of the Principal / Academic Administration`
                     placeholder="e.g. Mathematics, Science, English"
                     value={schedSubject}
                     onChange={(e) => setSchedSubject(e.target.value)}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#29456D] text-stone-800 placeholder-stone-400"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#2D4D77] text-stone-800 placeholder-stone-400"
                   />
                 </div>
 
@@ -4756,7 +4756,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={schedPeriod}
                       onChange={(e) => handlePeriodChange(Number(e.target.value))}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#29456D] text-stone-800 font-medium"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#2D4D77] text-stone-800 font-medium"
                     >
                       {calculatedPeriods.map(p => (
                         <option key={p.period} value={p.period}>Period {p.period}</option>
@@ -4771,7 +4771,7 @@ Office of the Principal / Academic Administration`
                       placeholder="e.g. 09:00-09:45"
                       value={schedTimeSlot}
                       onChange={(e) => setSchedTimeSlot(e.target.value)}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#29456D] text-stone-800 font-mono"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#2D4D77] text-stone-800 font-mono"
                     />
                   </div>
                 </div>
@@ -4784,7 +4784,7 @@ Office of the Principal / Academic Administration`
                       onClick={() => setSchedType('auto')}
                       className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all text-left flex flex-col justify-center gap-0.5 ${
                         schedType === 'auto'
-                          ? 'bg-[#29456D]/10 border-[#29456D] text-[#172B4D]'
+                          ? 'bg-[#2D4D77]/10 border-[#2D4D77] text-[#203B61]'
                           : 'bg-stone-50 border-stone-200 text-stone-600'
                       }`}
                     >
@@ -4796,7 +4796,7 @@ Office of the Principal / Academic Administration`
                       onClick={() => setSchedType('manual')}
                       className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all text-left flex flex-col justify-center gap-0.5 ${
                         schedType === 'manual'
-                          ? 'bg-[#29456D]/10 border-[#29456D] text-[#172B4D]'
+                          ? 'bg-[#2D4D77]/10 border-[#2D4D77] text-[#203B61]'
                           : 'bg-stone-50 border-stone-200 text-stone-600'
                       }`}
                     >
@@ -4812,7 +4812,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={schedDay}
                       onChange={(e) => setSchedDay(e.target.value)}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#29456D] text-stone-800 font-medium"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#2D4D77] text-stone-800 font-medium"
                     >
                       {weekdays.map(d => (
                         <option key={d} value={d}>{d}</option>
@@ -4828,7 +4828,7 @@ Office of the Principal / Academic Administration`
                       min={new Date(Date.now() + 86400000).toISOString().split('T')[0]}
                       value={schedDate}
                       onChange={(e) => setSchedDate(e.target.value)}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#29456D] text-stone-800 font-mono"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#2D4D77] text-stone-800 font-mono"
                     />
                   </div>
                 )}
@@ -4845,7 +4845,7 @@ Office of the Principal / Academic Administration`
                 <button
                   type="submit"
                   disabled={isSubmittingSchedule}
-                  className="px-5 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white font-black text-xs rounded-xl transition-all shadow-md disabled:opacity-50"
+                  className="px-5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white font-black text-xs rounded-xl transition-all shadow-md disabled:opacity-50"
                 >
                   {isSubmittingSchedule ? 'Scheduling...' : 'Save Schedule'}
                 </button>
@@ -5171,7 +5171,7 @@ Office of the Principal / Academic Administration`
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h4 className="text-sm font-bold text-[#172B4D]">{selectedLateSession.teacherName}</h4>
+                    <h4 className="text-sm font-bold text-[#203B61]">{selectedLateSession.teacherName}</h4>
                     <span className="text-xs text-slate-500 font-mono">Employee ID: {selectedLateSession.employeeId || 'FAC-N/A'}</span>
                   </div>
                   <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase ${
@@ -5183,7 +5183,7 @@ Office of the Principal / Academic Administration`
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-xs text-[#172B4D] pt-2 border-t border-slate-200/70">
+                <div className="grid grid-cols-2 gap-2 text-xs text-[#203B61] pt-2 border-t border-slate-200/70">
                   <div><strong>Class:</strong> {selectedLateSession.className}</div>
                   <div><strong>Subject:</strong> {selectedLateSession.subjectName}</div>
                   <div><strong>Period:</strong> Period {selectedLateSession.period}</div>
@@ -5193,28 +5193,28 @@ Office of the Principal / Academic Administration`
 
               {/* Subject Input */}
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#172B4D] uppercase tracking-wide">
+                <label className="text-xs font-bold text-[#203B61] uppercase tracking-wide">
                   Notice Subject:
                 </label>
                 <input
                   type="text"
                   value={lateNoticeSubject}
                   onChange={(e) => setLateNoticeSubject(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-semibold outline-none focus:border-[#29456D] text-[#172B4D]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-semibold outline-none focus:border-[#2D4D77] text-[#203B61]"
                   required
                 />
               </div>
 
               {/* Message Textarea */}
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#172B4D] uppercase tracking-wide">
+                <label className="text-xs font-bold text-[#203B61] uppercase tracking-wide">
                   Explanation Request Message:
                 </label>
                 <textarea
                   rows={6}
                   value={lateNoticeMessage}
                   onChange={(e) => setLateNoticeMessage(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium outline-none focus:border-[#29456D] text-[#172B4D] font-mono"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium outline-none focus:border-[#2D4D77] text-[#203B61] font-mono"
                   required
                 />
                 <p className="text-[11px] text-slate-500">
@@ -5227,14 +5227,14 @@ Office of the Principal / Academic Administration`
                 <button
                   type="button"
                   onClick={() => setShowLateNoticeModal(false)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-[#e2e8f0] text-[#172B4D] font-bold text-xs rounded-xl transition-all cursor-pointer"
+                  className="px-4 py-2 bg-slate-100 hover:bg-[#e2e8f0] text-[#203B61] font-bold text-xs rounded-xl transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSendingLateNotice}
-                  className="flex items-center gap-2 px-5 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50"
+                  className="flex items-center gap-2 px-5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50"
                 >
                   {isSendingLateNotice ? <Spinner size="sm" /> : <Send className="w-3.5 h-3.5 text-white" />}
                   <span>{isSendingLateNotice ? 'Issuing Notice...' : 'Dispatch Official Notice'}</span>

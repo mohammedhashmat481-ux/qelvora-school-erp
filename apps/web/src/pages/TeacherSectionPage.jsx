@@ -981,13 +981,13 @@ const TeacherSectionPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col md:flex-row font-sans">
+    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
       <Sidebar />
 
-      <div className="flex-1 bg-[#F7F9FC] p-6 sm:p-8 overflow-y-auto">
-        <header className="mb-6 flex justify-between items-center bg-[#172B4D] border border-[#29456D] shadow-sm rounded-2xl p-6 text-white">
+      <div className="flex-1 bg-[#F5F8FC] p-6 sm:p-8 overflow-y-auto">
+        <header className="mb-6 flex justify-between items-center bg-[#203B61] border border-[#2D4D77] shadow-sm rounded-2xl p-6 text-white">
           <div>
-            <span className="text-[10px] font-bold text-[#DBEAFE] uppercase tracking-widest block mb-1">
+            <span className="text-[10px] font-bold text-[#DCEBFA] uppercase tracking-widest block mb-1">
               Faculty Section &bull; {profileData?.name || 'Academic Portal'}
             </span>
             <h1 className="text-2xl font-black text-white capitalize">
@@ -1022,7 +1022,7 @@ const TeacherSectionPage = () => {
                 onClick={() => navigate(`/teacher-section?tab=${tabItem.id}`)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs whitespace-nowrap transition-all shadow-sm ${
                   isActive
-                    ? 'bg-[#172B4D] text-white shadow-md'
+                    ? 'bg-[#203B61] text-white shadow-md'
                     : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-50 hover:text-stone-900'
                 }`}
               >
@@ -1089,7 +1089,7 @@ const TeacherSectionPage = () => {
                       setModalMode('add');
                       setShowQualModal(true);
                     }}
-                    className="px-3 py-1.5 bg-[#29456D] hover:bg-[#172B4D] text-white text-xs font-bold rounded-xl shadow-sm transition-all"
+                    className="px-3 py-1.5 bg-[#2D4D77] hover:bg-[#203B61] text-white text-xs font-bold rounded-xl shadow-sm transition-all"
                   >
                     ➕ Add Qualification
                   </button>
@@ -1140,7 +1140,7 @@ const TeacherSectionPage = () => {
                       setModalMode('add');
                       setShowExpModal(true);
                     }}
-                    className="px-3 py-1.5 bg-[#29456D] hover:bg-[#172B4D] text-white text-xs font-bold rounded-xl shadow-sm transition-all"
+                    className="px-3 py-1.5 bg-[#2D4D77] hover:bg-[#203B61] text-white text-xs font-bold rounded-xl shadow-sm transition-all"
                   >
                     ➕ Add Experience Record
                   </button>
@@ -1193,7 +1193,7 @@ const TeacherSectionPage = () => {
                 onClick={() => setActiveTimetableTab('today')}
                 className={`flex-1 py-3.5 text-xs font-bold transition-all border-b-2 text-center ${
                   activeTimetableTab === 'today'
-                    ? 'border-[#29456D] text-[#172B4D] bg-white border-b-2 shadow-sm'
+                    ? 'border-[#2D4D77] text-[#203B61] bg-white border-b-2 shadow-sm'
                     : 'border-transparent text-stone-500 hover:text-stone-700 hover:bg-stone-50/50'
                 }`}
               >
@@ -1203,7 +1203,7 @@ const TeacherSectionPage = () => {
                 onClick={() => setActiveTimetableTab('weekly')}
                 className={`flex-1 py-3.5 text-xs font-bold transition-all border-b-2 text-center ${
                   activeTimetableTab === 'weekly'
-                    ? 'border-[#29456D] text-[#172B4D] bg-white border-b-2 shadow-sm'
+                    ? 'border-[#2D4D77] text-[#203B61] bg-white border-b-2 shadow-sm'
                     : 'border-transparent text-stone-500 hover:text-stone-700 hover:bg-stone-50/50'
                 }`}
               >
@@ -1309,16 +1309,16 @@ const TeacherSectionPage = () => {
               {activeTimetableTab === 'weekly' && (
                 <div>
                   {/* Sri Chaitanya Style Header Banner */}
-                  <div className="bg-[#1e2229] text-white p-6 rounded-t-xl border-b-2 border-[#29456D] mb-6 shadow-sm">
+                  <div className="bg-[#1e2229] text-white p-6 rounded-t-xl border-b-2 border-[#2D4D77] mb-6 shadow-sm">
                     <h2 className="text-center font-black text-lg tracking-wider uppercase mb-3 text-white">
                       QELVORA SENIOR SECONDARY SCHOOL
                     </h2>
                     <div className="flex flex-col sm:flex-row justify-between text-xs font-bold px-4 text-stone-300">
                       <div>
-                        CLASS TEACHER: <span className="text-[#172B4D] uppercase font-black">{profileData?.name || 'N/A'}</span>
+                        CLASS TEACHER: <span className="text-[#203B61] uppercase font-black">{profileData?.name || 'N/A'}</span>
                       </div>
                       <div className="mt-1 sm:mt-0">
-                        CLASS: <span className="text-[#172B4D] uppercase font-black">
+                        CLASS: <span className="text-[#203B61] uppercase font-black">
                           {profileData?.classTeacherOf 
                             ? `${profileData.classTeacherOf.standard} ${profileData.classTeacherOf.section}` 
                             : 'N/A'}
@@ -1389,10 +1389,10 @@ const TeacherSectionPage = () => {
                                 <td key={colIdx} className="py-3 px-2 border-r border-stone-200 last:border-r-0 min-h-[50px] align-middle">
                                   {slot ? (
                                     <div className="p-2 rounded-xl bg-blue-50/70 border border-blue-200/80 shadow-2xs text-center">
-                                      <div className="font-extrabold text-[11px] text-[#172B4D] uppercase truncate" title={slot.subjectName || slot.subject || ''}>
+                                      <div className="font-extrabold text-[11px] text-[#203B61] uppercase truncate" title={slot.subjectName || slot.subject || ''}>
                                         {slot.subjectName || slot.subject?.name || (typeof slot.subject === 'string' ? slot.subject : 'Subject')}
                                       </div>
-                                      <div className="text-[10px] text-[#29456D] font-black mt-0.5 uppercase font-mono">
+                                      <div className="text-[10px] text-[#2D4D77] font-black mt-0.5 uppercase font-mono">
                                         {slot.class?.standard ? `Class ${slot.class.standard}-${slot.class.section}` : (slot.standard ? `Class ${slot.standard}-${slot.section}` : '')}
                                       </div>
                                       {slot.room && (
@@ -1437,7 +1437,7 @@ const TeacherSectionPage = () => {
                         onClick={() => setSelectedClassId(cls._id)}
                         className={`w-full text-left px-4 py-3 rounded-xl text-xs font-bold border transition-all flex justify-between items-center ${
                           selectedClassId === cls._id
-                            ? 'bg-[#29456D]/10 border-[#29456D] text-[#405189] shadow-sm'
+                            ? 'bg-[#2D4D77]/10 border-[#2D4D77] text-[#405189] shadow-sm'
                             : 'bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100'
                         }`}
                       >
@@ -1473,8 +1473,8 @@ const TeacherSectionPage = () => {
                         const sRoll = student.rollNumber || (1000 + idx);
                         const sId = student.studentId || student.admissionNumber || `ADM-${1000 + idx}`;
                         return (
-                          <div key={student.id || idx} className="bg-stone-50/50 border border-stone-200 rounded-xl p-4 flex items-center gap-3 hover:border-[#29456D]/40 transition-all">
-                            <div className="w-10 h-10 bg-[#29456D]/10 text-[#172B4D] rounded-full flex items-center justify-center font-bold text-sm">
+                          <div key={student.id || idx} className="bg-stone-50/50 border border-stone-200 rounded-xl p-4 flex items-center gap-3 hover:border-[#2D4D77]/40 transition-all">
+                            <div className="w-10 h-10 bg-[#2D4D77]/10 text-[#203B61] rounded-full flex items-center justify-center font-bold text-sm">
                               {sName.split(' ').map(n => n[0]).join('')}
                             </div>
                             <div>
@@ -1525,7 +1525,7 @@ const TeacherSectionPage = () => {
                   <button
                     onClick={handleSaveMarks}
                     disabled={savingMarks || marksRoster.length === 0}
-                    className="px-5 py-2.5 bg-[#172B4D] hover:bg-[#29456D] text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+                    className="px-5 py-2.5 bg-[#203B61] hover:bg-[#2D4D77] text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer"
                   >
                     <CheckCheck className="w-4 h-4" />
                     <span>{savingMarks ? 'Saving...' : 'Save & Sync Marks'}</span>
@@ -1542,7 +1542,7 @@ const TeacherSectionPage = () => {
                   <select
                     value={selectedExamId}
                     onChange={(e) => setSelectedExamId(e.target.value)}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-stone-800 outline-none focus:border-[#2D4D77]"
                   >
                     {examList.length === 0 ? (
                       <option value="">No Examinations Found</option>
@@ -1563,7 +1563,7 @@ const TeacherSectionPage = () => {
                   <select
                     value={selectedMarksClass}
                     onChange={(e) => setSelectedMarksClass(e.target.value)}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-stone-800 outline-none focus:border-[#2D4D77]"
                   >
                     {uniqueClasses.length === 0 ? (
                       <option value="">No Classes Allocated</option>
@@ -1584,7 +1584,7 @@ const TeacherSectionPage = () => {
                   <select
                     value={selectedMarksSubject}
                     onChange={(e) => setSelectedMarksSubject(e.target.value)}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-stone-800 outline-none focus:border-[#2D4D77]"
                   >
                     {availableMarksSubjects.map(sub => (
                       <option key={sub} value={sub}>
@@ -1664,7 +1664,7 @@ const TeacherSectionPage = () => {
                                 className={`w-24 text-center py-1.5 px-2 border rounded-lg font-black text-xs outline-none transition-all ${
                                   item.isAbsent
                                     ? 'bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'
-                                    : 'bg-stone-50 border-stone-300 focus:border-[#29456D] text-stone-850'
+                                    : 'bg-stone-50 border-stone-300 focus:border-[#2D4D77] text-stone-850'
                                 }`}
                               />
                             </td>
@@ -1705,7 +1705,7 @@ const TeacherSectionPage = () => {
                                 placeholder="Add remark..."
                                 value={item.remarks}
                                 onChange={(e) => handleMarkChange(item.studentId, 'remarks', e.target.value)}
-                                className="w-full bg-stone-50 border border-stone-200 rounded-lg px-3 py-1.5 text-xs text-stone-700 outline-none focus:border-[#29456D]"
+                                className="w-full bg-stone-50 border border-stone-200 rounded-lg px-3 py-1.5 text-xs text-stone-700 outline-none focus:border-[#2D4D77]"
                               />
                             </td>
                           </tr>
@@ -1726,7 +1726,7 @@ const TeacherSectionPage = () => {
                 <button
                   onClick={handleSaveMarks}
                   disabled={savingMarks || marksRoster.length === 0}
-                  className="px-6 py-2.5 bg-[#172B4D] hover:bg-[#29456D] text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2.5 bg-[#203B61] hover:bg-[#2D4D77] text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-2 disabled:opacity-50"
                 >
                   <CheckCheck className="w-4 h-4" />
                   <span>{savingMarks ? 'Saving...' : 'Save & Sync Marks'}</span>
@@ -1762,7 +1762,7 @@ const TeacherSectionPage = () => {
                   });
                   setShowAddHwModal(true);
                 }}
-                className="px-4 py-2.5 bg-[#172B4D] hover:bg-[#29456D] text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                className="px-4 py-2.5 bg-[#203B61] hover:bg-[#2D4D77] text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-2 cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>Assign New Homework</span>
@@ -1901,7 +1901,7 @@ const TeacherSectionPage = () => {
                 <select value={reportYear} onChange={e => setReportYear(+e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 text-gray-855 font-bold">
                   {[2024,2025,2026,2027].map(y => <option key={y} value={y}>{y}</option>)}
                 </select>
-                <button onClick={() => fetchDetails(profileData?.employeeId)} className="px-4 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white rounded-lg text-sm font-bold transition-all">Load Report</button>
+                <button onClick={() => fetchDetails(profileData?.employeeId)} className="px-4 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white rounded-lg text-sm font-bold transition-all">Load Report</button>
                 <button onClick={() => handleExport('details')} disabled={exportingType==='details'} className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 disabled:opacity-50 flex items-center gap-1 shadow-md">
                   {exportingType==='details' ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span> : '📥'} Export to Excel
                 </button>
@@ -2027,7 +2027,7 @@ const TeacherSectionPage = () => {
             {/* Request Leave Form Card */}
             <div className="lg:col-span-1 bg-white border border-[#e9ebec] shadow-sm rounded p-6 h-fit space-y-6">
               <div>
-                <span className="text-[10px] font-bold text-[#172B4D] uppercase tracking-widest block mb-1">
+                <span className="text-[10px] font-bold text-[#203B61] uppercase tracking-widest block mb-1">
                   Leave Management
                 </span>
                 <h3 className="text-base font-black text-stone-850 flex items-center gap-2">
@@ -2044,7 +2044,7 @@ const TeacherSectionPage = () => {
                     value={leaveDate}
                     min={new Date().toISOString().split('T')[0]}
                     onChange={(e) => setLeaveDate(e.target.value)}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#29456D] text-stone-800"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#2D4D77] text-stone-800"
                   />
                 </div>
                 <div>
@@ -2055,13 +2055,13 @@ const TeacherSectionPage = () => {
                     value={leaveReason}
                     placeholder="Provide details about family emergency, medical leave, personal leave, etc."
                     onChange={(e) => setLeaveReason(e.target.value)}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#29456D] text-stone-800 placeholder-stone-400 resize-none"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#2D4D77] text-stone-800 placeholder-stone-400 resize-none"
                   ></textarea>
                 </div>
                 <button
                   type="submit"
                   disabled={isSubmittingLeave}
-                  className="w-full py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-black text-xs rounded-xl shadow-md transition-all disabled:opacity-50"
+                  className="w-full py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-black text-xs rounded-xl shadow-md transition-all disabled:opacity-50"
                 >
                   {isSubmittingLeave ? 'Filing leave...' : 'Submit Request'}
                 </button>
@@ -2169,7 +2169,7 @@ const TeacherSectionPage = () => {
                   <div className="bg-white border border-[#e9ebec] shadow-sm rounded-2xl p-6 text-center space-y-2">
                     <span className="text-3xl">📈</span>
                     <h4 className="text-xs font-bold text-stone-450 uppercase tracking-widest">Satisfaction Rate</h4>
-                    <p className="text-4xl font-black text-[#172B4D]">
+                    <p className="text-4xl font-black text-[#203B61]">
                       {feedbackAnalytics.totalReviews > 0
                         ? `${Math.round((((feedbackAnalytics.distribution?.[5] || feedbackAnalytics.ratingDistribution?.[5] || 0) + (feedbackAnalytics.distribution?.[4] || feedbackAnalytics.ratingDistribution?.[4] || 0)) / feedbackAnalytics.totalReviews) * 100)}%`
                         : '0%'}
@@ -2304,7 +2304,7 @@ const TeacherSectionPage = () => {
                     required
                     value={profileForm.name}
                     onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#2D4D77]"
                   />
                 </div>
                 <div>
@@ -2314,7 +2314,7 @@ const TeacherSectionPage = () => {
                     required
                     value={profileForm.email}
                     onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#2D4D77]"
                   />
                 </div>
                 <div>
@@ -2323,13 +2323,13 @@ const TeacherSectionPage = () => {
                     type="text"
                     value={profileForm.phone}
                     onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#2D4D77]"
                   />
                 </div>
               </div>
               <div className="bg-stone-50 px-6 py-4 border-t border-stone-200 flex justify-end gap-2">
                 <button type="button" onClick={() => setShowProfileModal(false)} className="px-4 py-2 border border-stone-200 text-stone-500 rounded-xl text-xs font-bold hover:bg-stone-100">Cancel</button>
-                <button type="submit" className="px-5 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white font-black text-xs rounded-xl shadow-md">Save Details</button>
+                <button type="submit" className="px-5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white font-black text-xs rounded-xl shadow-md">Save Details</button>
               </div>
             </form>
           </div>
@@ -2354,7 +2354,7 @@ const TeacherSectionPage = () => {
                     placeholder="e.g. B.Ed, M.Sc Mathematics"
                     value={qualForm.degree}
                     onChange={(e) => setQualForm({ ...qualForm, degree: e.target.value })}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#2D4D77]"
                   />
                 </div>
                 <div>
@@ -2365,7 +2365,7 @@ const TeacherSectionPage = () => {
                     placeholder="e.g. University of Delhi"
                     value={qualForm.institution}
                     onChange={(e) => setQualForm({ ...qualForm, institution: e.target.value })}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#2D4D77]"
                   />
                 </div>
                 <div>
@@ -2376,13 +2376,13 @@ const TeacherSectionPage = () => {
                     placeholder="e.g. 2018"
                     value={qualForm.year}
                     onChange={(e) => setQualForm({ ...qualForm, year: e.target.value })}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#2D4D77]"
                   />
                 </div>
               </div>
               <div className="bg-stone-50 px-6 py-4 border-t border-stone-200 flex justify-end gap-2">
                 <button type="button" onClick={() => setShowQualModal(false)} className="px-4 py-2 border border-stone-200 text-stone-500 rounded-xl text-xs font-bold hover:bg-stone-100">Cancel</button>
-                <button type="submit" className="px-5 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white font-black text-xs rounded-xl shadow-md">{modalMode === 'add' ? 'Add' : 'Save Changes'}</button>
+                <button type="submit" className="px-5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white font-black text-xs rounded-xl shadow-md">{modalMode === 'add' ? 'Add' : 'Save Changes'}</button>
               </div>
             </form>
           </div>
@@ -2407,7 +2407,7 @@ const TeacherSectionPage = () => {
                     placeholder="e.g. Senior Math Teacher"
                     value={expForm.role}
                     onChange={(e) => setExpForm({ ...expForm, role: e.target.value })}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#2D4D77]"
                   />
                 </div>
                 <div>
@@ -2418,7 +2418,7 @@ const TeacherSectionPage = () => {
                     placeholder="e.g. DAV Public School"
                     value={expForm.institution}
                     onChange={(e) => setExpForm({ ...expForm, institution: e.target.value })}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#2D4D77]"
                   />
                 </div>
                 <div>
@@ -2429,13 +2429,13 @@ const TeacherSectionPage = () => {
                     placeholder="e.g. 3 Years, 5 Years"
                     value={expForm.duration}
                     onChange={(e) => setExpForm({ ...expForm, duration: e.target.value })}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#2D4D77]"
                   />
                 </div>
               </div>
               <div className="bg-stone-50 px-6 py-4 border-t border-stone-200 flex justify-end gap-2">
                 <button type="button" onClick={() => setShowExpModal(false)} className="px-4 py-2 border border-stone-200 text-stone-500 rounded-xl text-xs font-bold hover:bg-stone-100">Cancel</button>
-                <button type="submit" className="px-5 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white font-black text-xs rounded-xl shadow-md">{modalMode === 'add' ? 'Add' : 'Save Changes'}</button>
+                <button type="submit" className="px-5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white font-black text-xs rounded-xl shadow-md">{modalMode === 'add' ? 'Add' : 'Save Changes'}</button>
               </div>
             </form>
           </div>
@@ -2446,7 +2446,7 @@ const TeacherSectionPage = () => {
       {showAddHwModal && (
         <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="bg-white border border-stone-200 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-            <div className="bg-[#172B4D] px-6 py-4 flex justify-between items-center text-white">
+            <div className="bg-[#203B61] px-6 py-4 flex justify-between items-center text-white">
               <h3 className="text-sm font-black flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-blue-300" />
                 <span>Assign New Homework & Task</span>
@@ -2463,7 +2463,7 @@ const TeacherSectionPage = () => {
                     placeholder="e.g. Quadratic Equations Exercise 4.2"
                     value={newHwForm.title}
                     onChange={(e) => setNewHwForm({ ...newHwForm, title: e.target.value })}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs font-bold text-stone-800 outline-none focus:border-[#2D4D77]"
                   />
                 </div>
 
@@ -2473,7 +2473,7 @@ const TeacherSectionPage = () => {
                     <select
                       value={newHwForm.standard}
                       onChange={(e) => setNewHwForm({ ...newHwForm, standard: e.target.value })}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold text-stone-800 outline-none focus:border-[#2D4D77]"
                     >
                       {uniqueClasses.map(cls => (
                         <option key={cls._id} value={cls.standard}>
@@ -2488,7 +2488,7 @@ const TeacherSectionPage = () => {
                     <select
                       value={newHwForm.section}
                       onChange={(e) => setNewHwForm({ ...newHwForm, section: e.target.value })}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold text-stone-800 outline-none focus:border-[#2D4D77]"
                     >
                       <option value="A">Section A</option>
                       <option value="B">Section B</option>
@@ -2503,7 +2503,7 @@ const TeacherSectionPage = () => {
                     <select
                       value={newHwForm.subject}
                       onChange={(e) => setNewHwForm({ ...newHwForm, subject: e.target.value })}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold text-stone-800 outline-none focus:border-[#2D4D77]"
                     >
                       {availableMarksSubjects.map(sub => (
                         <option key={sub} value={sub}>{sub}</option>
@@ -2519,7 +2519,7 @@ const TeacherSectionPage = () => {
                       placeholder="e.g. Tomorrow (09:00 AM)"
                       value={newHwForm.dueDate}
                       onChange={(e) => setNewHwForm({ ...newHwForm, dueDate: e.target.value })}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold text-stone-800 outline-none focus:border-[#29456D]"
+                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold text-stone-800 outline-none focus:border-[#2D4D77]"
                     />
                   </div>
                 </div>
@@ -2531,7 +2531,7 @@ const TeacherSectionPage = () => {
                     placeholder="Provide step-by-step problem details, page numbers, or submission requirements..."
                     value={newHwForm.description}
                     onChange={(e) => setNewHwForm({ ...newHwForm, description: e.target.value })}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl p-3 text-xs text-stone-700 outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl p-3 text-xs text-stone-700 outline-none focus:border-[#2D4D77]"
                   />
                 </div>
               </div>
@@ -2546,7 +2546,7 @@ const TeacherSectionPage = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-[#172B4D] hover:bg-[#29456D] text-white font-black text-xs rounded-xl shadow-md"
+                  className="px-5 py-2 bg-[#203B61] hover:bg-[#2D4D77] text-white font-black text-xs rounded-xl shadow-md"
                 >
                   Publish Homework to Students
                 </button>
@@ -2560,7 +2560,7 @@ const TeacherSectionPage = () => {
       {selectedHwForSubmissions && (
         <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="bg-white border border-stone-200 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
-            <div className="bg-[#172B4D] px-6 py-4 flex justify-between items-center text-white shrink-0">
+            <div className="bg-[#203B61] px-6 py-4 flex justify-between items-center text-white shrink-0">
               <div>
                 <span className="text-[10px] text-blue-300 font-bold uppercase tracking-wider block">Student Submissions</span>
                 <h3 className="text-sm font-black">{selectedHwForSubmissions.title} &bull; Class {selectedHwForSubmissions.standard}-{selectedHwForSubmissions.section}</h3>
@@ -2637,7 +2637,7 @@ const TeacherSectionPage = () => {
       {gradeModal.show && (
         <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="bg-white border border-stone-200 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
-            <div className="bg-[#172B4D] px-6 py-4 flex justify-between items-center text-white">
+            <div className="bg-[#203B61] px-6 py-4 flex justify-between items-center text-white">
               <h3 className="text-sm font-black">Grade Homework &bull; {gradeModal.studentName}</h3>
               <button onClick={() => setGradeModal({ show: false, submissionId: null, studentName: '', grade: 'A+', feedback: '' })} className="text-white/60 hover:text-white text-xl font-bold">&times;</button>
             </div>
@@ -2649,7 +2649,7 @@ const TeacherSectionPage = () => {
                   <select
                     value={gradeModal.grade}
                     onChange={(e) => setGradeModal({ ...gradeModal, grade: e.target.value })}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs font-black text-stone-850 outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs font-black text-stone-850 outline-none focus:border-[#2D4D77]"
                   >
                     <option value="A+ (98%)">A+ (Outstanding)</option>
                     <option value="A (90%)">A (Excellent)</option>
@@ -2668,7 +2668,7 @@ const TeacherSectionPage = () => {
                     placeholder="e.g. Excellent conceptual clarity and well-labeled diagrams..."
                     value={gradeModal.feedback}
                     onChange={(e) => setGradeModal({ ...gradeModal, feedback: e.target.value })}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl p-3 text-xs text-stone-700 outline-none focus:border-[#29456D]"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl p-3 text-xs text-stone-700 outline-none focus:border-[#2D4D77]"
                   />
                 </div>
               </div>
@@ -2683,7 +2683,7 @@ const TeacherSectionPage = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-[#172B4D] hover:bg-[#29456D] text-white font-black text-xs rounded-xl shadow-md"
+                  className="px-5 py-2 bg-[#203B61] hover:bg-[#2D4D77] text-white font-black text-xs rounded-xl shadow-md"
                 >
                   Save Grade & Feedback
                 </button>

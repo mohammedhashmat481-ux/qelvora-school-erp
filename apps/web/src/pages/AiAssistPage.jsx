@@ -257,21 +257,21 @@ export default function AiAssistPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col md:flex-row font-sans">
+    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
       <Sidebar />
 
-      <div className="flex-1 bg-[#F7F9FC] p-4 sm:p-6 lg:p-8 overflow-y-auto flex flex-col">
+      <div className="flex-1 bg-[#F5F8FC] p-4 sm:p-6 lg:p-8 overflow-y-auto flex flex-col">
         {/* Top Header */}
         <header className="mb-6 pb-4 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-[#172B4D] text-white flex items-center justify-center shadow-md">
+            <div className="w-12 h-12 rounded-2xl bg-[#203B61] text-white flex items-center justify-center shadow-md">
               <Sparkles className="w-6 h-6 text-amber-300" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-black text-[#172B4D] tracking-tight">AI Assistant</h1>
+                <h1 className="text-2xl font-black text-[#203B61] tracking-tight">AI Assistant</h1>
                 <span className={`text-xs font-extrabold px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${
-                  activeTier === 'premium' ? 'bg-amber-400 text-slate-900 border-amber-500 shadow-xs' : 'bg-blue-100 text-[#172B4D] border-blue-200'
+                  activeTier === 'premium' ? 'bg-amber-400 text-slate-900 border-amber-500 shadow-xs' : 'bg-blue-100 text-[#203B61] border-blue-200'
                 }`}>
                   {activeTier === 'premium' ? '⚡ Gemini 3.5 Flash (Premium)' : 'Free Tier'}
                 </span>
@@ -290,7 +290,7 @@ export default function AiAssistPage() {
                 type="button"
                 onClick={() => { setReplyMode('voice_only'); stopAllSpeech(); }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  replyMode === 'voice_only' ? 'bg-[#172B4D] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  replyMode === 'voice_only' ? 'bg-[#203B61] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Voice Only
@@ -299,7 +299,7 @@ export default function AiAssistPage() {
                 type="button"
                 onClick={() => { setReplyMode('text_only'); stopAllSpeech(); }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  replyMode === 'text_only' ? 'bg-[#172B4D] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  replyMode === 'text_only' ? 'bg-[#203B61] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Text Only
@@ -308,7 +308,7 @@ export default function AiAssistPage() {
                 type="button"
                 onClick={() => setReplyMode('voice_and_text')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  replyMode === 'voice_and_text' ? 'bg-[#172B4D] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  replyMode === 'voice_and_text' ? 'bg-[#203B61] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Voice + Text
@@ -351,7 +351,7 @@ export default function AiAssistPage() {
                 onClick={() => handleSendQuery(action.label, 'card_click')}
                 className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs hover:shadow-md hover:border-blue-300 transition-all text-left group"
               >
-                <div className="w-8 h-8 rounded-xl bg-blue-50 text-[#172B4D] group-hover:bg-[#172B4D] group-hover:text-white flex items-center justify-center mb-2 transition-colors">
+                <div className="w-8 h-8 rounded-xl bg-blue-50 text-[#203B61] group-hover:bg-[#203B61] group-hover:text-white flex items-center justify-center mb-2 transition-colors">
                   <Icon className="w-4 h-4" />
                 </div>
                 <h4 className="text-xs font-black text-slate-900 group-hover:text-blue-700 leading-tight">
@@ -379,7 +379,7 @@ export default function AiAssistPage() {
                   className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
                 >
                   {!isUser && (
-                    <div className="w-9 h-9 rounded-2xl bg-[#172B4D] text-white flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-2xl bg-[#203B61] text-white flex items-center justify-center shrink-0">
                       <Sparkles className="w-4 h-4 text-amber-300" />
                     </div>
                   )}
@@ -387,7 +387,7 @@ export default function AiAssistPage() {
                   <div
                     className={`max-w-[80%] rounded-2xl p-4 text-xs leading-relaxed shadow-2xs ${
                       isUser
-                        ? 'bg-[#172B4D] text-white rounded-br-xs'
+                        ? 'bg-[#203B61] text-white rounded-br-xs'
                         : 'bg-slate-50 text-slate-800 border border-slate-200 rounded-bl-xs'
                     } ${isSpeakingThis ? 'ring-2 ring-emerald-500' : ''}`}
                   >
@@ -453,7 +453,7 @@ export default function AiAssistPage() {
                 className={`p-3.5 rounded-2xl transition-all shadow-xs flex items-center justify-center ${
                   isListening
                     ? 'bg-rose-600 text-white animate-pulse ring-4 ring-rose-200'
-                    : 'bg-white text-[#172B4D] border border-slate-200 hover:bg-slate-100'
+                    : 'bg-white text-[#203B61] border border-slate-200 hover:bg-slate-100'
                 }`}
                 title={isListening ? "Stop listening" : "Speak query"}
               >
@@ -465,7 +465,7 @@ export default function AiAssistPage() {
                 placeholder={isListening ? "Listening... Speak now" : "Ask any school question (e.g. 'How many teachers are absent today?')..."}
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                className="flex-1 bg-white border border-slate-200 rounded-2xl px-4 py-3 text-sm font-semibold text-slate-800 placeholder-slate-400 outline-none focus:ring-2 focus:ring-[#172B4D]"
+                className="flex-1 bg-white border border-slate-200 rounded-2xl px-4 py-3 text-sm font-semibold text-slate-800 placeholder-slate-400 outline-none focus:ring-2 focus:ring-[#203B61]"
               />
 
               {orbState === 'speaking' ? (
@@ -481,7 +481,7 @@ export default function AiAssistPage() {
                 <button
                   type="submit"
                   disabled={!inputText.trim()}
-                  className="px-5 py-3.5 bg-[#172B4D] hover:bg-[#29456D] disabled:opacity-40 text-white rounded-2xl font-bold text-xs flex items-center gap-2 shadow-xs"
+                  className="px-5 py-3.5 bg-[#203B61] hover:bg-[#2D4D77] disabled:opacity-40 text-white rounded-2xl font-bold text-xs flex items-center gap-2 shadow-xs"
                 >
                   <span>Send</span>
                   <Send className="w-4 h-4" />

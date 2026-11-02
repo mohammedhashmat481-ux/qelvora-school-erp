@@ -1548,17 +1548,17 @@ const FeesManagementPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col md:flex-row animate-fadeIn font-sans">
+    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row animate-fadeIn font-sans">
       <Sidebar />
 
-      <div className="flex-1 bg-[#F7F9FC] flex flex-col min-w-0">
-        <div className="min-h-[calc(100vh-4rem)] bg-[#F7F9FC] p-4 sm:p-6 lg:p-8 overflow-y-auto">
+      <div className="flex-1 bg-[#F5F8FC] flex flex-col min-w-0">
+        <div className="min-h-[calc(100vh-4rem)] bg-[#F5F8FC] p-4 sm:p-6 lg:p-8 overflow-y-auto">
           <div className="w-full mx-auto space-y-6">
 
             {/* TOP HEADER BAR */}
-            <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-[#172B4D] p-4 rounded-2xl border border-[#29456D] shadow-sm text-white">
+            <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-[#203B61] p-4 rounded-2xl border border-[#2D4D77] shadow-sm text-white">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-xl bg-[#29456D] border border-[#29456D] flex items-center justify-center text-[#F3F6FC] shadow-md">
+                <div className="w-11 h-11 rounded-xl bg-[#2D4D77] border border-[#2D4D77] flex items-center justify-center text-[#F3F6FC] shadow-md">
                   <Receipt className="w-6 h-6 text-[#F3F6FC]" />
                 </div>
                 <div>
@@ -1566,7 +1566,7 @@ const FeesManagementPage = () => {
                     <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                       Fees Management
                     </h1>
-                    <span className="text-[11px] font-black uppercase px-2.5 py-0.5 rounded-full bg-[#DBEAFE] text-[#172B4D] border border-[#93C5FD]">
+                    <span className="text-[11px] font-black uppercase px-2.5 py-0.5 rounded-full bg-[#DCEBFA] text-[#203B61] border border-[#93C5FD]">
                       Module
                     </span>
                   </div>
@@ -1579,16 +1579,16 @@ const FeesManagementPage = () => {
               {/* Header Controls: Academic Year Selector + User Badge + Logout */}
               <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
                 {/* Academic Year Switcher */}
-                <div className="flex items-center gap-2 bg-[#29456D] px-3 py-1.5 rounded-xl border border-[#29456D]">
+                <div className="flex items-center gap-2 bg-[#2D4D77] px-3 py-1.5 rounded-xl border border-[#2D4D77]">
                   <Calendar className="w-4 h-4 text-[#F3F6FC]" />
                   <span className="text-xs font-bold text-[#CBD5E1]">Year:</span>
                   <select
                     value={academicYear}
                     onChange={(e) => setAcademicYear(e.target.value)}
-                    className="bg-white text-xs font-bold text-[#172B4D] px-2 py-0.5 rounded outline-none cursor-pointer hover:bg-[#DBEAFE]"
+                    className="bg-white text-xs font-bold text-[#203B61] px-2 py-0.5 rounded outline-none cursor-pointer hover:bg-[#DCEBFA]"
                   >
                     {academicYears.map(yr => (
-                      <option key={yr} value={yr} className="bg-white text-[#172B4D]">
+                      <option key={yr} value={yr} className="bg-white text-[#203B61]">
                         {yr} {yr === '2026-2027' ? '(Active)' : '(Closed)'}
                       </option>
                     ))}
@@ -1601,10 +1601,10 @@ const FeesManagementPage = () => {
                 </div>
 
                 {/* User Role Badge */}
-                <div className="hidden sm:inline-flex items-center gap-2 bg-[#29456D] px-3 py-1.5 rounded-xl border border-[#29456D]">
+                <div className="hidden sm:inline-flex items-center gap-2 bg-[#2D4D77] px-3 py-1.5 rounded-xl border border-[#2D4D77]">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                   <span className="text-xs font-bold text-white">{user?.name || 'Administrator'}</span>
-                  <span className="bg-[#172B4D] text-[#DBEAFE] text-[10px] font-black px-2 py-0.5 rounded-md uppercase border border-[#29456D]">
+                  <span className="bg-[#203B61] text-[#DCEBFA] text-[10px] font-black px-2 py-0.5 rounded-md uppercase border border-[#2D4D77]">
                     {user?.role || 'Admin'}
                   </span>
                 </div>
