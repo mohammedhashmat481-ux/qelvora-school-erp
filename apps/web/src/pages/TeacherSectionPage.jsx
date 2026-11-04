@@ -1061,6 +1061,35 @@ const TeacherSectionPage = () => {
                     {profileData.status}
                   </span>
                 </div>
+                <div>
+                  <span className="text-xs text-stone-400 font-bold uppercase block">Teacher Type</span>
+                  {profileData.isClassTeacher ? (
+                    <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 mt-1">
+                      Class Teacher (Class {profileData.classTeacherOf?.standard || profileData.assignedClass}-{profileData.classTeacherOf?.section || profileData.assignedSection || 'A'})
+                    </span>
+                  ) : (
+                    <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 mt-1">
+                      Subject Teacher
+                    </span>
+                  )}
+                </div>
+                {(profileData.primary_subject || profileData.secondary_subject) && (
+                  <div>
+                    <span className="text-xs text-stone-400 font-bold uppercase block">Subject Expertise</span>
+                    <div className="flex flex-wrap gap-1.5 mt-1">
+                      {profileData.primary_subject && (
+                        <span className="px-2 py-0.5 rounded bg-blue-50 text-[#203B61] text-xs font-bold border border-blue-200">
+                          {profileData.primary_subject}
+                        </span>
+                      )}
+                      {profileData.secondary_subject && (
+                        <span className="px-2 py-0.5 rounded bg-amber-50 text-amber-800 text-xs font-bold border border-amber-200">
+                          {profileData.secondary_subject}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <button
@@ -1315,14 +1344,24 @@ const TeacherSectionPage = () => {
                     </h2>
                     <div className="flex flex-col sm:flex-row justify-between text-xs font-bold px-4 text-stone-300">
                       <div>
-                        CLASS TEACHER: <span className="text-[#203B61] uppercase font-black">{profileData?.name || 'N/A'}</span>
+                        {profileData?.isClassTeacher ? (
+                          <>CLASS TEACHER: <span className="text-[#93C5FD] uppercase font-black">{profileData?.name || 'N/A'}</span></>
+                        ) : (
+                          <>FACULTY MEMBER: <span className="text-[#93C5FD] uppercase font-black">{profileData?.name || 'N/A'}</span> (Subject Teacher)</>
+                        )}
                       </div>
                       <div className="mt-1 sm:mt-0">
-                        CLASS: <span className="text-[#203B61] uppercase font-black">
-                          {profileData?.classTeacherOf 
-                            ? `${profileData.classTeacherOf.standard} ${profileData.classTeacherOf.section}` 
-                            : 'N/A'}
-                        </span>
+                        {profileData?.isClassTeacher ? (
+                          <>CLASS: <span className="text-[#93C5FD] uppercase font-black">
+                            {profileData?.classTeacherOf 
+                              ? `${profileData.classTeacherOf.standard || profileData.classTeacherOf} ${profileData.classTeacherOf.section || ''}` 
+                              : `${profileData.assignedClass || 'N/A'} ${profileData.assignedSection || ''}`}
+                          </span></>
+                        ) : (
+                          <>EXPERTISE: <span className="text-[#93C5FD] uppercase font-black">
+                            {profileData?.primary_subject || 'General'}{profileData?.secondary_subject ? ` / ${profileData.secondary_subject}` : ''}
+                          </span></>
+                        )}
                       </div>
                     </div>
                   </div>

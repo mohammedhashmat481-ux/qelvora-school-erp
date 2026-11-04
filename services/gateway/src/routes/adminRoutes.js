@@ -267,7 +267,6 @@ router.delete('/roles/:id', async (req, res) => {
 });
 
 // GET /api/auth/admin/employees
-// GET /api/auth/admin/employees
 router.get('/auth/admin/employees', async (req, res) => {
   try {
     const teachers = await prisma.teacher.findMany({ include: { user: true } });
@@ -275,6 +274,7 @@ router.get('/auth/admin/employees', async (req, res) => {
     const staffUsers = await prisma.user.findMany({
       where: { role: { notIn: ['student', 'parent'] } }
     }).catch(() => []);
+    const allClasses = await prisma.class.findMany().catch(() => []);
 
     const result = [];
 
@@ -297,7 +297,10 @@ router.get('/auth/admin/employees', async (req, res) => {
           is_super_admin: isSuper,
           plain_password: u.plain_password || 'qelvora123',
           password: u.plain_password || 'qelvora123',
-          userId: u.id
+          userId: u.id,
+          isClassTeacher: false,
+          teacherType: 'Staff',
+          classTeacherOf: null
         });
       }
     }
@@ -320,6 +323,20 @@ router.get('/auth/admin/employees', async (req, res) => {
       item.plain_password = t.plain_password || t.user?.plain_password || '';
       item.password = item.plain_password;
       item.userId = t.userId || t.user?.id;
+
+      // Check whether teacher is assigned as a Class Teacher
+      const matchedClass = allClasses.find(c =>
+        (c.classTeacherId && (c.classTeacherId === t.id || c.classTeacherId === t.userId || c.classTeacherId === t.employeeId)) ||
+        (c.classTeacherName && c.classTeacherName.trim().toLowerCase() === t.name.trim().toLowerCase())
+      );
+
+      const isClassTeacher = !!matchedClass;
+      item.isClassTeacher = isClassTeacher;
+      item.teacherType = isClassTeacher ? 'Class Teacher' : 'Subject Teacher';
+      item.assignedClass = matchedClass ? matchedClass.standard : (t.assignedClass || null);
+      item.assignedSection = matchedClass ? matchedClass.section : (t.assignedSection || null);
+      item.classTeacherOf = matchedClass ? `${matchedClass.standard}-${matchedClass.section}` : (t.assignedClass && t.assignedSection && isClassTeacher ? `${t.assignedClass}-${t.assignedSection}` : null);
+
       result.push(item);
     }
 
@@ -414,6 +431,31 @@ router.put('/auth/admin/employee/:id/settings', async (req, res) => {
           ...(newPwd && { plain_password: newPwd }),
           ...(teacher.userId && { userId: teacher.userId })
         };
+
+        if (payload.teacherType === 'Class Teacher' && payload.assignedClass) {
+          const sec = payload.assignedSection || 'A';
+          updateData.assignedClass = payload.assignedClass;
+          updateData.assignedSection = sec;
+          try {
+            await prisma.class.updateMany({
+              where: { classTeacherId: teacher.id, NOT: { standard: payload.assignedClass, section: sec } },
+              data: { classTeacherId: null, classTeacherName: null }
+            });
+            await prisma.class.updateMany({
+              where: { standard: payload.assignedClass, section: sec },
+              data: { classTeacherId: teacher.id, classTeacherName: payload.name || teacher.name }
+            });
+          } catch (_) {}
+        } else if (payload.teacherType === 'Subject Teacher') {
+          updateData.assignedClass = null;
+          updateData.assignedSection = null;
+          try {
+            await prisma.class.updateMany({
+              where: { OR: [{ classTeacherId: teacher.id }, { classTeacherName: teacher.name }] },
+              data: { classTeacherId: null, classTeacherName: null }
+            });
+          } catch (_) {}
+        }
         const requestedEmpId = payload.employeeId || payload.employee_id;
         if (requestedEmpId && requestedEmpId !== teacher.employeeId) {
           const conflict = await prisma.teacher.findFirst({
@@ -709,7 +751,9 @@ router.get(['/classes', '/admin/classes'], async (req, res) => {
       });
     }
 
-    // Format classes with classTeacher object, default board, and enrolled student counts
+    // Format classes with classTeacher object, default board, enrolled student counts, and subjectTeachers
+    const allMappings = await prisma.teacherClassSubjectMapping.findMany().catch(() => []);
+
     const formatted = await Promise.all(dbClasses.map(async (c) => {
       let enrolled = 0;
       try {
@@ -717,6 +761,29 @@ router.get(['/classes', '/admin/classes'], async (req, res) => {
           where: { standard: c.standard, section: c.section }
         });
       } catch (_) {}
+
+      // Collect subject teachers mapped for this class
+      const cMappings = allMappings.filter(m =>
+        (m.classId && m.classId === c.id) ||
+        (m.standard && m.standard.toLowerCase().trim() === c.standard.toLowerCase().trim() &&
+         m.section && m.section.toLowerCase().trim() === c.section.toLowerCase().trim())
+      );
+
+      const subjectTeachers = [];
+      const seenTeacher = new Set();
+      cMappings.forEach(m => {
+        const key = `${m.teacherName}-${m.subject}`;
+        if (!seenTeacher.has(key) && m.teacherName) {
+          seenTeacher.add(key);
+          subjectTeachers.push({
+            teacherId: m.teacherId,
+            teacherName: m.teacherName,
+            employeeId: m.employeeId,
+            subject: m.subject,
+            subjectCode: m.subjectCode
+          });
+        }
+      });
 
       return {
         ...c,
@@ -732,7 +799,8 @@ router.get(['/classes', '/admin/classes'], async (req, res) => {
           _id: c.classTeacherId,
           id: c.classTeacherId,
           name: c.classTeacherName
-        } : null
+        } : null,
+        subjectTeachers: subjectTeachers
       };
     }));
 
@@ -770,13 +838,36 @@ router.post('/classes', async (req, res) => {
       return res.status(400).json({ status: false, message: `Class ${cleanStandard}-${cleanSection} already exists` });
     }
 
-    // Resolve teacher name
-    let teacherId = classTeacherId || classTeacher || null;
-    let teacherName = null;
-    if (teacherId) {
+    // Resolve teacher accurately from Teacher or User table
+    let resolvedTeacherId = classTeacherId || classTeacher || null;
+    let resolvedTeacherName = null;
+
+    if (resolvedTeacherId) {
       try {
-        const u = await prisma.user.findUnique({ where: { id: teacherId } });
-        if (u) teacherName = u.name;
+        const t = await prisma.teacher.findFirst({
+          where: { OR: [{ id: resolvedTeacherId }, { userId: resolvedTeacherId }, { employeeId: resolvedTeacherId }, { name: resolvedTeacherId }] }
+        });
+        if (t) {
+          resolvedTeacherId = t.id;
+          resolvedTeacherName = t.name;
+          await prisma.teacher.update({
+            where: { id: t.id },
+            data: { assignedClass: cleanStandard, assignedSection: cleanSection }
+          }).catch(() => {});
+        } else {
+          const u = await prisma.user.findFirst({ where: { OR: [{ id: resolvedTeacherId }, { name: resolvedTeacherId }] } });
+          if (u) {
+            resolvedTeacherName = u.name;
+            const tUser = await prisma.teacher.findFirst({ where: { OR: [{ userId: u.id }, { email: u.email }] } });
+            if (tUser) {
+              resolvedTeacherId = tUser.id;
+              await prisma.teacher.update({
+                where: { id: tUser.id },
+                data: { assignedClass: cleanStandard, assignedSection: cleanSection }
+              }).catch(() => {});
+            }
+          }
+        }
       } catch (_) {}
     }
 
@@ -785,8 +876,8 @@ router.post('/classes', async (req, res) => {
         standard: cleanStandard,
         section: cleanSection,
         board: cleanBoard,
-        classTeacherId: teacherId,
-        classTeacherName: teacherName,
+        classTeacherId: resolvedTeacherId,
+        classTeacherName: resolvedTeacherName,
         roomNumber: cleanRoom,
         strength: cleanStrength
       }
@@ -797,7 +888,8 @@ router.post('/classes', async (req, res) => {
       _id: created.id,
       id: created.id,
       board: created.board || 'CBSE',
-      classTeacher: teacherName ? { _id: teacherId, id: teacherId, name: teacherName } : null
+      classTeacher: resolvedTeacherName ? { _id: resolvedTeacherId, id: resolvedTeacherId, name: resolvedTeacherName } : null,
+      subjectTeachers: []
     };
 
     try {
@@ -846,16 +938,47 @@ router.put('/classes/:id', async (req, res) => {
       }
     }
 
-    let teacherId = classTeacherId !== undefined ? classTeacherId : (classTeacher !== undefined ? classTeacher : existingClass.classTeacherId);
-    let teacherName = existingClass.classTeacherName;
-    if (teacherId && teacherId !== existingClass.classTeacherId) {
+    let inputTeacherId = classTeacherId !== undefined ? classTeacherId : (classTeacher !== undefined ? classTeacher : existingClass.classTeacherId);
+    let resolvedTeacherId = null;
+    let resolvedTeacherName = null;
+
+    if (inputTeacherId) {
       try {
-        const u = await prisma.user.findUnique({ where: { id: teacherId } });
-        teacherName = u ? u.name : null;
+        const t = await prisma.teacher.findFirst({
+          where: { OR: [{ id: inputTeacherId }, { userId: inputTeacherId }, { employeeId: inputTeacherId }, { name: inputTeacherId }] }
+        });
+        if (t) {
+          resolvedTeacherId = t.id;
+          resolvedTeacherName = t.name;
+          await prisma.teacher.update({
+            where: { id: t.id },
+            data: { assignedClass: cleanStandard, assignedSection: cleanSection }
+          }).catch(() => {});
+        } else {
+          const u = await prisma.user.findFirst({ where: { OR: [{ id: inputTeacherId }, { name: inputTeacherId }] } });
+          if (u) {
+            resolvedTeacherName = u.name;
+            const tUser = await prisma.teacher.findFirst({ where: { OR: [{ userId: u.id }, { email: u.email }] } });
+            if (tUser) {
+              resolvedTeacherId = tUser.id;
+              await prisma.teacher.update({
+                where: { id: tUser.id },
+                data: { assignedClass: cleanStandard, assignedSection: cleanSection }
+              }).catch(() => {});
+            }
+          }
+        }
       } catch (_) {}
-    } else if (!teacherId) {
-      teacherId = null;
-      teacherName = null;
+    }
+
+    // If teacher unassigned or changed, clear previous teacher's assignedClass
+    if (existingClass.classTeacherId && existingClass.classTeacherId !== resolvedTeacherId) {
+      try {
+        await prisma.teacher.updateMany({
+          where: { id: existingClass.classTeacherId, assignedClass: existingClass.standard, assignedSection: existingClass.section },
+          data: { assignedClass: null, assignedSection: null }
+        });
+      } catch (_) {}
     }
 
     const updated = await prisma.class.update({
@@ -864,8 +987,8 @@ router.put('/classes/:id', async (req, res) => {
         standard: cleanStandard,
         section: cleanSection,
         board: cleanBoard,
-        classTeacherId: teacherId,
-        classTeacherName: teacherName,
+        classTeacherId: resolvedTeacherId,
+        classTeacherName: resolvedTeacherName,
         roomNumber: cleanRoom,
         strength: cleanStrength
       }
@@ -876,7 +999,7 @@ router.put('/classes/:id', async (req, res) => {
       _id: updated.id,
       id: updated.id,
       board: updated.board || 'CBSE',
-      classTeacher: teacherName ? { _id: teacherId, id: teacherId, name: teacherName } : null
+      classTeacher: resolvedTeacherName ? { _id: resolvedTeacherId, id: resolvedTeacherId, name: resolvedTeacherName } : null
     };
 
     return res.json({ status: true, message: `Class ${cleanStandard}-${cleanSection} updated successfully!`, data: result });
@@ -906,10 +1029,13 @@ router.delete('/classes/:id', async (req, res) => {
 // Faculty Adding
 router.post('/faculty/teacher', async (req, res) => {
   try {
-    const { name, firstName, middleName, lastName, email, phone, role, employeeId, password, qualification, primary_subject, secondary_subject } = req.body;
+    const { name, firstName, middleName, lastName, email, phone, role, employeeId, password, qualification, primary_subject, secondary_subject, teacherType, assignedClass, assignedSection } = req.body;
     const expVal = req.body.experience !== undefined ? Number(req.body.experience) || 0 : 0;
     const primSub = primary_subject || req.body.primarySubject || '';
     const secSub = secondary_subject || req.body.secondarySubject || '';
+    const isClassTeacher = teacherType === 'Class Teacher' && !!assignedClass;
+    const targetClass = isClassTeacher ? assignedClass : null;
+    const targetSection = isClassTeacher ? (assignedSection || 'A') : null;
 
     let empCode = employeeId;
     if (!empCode) {
@@ -962,10 +1088,19 @@ router.post('/faculty/teacher', async (req, res) => {
           experience: expVal,
           primary_subject: primSub,
           secondary_subject: secSub,
-          plain_password: plainPass
+          plain_password: plainPass,
+          assignedClass: targetClass,
+          assignedSection: targetSection
         }
       });
       createdId = teacherRecord.id;
+
+      if (isClassTeacher && targetClass) {
+        await prisma.class.updateMany({
+          where: { standard: targetClass, section: targetSection },
+          data: { classTeacherId: teacherRecord.id, classTeacherName: empName }
+        }).catch(() => {});
+      }
     } catch (err) {
       console.error("Prisma teacher creation warning:", err.message);
     }
@@ -990,8 +1125,11 @@ router.post('/faculty/teacher', async (req, res) => {
       skip_face: true,
       skip_location: true,
       is_enabled: true,
-      primary_subject: primary_subject || '',
-      secondary_subject: secondary_subject || '',
+      isClassTeacher: isClassTeacher,
+      teacherType: isClassTeacher ? 'Class Teacher' : 'Subject Teacher',
+      assignedClass: targetClass,
+      assignedSection: targetSection,
+      classTeacherOf: isClassTeacher ? `${targetClass}-${targetSection}` : null,
       plain_password: plainPass
     };
 

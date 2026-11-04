@@ -364,16 +364,42 @@ async function getEnrichedUserProfile(user) {
 
     const employeeId = teacher?.employeeId || (user.email === 'rajesh.sharma@qelvora.in' ? 'EMP001' : (user.email === 'priya.patel@qelvora.in' ? 'EMP002' : (user.employeeId || user.employee_id || 'EMP002')));
 
+    let classTeacherOf = null;
+    try {
+      const cls = await prisma.class.findFirst({
+        where: {
+          OR: [
+            ...(teacher?.id ? [{ classTeacherId: teacher.id }] : []),
+            ...(user?.id ? [{ classTeacherId: user.id }] : []),
+            ...(teacher?.name ? [{ classTeacherName: { equals: teacher.name, mode: 'insensitive' } }] : []),
+            ...(user?.name ? [{ classTeacherName: { equals: user.name, mode: 'insensitive' } }] : [])
+          ]
+        }
+      });
+      if (cls) {
+        classTeacherOf = { id: cls.id, standard: cls.standard, section: cls.section };
+      }
+    } catch (_) {}
+
+    const isClassTeacher = !!classTeacherOf || (!!teacher?.assignedClass && !!teacher?.assignedSection);
+    const assignedClass = classTeacherOf?.standard || teacher?.assignedClass || null;
+    const assignedSection = classTeacherOf?.section || teacher?.assignedSection || null;
+
     return {
       ...base,
       teacherId: teacher?.id || user.id,
       employeeId: employeeId,
       employee_id: employeeId,
       department: teacher?.department || 'Academics',
-      designation: teacher?.designation || 'Faculty Member',
+      designation: teacher?.designation || (isClassTeacher ? 'Class Teacher' : 'Subject Teacher'),
       qualification: teacher?.qualification || 'Post Graduate in Education',
-      assignedClass: teacher?.assignedClass || '10th',
-      assignedSection: teacher?.assignedSection || 'A',
+      isClassTeacher: isClassTeacher,
+      teacherType: isClassTeacher ? 'Class Teacher' : 'Subject Teacher',
+      assignedClass: assignedClass,
+      assignedSection: assignedSection,
+      classTeacherOf: classTeacherOf ? `${classTeacherOf.standard}-${classTeacherOf.section}` : null,
+      primary_subject: teacher?.primary_subject || '',
+      secondary_subject: teacher?.secondary_subject || '',
       status: 'Active',
       qualificationsList: ext.qualificationsList || [],
       experienceList: ext.experienceList || []

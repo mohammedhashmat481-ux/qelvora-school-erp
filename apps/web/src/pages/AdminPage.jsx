@@ -199,7 +199,8 @@ const AdminPage = () => {
     section: '',
     board: 'CBSE',
     type: 'Core',
-    weeklyHours: 4
+    weeklyHours: 4,
+    teacherId: ''
   });
   const [editingSubject, setEditingSubject] = useState(null);
   const [deletingSubject, setDeletingSubject] = useState(null);
@@ -1714,7 +1715,8 @@ const AdminPage = () => {
       section: sub.section || '',
       board: sub.board || 'CBSE',
       type: sub.type || 'Core',
-      weeklyHours: sub.weeklyHours || 4
+      weeklyHours: sub.weeklyHours || 4,
+      teacherId: sub.assignedTeacherId || sub.assignedTeacher?.teacherId || ''
     });
     toast.success(`Editing subject "${sub.name}"`);
   };
@@ -1729,7 +1731,8 @@ const AdminPage = () => {
       section: '',
       board: 'CBSE',
       type: 'Core',
-      weeklyHours: 4
+      weeklyHours: 4,
+      teacherId: ''
     });
   };
 
@@ -1746,7 +1749,8 @@ const AdminPage = () => {
         section: subjectForm.section || undefined,
         board: subjectForm.board || 'CBSE',
         type: subjectForm.type || 'Core',
-        weeklyHours: parseInt(subjectForm.weeklyHours, 10) || 4
+        weeklyHours: parseInt(subjectForm.weeklyHours, 10) || 4,
+        teacherId: subjectForm.teacherId || undefined
       };
 
       if (editingSubject) {
@@ -1760,10 +1764,12 @@ const AdminPage = () => {
         setSubjectForm(prev => ({
           ...prev,
           name: '',
-          code: ''
+          code: '',
+          teacherId: ''
         }));
       }
       fetchSubjects();
+      fetchMappings();
     } catch (err) {
       console.error('Save subject error:', err);
       toast.error(err?.response?.data?.message || err?.message || "Failed to save subject");
@@ -2679,6 +2685,9 @@ Office of the Principal / Academic Administration`
       createLogin: true,
       password: '',
       role: 'teacher',
+      teacherType: 'Subject Teacher',
+      assignedClass: '',
+      assignedSection: 'A',
       primary_subject: '',
       secondary_subject: ''
     });
@@ -2715,6 +2724,9 @@ Office of the Principal / Academic Administration`
       experience: emp.experience || 0,
       status: emp.status || 'Active',
       role: emp.role || 'teacher',
+      teacherType: (emp.isClassTeacher || emp.teacherType === 'Class Teacher') ? 'Class Teacher' : 'Subject Teacher',
+      assignedClass: emp.assignedClass || '',
+      assignedSection: emp.assignedSection || 'A',
       skip_face: !!emp.skip_face,
       skip_location: !!emp.skip_location,
       isActive: emp.is_enabled !== false,
@@ -2788,6 +2800,9 @@ Office of the Principal / Academic Administration`
         experience: editForm.experience,
         status: editForm.status,
         role: editForm.role,
+        teacherType: editForm.teacherType,
+        assignedClass: editForm.assignedClass,
+        assignedSection: editForm.assignedSection,
         employeeId: newId,
         employee_id: newId,
         skip_face: editForm.skip_face,
@@ -7176,24 +7191,37 @@ Office of the Principal / Academic Administration`
                                       {emp.name?.charAt(0)?.toUpperCase()}
                                     </div>
                                     <div>
-                                      <div className="font-semibold text-slate-900 text-sm flex items-center gap-1.5">
+                                      <div className="font-semibold text-slate-900 text-sm flex items-center gap-1.5 flex-wrap">
                                         <span 
                                           onClick={() => handleUserClick(emp._id)}
                                           className="cursor-pointer hover:underline text-slate-900 hover:text-[#203B61]"
                                         >
                                           {emp.name}
                                         </span> 
-                                        {emp.is_super_admin && (
+                                        {emp.is_super_admin ? (
                                           <span className="text-[10px] bg-blue-50 text-[#203B61] px-2 py-0.5 rounded-md font-semibold border border-blue-200">
                                             Super Admin
                                           </span>
-                                        )}
+                                        ) : (emp.isClassTeacher || emp.teacherType === 'Class Teacher') ? (
+                                          <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-md font-bold border border-blue-200" title={`Class Teacher of Class ${emp.classTeacherOf || (emp.assignedClass + '-' + emp.assignedSection)}`}>
+                                            Class Teacher ({emp.classTeacherOf || `${emp.assignedClass || ''}-${emp.assignedSection || ''}`})
+                                          </span>
+                                        ) : (emp.role === 'teacher' || emp.teacherType === 'Subject Teacher') ? (
+                                          <span className="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-md font-bold border border-indigo-200">
+                                            Subject Teacher
+                                          </span>
+                                        ) : null}
                                       </div>
                                       <div className="text-xs text-slate-500 flex items-center gap-1.5 flex-wrap mt-0.5 font-normal">
                                         <span>{emp.email}</span>
                                         {emp.primary_subject && (
-                                          <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-medium text-[10px] border border-slate-200">
-                                            {emp.primary_subject}
+                                          <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-semibold text-[10px] border border-blue-200" title="Primary Subject">
+                                            Primary: {emp.primary_subject}
+                                          </span>
+                                        )}
+                                        {emp.secondary_subject && (
+                                          <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-semibold text-[10px] border border-amber-200" title="Secondary Subject">
+                                            Sec: {emp.secondary_subject}
                                           </span>
                                         )}
                                       </div>
@@ -7861,20 +7889,40 @@ Office of the Principal / Academic Administration`
                                 </span>
                               </td>
                               <td className="px-4 py-3.5">
-                                {cls.classTeacher?.name || cls.classTeacherName ? (
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-6 h-6 rounded-full bg-blue-100 text-[#203B61] font-bold text-[10px] flex items-center justify-center shrink-0">
-                                      {(cls.classTeacher?.name || cls.classTeacherName).charAt(0).toUpperCase()}
-                                    </div>
-                                    <span className="font-semibold text-slate-800">
-                                      {cls.classTeacher?.name || cls.classTeacherName}
-                                    </span>
+                                <div className="space-y-1.5">
+                                  <div>
+                                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Class Teacher:</span>
+                                    {cls.classTeacher?.name || cls.classTeacherName ? (
+                                      <div className="flex items-center gap-2 mt-0.5">
+                                        <div className="w-5 h-5 rounded-full bg-blue-100 text-[#203B61] font-bold text-[10px] flex items-center justify-center shrink-0">
+                                          {(cls.classTeacher?.name || cls.classTeacherName).charAt(0).toUpperCase()}
+                                        </div>
+                                        <span className="font-bold text-slate-800">
+                                          {cls.classTeacher?.name || cls.classTeacherName}
+                                        </span>
+                                      </div>
+                                    ) : (
+                                      <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 text-slate-400 text-[10px] font-medium">
+                                        Not Assigned
+                                      </span>
+                                    )}
                                   </div>
-                                ) : (
-                                  <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 text-slate-400 text-[11px] font-medium">
-                                    Not Assigned
-                                  </span>
-                                )}
+
+                                  {/* Subject Teachers Assigned to this Class */}
+                                  {cls.subjectTeachers && cls.subjectTeachers.length > 0 && (
+                                    <div className="pt-1 border-t border-slate-100">
+                                      <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Subject Teachers:</span>
+                                      <div className="flex flex-wrap gap-1">
+                                        {cls.subjectTeachers.map((st, idx) => (
+                                          <span key={idx} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-indigo-50 border border-indigo-100 text-indigo-800 text-[10px] font-medium" title={`${st.teacherName} teaches ${st.subject}`}>
+                                            <span className="font-bold">{st.teacherName}</span>
+                                            <span className="text-indigo-400">({st.subject})</span>
+                                          </span>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
                               </td>
                               <td className="px-4 py-3.5 text-center">
                                 <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-mono font-bold text-xs">
@@ -8149,6 +8197,29 @@ Office of the Principal / Academic Administration`
                     </div>
                   </div>
 
+                  {/* 5. Assigned Subject Educator (Faculty) */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <User className="w-3.5 h-3.5 text-[#203B61]" />
+                        <span>5. Assigned Faculty Educator</span>
+                      </span>
+                      <span className="text-[10px] text-slate-400">Optional</span>
+                    </label>
+                    <select
+                      value={subjectForm.teacherId || ''}
+                      onChange={(e) => setSubjectForm(prev => ({ ...prev, teacherId: e.target.value }))}
+                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs shadow-2xs cursor-pointer"
+                    >
+                      <option value="">-- No Educator Assigned (Unassigned) --</option>
+                      {employees.filter(emp => !emp.is_super_admin && !['admin', 'parent', 'student'].includes((emp.role || '').toLowerCase())).map(t => (
+                        <option key={t._id || t.id} value={t._id || t.id}>
+                          {t.name} ({t.employeeId || 'FAC'}) — {t.isClassTeacher ? `[Class Teacher (${t.classTeacherOf || t.assignedClass})]` : '[Subject Teacher]'} {t.primary_subject ? `[${t.primary_subject}]` : ''}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   {/* Form Action Buttons */}
                   <div className="pt-2">
                     {editingSubject ? (
@@ -8295,6 +8366,7 @@ Office of the Principal / Academic Administration`
                         <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-bold text-xs uppercase tracking-wider">
                           <th className="px-4 py-3.5 text-left">Subject Name & Code</th>
                           <th className="px-4 py-3.5 text-left">Linked Class</th>
+                          <th className="px-4 py-3.5 text-left">Assigned Faculty</th>
                           <th className="px-4 py-3.5 text-left">Category</th>
                           <th className="px-4 py-3.5 text-center">Periods</th>
                           <th className="px-4 py-3.5 text-center">Actions</th>
@@ -8347,6 +8419,29 @@ Office of the Principal / Academic Administration`
                                       {sub.board || 'CBSE'}
                                     </span>
                                   </div>
+                                )}
+                              </td>
+
+                              {/* Assigned Faculty */}
+                              <td className="px-4 py-3.5">
+                                {sub.assignedTeacher ? (
+                                  <div className="flex items-center gap-1.5">
+                                    <div className="w-6 h-6 rounded-full bg-indigo-100 text-[#203B61] font-bold text-[10px] flex items-center justify-center shrink-0">
+                                      {sub.assignedTeacher.teacherName?.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                      <span className="font-semibold text-slate-800 text-xs block truncate max-w-[140px]" title={sub.assignedTeacher.teacherName}>
+                                        {sub.assignedTeacher.teacherName}
+                                      </span>
+                                      <span className="text-[10px] text-slate-400 font-mono">
+                                        {sub.assignedTeacher.employeeId || ''}
+                                      </span>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] bg-slate-100 text-slate-400 font-medium">
+                                    Unassigned
+                                  </span>
                                 )}
                               </td>
 
@@ -10072,6 +10167,69 @@ Office of the Principal / Academic Administration`
                 </div>
               </div>
 
+              {/* Teacher Classification / Type Selector for Add */}
+              <div className="p-4 bg-slate-50/90 rounded-2xl border border-slate-200">
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
+                  Teacher Classification *
+                </label>
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  <button
+                    type="button"
+                    onClick={() => setAddForm(prev => ({ ...prev, teacherType: 'Subject Teacher', assignedClass: '' }))}
+                    className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                      addForm.teacherType !== 'Class Teacher'
+                        ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-xs'
+                        : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
+                    }`}
+                  >
+                    <span>Normal Subject Teacher</span>
+                    <span className="text-[10px] font-normal opacity-90">Teaches subjects across classes</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAddForm(prev => ({ ...prev, teacherType: 'Class Teacher', assignedClass: prev.assignedClass || (classes[0]?.standard || '10th'), assignedSection: prev.assignedSection || 'A' }))}
+                    className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                      addForm.teacherType === 'Class Teacher'
+                        ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-xs'
+                        : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
+                    }`}
+                  >
+                    <span>Class Teacher (Mentor)</span>
+                    <span className="text-[10px] font-normal opacity-90">Manages one class & section</span>
+                  </button>
+                </div>
+
+                {addForm.teacherType === 'Class Teacher' && (
+                  <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Assigned Class *</label>
+                      <select
+                        value={addForm.assignedClass || ''}
+                        onChange={(e) => setAddForm(prev => ({ ...prev, assignedClass: e.target.value }))}
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 outline-none"
+                      >
+                        <option value="">-- Select Class --</option>
+                        {Array.from(new Set(classes.map(c => c.standard))).map(std => (
+                          <option key={std} value={std}>Class {std}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Section</label>
+                      <select
+                        value={addForm.assignedSection || 'A'}
+                        onChange={(e) => setAddForm(prev => ({ ...prev, assignedSection: e.target.value }))}
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 outline-none"
+                      >
+                        {['A', 'B', 'C', 'D'].map(sec => (
+                          <option key={sec} value={sec}>Section {sec}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Primary & Secondary Subject Expertise Dropdowns */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3 bg-blue-50/50 rounded-2xl border border-blue-100">
                 <div>
@@ -10277,6 +10435,69 @@ Office of the Principal / Academic Administration`
                     ))}
                   </select>
                 </div>
+              </div>
+
+              {/* Teacher Classification / Type Selector */}
+              <div className="p-4 bg-slate-50/90 rounded-2xl border border-slate-200">
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
+                  Teacher Classification *
+                </label>
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  <button
+                    type="button"
+                    onClick={() => setEditForm(prev => ({ ...prev, teacherType: 'Subject Teacher', assignedClass: '' }))}
+                    className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                      editForm.teacherType !== 'Class Teacher'
+                        ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-xs'
+                        : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
+                    }`}
+                  >
+                    <span>Normal Subject Teacher</span>
+                    <span className="text-[10px] font-normal opacity-90">Teaches subjects across classes</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditForm(prev => ({ ...prev, teacherType: 'Class Teacher', assignedClass: prev.assignedClass || (classes[0]?.standard || '10th'), assignedSection: prev.assignedSection || 'A' }))}
+                    className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                      editForm.teacherType === 'Class Teacher'
+                        ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-xs'
+                        : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
+                    }`}
+                  >
+                    <span>Class Teacher (Mentor)</span>
+                    <span className="text-[10px] font-normal opacity-90">Manages one class & section</span>
+                  </button>
+                </div>
+
+                {editForm.teacherType === 'Class Teacher' && (
+                  <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Assigned Class *</label>
+                      <select
+                        value={editForm.assignedClass || ''}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, assignedClass: e.target.value }))}
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 outline-none"
+                      >
+                        <option value="">-- Select Class --</option>
+                        {Array.from(new Set(classes.map(c => c.standard))).map(std => (
+                          <option key={std} value={std}>Class {std}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Section</label>
+                      <select
+                        value={editForm.assignedSection || 'A'}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, assignedSection: e.target.value }))}
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 outline-none"
+                      >
+                        {['A', 'B', 'C', 'D'].map(sec => (
+                          <option key={sec} value={sec}>Section {sec}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Primary & Secondary Subject Expertise Dropdowns */}
@@ -10574,9 +10795,10 @@ Office of the Principal / Academic Administration`
                               (m.teacherName && m.teacherName.toLowerCase().trim() === t.name.toLowerCase().trim());
                             return classMatch && teacherMatch;
                           });
+                          const typeLabel = t.isClassTeacher ? `[Class Teacher (${t.classTeacherOf || t.assignedClass})]` : `[Subject Teacher${t.primary_subject ? ': ' + t.primary_subject : ''}]`;
                           return (
                             <option key={t._id || t.id} value={t._id || t.id}>
-                              {t.name} ({t.employeeId || 'FAC'}) {isMapped ? '★ [Mapped for this Class]' : ''}
+                              {t.name} ({t.employeeId || 'FAC'}) — {typeLabel} {isMapped ? '★ [Mapped for Class]' : ''}
                             </option>
                           );
                         })}

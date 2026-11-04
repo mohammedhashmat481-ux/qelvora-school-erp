@@ -195,6 +195,7 @@ async function resolveTimetablePayload(body) {
     timeSlot
   } = body;
 
+  // 1. Resolve Class
   if (classId) {
     const cls = await prisma.class.findUnique({ where: { id: classId } });
     if (cls) {
@@ -203,28 +204,56 @@ async function resolveTimetablePayload(body) {
       board = cls.board || board || 'CBSE';
       room = room || cls.roomNumber;
     }
+  } else if (standard && section) {
+    const cls = await prisma.class.findFirst({ where: { standard, section } });
+    if (cls) {
+      classId = cls.id;
+      board = cls.board || board || 'CBSE';
+      room = room || cls.roomNumber;
+    }
   }
 
+  // 2. Resolve Teacher (Always link exact Teacher.id and employeeId)
+  let resolvedTeacher = null;
   if (teacherId) {
-    const t = await prisma.teacher.findFirst({
-      where: { OR: [{ id: teacherId }, { employeeId: teacherId }] }
+    resolvedTeacher = await prisma.teacher.findFirst({
+      where: { OR: [{ id: teacherId }, { employeeId: teacherId }, { userId: teacherId }] }
     }).catch(() => null);
-    if (t) {
-      teacher = t.name;
-      employeeId = t.employeeId || employeeId || 'FAC';
-    } else {
+    if (!resolvedTeacher) {
       const u = await prisma.user.findFirst({ where: { id: teacherId } }).catch(() => null);
       if (u) {
-        teacher = u.name;
-        employeeId = u.employeeId || employeeId || 'FAC';
+        resolvedTeacher = await prisma.teacher.findFirst({ where: { OR: [{ userId: u.id }, { email: u.email }] } }).catch(() => null);
+        if (!resolvedTeacher) {
+          teacher = u.name;
+          employeeId = u.employeeId || employeeId || 'FAC';
+        }
       }
     }
   }
 
+  if (!resolvedTeacher && teacher) {
+    resolvedTeacher = await prisma.teacher.findFirst({
+      where: { name: { equals: teacher.trim(), mode: 'insensitive' } }
+    }).catch(() => null);
+  }
+
+  if (resolvedTeacher) {
+    teacherId = resolvedTeacher.id;
+    teacher = resolvedTeacher.name;
+    employeeId = resolvedTeacher.employeeId || employeeId || 'FAC';
+  }
+
+  // 3. Resolve Subject
   if (subjectId) {
     const s = await prisma.subject.findUnique({ where: { id: subjectId } });
     if (s) {
       subject = s.name;
+      subjectCode = s.code || subjectCode;
+    }
+  } else if (subject) {
+    const s = await prisma.subject.findFirst({ where: { name: { equals: subject.trim(), mode: 'insensitive' } } });
+    if (s) {
+      subjectId = s.id;
       subjectCode = s.code || subjectCode;
     }
   }
@@ -261,6 +290,34 @@ async function resolveTimetablePayload(body) {
 router.post('/', async (req, res) => {
   try {
     const resolved = await resolveTimetablePayload(req.body);
+
+    // Conflict Check: Ensure this faculty is not already booked in another class at this day and period
+    if (resolved.teacherId || resolved.teacher) {
+      const teacherConflict = await prisma.timetable.findFirst({
+        where: {
+          day: resolved.day,
+          period: resolved.period,
+          OR: [
+            ...(resolved.teacherId ? [{ teacherId: resolved.teacherId }] : []),
+            ...(resolved.teacher ? [{ teacher: { equals: resolved.teacher, mode: 'insensitive' } }] : [])
+          ],
+          NOT: {
+            AND: [
+              { standard: resolved.standard },
+              { section: resolved.section }
+            ]
+          }
+        }
+      });
+
+      if (teacherConflict) {
+        return res.status(409).json({
+          status: false,
+          conflict: true,
+          message: `Schedule Conflict: Faculty "${resolved.teacher}" is already scheduled for Class ${teacherConflict.standard}-${teacherConflict.section} during Period ${resolved.period} on ${resolved.day}!`
+        });
+      }
+    }
 
     // Check if slot already exists for this class/day/period
     const existing = await prisma.timetable.findFirst({
@@ -304,6 +361,36 @@ router.put('/:id', async (req, res) => {
     }
 
     const resolved = await resolveTimetablePayload({ ...existing, ...req.body });
+
+    // Conflict Check excluding current slot
+    if (resolved.teacherId || resolved.teacher) {
+      const teacherConflict = await prisma.timetable.findFirst({
+        where: {
+          id: { not: id },
+          day: resolved.day,
+          period: resolved.period,
+          OR: [
+            ...(resolved.teacherId ? [{ teacherId: resolved.teacherId }] : []),
+            ...(resolved.teacher ? [{ teacher: { equals: resolved.teacher, mode: 'insensitive' } }] : [])
+          ],
+          NOT: {
+            AND: [
+              { standard: resolved.standard },
+              { section: resolved.section }
+            ]
+          }
+        }
+      });
+
+      if (teacherConflict) {
+        return res.status(409).json({
+          status: false,
+          conflict: true,
+          message: `Schedule Conflict: Faculty "${resolved.teacher}" is already scheduled for Class ${teacherConflict.standard}-${teacherConflict.section} during Period ${resolved.period} on ${resolved.day}!`
+        });
+      }
+    }
+
     const updated = await prisma.timetable.update({
       where: { id },
       data: resolved

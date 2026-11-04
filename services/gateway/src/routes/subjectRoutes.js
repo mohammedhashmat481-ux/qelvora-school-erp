@@ -24,13 +24,34 @@ router.get('/', async (req, res) => {
       ];
     }
 
-    const subjects = await prisma.subject.findMany({
-      where,
-      include: { materials: true },
-      orderBy: [{ standard: 'asc' }, { name: 'asc' }]
+    const [subjects, mappings] = await Promise.all([
+      prisma.subject.findMany({
+        where,
+        include: { materials: true },
+        orderBy: [{ standard: 'asc' }, { name: 'asc' }]
+      }),
+      prisma.teacherClassSubjectMapping.findMany().catch(() => [])
+    ]);
+
+    const formatted = subjects.map(s => {
+      const match = mappings.find(m =>
+        (m.subjectId && m.subjectId === s.id) ||
+        (m.subject && m.subject.toLowerCase().trim() === s.name.toLowerCase().trim() &&
+         (!s.standard || s.standard === 'All' || !m.standard || m.standard.toLowerCase().trim() === s.standard.toLowerCase().trim()))
+      );
+      return {
+        ...s,
+        assignedTeacherId: match?.teacherId || null,
+        assignedTeacherName: match?.teacherName || null,
+        assignedTeacher: match ? {
+          teacherId: match.teacherId,
+          teacherName: match.teacherName,
+          employeeId: match.employeeId
+        } : null
+      };
     });
 
-    res.json({ status: true, data: formatLegacyId(subjects) });
+    res.json({ status: true, data: formatLegacyId(formatted) });
   } catch (err) {
     res.status(500).json({ status: false, message: err.message });
   }
@@ -82,6 +103,32 @@ router.post('/', async (req, res) => {
       }
     });
 
+    // If teacher assignment is provided, automatically link in TeacherClassSubjectMapping
+    const inputTeacherId = req.body.teacherId || req.body.assignedTeacherId;
+    if (inputTeacherId) {
+      try {
+        const t = await prisma.teacher.findFirst({
+          where: { OR: [{ id: inputTeacherId }, { employeeId: inputTeacherId }, { name: inputTeacherId }] }
+        });
+        if (t) {
+          await prisma.teacherClassSubjectMapping.create({
+            data: {
+              teacherId: t.id,
+              teacherName: t.name,
+              employeeId: t.employeeId || 'FAC',
+              classId: subject.classId || null,
+              standard: resolvedStandard || 'All',
+              section: resolvedSection || 'A',
+              board: resolvedBoard,
+              subjectId: subject.id,
+              subject: subject.name,
+              subjectCode: subject.code
+            }
+          });
+        }
+      } catch (_) {}
+    }
+
     return res.status(201).json({
       status: true,
       message: `Subject "${subject.name}" created successfully`,
@@ -96,7 +143,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, code, standard, section, board, classId, className, type, weeklyHours } = req.body;
+    const { name, code, standard, section, board, classId, className, type, weeklyHours, teacherId, assignedTeacherId } = req.body;
 
     if (!name || !name.trim()) {
       return res.status(400).json({ status: false, message: 'Subject name is required' });
@@ -135,6 +182,64 @@ router.put('/:id', async (req, res) => {
         ...(weeklyHours !== undefined && { weeklyHours: parseInt(weeklyHours, 10) || 4 })
       }
     });
+
+    // Handle Teacher mapping update
+    const newTeacherId = teacherId !== undefined ? teacherId : assignedTeacherId;
+    if (newTeacherId !== undefined) {
+      try {
+        if (newTeacherId) {
+          const t = await prisma.teacher.findFirst({
+            where: { OR: [{ id: newTeacherId }, { employeeId: newTeacherId }, { name: newTeacherId }] }
+          });
+          if (t) {
+            const existingMap = await prisma.teacherClassSubjectMapping.findFirst({
+              where: {
+                OR: [
+                  { subjectId: id },
+                  { subject: updated.name, standard: resolvedStandard || undefined }
+                ]
+              }
+            });
+            if (existingMap) {
+              await prisma.teacherClassSubjectMapping.update({
+                where: { id: existingMap.id },
+                data: {
+                  teacherId: t.id,
+                  teacherName: t.name,
+                  employeeId: t.employeeId || 'FAC',
+                  subjectId: updated.id,
+                  subject: updated.name,
+                  subjectCode: updated.code,
+                  standard: resolvedStandard || existingMap.standard,
+                  section: resolvedSection || existingMap.section,
+                  classId: updated.classId || existingMap.classId
+                }
+              });
+            } else {
+              await prisma.teacherClassSubjectMapping.create({
+                data: {
+                  teacherId: t.id,
+                  teacherName: t.name,
+                  employeeId: t.employeeId || 'FAC',
+                  classId: updated.classId || null,
+                  standard: resolvedStandard || 'All',
+                  section: resolvedSection || 'A',
+                  board: resolvedBoard,
+                  subjectId: updated.id,
+                  subject: updated.name,
+                  subjectCode: updated.code
+                }
+              });
+            }
+          }
+        } else {
+          // Unassigned
+          await prisma.teacherClassSubjectMapping.deleteMany({
+            where: { subjectId: id }
+          }).catch(() => {});
+        }
+      } catch (_) {}
+    }
 
     return res.json({
       status: true,
