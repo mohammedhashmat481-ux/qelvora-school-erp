@@ -327,15 +327,19 @@ router.get('/auth/admin/employees', async (req, res) => {
       // Check whether teacher is assigned as a Class Teacher
       const matchedClass = allClasses.find(c =>
         (c.classTeacherId && (c.classTeacherId === t.id || c.classTeacherId === t.userId || c.classTeacherId === t.employeeId)) ||
-        (c.classTeacherName && c.classTeacherName.trim().toLowerCase() === t.name.trim().toLowerCase())
+        (c.classTeacherName && c.classTeacherName.trim().toLowerCase() === t.name.trim().toLowerCase()) ||
+        (t.assignedClass && t.assignedClass !== 'NONE' && c.standard === t.assignedClass && (!t.assignedSection || c.section === t.assignedSection))
       );
 
-      const isClassTeacher = !!matchedClass;
+      const hasClassAssigned = !!t.assignedClass && t.assignedClass.trim() !== '' && t.assignedClass.toUpperCase() !== 'NONE';
+      const isClassTeacher = !item.is_super_admin && (!!matchedClass || hasClassAssigned);
       item.isClassTeacher = isClassTeacher;
-      item.teacherType = isClassTeacher ? 'Class Teacher' : 'Subject Teacher';
-      item.assignedClass = matchedClass ? matchedClass.standard : (t.assignedClass || null);
-      item.assignedSection = matchedClass ? matchedClass.section : (t.assignedSection || null);
-      item.classTeacherOf = matchedClass ? `${matchedClass.standard}-${matchedClass.section}` : (t.assignedClass && t.assignedSection && isClassTeacher ? `${t.assignedClass}-${t.assignedSection}` : null);
+      item.teacherType = item.is_super_admin ? 'Super Admin' : (isClassTeacher ? 'Class Teacher' : 'Non-Class Teacher');
+      item.assignedClass = isClassTeacher ? (matchedClass ? matchedClass.standard : t.assignedClass) : null;
+      item.assignedSection = isClassTeacher ? (matchedClass ? matchedClass.section : (t.assignedSection || 'A')) : null;
+      item.classTeacherOf = isClassTeacher
+        ? (matchedClass ? `${matchedClass.standard}-${matchedClass.section}` : (item.assignedClass && item.assignedSection ? `${item.assignedClass}-${item.assignedSection}` : item.assignedClass))
+        : null;
 
       result.push(item);
     }
@@ -446,7 +450,7 @@ router.put('/auth/admin/employee/:id/settings', async (req, res) => {
               data: { classTeacherId: teacher.id, classTeacherName: payload.name || teacher.name }
             });
           } catch (_) {}
-        } else if (payload.teacherType === 'Subject Teacher') {
+        } else if (payload.teacherType === 'Non-Class Teacher' || payload.teacherType === 'Subject Teacher') {
           updateData.assignedClass = null;
           updateData.assignedSection = null;
           try {
@@ -1126,7 +1130,7 @@ router.post('/faculty/teacher', async (req, res) => {
       skip_location: true,
       is_enabled: true,
       isClassTeacher: isClassTeacher,
-      teacherType: isClassTeacher ? 'Class Teacher' : 'Subject Teacher',
+      teacherType: isClassTeacher ? 'Class Teacher' : 'Non-Class Teacher',
       assignedClass: targetClass,
       assignedSection: targetSection,
       classTeacherOf: isClassTeacher ? `${targetClass}-${targetSection}` : null,

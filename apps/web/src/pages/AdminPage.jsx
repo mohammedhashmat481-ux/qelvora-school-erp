@@ -119,6 +119,34 @@ const AdminPage = () => {
   const [isSavingBulk, setIsSavingBulk] = useState(false);
   const [empLoading, setEmpLoading] = useState(false);
   const [empSearch, setEmpSearch] = useState('');
+  const [empFilterTab, setEmpFilterTab] = useState('all'); // 'all', 'class_teacher', 'non_class_teacher', 'staff'
+
+  const classTeachersCount = useMemo(() => {
+    return (Array.isArray(employees) ? employees : []).filter(e => 
+      !e.is_super_admin && 
+      (e.role || '').toLowerCase() !== 'admin' &&
+      (e.isClassTeacher || e.teacherType === 'Class Teacher')
+    ).length;
+  }, [employees]);
+
+  const nonClassTeachersCount = useMemo(() => {
+    return (Array.isArray(employees) ? employees : []).filter(e => 
+      !e.is_super_admin && 
+      (e.role || '').toLowerCase() !== 'admin' &&
+      !e.isClassTeacher &&
+      e.teacherType !== 'Class Teacher' &&
+      ((e.role || '').toLowerCase() === 'teacher' || e.teacherType === 'Non-Class Teacher' || e.teacherType === 'Subject Teacher' || !!e.primary_subject)
+    ).length;
+  }, [employees]);
+
+  const staffCount = useMemo(() => {
+    return (Array.isArray(employees) ? employees : []).filter(e => 
+      e.is_super_admin || 
+      (e.role || '').toLowerCase() === 'admin' || 
+      e.teacherType === 'Staff' ||
+      (!e.isClassTeacher && e.teacherType !== 'Class Teacher' && !['teacher'].includes((e.role || '').toLowerCase()) && !e.primary_subject)
+    ).length;
+  }, [employees]);
   const [savingEmpId, setSavingEmpId] = useState(null);
   const [exportingType, setExportingType] = useState(null);
   const [selectedUserDashboard, setSelectedUserDashboard] = useState(null);
@@ -2685,7 +2713,7 @@ Office of the Principal / Academic Administration`
       createLogin: true,
       password: '',
       role: 'teacher',
-      teacherType: 'Subject Teacher',
+      teacherType: 'Non-Class Teacher',
       assignedClass: '',
       assignedSection: 'A',
       primary_subject: '',
@@ -2724,7 +2752,7 @@ Office of the Principal / Academic Administration`
       experience: emp.experience || 0,
       status: emp.status || 'Active',
       role: emp.role || 'teacher',
-      teacherType: (emp.isClassTeacher || emp.teacherType === 'Class Teacher') ? 'Class Teacher' : 'Subject Teacher',
+      teacherType: (emp.isClassTeacher || emp.teacherType === 'Class Teacher') ? 'Class Teacher' : 'Non-Class Teacher',
       assignedClass: emp.assignedClass || '',
       assignedSection: emp.assignedSection || 'A',
       skip_face: !!emp.skip_face,
@@ -7135,6 +7163,77 @@ Office of the Principal / Academic Administration`
             </div>
 
             <div className="p-6 sm:p-8 space-y-6">
+              {/* Category Filter Pills (Class Teachers vs Non-Class Teachers vs Staff) */}
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setEmpFilterTab('all')}
+                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                    empFilterTab === 'all'
+                      ? 'bg-[#203B61] text-white shadow-xs'
+                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  <span>All Members</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                    empFilterTab === 'all' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'
+                  }`}>
+                    {(Array.isArray(employees) ? employees : []).length}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setEmpFilterTab('class_teacher')}
+                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                    empFilterTab === 'class_teacher'
+                      ? 'bg-[#203B61] text-white shadow-xs'
+                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  <span>★ Class Teachers</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                    empFilterTab === 'class_teacher' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'
+                  }`}>
+                    {classTeachersCount}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setEmpFilterTab('non_class_teacher')}
+                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                    empFilterTab === 'non_class_teacher'
+                      ? 'bg-[#203B61] text-white shadow-xs'
+                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  <span>Non-Class Teachers</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                    empFilterTab === 'non_class_teacher' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'
+                  }`}>
+                    {nonClassTeachersCount}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setEmpFilterTab('staff')}
+                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                    empFilterTab === 'staff'
+                      ? 'bg-[#203B61] text-white shadow-xs'
+                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  <span>Administrative & Staff</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                    empFilterTab === 'staff' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'
+                  }`}>
+                    {staffCount}
+                  </span>
+                </button>
+              </div>
+
               {/* Search Bar & Auto-save Note */}
               <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                 <div className="relative w-full sm:max-w-md">
@@ -7174,12 +7273,33 @@ Office of the Principal / Academic Administration`
                       </thead>
                       <tbody className="divide-y divide-slate-100 bg-white">
                         {(Array.isArray(employees) ? employees : [])
-                          .filter(e => 
-                            !empSearch || 
-                            e.name?.toLowerCase().includes(empSearch.toLowerCase()) || 
-                            e.employeeId?.toLowerCase().includes(empSearch.toLowerCase()) || 
-                            e.email?.toLowerCase().includes(empSearch.toLowerCase())
-                          )
+                          .filter(e => {
+                            // Category tab filter
+                            if (empFilterTab === 'class_teacher') {
+                              if (e.is_super_admin || (e.role || '').toLowerCase() === 'admin') return false;
+                              if (!e.isClassTeacher && e.teacherType !== 'Class Teacher') return false;
+                            } else if (empFilterTab === 'non_class_teacher') {
+                              if (e.is_super_admin || (e.role || '').toLowerCase() === 'admin') return false;
+                              if (e.isClassTeacher || e.teacherType === 'Class Teacher') return false;
+                              const isTeacher = (e.role || '').toLowerCase() === 'teacher' || e.teacherType === 'Non-Class Teacher' || e.teacherType === 'Subject Teacher' || !!e.primary_subject;
+                              if (!isTeacher) return false;
+                            } else if (empFilterTab === 'staff') {
+                              const isStaff = e.is_super_admin || 
+                                (e.role || '').toLowerCase() === 'admin' || 
+                                e.teacherType === 'Staff' ||
+                                (!e.isClassTeacher && e.teacherType !== 'Class Teacher' && !['teacher'].includes((e.role || '').toLowerCase()) && !e.primary_subject);
+                              if (!isStaff) return false;
+                            }
+
+                            // Search filter
+                            if (!empSearch) return true;
+                            const q = empSearch.toLowerCase();
+                            return (
+                              e.name?.toLowerCase().includes(q) || 
+                              e.employeeId?.toLowerCase().includes(q) || 
+                              e.email?.toLowerCase().includes(q)
+                            );
+                          })
                           .map((emp) => {
                             const realIdx = (Array.isArray(employees) ? employees : []).findIndex(e => e._id === emp._id);
 
@@ -7202,15 +7322,19 @@ Office of the Principal / Academic Administration`
                                           <span className="text-[10px] bg-blue-50 text-[#203B61] px-2 py-0.5 rounded-md font-semibold border border-blue-200">
                                             Super Admin
                                           </span>
+                                        ) : (emp.role?.toLowerCase() === 'admin' || emp.role?.toLowerCase() === 'super_admin' || emp.teacherType === 'Staff') ? (
+                                          <span className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-semibold border border-slate-300">
+                                            {emp.role || 'Staff'}
+                                          </span>
                                         ) : (emp.isClassTeacher || emp.teacherType === 'Class Teacher') ? (
                                           <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-md font-bold border border-blue-200" title={`Class Teacher of Class ${emp.classTeacherOf || (emp.assignedClass + '-' + emp.assignedSection)}`}>
                                             Class Teacher ({emp.classTeacherOf || `${emp.assignedClass || ''}-${emp.assignedSection || ''}`})
                                           </span>
-                                        ) : (emp.role === 'teacher' || emp.teacherType === 'Subject Teacher') ? (
-                                          <span className="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-md font-bold border border-indigo-200">
-                                            Subject Teacher
+                                        ) : (
+                                          <span className="text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded-md font-bold border border-amber-200" title="Non-Class Teacher / Subject Educator">
+                                            Non-Class Teacher
                                           </span>
-                                        ) : null}
+                                        )}
                                       </div>
                                       <div className="text-xs text-slate-500 flex items-center gap-1.5 flex-wrap mt-0.5 font-normal">
                                         <span>{emp.email}</span>
@@ -7335,12 +7459,33 @@ Office of the Principal / Academic Administration`
                   {/* Mobile & Tablet Card Layout */}
                   <div className="lg:hidden flex flex-col gap-4">
                     {(Array.isArray(employees) ? employees : [])
-                      .filter(e => 
-                        !empSearch || 
-                        e.name?.toLowerCase().includes(empSearch.toLowerCase()) || 
-                        e.employeeId?.toLowerCase().includes(empSearch.toLowerCase()) || 
-                        e.email?.toLowerCase().includes(empSearch.toLowerCase())
-                      )
+                      .filter(e => {
+                        // Category tab filter
+                        if (empFilterTab === 'class_teacher') {
+                          if (e.is_super_admin || (e.role || '').toLowerCase() === 'admin') return false;
+                          if (!e.isClassTeacher && e.teacherType !== 'Class Teacher') return false;
+                        } else if (empFilterTab === 'non_class_teacher') {
+                          if (e.is_super_admin || (e.role || '').toLowerCase() === 'admin') return false;
+                          if (e.isClassTeacher || e.teacherType === 'Class Teacher') return false;
+                          const isTeacher = (e.role || '').toLowerCase() === 'teacher' || e.teacherType === 'Non-Class Teacher' || e.teacherType === 'Subject Teacher' || !!e.primary_subject;
+                          if (!isTeacher) return false;
+                        } else if (empFilterTab === 'staff') {
+                          const isStaff = e.is_super_admin || 
+                            (e.role || '').toLowerCase() === 'admin' || 
+                            e.teacherType === 'Staff' ||
+                            (!e.isClassTeacher && e.teacherType !== 'Class Teacher' && !['teacher'].includes((e.role || '').toLowerCase()) && !e.primary_subject);
+                          if (!isStaff) return false;
+                        }
+
+                        // Search filter
+                        if (!empSearch) return true;
+                        const q = empSearch.toLowerCase();
+                        return (
+                          e.name?.toLowerCase().includes(q) || 
+                          e.employeeId?.toLowerCase().includes(q) || 
+                          e.email?.toLowerCase().includes(q)
+                        );
+                      })
                       .map((emp) => {
                         const realIdx = (Array.isArray(employees) ? employees : []).findIndex(e => e._id === emp._id);
                         return (
@@ -7358,14 +7503,26 @@ Office of the Principal / Academic Administration`
                                   {emp.name?.charAt(0)?.toUpperCase()}
                                 </div>
                                 <div>
-                                  <div className="font-semibold text-gray-900 flex items-center gap-1.5">
+                                  <div className="font-semibold text-gray-900 flex items-center gap-1.5 flex-wrap">
                                     <span 
                                       onClick={() => handleUserClick(emp._id)}
                                       className="cursor-pointer hover:underline text-[#203B61] hover:text-[#405189] font-bold"
                                     >
                                       {emp.name}
                                     </span>
-                                    {emp.is_super_admin && <span className="text-[9px] bg-stone-100 text-[#405189] px-1.5 py-0.5 rounded-full font-bold">Super Admin</span>}
+                                    {emp.is_super_admin ? (
+                                      <span className="text-[9px] bg-blue-50 text-[#203B61] px-1.5 py-0.5 rounded-full font-bold border border-blue-200">Super Admin</span>
+                                    ) : (emp.role?.toLowerCase() === 'admin' || emp.role?.toLowerCase() === 'super_admin' || emp.teacherType === 'Staff') ? (
+                                      <span className="text-[9px] bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded-full font-bold border border-slate-300">{emp.role || 'Staff'}</span>
+                                    ) : (emp.isClassTeacher || emp.teacherType === 'Class Teacher') ? (
+                                      <span className="text-[9px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded-full font-bold border border-blue-200">
+                                        Class Teacher ({emp.classTeacherOf || `${emp.assignedClass || ''}-${emp.assignedSection || ''}`})
+                                      </span>
+                                    ) : (
+                                      <span className="text-[9px] bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded-full font-bold border border-amber-200">
+                                        Non-Class Teacher
+                                      </span>
+                                    )}
                                   </div>
                                   <div className="text-xs text-gray-500">{emp.email}</div>
                                   <div className="text-[10px] text-gray-400 font-mono mt-0.5">ID: {emp.employeeId || 'N/A'}</div>
@@ -8214,7 +8371,7 @@ Office of the Principal / Academic Administration`
                       <option value="">-- No Educator Assigned (Unassigned) --</option>
                       {employees.filter(emp => !emp.is_super_admin && !['admin', 'parent', 'student'].includes((emp.role || '').toLowerCase())).map(t => (
                         <option key={t._id || t.id} value={t._id || t.id}>
-                          {t.name} ({t.employeeId || 'FAC'}) — {t.isClassTeacher ? `[Class Teacher (${t.classTeacherOf || t.assignedClass})]` : '[Subject Teacher]'} {t.primary_subject ? `[${t.primary_subject}]` : ''}
+                          {t.name} ({t.employeeId || 'FAC'}) — {t.isClassTeacher ? `[Class Teacher (${t.classTeacherOf || t.assignedClass})]` : '[Non-Class Teacher]'} {t.primary_subject ? `[${t.primary_subject}]` : ''}
                         </option>
                       ))}
                     </select>
@@ -10175,14 +10332,14 @@ Office of the Principal / Academic Administration`
                 <div className="grid grid-cols-2 gap-3 mb-3">
                   <button
                     type="button"
-                    onClick={() => setAddForm(prev => ({ ...prev, teacherType: 'Subject Teacher', assignedClass: '' }))}
+                    onClick={() => setAddForm(prev => ({ ...prev, teacherType: 'Non-Class Teacher', assignedClass: '' }))}
                     className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
                       addForm.teacherType !== 'Class Teacher'
                         ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-xs'
                         : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
                     }`}
                   >
-                    <span>Normal Subject Teacher</span>
+                    <span>Non-Class Teacher</span>
                     <span className="text-[10px] font-normal opacity-90">Teaches subjects across classes</span>
                   </button>
                   <button
@@ -10445,14 +10602,14 @@ Office of the Principal / Academic Administration`
                 <div className="grid grid-cols-2 gap-3 mb-3">
                   <button
                     type="button"
-                    onClick={() => setEditForm(prev => ({ ...prev, teacherType: 'Subject Teacher', assignedClass: '' }))}
+                    onClick={() => setEditForm(prev => ({ ...prev, teacherType: 'Non-Class Teacher', assignedClass: '' }))}
                     className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
                       editForm.teacherType !== 'Class Teacher'
                         ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-xs'
                         : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
                     }`}
                   >
-                    <span>Normal Subject Teacher</span>
+                    <span>Non-Class Teacher</span>
                     <span className="text-[10px] font-normal opacity-90">Teaches subjects across classes</span>
                   </button>
                   <button
@@ -10795,7 +10952,7 @@ Office of the Principal / Academic Administration`
                               (m.teacherName && m.teacherName.toLowerCase().trim() === t.name.toLowerCase().trim());
                             return classMatch && teacherMatch;
                           });
-                          const typeLabel = t.isClassTeacher ? `[Class Teacher (${t.classTeacherOf || t.assignedClass})]` : `[Subject Teacher${t.primary_subject ? ': ' + t.primary_subject : ''}]`;
+                          const typeLabel = t.isClassTeacher ? `[Class Teacher (${t.classTeacherOf || t.assignedClass})]` : `[Non-Class Teacher${t.primary_subject ? ': ' + t.primary_subject : ''}]`;
                           return (
                             <option key={t._id || t.id} value={t._id || t.id}>
                               {t.name} ({t.employeeId || 'FAC'}) — {typeLabel} {isMapped ? '★ [Mapped for Class]' : ''}

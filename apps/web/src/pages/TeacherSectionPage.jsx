@@ -1068,8 +1068,8 @@ const TeacherSectionPage = () => {
                       Class Teacher (Class {profileData.classTeacherOf?.standard || profileData.assignedClass}-{profileData.classTeacherOf?.section || profileData.assignedSection || 'A'})
                     </span>
                   ) : (
-                    <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 mt-1">
-                      Subject Teacher
+                    <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 mt-1">
+                      Non-Class Teacher
                     </span>
                   )}
                 </div>
@@ -1347,7 +1347,7 @@ const TeacherSectionPage = () => {
                         {profileData?.isClassTeacher ? (
                           <>CLASS TEACHER: <span className="text-[#93C5FD] uppercase font-black">{profileData?.name || 'N/A'}</span></>
                         ) : (
-                          <>FACULTY MEMBER: <span className="text-[#93C5FD] uppercase font-black">{profileData?.name || 'N/A'}</span> (Subject Teacher)</>
+                          <>FACULTY MEMBER: <span className="text-[#93C5FD] uppercase font-black">{profileData?.name || 'N/A'}</span> (Non-Class Teacher)</>
                         )}
                       </div>
                       <div className="mt-1 sm:mt-0">
