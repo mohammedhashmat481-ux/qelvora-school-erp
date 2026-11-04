@@ -987,11 +987,22 @@ const TeacherSectionPage = () => {
       <div className="flex-1 bg-[#F5F8FC] p-6 sm:p-8 overflow-y-auto">
         <header className="mb-6 flex justify-between items-center bg-[#203B61] border border-[#2D4D77] shadow-sm rounded-2xl p-6 text-white">
           <div>
-            <span className="text-[10px] font-bold text-[#DCEBFA] uppercase tracking-widest block mb-1">
-              Faculty Section &bull; {profileData?.name || 'Academic Portal'}
-            </span>
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
+              <span className="text-[10px] font-bold text-[#DCEBFA] uppercase tracking-widest block">
+                Faculty Portal &bull; {profileData?.name || 'Academic Educator'}
+              </span>
+              {profileData?.isClassTeacher ? (
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-400/20 text-blue-200 border border-blue-300/30 flex items-center gap-1">
+                  ★ Class Teacher ({profileData.classTeacherOf?.standard || profileData.assignedClass}-{profileData.classTeacherOf?.section || profileData.assignedSection || 'A'})
+                </span>
+              ) : (
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-200 border border-amber-300/30">
+                  Non-Class Teacher{profileData?.primary_subject ? ` (${profileData.primary_subject})` : ''}
+                </span>
+              )}
+            </div>
             <h1 className="text-2xl font-black text-white capitalize">
-              {activeTab === 'marks' ? 'Examination Marks Entry' : activeTab === 'homework' ? 'Homework & Assignments' : activeTab === 'notices' ? 'Administrative Notices & Circulars' : activeTab === 'students' ? 'My Classes & Student Roster' : activeTab.replace('-', ' ')}
+              {activeTab === 'marks' ? 'Examination Marks Entry' : activeTab === 'homework' ? 'Homework & Assignments' : activeTab === 'notices' ? 'Administrative Notices & Circulars' : activeTab === 'students' ? (profileData?.isClassTeacher ? 'My Class & Students Roster' : 'Taught Classes & Students') : activeTab.replace('-', ' ')}
             </h1>
           </div>
           <div className="flex items-center gap-3">
@@ -1467,25 +1478,44 @@ const TeacherSectionPage = () => {
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 {/* Left side: Class selection */}
-                <div className="lg:col-span-1 bg-white border border-[#e9ebec] shadow-sm rounded p-6 space-y-4">
-                  <h4 className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Taught Classes</h4>
+                <div className="lg:col-span-1 bg-white border border-[#e9ebec] shadow-sm rounded-2xl p-6 space-y-4">
+                  <h4 className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">
+                    {profileData?.isClassTeacher ? 'My Assigned & Taught Classes' : 'Classes Taught for My Subjects'}
+                  </h4>
                   <div className="space-y-1.5">
-                    {uniqueClasses.map(cls => (
-                      <button
-                        key={cls._id}
-                        onClick={() => setSelectedClassId(cls._id)}
-                        className={`w-full text-left px-4 py-3 rounded-xl text-xs font-bold border transition-all flex justify-between items-center ${
-                          selectedClassId === cls._id
-                            ? 'bg-[#2D4D77]/10 border-[#2D4D77] text-[#405189] shadow-sm'
-                            : 'bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100'
-                        }`}
-                      >
-                        <span>Class {cls.standard} - {cls.section}</span>
-                        <span className="text-[10px] bg-white border border-stone-200/80 px-2 py-0.5 rounded-full font-mono text-stone-500">
-                          {cls.board}
-                        </span>
-                      </button>
-                    ))}
+                    {uniqueClasses.map(cls => {
+                      const isMyMentorClass = profileData?.isClassTeacher && (
+                        (profileData.classTeacherOf?.standard === cls.standard && (profileData.classTeacherOf?.section || 'A') === cls.section) ||
+                        (profileData.assignedClass === cls.standard && (profileData.assignedSection || 'A') === cls.section)
+                      );
+                      return (
+                        <button
+                          key={cls._id}
+                          onClick={() => setSelectedClassId(cls._id)}
+                          className={`w-full text-left px-4 py-3 rounded-xl text-xs font-bold border transition-all flex flex-col gap-1 cursor-pointer ${
+                            selectedClassId === cls._id
+                              ? 'bg-[#2D4D77]/10 border-[#2D4D77] text-[#405189] shadow-sm'
+                              : 'bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100'
+                          }`}
+                        >
+                          <div className="flex justify-between items-center w-full">
+                            <span>Class {cls.standard} - {cls.section}</span>
+                            <span className="text-[10px] bg-white border border-stone-200/80 px-2 py-0.5 rounded-full font-mono text-stone-500">
+                              {cls.board}
+                            </span>
+                          </div>
+                          {isMyMentorClass ? (
+                            <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 w-fit">
+                              ★ My Assigned Class (Class Teacher)
+                            </span>
+                          ) : (
+                            <span className="text-[10px] font-medium text-slate-500">
+                              Subject: {(cls.subjects || []).join(', ') || profileData?.primary_subject || 'Taught Subject'}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
