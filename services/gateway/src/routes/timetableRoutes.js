@@ -1,6 +1,7 @@
 import express from 'express';
 import { prisma, formatLegacyId } from '../db/prisma.js';
 import { protect } from '../middleware/authMiddleware.js';
+import cache from '../lib/cache.js';
 
 const router = express.Router();
 
@@ -341,6 +342,9 @@ router.post('/', async (req, res) => {
       });
     }
 
+    cache.flush('timetable');
+    cache.flush('master:');
+
     res.status(201).json({
       status: true,
       message: 'Timetable slot saved successfully',
@@ -396,6 +400,9 @@ router.put('/:id', async (req, res) => {
       data: resolved
     });
 
+    cache.flush('timetable');
+    cache.flush('master:');
+
     res.json({
       status: true,
       message: 'Timetable slot updated successfully',
@@ -440,6 +447,9 @@ router.post('/bulk', async (req, res) => {
       savedCount++;
     }
 
+    cache.flush('timetable');
+    cache.flush('master:');
+
     res.json({
       status: true,
       message: `Successfully updated ${savedCount} timetable slot(s)`
@@ -460,6 +470,9 @@ router.delete('/:id', async (req, res) => {
     await prisma.timetable.delete({
       where: { id: req.params.id }
     });
+
+    cache.flush('timetable');
+    cache.flush('master:');
 
     res.json({ status: true, message: 'Timetable entry deleted successfully' });
   } catch (err) {

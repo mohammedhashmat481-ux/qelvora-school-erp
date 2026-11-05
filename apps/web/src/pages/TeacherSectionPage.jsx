@@ -981,10 +981,10 @@ const TeacherSectionPage = () => {
   }
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
+    <div className="min-h-screen md:h-screen bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans md:overflow-hidden">
       <Sidebar />
 
-      <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden bg-[#F5F8FC] p-3 sm:p-5 lg:p-8 pb-28 md:pb-14">
+      <div className="flex-1 md:h-screen md:overflow-y-auto overflow-x-hidden bg-[#F5F8FC] px-2 py-3 sm:px-4 sm:py-5 lg:p-8 pb-32 md:pb-14 touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
         <header className="mb-4 sm:mb-6 flex justify-between items-center bg-[#203B61] border border-[#2D4D77] shadow-sm rounded-2xl p-4 sm:p-6 text-white">
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">

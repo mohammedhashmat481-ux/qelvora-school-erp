@@ -3674,11 +3674,11 @@ Office of the Principal / Academic Administration`
   }
 
   return (
-    <div className="h-screen md:h-screen flex flex-col md:flex-row bg-[#F5F8FC] text-[#253858] animate-fadeIn font-sans overflow-hidden">
+    <div className="min-h-screen md:h-screen flex flex-col md:flex-row bg-[#F5F8FC] text-[#253858] animate-fadeIn font-sans md:overflow-hidden">
       <Sidebar />
       {/* ── Main Content Container (Independently Scrollable on all viewports) ── */}
-      <main className="flex-1 h-screen overflow-y-auto overflow-x-hidden flex flex-col min-w-0 p-3 sm:p-5 lg:p-8 pb-28 md:pb-14">
-        <div className="w-full max-w-7xl mx-auto space-y-4 sm:space-y-6">
+      <main className="flex-1 md:h-screen md:overflow-y-auto overflow-x-hidden flex flex-col min-w-0 px-2 py-3 sm:px-4 sm:py-5 lg:p-8 pb-32 md:pb-14 touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div className="w-full max-w-full sm:max-w-7xl mx-auto space-y-4 sm:space-y-6">
 
         {/* Header Bar */}
         <header className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3 bg-[#203B61] p-3 sm:p-4 rounded-2xl border border-[#2D4D77] shadow-sm text-white">

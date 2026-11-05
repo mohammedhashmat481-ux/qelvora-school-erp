@@ -76,6 +76,23 @@ import {
 
 const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
+const standardOrder = ['nursery', 'lkg', 'ukg', '1st', '1', '2nd', '2', '3rd', '3', '4th', '4', '5th', '5', '6th', '6', '7th', '7', '8th', '8', '9th', '9', '10th', '10', '11th', '11', '12th', '12', 'puc-i', 'puc-1', 'puc-ii', 'puc-2'];
+const getStandardRank = (std) => {
+  if (!std) return 999;
+  const s = std.toString().toLowerCase().replace(/class|grade/g, '').trim();
+  const idx = standardOrder.indexOf(s);
+  if (idx !== -1) return idx;
+  const num = parseFloat(s);
+  if (!isNaN(num)) return 3 + num;
+  return 100;
+};
+const sortClassesLogical = (a, b) => {
+  const rankA = getStandardRank(a.standard);
+  const rankB = getStandardRank(b.standard);
+  if (rankA !== rankB) return rankA - rankB;
+  return (a.section || '').localeCompare(b.section || '');
+};
+
 const getPeriodStatus = (timeSlot) => {
   if (!timeSlot) return 'upcoming';
   try {
@@ -1432,39 +1449,115 @@ Office of the Principal / Academic Administration`
     .filter(t => !adminTabSearch || t.name?.toLowerCase().includes(adminTabSearch.toLowerCase()))
     .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
-  // 4. Teacher Schedule - unique teacher → subject → class combos
+  // 4. Teacher Schedule - comprehensive integration of Class Teachers, Subject Teachers, Mappings, and Timetable
   const teacherScheduleMap = {};
-  (adminData?.weeklyTimetable || []).forEach(e => {
-    const tid = e.teacherId || (typeof e.teacher === 'object' ? (e.teacher?._id || e.teacher?.id) : null) || e.teacherName || (typeof e.teacher === 'string' ? e.teacher : null) || 'unknown';
-    const tName = (typeof e.teacher === 'object' ? e.teacher?.name : e.teacher) || e.teacherName || 'Faculty';
-    const empId = e.employeeId || (typeof e.teacher === 'object' ? e.teacher?.employeeId : null) || '—';
 
-    if (!teacherScheduleMap[tid]) {
-      teacherScheduleMap[tid] = { name: tName, employeeId: empId, subjects: {}, totalPeriods: 0, classesSet: new Set() };
+  // A. Initialize from all registered teachers
+  const allFacultyList = (adminData?.allTeachers && adminData.allTeachers.length > 0)
+    ? adminData.allTeachers
+    : (allClasses.flatMap(c => c.classTeacherName ? [{ name: c.classTeacherName, assignedClass: c.standard, assignedSection: c.section }] : []));
+
+  allFacultyList.forEach(t => {
+    const tid = t.id || t._id || t.name;
+    const isCT = Boolean(t.assignedClass && t.assignedSection);
+    const ctString = isCT ? `Class ${t.assignedClass} - ${t.assignedSection}` : null;
+    
+    teacherScheduleMap[tid] = {
+      id: tid,
+      name: t.name,
+      employeeId: t.employeeId || '—',
+      isClassTeacher: isCT,
+      classTeacherOf: ctString,
+      teacherType: isCT ? 'Class Teacher' : 'Subject Teacher (Normal)',
+      primarySubject: t.primary_subject || t.specialization || t.department || '',
+      secondarySubject: t.secondary_subject || '',
+      department: t.department || '',
+      designation: t.designation || (isCT ? 'Class Teacher' : 'Subject Teacher'),
+      subjects: {},
+      totalPeriods: 0,
+      classesSet: new Set(isCT ? [`${t.assignedClass}-${t.assignedSection}`] : [])
+    };
+
+    if (t.primary_subject) {
+      if (!teacherScheduleMap[tid].subjects[t.primary_subject]) {
+        teacherScheduleMap[tid].subjects[t.primary_subject] = new Set();
+      }
+      if (isCT) teacherScheduleMap[tid].subjects[t.primary_subject].add(`${t.assignedClass}-${t.assignedSection}`);
     }
-    const subName = (typeof e.subject === 'object' ? e.subject?.name : e.subject) || e.subjectName || 'N/A';
-    if (!teacherScheduleMap[tid].subjects[subName]) teacherScheduleMap[tid].subjects[subName] = new Set();
-    const clsName = (e.class?.standard && e.class?.section) ? `${e.class.standard}-${e.class.section}` : (e.standard && e.section ? `${e.standard}-${e.section}` : 'N/A');
-    teacherScheduleMap[tid].subjects[subName].add(clsName);
-    teacherScheduleMap[tid].classesSet.add(clsName);
-    teacherScheduleMap[tid].totalPeriods++;
-  });
-
-  // Also include any teachers from allTeachers who might not have timetable entries yet
-  (adminData?.allTeachers || []).forEach(t => {
-    const tid = t.id || t._id;
-    if (tid && !teacherScheduleMap[tid] && !Object.values(teacherScheduleMap).some(x => x.name.toLowerCase() === (t.name || '').toLowerCase())) {
-      teacherScheduleMap[tid] = {
-        name: t.name,
-        employeeId: t.employeeId || '—',
-        subjects: {},
-        totalPeriods: 0,
-        classesSet: new Set()
-      };
-      if (t.specialization || t.subject) {
-        teacherScheduleMap[tid].subjects[t.specialization || t.subject] = new Set();
+    if (t.secondary_subject) {
+      if (!teacherScheduleMap[tid].subjects[t.secondary_subject]) {
+        teacherScheduleMap[tid].subjects[t.secondary_subject] = new Set();
       }
     }
+  });
+
+  // B. Merge active mappings from TeacherClassSubjectMapping
+  (allMappings || adminData?.allMappings || []).forEach(m => {
+    const tMatch = Object.values(teacherScheduleMap).find(t =>
+      (m.teacherId && t.id && (m.teacherId.toString() === t.id.toString() || m.teacherId.toString() === t._id?.toString())) ||
+      (m.teacherName && t.name && m.teacherName.toLowerCase().trim() === t.name.toLowerCase().trim()) ||
+      (m.employeeId && t.employeeId && m.employeeId === t.employeeId)
+    );
+
+    const tObj = tMatch || (m.teacherName ? (teacherScheduleMap[m.teacherName] = {
+      id: m.teacherId || m.teacherName,
+      name: m.teacherName,
+      employeeId: m.employeeId || '—',
+      isClassTeacher: false,
+      classTeacherOf: null,
+      teacherType: 'Subject Teacher (Normal)',
+      primarySubject: m.subject || '',
+      secondarySubject: '',
+      department: '',
+      designation: 'Subject Teacher',
+      subjects: {},
+      totalPeriods: 0,
+      classesSet: new Set()
+    }) : null);
+
+    if (tObj) {
+      const subName = m.subject || m.subjectName || 'General';
+      const clsName = m.standard && m.section ? `${m.standard}-${m.section}` : (m.standard || 'All');
+      if (!tObj.subjects[subName]) tObj.subjects[subName] = new Set();
+      tObj.subjects[subName].add(clsName);
+      tObj.classesSet.add(clsName);
+    }
+  });
+
+  // C. Merge scheduled periods from weeklyTimetable
+  (adminData?.weeklyTimetable || []).forEach(e => {
+    const tMatch = Object.values(teacherScheduleMap).find(t =>
+      (e.teacherId && t.id && (e.teacherId.toString() === t.id.toString() || e.teacherId.toString() === t._id?.toString())) ||
+      (e.employeeId && t.employeeId && e.employeeId === t.employeeId) ||
+      (e.teacher && typeof e.teacher === 'string' && e.teacher.toLowerCase().trim() === t.name?.toLowerCase().trim()) ||
+      (e.teacherName && e.teacherName.toLowerCase().trim() === t.name?.toLowerCase().trim()) ||
+      (e.teacher?.name && e.teacher.name.toLowerCase().trim() === t.name?.toLowerCase().trim())
+    );
+
+    const tName = (typeof e.teacher === 'object' ? e.teacher?.name : e.teacher) || e.teacherName || 'Faculty';
+    const tid = e.teacherId || tMatch?.id || tName;
+    const tObj = tMatch || teacherScheduleMap[tid] || (teacherScheduleMap[tid] = {
+      id: tid,
+      name: tName,
+      employeeId: e.employeeId || '—',
+      isClassTeacher: false,
+      classTeacherOf: null,
+      teacherType: 'Subject Teacher (Normal)',
+      primarySubject: e.subject || '',
+      secondarySubject: '',
+      department: '',
+      designation: 'Faculty',
+      subjects: {},
+      totalPeriods: 0,
+      classesSet: new Set()
+    });
+
+    const subName = (typeof e.subject === 'object' ? e.subject?.name : e.subject) || e.subjectName || 'General';
+    if (!tObj.subjects[subName]) tObj.subjects[subName] = new Set();
+    const clsName = (e.class?.standard && e.class?.section) ? `${e.class.standard}-${e.class.section}` : (e.standard && e.section ? `${e.standard}-${e.section}` : 'N/A');
+    tObj.subjects[subName].add(clsName);
+    tObj.classesSet.add(clsName);
+    tObj.totalPeriods++;
   });
 
   const teacherSchedules = Object.values(teacherScheduleMap)
@@ -1485,86 +1578,77 @@ Office of the Principal / Academic Administration`
     })
     .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
-  // 5. Class Schedule - group periods by class with filtering support
+  // 5. Class Schedule - group periods by class for ALL classes in the school
   const effectiveDay = dashboardDayFilter === 'Today'
     ? (weekdays[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1] || 'Wednesday')
     : dashboardDayFilter;
 
   const periodsForClassSchedule = (adminData?.weeklyTimetable || []).filter(e => {
-    if (dashboardDayFilter === 'Today') {
-      return (adminData?.allTodayPeriods && adminData.allTodayPeriods.length > 0)
-        ? adminData.allTodayPeriods.some(tp => (tp._id && e._id && tp._id === e._id) || (tp.standard === e.standard && tp.section === e.section && Number(tp.period) === Number(e.period))) || e.day === effectiveDay
-        : e.day === effectiveDay;
-    }
-    return e.day === dashboardDayFilter;
+    if (dashboardDayFilter === 'All Days') return true;
+    return e.day === effectiveDay;
   });
 
-  const slotsToDisplay = periodsForClassSchedule.length > 0 ? periodsForClassSchedule : (adminData?.allTodayPeriods || []);
+  const slotsToDisplay = periodsForClassSchedule.length > 0 ? periodsForClassSchedule : (dashboardDayFilter === 'Today' ? (adminData?.allTodayPeriods || []) : []);
 
   const classScheduleMap = {};
-  slotsToDisplay.forEach(e => {
-    const clsMatch = (allClasses || adminData?.allClasses || []).find(c =>
-      (c._id && e.classId && c._id.toString() === e.classId.toString()) ||
-      (c.standard && e.standard && c.section && e.section &&
-       c.standard.toString().toLowerCase().trim() === e.standard.toString().toLowerCase().trim() &&
-       c.section.toString().toLowerCase().trim() === e.section.toString().toLowerCase().trim())
-    );
 
-    const cid = e.classId || clsMatch?._id || clsMatch?.id || `${e.standard}-${e.section}`;
-    if (!cid) return;
-
+  // Populate ALL classes from allClasses so every class is visible
+  (allClasses || adminData?.allClasses || []).forEach(cls => {
+    const cid = cls._id || cls.id || `${cls.standard}-${cls.section}`;
     if (dashboardClassFilter !== 'All') {
-      const matchesFilter = (clsMatch && (clsMatch._id?.toString() === dashboardClassFilter || clsMatch.id?.toString() === dashboardClassFilter)) ||
-        (cid.toString() === dashboardClassFilter) ||
-        (clsMatch && `${clsMatch.standard}-${clsMatch.section}` === dashboardClassFilter);
-      if (!matchesFilter) return;
+      const matchId = (cid && cid.toString() === dashboardClassFilter);
+      const matchStdSec = (`${cls.standard}-${cls.section}` === dashboardClassFilter);
+      if (!matchId && !matchStdSec) return;
     }
 
-    if (!classScheduleMap[cid]) {
-      classScheduleMap[cid] = {
-        classId: cid,
-        standard: e.standard || clsMatch?.standard || '10th',
-        section: e.section || clsMatch?.section || 'A',
-        board: e.board || clsMatch?.board || 'CBSE',
-        strength: clsMatch?.strength || e.classStrength || 35,
-        roomNumber: e.room || clsMatch?.roomNumber,
-        periods: []
-      };
-    }
-    classScheduleMap[cid].periods.push({
-      period: Number(e.period),
-      timeSlot: e.timeSlot,
-      subject: e.subject || e.subjectName || 'General',
-      teacher: e.teacher || e.teacherName || 'Faculty',
-      color: e.color || 'green',
-      statusText: e.statusText || 'Scheduled',
-      taken: true
-    });
+    // Find class teacher
+    const ct = (adminData?.allTeachers || []).find(t =>
+      t.assignedClass?.toLowerCase().trim() === cls.standard?.toLowerCase().trim() &&
+      t.assignedSection?.toLowerCase().trim() === cls.section?.toLowerCase().trim()
+    );
+    const ctName = cls.classTeacherName || ct?.name || 'Not Assigned';
+
+    classScheduleMap[cid] = {
+      classId: cid,
+      standard: cls.standard,
+      section: cls.section,
+      board: cls.board || 'CBSE',
+      strength: cls.strength || 32,
+      roomNumber: cls.roomNumber || 'Room 101',
+      classTeacherName: ctName,
+      periods: []
+    };
   });
 
-  // If a specific class is selected but has no periods scheduled for this day, still show its card
-  if (dashboardClassFilter !== 'All' && Object.keys(classScheduleMap).length === 0) {
-    const targetCls = (allClasses || adminData?.allClasses || []).find(c =>
-      c._id?.toString() === dashboardClassFilter ||
-      c.id?.toString() === dashboardClassFilter ||
-      `${c.standard}-${c.section}` === dashboardClassFilter
-    );
-    if (targetCls) {
-      classScheduleMap[targetCls._id || targetCls.id] = {
-        classId: targetCls._id || targetCls.id,
-        standard: targetCls.standard,
-        section: targetCls.section,
-        board: targetCls.board || 'CBSE',
-        strength: targetCls.strength || 35,
-        roomNumber: targetCls.roomNumber,
-        periods: []
-      };
+  // Attach matching slots
+  slotsToDisplay.forEach(e => {
+    const target = Object.values(classScheduleMap).find(c => {
+      const matchId = e.classId && c.classId && e.classId.toString() === c.classId.toString();
+      const normStd = (s) => (s || '').toString().toLowerCase().replace(/class|grade|th|st|nd|rd/g, '').trim();
+      const normSec = (s) => (s || '').toString().toLowerCase().trim();
+      const matchStdSec = Boolean(
+        c.standard && e.standard &&
+        normStd(c.standard) === normStd(e.standard) &&
+        (!c.section || !e.section || normSec(c.section) === normSec(e.section))
+      );
+      return matchId || matchStdSec;
+    });
+
+    if (target) {
+      target.periods.push({
+        period: Number(e.period),
+        timeSlot: e.timeSlot,
+        subject: e.subject || e.subjectName || 'General',
+        teacher: e.teacher || e.teacherName || 'Faculty',
+        color: e.color || 'green',
+        statusText: e.statusText || 'Scheduled',
+        taken: true
+      });
     }
-  }
+  });
 
   Object.values(classScheduleMap).forEach(c => c.periods.sort((a, b) => a.period - b.period));
-  const classSchedules = Object.values(classScheduleMap)
-    .sort((a, b) => (a.standard || '').localeCompare(b.standard || '', undefined, { numeric: true }) || (a.section || '').localeCompare(b.section || ''));
+  const classSchedules = Object.values(classScheduleMap).sort(sortClassesLogical);
 
   // 6. Activity Logs - merge teacher attendance + class sessions
   const activityLogsList = (adminData?.allTeachers || []).map(t => {
@@ -1824,12 +1908,7 @@ Office of the Principal / Academic Administration`
         return a.section.localeCompare(b.section);
       });
     } else {
-      let sortedClasses = [...allClasses].sort((a, b) => {
-        const aStd = parseFloat(a.standard) || 0;
-        const bStd = parseFloat(b.standard) || 0;
-        if (aStd !== bStd) return aStd - bStd;
-        return (a.section || '').localeCompare(b.section || '');
-      });
+      let sortedClasses = [...allClasses].sort(sortClassesLogical);
       if (dashboardClassFilter !== 'All') {
         sortedClasses = sortedClasses.filter(c =>
           (c._id && c._id.toString() === dashboardClassFilter) ||
@@ -1890,10 +1969,12 @@ Office of the Principal / Academic Administration`
                   const slot = entries.find(e => {
                     const cid = e.classId || e.class?._id || e.class?.id || e.class;
                     const matchId = Boolean(cid && (cid.toString() === cls._id?.toString() || cid.toString() === cls.id?.toString()));
+                    const normStd = (s) => (s || '').toString().toLowerCase().replace(/class|grade|th|st|nd|rd/g, '').trim();
+                    const normSec = (s) => (s || '').toString().toLowerCase().trim();
                     const matchStdSec = Boolean(
-                      e.standard && e.section && cls.standard && cls.section &&
-                      e.standard.toString().toLowerCase().trim() === cls.standard.toString().toLowerCase().trim() &&
-                      e.section.toString().toLowerCase().trim() === cls.section.toString().toLowerCase().trim()
+                      cls.standard && e.standard &&
+                      normStd(cls.standard) === normStd(e.standard) &&
+                      (!cls.section || !e.section || normSec(cls.section) === normSec(e.section))
                     );
                     return (matchId || matchStdSec) && Number(e.period) === Number(p.period);
                   });
@@ -1903,7 +1984,7 @@ Office of the Principal / Academic Administration`
 
                   if (!slot) {
                     return (
-                      <React.Fragment key={cls._id}>
+                      <React.Fragment key={cls._id || cls.id}>
                         <td className={`py-3 px-1 border-r border-stone-200 font-mono text-[10px] text-stone-400 font-normal bg-stone-50/30`}>—</td>
                         <td className={`py-3 px-1 border-r border-stone-200 font-mono text-[10px] text-stone-400 font-normal bg-stone-50/30`}>—</td>
                         <td className={`py-3 px-1 border-r border-stone-300 font-normal text-stone-400 bg-stone-50/30`}>—</td>
@@ -1927,7 +2008,7 @@ Office of the Principal / Academic Administration`
                   const teacherNameText = slot.teacher?.name || slot.teacher || '';
 
                   return (
-                    <React.Fragment key={cls._id}>
+                    <React.Fragment key={cls._id || cls.id}>
                       <td className={`py-3 px-1 border-r border-stone-200 font-mono text-[10px] font-medium ${colorClass}`}>{from}</td>
                       <td className={`py-3 px-1 border-r border-stone-200 font-mono text-[10px] font-medium ${colorClass}`}>{to}</td>
                       <td className={`group py-3 px-2 border-r border-stone-300 font-bold transition-all relative ${subjectColorClass}`}>
@@ -1980,10 +2061,10 @@ Office of the Principal / Academic Administration`
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
+    <div className="min-h-screen md:h-screen bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans md:overflow-hidden">
       <Sidebar />
 
-      <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden bg-[#F5F8FC] p-3 sm:p-5 lg:p-8 pb-28 md:pb-12">
+      <div className="flex-1 md:h-screen md:overflow-y-auto overflow-x-hidden bg-[#F5F8FC] px-2 py-3 sm:px-4 sm:py-5 lg:p-8 pb-32 md:pb-12 touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
         
         {/* Top welcome banner with dynamic School / College Name from School Settings */}
         <header className="mb-6 bg-[#203B61] border border-[#2D4D77] shadow-md rounded-2xl px-5 py-4 transition-all relative overflow-hidden text-white">
@@ -3779,7 +3860,18 @@ Office of the Principal / Academic Administration`
                                         </div>
                                         <div>
                                           <div className="font-bold text-sm text-stone-900 leading-tight">{t.name}</div>
-                                          <div className="text-[10px] text-stone-400 mt-0.5 flex items-center gap-2">
+                                          <div className="flex items-center gap-1.5 mt-1">
+                                            {t.isClassTeacher ? (
+                                              <span className="inline-flex items-center gap-1 text-[9px] font-extrabold bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full shadow-2xs">
+                                                <span>★</span> Class Teacher ({t.classTeacherOf})
+                                              </span>
+                                            ) : (
+                                              <span className="inline-flex items-center gap-1 text-[9px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full shadow-2xs">
+                                                Subject Teacher (Normal)
+                                              </span>
+                                            )}
+                                          </div>
+                                          <div className="text-[10px] text-stone-400 mt-1 flex items-center gap-2">
                                             <span>📅 {totalWorkload} periods/week</span>
                                             {distinctClasses.length > 0 && <span>• {distinctClasses.length} classes</span>}
                                           </div>
@@ -3793,17 +3885,26 @@ Office of the Principal / Academic Administration`
                                     </td>
                                     <td className="py-3.5 px-4">
                                       <div className="flex flex-wrap gap-1.5 max-w-[280px]">
-                                        {t.subjects.length === 0 ? (
+                                        {t.primarySubject && (
+                                          <span className="bg-blue-50 text-[#203B61] border border-blue-200 px-2 py-0.5 rounded-lg text-[10px] font-bold shadow-2xs flex items-center gap-1">
+                                            <span>★ Pri:</span> {t.primarySubject}
+                                          </span>
+                                        )}
+                                        {t.secondarySubject && (
+                                          <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-lg text-[10px] font-bold shadow-2xs flex items-center gap-1">
+                                            <span>Sec:</span> {t.secondarySubject}
+                                          </span>
+                                        )}
+                                        {t.subjects.filter(s => s.name !== t.primarySubject && s.name !== t.secondarySubject).map((s, i) => (
+                                          <span
+                                            key={i}
+                                            className="bg-stone-50 text-stone-700 border border-stone-200 px-2 py-0.5 rounded-lg text-[10px] font-semibold"
+                                          >
+                                            {s.name}
+                                          </span>
+                                        ))}
+                                        {!t.primarySubject && !t.secondarySubject && t.subjects.length === 0 && (
                                           <span className="text-stone-400 italic text-[11px]">General Faculty</span>
-                                        ) : (
-                                          t.subjects.map((s, i) => (
-                                            <span
-                                              key={i}
-                                              className="bg-blue-50 text-[#203B61] border border-blue-200/80 px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-2xs flex items-center gap-1"
-                                            >
-                                              <span>📖</span> {s.name}
-                                            </span>
-                                          ))
                                         )}
                                       </div>
                                     </td>

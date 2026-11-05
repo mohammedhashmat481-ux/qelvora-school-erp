@@ -130,6 +130,7 @@ async function getFormattedTimetables(where = {}) {
 router.get('/teacher', protect, async (req, res) => {
   try {
     const todayWeekday = WEEKDAYS[new Date().getDay()] || 'Monday';
+    const user = req.user;
     const teacherId = req.user?.id;
 
     const [classes, teachers, formattedTimetable, mappings] = await Promise.all([
@@ -151,10 +152,28 @@ router.get('/teacher', protect, async (req, res) => {
       })()
     ]);
 
+    // Resolve exact Teacher record from Teacher table
+    const teacherRecord = teachers.find(t =>
+      (teacherId && (t.id === teacherId || t.userId === teacherId)) ||
+      (user?.email && t.email?.toLowerCase() === user.email.toLowerCase()) ||
+      (user?.name && t.name?.toLowerCase().trim() === user.name.toLowerCase().trim()) ||
+      (user?.employeeId && t.employeeId === user.employeeId)
+    );
+
+    const effectiveTeacherId = teacherRecord?.id || teacherId;
+    const effectiveEmployeeId = teacherRecord?.employeeId || user?.employeeId || 'FAC';
+    const effectiveTeacherName = teacherRecord?.name || user?.name || 'Faculty User';
+    const isClassTeacher = Boolean(teacherRecord?.assignedClass && teacherRecord.assignedClass.trim() !== '');
+    const classTeacherOf = isClassTeacher ? {
+      standard: teacherRecord.assignedClass,
+      section: teacherRecord.assignedSection || 'A'
+    } : null;
+
     let teacherSlots = formattedTimetable.filter(e => {
-      const tidMatches = (e.teacherId && teacherId && e.teacherId.toString() === teacherId.toString()) ||
-        (req.user?.name && e.teacher?.toLowerCase().trim() === req.user.name.toLowerCase().trim()) ||
-        (req.user?.employeeId && e.employeeId === req.user.employeeId);
+      const tidMatches = (effectiveTeacherId && e.teacherId && e.teacherId.toString() === effectiveTeacherId.toString()) ||
+        (teacherId && e.teacherId && e.teacherId.toString() === teacherId.toString()) ||
+        (effectiveTeacherName && e.teacher?.toLowerCase().trim() === effectiveTeacherName.toLowerCase().trim()) ||
+        (effectiveEmployeeId && e.employeeId === effectiveEmployeeId);
       return tidMatches;
     });
 
@@ -192,8 +211,21 @@ router.get('/teacher', protect, async (req, res) => {
     res.json({
       status: true,
       data: {
-        teacherId: req.user?.id || 'teacher-uuid-102',
-        name: req.user?.name || 'Faculty User',
+        teacherId: effectiveTeacherId,
+        id: effectiveTeacherId,
+        name: effectiveTeacherName,
+        employeeId: effectiveEmployeeId,
+        email: teacherRecord?.email || user?.email || '',
+        phone: teacherRecord?.phone || '',
+        department: teacherRecord?.department || '',
+        designation: teacherRecord?.designation || '',
+        qualification: teacherRecord?.qualification || '',
+        isClassTeacher,
+        classTeacherOf,
+        assignedClass: teacherRecord?.assignedClass || null,
+        assignedSection: teacherRecord?.assignedSection || null,
+        primary_subject: teacherRecord?.primary_subject || null,
+        secondary_subject: teacherRecord?.secondary_subject || null,
         allClasses: formatLegacyId(classes),
         allMappings: formatLegacyId(mappings),
         allTeachers: formatLegacyId(teachers),
