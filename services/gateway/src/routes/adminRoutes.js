@@ -389,13 +389,16 @@ router.put('/auth/admin/employee/:id/settings', async (req, res) => {
       payload.name = [payload.firstName, payload.middleName, payload.lastName].filter(Boolean).join(' ');
     }
     const rawPwd = (payload.password || payload.plain_password || '').trim();
-    const newPwd = (rawPwd && rawPwd !== 'qelvora123' && rawPwd !== 'Welcome@123' && rawPwd !== '***') ? rawPwd : null;
+    const newPwd = (rawPwd && rawPwd !== '***' && !rawPwd.includes('••••')) ? rawPwd : null;
     if (emp) {
       Object.assign(emp, payload);
-      if (newPwd) emp.plain_password = newPwd;
+      if (newPwd) {
+        emp.plain_password = newPwd;
+        emp.password = newPwd;
+      }
       if (payload.role) emp.role = payload.role;
     } else {
-      emp = { _id: id, id, plain_password: newPwd || 'qelvora123', ...payload };
+      emp = { _id: id, id, plain_password: newPwd || 'qelvora123', password: newPwd || 'qelvora123', ...payload };
       DEMO_EMPLOYEES.push(emp);
     }
 
@@ -520,12 +523,6 @@ router.put('/auth/admin/employee/:id/settings', async (req, res) => {
       const targetUserId = teacher?.userId || teacher?.user?.id;
       const targetEmail = teacher?.email || teacher?.user?.email || payload.email;
 
-      const userWhereConditions = [
-        { id },
-        ...(targetUserId ? [{ id: targetUserId }] : []),
-        ...(targetEmail ? [{ email: targetEmail }] : [])
-      ];
-
       const userDataToUpdate = {
         ...(payload.name && { name: payload.name }),
         ...(payload.phone && { phone: payload.phone }),
@@ -539,10 +536,31 @@ router.put('/auth/admin/employee/:id/settings', async (req, res) => {
         userDataToUpdate.password_hash = await bcrypt.hash(newPwd, 10);
       }
 
-      await prisma.user.updateMany({
-        where: { OR: userWhereConditions },
-        data: userDataToUpdate
-      });
+      if (targetUserId) {
+        await prisma.user.update({
+          where: { id: targetUserId },
+          data: userDataToUpdate
+        }).catch(() => null);
+      } else if (targetEmail) {
+        const existingUser = await prisma.user.findFirst({
+          where: { email: { equals: targetEmail.trim(), mode: 'insensitive' } }
+        }).catch(() => null);
+        if (existingUser) {
+          await prisma.user.update({
+            where: { id: existingUser.id },
+            data: userDataToUpdate
+          }).catch(() => null);
+          if (teacher && !teacher.userId) {
+            await prisma.teacher.update({
+              where: { id: teacher.id },
+              data: { userId: existingUser.id }
+            }).catch(() => null);
+          }
+        }
+      }
+
+      cache.flush('master:');
+      cache.flush('timetable');
     } catch (err) {
       console.error("Prisma employee update warning:", err.message);
     }
@@ -569,6 +587,8 @@ router.delete('/auth/admin/employee/:id', async (req, res) => {
         }
         await prisma.teacher.delete({ where: { id: teacher.id } }).catch(() => {});
       }
+      cache.flush('master:');
+      cache.flush('timetable');
     } catch (_) {}
 
     res.json({ status: true, message: 'Employee deleted successfully' });
@@ -587,17 +607,32 @@ router.post('/auth/admin/employee/:id/reset-password', async (req, res) => {
     let emp = DEMO_EMPLOYEES.find(e => e._id === id || e.id === id || e.employeeId === id || e.employee_id === id);
     if (emp) {
       emp.plain_password = new_password;
+      emp.password = new_password;
     }
 
     try {
       const hashedPassword = await bcrypt.hash(new_password, 10);
       const teacher = await prisma.teacher.findFirst({ where: { OR: [{ id }, { employeeId: id }] } });
-      if (teacher && teacher.userId) {
-        await prisma.user.update({
-          where: { id: teacher.userId },
-          data: { password_hash: hashedPassword }
-        });
+      if (teacher) {
+        await prisma.teacher.update({
+          where: { id: teacher.id },
+          data: { plain_password: new_password }
+        }).catch(() => null);
+
+        let userId = teacher.userId;
+        if (!userId && teacher.email) {
+          const u = await prisma.user.findFirst({ where: { email: { equals: teacher.email, mode: 'insensitive' } } });
+          userId = u?.id;
+        }
+        if (userId) {
+          await prisma.user.update({
+            where: { id: userId },
+            data: { password_hash: hashedPassword }
+          }).catch(() => null);
+        }
       }
+      cache.flush('master:');
+      cache.flush('timetable');
     } catch (_) {}
 
     res.json({ status: true, message: 'Password reset successfully' });

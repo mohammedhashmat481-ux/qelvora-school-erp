@@ -2888,7 +2888,12 @@ Office of the Principal / Academic Administration`
           primary_subject: editForm.primary_subject,
           secondary_subject: editForm.secondary_subject,
           plain_password: editForm.password,
-          password: editForm.password
+          password: editForm.password,
+          isClassTeacher: editForm.teacherType === 'Class Teacher',
+          teacherType: editForm.teacherType,
+          assignedClass: editForm.assignedClass,
+          assignedSection: editForm.assignedSection,
+          classTeacherOf: editForm.teacherType === 'Class Teacher' && editForm.assignedClass ? `${editForm.assignedClass}-${editForm.assignedSection || 'A'}` : null
         };
 
         setEmployees(prev => (Array.isArray(prev) ? prev : []).map(emp => (emp._id === editingFaculty._id || emp.id === editingFaculty._id || emp.email === editingFaculty.email) ? { ...emp, ...updatedObj } : emp));
