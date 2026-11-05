@@ -1983,7 +1983,7 @@ Office of the Principal / Academic Administration`
     <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
       <Sidebar />
 
-      <div className="flex-1 bg-[#F5F8FC] p-6 lg:p-8 overflow-y-auto">
+      <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden bg-[#F5F8FC] p-3 sm:p-5 lg:p-8 pb-28 md:pb-12">
         
         {/* Top welcome banner with dynamic School / College Name from School Settings */}
         <header className="mb-6 bg-[#203B61] border border-[#2D4D77] shadow-md rounded-2xl px-5 py-4 transition-all relative overflow-hidden text-white">

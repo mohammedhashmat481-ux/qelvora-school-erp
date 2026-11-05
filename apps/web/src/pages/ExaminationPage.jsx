@@ -948,9 +948,9 @@ const ExaminationPage = () => {
     <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
       <Sidebar />
 
-      <div className="flex-1 bg-[#F5F8FC] flex flex-col min-w-0">
-        <div className="min-h-[calc(100vh-4rem)] p-4 sm:p-6 lg:p-8 overflow-y-auto">
-          <div className="w-full mx-auto space-y-6">
+      <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden flex flex-col min-w-0">
+        <div className="p-3 sm:p-5 lg:p-8 pb-28 md:pb-12 bg-[#F5F8FC]">
+          <div className="w-full mx-auto space-y-4 sm:space-y-6">
 
             {/* TOP HEADER BAR */}
             <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-[#203B61] p-5 rounded-2xl border border-[#2D4D77] shadow-sm text-white">

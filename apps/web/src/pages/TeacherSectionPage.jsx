@@ -984,8 +984,8 @@ const TeacherSectionPage = () => {
     <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
       <Sidebar />
 
-      <div className="flex-1 bg-[#F5F8FC] p-6 sm:p-8 overflow-y-auto">
-        <header className="mb-6 flex justify-between items-center bg-[#203B61] border border-[#2D4D77] shadow-sm rounded-2xl p-6 text-white">
+      <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden bg-[#F5F8FC] p-3 sm:p-5 lg:p-8 pb-28 md:pb-14">
+        <header className="mb-4 sm:mb-6 flex justify-between items-center bg-[#203B61] border border-[#2D4D77] shadow-sm rounded-2xl p-4 sm:p-6 text-white">
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span className="text-[10px] font-bold text-[#DCEBFA] uppercase tracking-widest block">

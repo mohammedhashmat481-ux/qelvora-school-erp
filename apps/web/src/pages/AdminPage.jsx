@@ -3674,11 +3674,11 @@ Office of the Principal / Academic Administration`
   }
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row animate-fadeIn font-sans">
+    <div className="h-screen md:h-screen flex flex-col md:flex-row bg-[#F5F8FC] text-[#253858] animate-fadeIn font-sans overflow-hidden">
       <Sidebar />
-      <div className="flex-1 bg-[#F5F8FC] flex flex-col min-w-0">
-        <div className="min-h-[calc(100vh-4rem)] bg-[#F5F8FC] p-6 lg:p-8 overflow-y-auto">
-          <div className="w-full mx-auto">
+      {/* ── Main Content Container (Independently Scrollable on all viewports) ── */}
+      <main className="flex-1 h-screen overflow-y-auto overflow-x-hidden flex flex-col min-w-0 p-3 sm:p-5 lg:p-8 pb-28 md:pb-14">
+        <div className="w-full max-w-7xl mx-auto space-y-4 sm:space-y-6">
 
         {/* Header Bar */}
         <header className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3 bg-[#203B61] p-3 sm:p-4 rounded-2xl border border-[#2D4D77] shadow-sm text-white">
@@ -3750,7 +3750,7 @@ Office of the Principal / Academic Administration`
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden mb-8 text-slate-900">
             
             {/* Header Bar */}
-            <div className="bg-white px-6 sm:px-8 py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="bg-white px-4 sm:px-6 lg:px-8 py-3.5 sm:py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center gap-3.5">
                 <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#203B61] border border-blue-100 flex items-center justify-center shrink-0">
                   <SettingsIcon className="w-5 h-5 text-[#203B61]" />
@@ -3792,16 +3792,16 @@ Office of the Principal / Academic Administration`
               </div>
             </div>
 
-            <div className="p-6 sm:p-8 space-y-8 bg-slate-50/40">
+            <div className="p-3 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 bg-slate-50/40">
               {isLoading ? (
                 <div className="flex justify-center py-16">
                   <span className="w-8 h-8 border-3 border-[#2D4D77] border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
 
                   {/* SECTION 1: INSTITUTIONAL IDENTITY & DYNAMIC BRANDING */}
-                  <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-6 space-y-6">
+                  <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-3.5 sm:p-5 lg:p-6 space-y-4 sm:space-y-6">
                     <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                       <div>
                         <h3 className="text-sm font-bold text-slate-900 tracking-tight">
@@ -3969,7 +3969,7 @@ Office of the Principal / Academic Administration`
                   </div>
 
                   {/* SECTION 2: ACADEMIC TIMINGS & PERIODS */}
-                  <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-6 space-y-6">
+                  <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-3.5 sm:p-5 lg:p-6 space-y-4 sm:space-y-6">
                     <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                       <div>
                         <h3 className="text-sm font-bold text-slate-900 tracking-tight">
@@ -4148,7 +4148,7 @@ Office of the Principal / Academic Administration`
                   </div>
 
                   {/* SECTION 3: OPERATIONAL BASELINES & WORK HOURS */}
-                  <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-6 space-y-6">
+                  <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-3.5 sm:p-5 lg:p-6 space-y-4 sm:space-y-6">
                     <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                       <div>
                         <h3 className="text-sm font-bold text-slate-900 tracking-tight">
@@ -5074,7 +5074,7 @@ Office of the Principal / Academic Administration`
         {activeTab === 'roles' && (
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden mb-8 text-slate-900 transition-all">
             {/* Header */}
-            <div className="bg-white px-6 sm:px-8 py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center gap-3.5">
                 <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#203B61] shrink-0">
                   <ShieldCheck className="w-5 h-5 text-[#203B61]" />
@@ -5110,7 +5110,7 @@ Office of the Principal / Academic Administration`
               )}
             </div>
 
-            <div className="p-6 sm:p-8 space-y-6">
+            <div className="p-3 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
               {/* Controls Search */}
               <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                 <div className="relative w-full sm:max-w-md">
@@ -7139,7 +7139,7 @@ Office of the Principal / Academic Administration`
         {activeTab === 'employees' && (
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden mb-8 text-slate-900 transition-all">
             {/* Header */}
-            <div className="bg-white px-6 sm:px-8 py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center gap-3.5">
                 <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#203B61] shrink-0">
                   <UsersRound className="w-5 h-5 text-[#203B61]" />
@@ -7162,7 +7162,7 @@ Office of the Principal / Academic Administration`
               </button>
             </div>
 
-            <div className="p-6 sm:p-8 space-y-6">
+            <div className="p-3 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
               {/* Category Filter Pills (Class Teachers vs Non-Class Teachers vs Staff) */}
               <div className="flex flex-wrap items-center gap-2">
                 <button
@@ -7625,7 +7625,7 @@ Office of the Principal / Academic Administration`
         {activeTab === 'classes' && (
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden mb-8 text-slate-900 animate-fadeIn">
             {/* Header with Overview Stats */}
-            <div className="bg-white px-6 sm:px-8 py-5 border-b border-slate-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div className="flex items-center gap-3.5">
                 <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#203B61] shrink-0">
                   <School className="w-5 h-5 text-[#203B61]" />
@@ -7661,7 +7661,7 @@ Office of the Principal / Academic Administration`
               </div>
             </div>
             
-            <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="p-3 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
               {/* Add / Edit Class Form Card */}
               <div className={`p-6 rounded-2xl border transition-all h-fit space-y-5 ${
                 editingClass 
@@ -8155,7 +8155,7 @@ Office of the Principal / Academic Administration`
         {activeTab === 'subjects' && (
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden mb-8 text-slate-900">
             {/* Header with Title and Quick Stats */}
-            <div className="bg-white px-6 sm:px-8 py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center gap-3.5">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#203B61] to-blue-700 text-white flex items-center justify-center shadow-xs shrink-0">
                   <BookOpen className="w-5 h-5 text-white" />
@@ -8185,7 +8185,7 @@ Office of the Principal / Academic Administration`
               </div>
             </div>
 
-            <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="p-3 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
               {/* Left Column: Add / Edit Subject Form (4 cols) */}
               <div className="lg:col-span-4 bg-slate-50/70 p-6 rounded-2xl border border-slate-200 h-fit space-y-5">
                 <div className="flex items-center justify-between">
@@ -8683,7 +8683,7 @@ Office of the Principal / Academic Administration`
         {isDeleteSubjectModalOpen && deletingSubject && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 animate-fadeIn">
             <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full border border-slate-200 overflow-hidden transform transition-all animate-scaleUp">
-              <div className="p-6">
+              <div className="p-3 sm:p-5 lg:p-6">
                 <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 mb-4 mx-auto">
                   <Trash2 className="w-6 h-6" />
                 </div>
@@ -8733,7 +8733,7 @@ Office of the Principal / Academic Administration`
         {activeTab === 'mappings' && (
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden mb-8 text-slate-900">
             {/* Header with Title and Quick Stats */}
-            <div className="bg-white px-6 sm:px-8 py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center gap-3.5">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#203B61] to-blue-700 text-white flex items-center justify-center shadow-xs shrink-0">
                   <Link2 className="w-5 h-5 text-white" />
@@ -8772,7 +8772,7 @@ Office of the Principal / Academic Administration`
               </div>
             </div>
 
-            <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="p-3 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
               {/* Left Column: Add / Edit Mapping Form (4 cols) */}
               <div className="lg:col-span-4 bg-slate-50/70 p-6 rounded-2xl border border-slate-200 h-fit space-y-5">
                 <div className="flex items-center justify-between">
@@ -9166,7 +9166,7 @@ Office of the Principal / Academic Administration`
         {isDeleteMappingModalOpen && deletingMapping && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 animate-fadeIn">
             <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full border border-slate-200 overflow-hidden transform transition-all animate-scaleUp">
-              <div className="p-6">
+              <div className="p-3 sm:p-5 lg:p-6">
                 <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 mb-4 mx-auto">
                   <Trash2 className="w-6 h-6" />
                 </div>
@@ -9278,7 +9278,7 @@ Office of the Principal / Academic Administration`
           return (
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden mb-8 text-slate-900">
               {/* Header */}
-              <div className="bg-white px-6 sm:px-8 py-5 border-b border-slate-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div className="flex items-center gap-3.5">
                   <div className="w-11 h-11 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#203B61] shrink-0 shadow-2xs">
                     <CalendarDays className="w-5 h-5 text-[#203B61]" />
@@ -9340,7 +9340,7 @@ Office of the Principal / Academic Administration`
                 </div>
               </div>
 
-              <div className="p-6">
+              <div className="p-3 sm:p-5 lg:p-6">
                 {/* Control Bar: Selection & Actions */}
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-slate-50/90 border border-slate-200 p-4 rounded-2xl mb-6 shadow-2xs">
                   <div className="flex flex-wrap items-center gap-3">
@@ -11654,9 +11654,8 @@ Office of the Principal / Academic Administration`
         </div>
       )}
 
-          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

@@ -366,7 +366,7 @@ const AttendancePage = () => {
   return (
     <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
       <Sidebar />
-      <div className="flex-1 bg-[#f3f3f9] p-4 sm:p-6 lg:p-8 overflow-y-auto">
+      <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden bg-[#F5F8FC] p-3 sm:p-5 lg:p-8 pb-28 md:pb-12">
         
         {/* Top Header */}
         <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-stone-200 pb-4">
