@@ -1414,8 +1414,24 @@ const AdminPage = () => {
 
       const isSuper = roleKey === 'admin' || roleKey === 'super_admin' || t.user?.role === 'super_admin' || t.user?.role === 'admin (permanent)' || t.email?.toLowerCase() === 'rajabhaxa@gmail.com';
 
+      const isClassTeacher = !isSuper && Boolean(
+        t.isClassTeacher ||
+        t.teacherType === 'Class Teacher' ||
+        (t.assignedClass && t.assignedClass.trim() !== '' && t.assignedClass.toUpperCase() !== 'NONE') ||
+        (t.classTeacherOf && t.classTeacherOf.trim() !== '')
+      );
+      const assignedClass = t.assignedClass || (t.classTeacherOf ? t.classTeacherOf.split(/[- ]/)[0] : '');
+      const assignedSection = t.assignedSection || (t.classTeacherOf ? (t.classTeacherOf.split(/[- ]/)[1] || 'A') : 'A');
+      const classTeacherOf = isClassTeacher
+        ? (t.classTeacherOf || (assignedClass ? `${assignedClass}-${assignedSection}` : ''))
+        : null;
+      const teacherType = isSuper
+        ? 'Super Admin'
+        : (isClassTeacher ? 'Class Teacher' : (roleKey === 'teacher' || t.teacherType === 'Non-Class Teacher' || t.primary_subject ? 'Non-Class Teacher' : 'Staff'));
+
       return {
-        _id: t._id,
+        _id: t._id || t.id,
+        id: t.id || t._id,
         employeeId: formattedId,
         employee_id: formattedId,
         name: t.name || '',
@@ -1431,7 +1447,13 @@ const AdminPage = () => {
         is_enabled: t.is_enabled !== undefined ? t.is_enabled : (t.user?.isActive !== false),
         role: role,
         is_super_admin: isSuper,
-        user: t.user
+        user: t.user,
+        isClassTeacher,
+        teacherType,
+        assignedClass,
+        assignedSection,
+        classTeacherOf,
+        plain_password: t.plain_password || t.password || ''
       };
     });
   }, []);
@@ -7327,8 +7349,8 @@ Office of the Principal / Academic Administration`
                                             {emp.role || 'Staff'}
                                           </span>
                                         ) : (emp.isClassTeacher || emp.teacherType === 'Class Teacher') ? (
-                                          <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-md font-bold border border-blue-200" title={`Class Teacher of Class ${emp.classTeacherOf || (emp.assignedClass + '-' + emp.assignedSection)}`}>
-                                            Class Teacher ({emp.classTeacherOf || `${emp.assignedClass || ''}-${emp.assignedSection || ''}`})
+                                          <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-md font-bold border border-blue-200" title={`Class Teacher of Class ${emp.classTeacherOf || (emp.assignedClass + '-' + (emp.assignedSection || 'A'))}`}>
+                                            Class Teacher ({emp.classTeacherOf || `${emp.assignedClass || ''}-${emp.assignedSection || 'A'}`})
                                           </span>
                                         ) : (
                                           <span className="text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded-md font-bold border border-amber-200" title="Non-Class Teacher / Subject Educator">
@@ -7516,7 +7538,7 @@ Office of the Principal / Academic Administration`
                                       <span className="text-[9px] bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded-full font-bold border border-slate-300">{emp.role || 'Staff'}</span>
                                     ) : (emp.isClassTeacher || emp.teacherType === 'Class Teacher') ? (
                                       <span className="text-[9px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded-full font-bold border border-blue-200">
-                                        Class Teacher ({emp.classTeacherOf || `${emp.assignedClass || ''}-${emp.assignedSection || ''}`})
+                                        Class Teacher ({emp.classTeacherOf || `${emp.assignedClass || ''}-${emp.assignedSection || 'A'}`})
                                       </span>
                                     ) : (
                                       <span className="text-[9px] bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded-full font-bold border border-amber-200">
