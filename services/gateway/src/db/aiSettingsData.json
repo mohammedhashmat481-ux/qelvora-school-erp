@@ -1,6 +1,6 @@
 {
   "settings": {
-    "tier": "premium",
+    "tier": "free",
     "geminiApiKey": "",
     "elevenLabsApiKey": "",
     "elevenLabsVoiceId": "21m00Tcm4TlvDq8ikWAM",
@@ -19,18 +19,114 @@
     "schoolDailyLimitPremium": 5000,
     "cacheTtlSeconds": 60,
     "maxHistoryTurns": 6,
-    "updatedAt": "2026-11-10T11:22:38.559Z"
+    "updatedAt": "2026-11-10T12:49:47.037Z"
   },
   "usageCounters": {
     "2026-11-10": {
       "users": {
-        "79685f91-4be4-4e6b-9ada-bdd72735c5c3": 2,
+        "79685f91-4be4-4e6b-9ada-bdd72735c5c3": 8,
         "admin-uuid-101": 4
       },
-      "schoolTotal": 6
+      "schoolTotal": 12
     }
   },
   "usageLogs": [
+    {
+      "id": "ai-log-1794315029852-rbogmy",
+      "timestamp": "2026-11-10T12:50:29.852Z",
+      "userId": "79685f91-4be4-4e6b-9ada-bdd72735c5c3",
+      "userName": "Admin User",
+      "userRole": "admin",
+      "tier": "free",
+      "model": "gemini-1.5-flash",
+      "promptTokens": 4,
+      "completionTokens": 29,
+      "totalTokens": 33,
+      "ttsChars": 116,
+      "estimatedCost": 0,
+      "status": "success",
+      "querySnippet": "Upcoming exams"
+    },
+    {
+      "id": "ai-log-1794315028225-abjb5s",
+      "timestamp": "2026-11-10T12:50:28.225Z",
+      "userId": "79685f91-4be4-4e6b-9ada-bdd72735c5c3",
+      "userName": "Admin User",
+      "userRole": "admin",
+      "tier": "free",
+      "model": "gemini-1.5-flash",
+      "promptTokens": 5,
+      "completionTokens": 38,
+      "totalTokens": 43,
+      "ttsChars": 152,
+      "estimatedCost": 0,
+      "status": "success",
+      "querySnippet": "Today's timetable"
+    },
+    {
+      "id": "ai-log-1794315023656-ddlxyx",
+      "timestamp": "2026-11-10T12:50:23.656Z",
+      "userId": "79685f91-4be4-4e6b-9ada-bdd72735c5c3",
+      "userName": "Admin User",
+      "userRole": "admin",
+      "tier": "free",
+      "model": "gemini-1.5-flash",
+      "promptTokens": 6,
+      "completionTokens": 53,
+      "totalTokens": 59,
+      "ttsChars": 211,
+      "estimatedCost": 0,
+      "status": "success",
+      "querySnippet": "Who has pending fees?"
+    },
+    {
+      "id": "ai-log-1794315019910-gpoktr",
+      "timestamp": "2026-11-10T12:50:19.910Z",
+      "userId": "79685f91-4be4-4e6b-9ada-bdd72735c5c3",
+      "userName": "Admin User",
+      "userRole": "admin",
+      "tier": "free",
+      "model": "gemini-1.5-flash",
+      "promptTokens": 6,
+      "completionTokens": 35,
+      "totalTokens": 41,
+      "ttsChars": 137,
+      "estimatedCost": 0,
+      "status": "success",
+      "querySnippet": "Students absent today"
+    },
+    {
+      "id": "ai-log-1794315013047-uloftd",
+      "timestamp": "2026-11-10T12:50:13.047Z",
+      "userId": "79685f91-4be4-4e6b-9ada-bdd72735c5c3",
+      "userName": "Admin User",
+      "userRole": "admin",
+      "tier": "free",
+      "model": "gemini-1.5-flash",
+      "promptTokens": 6,
+      "completionTokens": 36,
+      "totalTokens": 42,
+      "ttsChars": 143,
+      "estimatedCost": 0,
+      "status": "success",
+      "querySnippet": "Teachers absent today"
+    },
+    {
+      "id": "ai-log-1794315002858-1aoanb",
+      "timestamp": "2026-11-10T12:50:02.858Z",
+      "userId": "79685f91-4be4-4e6b-9ada-bdd72735c5c3",
+      "userName": "Admin User",
+      "userRole": "admin",
+      "tier": "free",
+      "model": "gemini-1.5-flash",
+      "promptTokens": 6,
+      "completionTokens": 76,
+      "totalTokens": 82,
+      "ttsChars": 309,
+      "estimatedCost": 0,
+      "status": "success",
+      "querySnippet": "Daily Operations Report"
+    },
     {
       "id": "ai-log-1794313660993-m6yjvc",
       "timestamp": "2026-11-10T12:27:40.993Z",
