@@ -48,7 +48,9 @@ import {
   LogIn,
   LogOut,
   Building2,
-  FileSpreadsheet
+  FileSpreadsheet,
+  X,
+  ArrowRight
 } from 'lucide-react';
 
 const MONTH_NAMES = [
@@ -111,6 +113,10 @@ export default function AttendancePage() {
   const [editAttStatus, setEditAttStatus] = useState('Present');
   const [editAttReason, setEditAttReason] = useState('');
   const [isSavingAttStatus, setIsSavingAttStatus] = useState(false);
+
+  // KPI Drilldown Modal State
+  const [kpiModal, setKpiModal] = useState(null);
+  const [kpiModalSearch, setKpiModalSearch] = useState('');
 
   // Live Clock updater
   useEffect(() => {
@@ -520,6 +526,66 @@ export default function AttendancePage() {
     }
   };
 
+  // KPI Drilldown Modal Trigger Handler
+  const handleOpenKpiModal = (type) => {
+    setKpiModalSearch('');
+    const scoped = dailyData.filter(item => {
+      const isTeacher = item.is_teacher || (item.employee_id || '').toUpperCase().startsWith('EMP');
+      const isNonTeaching = item.category === 'Non-Teaching Staff' || (item.employee_id || '').toUpperCase().startsWith('NT');
+      const isSupport = !isTeacher && !isNonTeaching;
+      if (selectedCategory === 'TEACHERS') return isTeacher;
+      if (selectedCategory === 'NON_TEACHING') return isNonTeaching;
+      if (selectedCategory === 'SUPPORT') return isSupport;
+      return true;
+    });
+
+    let title = '';
+    let subtitle = '';
+    let items = [];
+
+    if (type === 'TOTAL') {
+      title = selectedCategory === 'TEACHERS' ? 'Total Academic Teaching Faculty' : 'Total Registered Staff';
+      subtitle = `Complete roster of ${scoped.length} ${selectedCategory === 'TEACHERS' ? 'faculty members' : 'campus staff'} for ${formatSelectedDateReadable(selectedDate)}`;
+      items = scoped;
+    } else if (type === 'PRESENT') {
+      title = 'Present Faculty Today';
+      items = scoped.filter(item => {
+        const s = (item.status || '').toLowerCase();
+        return s === 'present' || s === 'in office' || s === 'left office';
+      });
+      subtitle = `${items.length} faculty members currently checked-in, on campus, or on verified duty`;
+    } else if (type === 'ABSENT') {
+      title = 'Absent Faculty Records';
+      items = scoped.filter(item => (item.status || '').toLowerCase() === 'absent');
+      subtitle = `${items.length} faculty members not yet punched in or marked absent`;
+    } else if (type === 'LEAVE') {
+      title = 'On Leave / Half Day Faculty';
+      items = scoped.filter(item => {
+        const s = (item.status || '').toLowerCase();
+        return s === 'leave' || s === 'half day';
+      });
+      subtitle = `${items.length} approved leave applications or half-day authorizations`;
+    } else if (type === 'RATE') {
+      title = 'Attendance Presence Analytics';
+      items = scoped;
+      subtitle = `Overall active presence rate of ${dailyStats.rate}% across ${scoped.length} active faculty`;
+    }
+
+    setKpiModal({ type, title, subtitle, items });
+  };
+
+  const filteredModalItems = useMemo(() => {
+    if (!kpiModal || !Array.isArray(kpiModal.items)) return [];
+    if (!kpiModalSearch.trim()) return kpiModal.items;
+    const q = kpiModalSearch.toLowerCase();
+    return kpiModal.items.filter(item => {
+      const nameMatch = (item.name || '').toLowerCase().includes(q);
+      const idMatch = (item.employee_id || '').toLowerCase().includes(q);
+      const deptMatch = (item.department || '').toLowerCase().includes(q);
+      return nameMatch || idMatch || deptMatch;
+    });
+  }, [kpiModal, kpiModalSearch]);
+
   // Status badge styling
   const renderStatusBadge = (status) => {
     const s = (status || '').toLowerCase();
@@ -807,64 +873,137 @@ export default function AttendancePage() {
               </div>
             </div>
 
-            {/* Daily Summary Metric Cards */}
+            {/* Daily Summary Metric Cards (Interactive Drill-Down with Color Borders) */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-              <div className="bg-white border border-[#E4E2DA] rounded-2xl p-4 shadow-xs">
-                <div className="flex items-center justify-between text-xs text-[#5B6676] font-semibold mb-2">
-                  <span>{selectedCategory === 'TEACHERS' ? 'Total Teachers' : 'Total Staff'}</span>
-                  <Users className="w-4 h-4 text-[#3F6486]" />
+              {/* Card 1: Total Faculty */}
+              <div
+                onClick={() => handleOpenKpiModal('TOTAL')}
+                className="bg-white border-2 border-blue-200 hover:border-blue-400 rounded-2xl p-4 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer hover:-translate-y-0.5 group flex flex-col justify-between"
+                title="Click to view total faculty roster"
+              >
+                <div>
+                  <div className="flex items-center justify-between text-xs font-bold text-blue-900 mb-2">
+                    <span>{selectedCategory === 'TEACHERS' ? 'Total Teachers' : 'Total Staff'}</span>
+                    <div className="w-7 h-7 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform">
+                      <Users className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <div className="text-2xl font-black text-slate-900">{dailyStats.total}</div>
+                    {selectedCategory === 'TEACHERS' ? (
+                      <span className="text-[10px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                        of 15 Staff
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                        (6 Teachers)
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[11px] text-slate-500 mt-1 font-medium">
+                    {selectedCategory === 'TEACHERS' ? 'Academic Teaching Faculty' : 'All Campus Employees'}
+                  </div>
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <div className="text-2xl font-black text-[#1F2937]">{dailyStats.total}</div>
-                  {selectedCategory === 'TEACHERS' ? (
-                    <span className="text-[10px] font-bold text-[#5B6676] bg-[var(--surface-2)] px-2 py-0.5 rounded-full border border-[#E4E2DA]">
-                      of 15 Staff
-                    </span>
-                  ) : (
-                    <span className="text-[10px] font-bold text-[#5B6676] bg-[var(--surface-2)] px-2 py-0.5 rounded-full border border-[#E4E2DA]">
-                      (6 Teachers)
-                    </span>
-                  )}
-                </div>
-                <div className="text-[11px] text-[#5B6676] mt-1 font-medium">
-                  {selectedCategory === 'TEACHERS' ? 'Academic Teaching Faculty' : 'All Campus Employees'}
+                <div className="text-[10px] font-bold text-blue-700 flex items-center justify-between pt-2 border-t border-slate-100 mt-2">
+                  <span>View Roster</span>
+                  <span className="group-hover:translate-x-0.5 transition-transform">➔</span>
                 </div>
               </div>
 
-              <div className="bg-white border border-[#E4E2DA] rounded-2xl p-4 shadow-xs">
-                <div className="flex items-center justify-between text-xs text-emerald-700 font-semibold mb-2">
-                  <span>Present Today</span>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              {/* Card 2: Present Today */}
+              <div
+                onClick={() => handleOpenKpiModal('PRESENT')}
+                className="bg-white border-2 border-emerald-300 hover:border-emerald-500 rounded-2xl p-4 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer hover:-translate-y-0.5 group flex flex-col justify-between"
+                title="Click to view all present teachers"
+              >
+                <div>
+                  <div className="flex items-center justify-between text-xs font-bold text-emerald-800 mb-2">
+                    <span>Present Today</span>
+                    <div className="w-7 h-7 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-100 group-hover:scale-105 transition-transform">
+                      <CheckCircle2 className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div className="text-2xl font-black text-emerald-700">{dailyStats.present}</div>
+                  <div className="text-[11px] text-emerald-600 mt-1 font-medium">Logged In / On Campus</div>
                 </div>
-                <div className="text-2xl font-black text-emerald-700">{dailyStats.present}</div>
-                <div className="text-[11px] text-emerald-600 mt-1 font-medium">Logged In / On Campus</div>
+                <div className="text-[10px] font-bold text-emerald-700 flex items-center justify-between pt-2 border-t border-emerald-50 mt-2">
+                  <span>View Present ({dailyStats.present})</span>
+                  <span className="group-hover:translate-x-0.5 transition-transform">➔</span>
+                </div>
               </div>
 
-              <div className="bg-white border border-[#E4E2DA] rounded-2xl p-4 shadow-xs">
-                <div className="flex items-center justify-between text-xs text-rose-700 font-semibold mb-2">
-                  <span>Absent</span>
-                  <XCircle className="w-4 h-4 text-rose-600" />
+              {/* Card 3: Absent */}
+              <div
+                onClick={() => handleOpenKpiModal('ABSENT')}
+                className="bg-white border-2 border-rose-300 hover:border-rose-500 rounded-2xl p-4 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer hover:-translate-y-0.5 group flex flex-col justify-between"
+                title="Click to view absent teachers"
+              >
+                <div>
+                  <div className="flex items-center justify-between text-xs font-bold text-rose-800 mb-2">
+                    <span>Absent</span>
+                    <div className="w-7 h-7 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center border border-rose-100 group-hover:scale-105 transition-transform">
+                      <XCircle className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div className="text-2xl font-black text-rose-700">{dailyStats.absent}</div>
+                  <div className="text-[11px] text-rose-600 mt-1 font-medium">Not Punched In</div>
                 </div>
-                <div className="text-2xl font-black text-rose-700">{dailyStats.absent}</div>
-                <div className="text-[11px] text-rose-600 mt-1 font-medium">Not Punched In</div>
+                <div className="text-[10px] font-bold text-rose-700 flex items-center justify-between pt-2 border-t border-rose-50 mt-2">
+                  <span>View Absent ({dailyStats.absent})</span>
+                  <span className="group-hover:translate-x-0.5 transition-transform">➔</span>
+                </div>
               </div>
 
-              <div className="bg-white border border-[#E4E2DA] rounded-2xl p-4 shadow-xs">
-                <div className="flex items-center justify-between text-xs text-amber-800 font-semibold mb-2">
-                  <span>On Leave / Half Day</span>
-                  <AlertCircle className="w-4 h-4 text-amber-600" />
+              {/* Card 4: On Leave / Half Day */}
+              <div
+                onClick={() => handleOpenKpiModal('LEAVE')}
+                className="bg-white border-2 border-amber-300 hover:border-amber-500 rounded-2xl p-4 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer hover:-translate-y-0.5 group flex flex-col justify-between"
+                title="Click to view faculty on leave"
+              >
+                <div>
+                  <div className="flex items-center justify-between text-xs font-bold text-amber-900 mb-2">
+                    <span>On Leave / Half Day</span>
+                    <div className="w-7 h-7 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center border border-amber-100 group-hover:scale-105 transition-transform">
+                      <AlertCircle className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div className="text-2xl font-black text-amber-800">{dailyStats.leave}</div>
+                  <div className="text-[11px] text-amber-700 mt-1 font-medium">Approved Leaves</div>
                 </div>
-                <div className="text-2xl font-black text-amber-800">{dailyStats.leave}</div>
-                <div className="text-[11px] text-amber-700 mt-1 font-medium">Approved Leaves</div>
+                <div className="text-[10px] font-bold text-amber-800 flex items-center justify-between pt-2 border-t border-amber-50 mt-2">
+                  <span>View Leaves ({dailyStats.leave})</span>
+                  <span className="group-hover:translate-x-0.5 transition-transform">➔</span>
+                </div>
               </div>
 
-              <div className="bg-white border border-[#E4E2DA] rounded-2xl p-4 shadow-xs col-span-2 sm:col-span-1">
-                <div className="flex items-center justify-between text-xs text-[var(--accent)] font-semibold mb-2">
-                  <span>Attendance Rate</span>
-                  <UserCheck className="w-4 h-4 text-[var(--accent)]" />
+              {/* Card 5: Attendance Rate */}
+              <div
+                onClick={() => handleOpenKpiModal('RATE')}
+                className="bg-white border-2 border-indigo-200 hover:border-indigo-400 rounded-2xl p-4 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer hover:-translate-y-0.5 group flex flex-col justify-between col-span-2 sm:col-span-1"
+                title="Click to view presence rate breakdown"
+              >
+                <div>
+                  <div className="flex items-center justify-between text-xs font-bold text-indigo-900 mb-2">
+                    <span>Attendance Rate</span>
+                    <div className="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center border border-indigo-100 group-hover:scale-105 transition-transform">
+                      <UserCheck className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div className="flex items-baseline gap-1.5">
+                    <div className="text-2xl font-black text-slate-900">{dailyStats.rate}%</div>
+                  </div>
+                  <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-1.5">
+                    <div
+                      className="bg-emerald-500 h-full rounded-full transition-all duration-500"
+                      style={{ width: `${Math.min(100, Math.max(0, Number(dailyStats.rate) || 0))}%` }}
+                    />
+                  </div>
+                  <div className="text-[11px] text-slate-500 mt-1 font-medium">Active Presence Rate</div>
                 </div>
-                <div className="text-2xl font-black text-[#1F2937]">{dailyStats.rate}%</div>
-                <div className="text-[11px] text-[#5B6676] mt-1 font-medium">Active Presence Rate</div>
+                <div className="text-[10px] font-bold text-indigo-700 flex items-center justify-between pt-2 border-t border-indigo-50 mt-2">
+                  <span>Analytics</span>
+                  <span className="group-hover:translate-x-0.5 transition-transform">➔</span>
+                </div>
               </div>
             </div>
 
@@ -1586,6 +1725,175 @@ export default function AttendancePage() {
                 </button>
               </div>
 
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═════════════════════════════════════════════════════════════ */}
+      {/* KPI METRICS DRILL-DOWN MODAL                                   */}
+      {/* ═════════════════════════════════════════════════════════════ */}
+      {kpiModal && (
+        <div className="fixed inset-0 z-50 bg-[#1F2937]/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-2xl border border-[#E4E2DA] w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh]">
+            
+            {/* Modal Header */}
+            <div className="bg-[#FAF9F5] border-b border-[#E4E2DA] p-4 sm:p-5 flex justify-between items-start gap-3">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
+                  kpiModal.type === 'PRESENT' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                  kpiModal.type === 'ABSENT' ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                  kpiModal.type === 'LEAVE' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                  kpiModal.type === 'RATE' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
+                  'bg-blue-50 text-blue-700 border-blue-200'
+                }`}>
+                  {kpiModal.type === 'PRESENT' ? <CheckCircle2 className="w-5 h-5" /> :
+                   kpiModal.type === 'ABSENT' ? <XCircle className="w-5 h-5" /> :
+                   kpiModal.type === 'LEAVE' ? <AlertCircle className="w-5 h-5" /> :
+                   kpiModal.type === 'RATE' ? <UserCheck className="w-5 h-5" /> :
+                   <Users className="w-5 h-5" />}
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#1F2937] flex items-center gap-2">
+                    <span>{kpiModal.title}</span>
+                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${
+                      kpiModal.type === 'PRESENT' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                      kpiModal.type === 'ABSENT' ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                      kpiModal.type === 'LEAVE' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                      'bg-blue-50 text-blue-700 border-blue-200'
+                    }`}>
+                      {kpiModal.items.length} Records
+                    </span>
+                  </h3>
+                  <p className="text-xs text-[#5B6676] mt-0.5">{kpiModal.subtitle}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setKpiModal(null)}
+                className="text-[#5B6676] hover:text-[#1F2937] p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                title="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Quick Filter Search inside Modal */}
+            <div className="px-5 py-2.5 border-b border-[#E4E2DA] bg-white flex items-center gap-2">
+              <Search className="w-4 h-4 text-slate-400 shrink-0" />
+              <input
+                type="text"
+                value={kpiModalSearch}
+                onChange={(e) => setKpiModalSearch(e.target.value)}
+                placeholder="Filter by teacher name, employee ID, or department..."
+                className="w-full text-xs font-medium text-slate-800 bg-transparent outline-none placeholder:text-slate-400"
+              />
+              {kpiModalSearch && (
+                <button
+                  type="button"
+                  onClick={() => setKpiModalSearch('')}
+                  className="text-xs text-slate-400 hover:text-slate-600 cursor-pointer"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+
+            {/* Modal Body / Faculty Roster List */}
+            <div className="p-4 sm:p-5 overflow-y-auto space-y-2.5 flex-1 divide-y divide-slate-100">
+              {filteredModalItems.length === 0 ? (
+                <div className="text-center py-8 text-slate-500 text-xs">
+                  No matching faculty records found for this metric.
+                </div>
+              ) : (
+                filteredModalItems.map((emp, idx) => {
+                  const statusLower = (emp.status || '').toLowerCase();
+                  const isPresent = statusLower === 'present' || statusLower === 'in office' || statusLower === 'left office';
+                  const isAbsent = statusLower === 'absent';
+                  const isLeave = statusLower === 'leave' || statusLower === 'half day';
+
+                  return (
+                    <div key={emp.employee_id || emp.id || idx} className="pt-2.5 first:pt-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 text-[#1F2937] flex items-center justify-center font-bold text-xs shrink-0">
+                          {emp.name?.charAt(0) || 'F'}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-xs text-[#1F2937]">{emp.name}</span>
+                            <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.2 rounded border border-slate-200">
+                              {emp.employee_id || 'FAC'}
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+                            <span>{emp.department || 'Academic Faculty'}</span>
+                            {emp.punch_in && (
+                              <span>• Punch-In: <strong className="text-slate-700 font-mono">{emp.punch_in}</strong></span>
+                            )}
+                            {emp.working_hours && (
+                              <span>• Working: {emp.working_hours}</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 self-end sm:self-center">
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${
+                          isPresent ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                          isAbsent ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                          isLeave ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                          'bg-slate-100 text-slate-600 border-slate-200'
+                        }`}>
+                          {isPresent ? '● In Campus' : isAbsent ? '✕ Absent' : isLeave ? '⚠ On Leave' : emp.status}
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setKpiModal(null);
+                            handleOpenEditAttModal(emp, emp);
+                          }}
+                          className="px-2.5 py-1 rounded-lg border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-[11px] font-bold text-slate-700 transition-all cursor-pointer shadow-2xs"
+                        >
+                          ✏️ Update
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="bg-[#FAF9F5] border-t border-[#E4E2DA] p-3 sm:p-4 flex flex-wrap items-center justify-between gap-2">
+              <span className="text-xs text-[#5B6676]">
+                Showing {filteredModalItems.length} of {kpiModal.items.length} records
+              </span>
+              <div className="flex items-center gap-2">
+                {kpiModal.type !== 'RATE' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const targetFilter = kpiModal.type === 'PRESENT' ? 'Present' :
+                        kpiModal.type === 'ABSENT' ? 'Absent' :
+                        kpiModal.type === 'LEAVE' ? 'Leave' : 'ALL';
+                      setSelectedStatusFilter(targetFilter);
+                      setKpiModal(null);
+                      toast.success(`Filtered roster table by ${targetFilter}`);
+                    }}
+                    className="px-3 py-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 transition-all cursor-pointer"
+                  >
+                    Filter Table Below ➔
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setKpiModal(null)}
+                  className="px-4 py-1.5 rounded-xl bg-[#29456D] hover:bg-blue-900 text-white text-xs font-bold transition-all cursor-pointer shadow-2xs"
+                >
+                  Done
+                </button>
+              </div>
             </div>
           </div>
         </div>
