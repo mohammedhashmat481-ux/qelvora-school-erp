@@ -47,6 +47,9 @@ services/gateway/uploads/resources/[0-9]*
 services/gateway/uploads/study-materials/*
 
 # Media & Demo Recordings
+*.png
+!apps/web/public/*.png
+!frontend/public/*.png
 *.mp3
 *.mp4
 demo_output/
