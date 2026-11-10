@@ -237,7 +237,7 @@ const VideoPlayerPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f3f9] text-stone-850 flex flex-col md:flex-row font-sans">
+    <div className="min-h-screen bg-[#f3f3f9] text-stone-850 flex flex-col lg:flex-row font-sans">
       <Sidebar />
 
       <div className="flex-1 bg-[#f3f3f9] p-4 sm:p-6 lg:p-8 overflow-y-auto">

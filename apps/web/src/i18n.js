@@ -15,6 +15,13 @@ export const numberFormatMap = {
 const resources = {
   "en": {
     "translation": {
+      "teacher_system": "TEACHER SYSTEM",
+      "admin_system": "ADMIN SYSTEM",
+      "marks_entry": "Marks Entry",
+      "homework_management": "Homework & Tasks",
+      "notices_circulars": "Notices & Circulars",
+      "mappings": "Teacher Class Mappings",
+      "feedbacks": "Parent Feedback",
       "feature1_title": "Multi-Angle Face Capture",
       "feature1_desc": "Register your face from 4 angles for precise, secure recognition that works from any position.",
       "feature2_title": "Liveness Detection",

@@ -257,7 +257,7 @@ export default function AiAssistPage() {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
+    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col lg:flex-row font-sans">
       <Sidebar />
 
       <div className="flex-1 bg-[#F5F8FC] p-4 sm:p-6 lg:p-8 overflow-y-auto flex flex-col">

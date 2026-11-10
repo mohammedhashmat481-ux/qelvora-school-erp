@@ -90,7 +90,7 @@ const LoginHistoryPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col md:flex-row animate-fadeIn font-sans">
+    <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col lg:flex-row animate-fadeIn font-sans">
       <Sidebar />
       <div className="flex-1 bg-[#F7F9FC] flex flex-col min-w-0">
         <div className="min-h-[calc(100vh-4rem)] bg-white py-6 px-4 sm:px-6 lg:px-8 overflow-y-auto">

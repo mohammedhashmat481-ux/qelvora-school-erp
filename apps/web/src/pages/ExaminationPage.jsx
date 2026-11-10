@@ -945,29 +945,29 @@ const ExaminationPage = () => {
   }, [entryClass, entrySection, entryExamId, activeTab]);
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
+    <div className="h-screen overflow-hidden bg-[var(--bg)] text-[#1F2937] flex flex-col lg:flex-row font-sans">
       <Sidebar />
 
       <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden flex flex-col min-w-0">
-        <div className="p-3 sm:p-5 lg:p-8 pb-28 md:pb-12 bg-[#F5F8FC]">
+        <div className="p-3 sm:p-5 lg:p-8 pb-28 md:pb-12 bg-[var(--bg)]">
           <div className="w-full mx-auto space-y-4 sm:space-y-6">
 
             {/* TOP HEADER BAR */}
-            <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-[#203B61] p-5 rounded-2xl border border-[#2D4D77] shadow-sm text-white">
+            <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-[#E4E2DA] shadow-subtle text-[#1F2937]">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-[#2D4D77] border border-[#2D4D77] flex items-center justify-center text-[#F3F6FC] shadow-md">
-                  <Award className="w-6 h-6 text-[#F3F6FC]" />
+                <div className="w-12 h-12 rounded-2xl bg-[var(--accent-soft)] border border-[var(--accent)]/20 flex items-center justify-center text-[var(--accent)] shadow-xs">
+                  <Award className="w-6 h-6 text-[var(--accent)]" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                    <h1 className="text-xl sm:text-2xl font-black text-[#1F2937] tracking-tight">
                       Examination & Assessment System
                     </h1>
-                    <span className="text-[11px] font-black uppercase px-2.5 py-0.5 rounded-full bg-[#DCEBFA] text-[#203B61] border border-[#93C5FD]">
+                    <span className="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent)]/20">
                       Academic Core
                     </span>
                   </div>
-                  <p className="text-xs font-medium text-[#CBD5E1]">
+                  <p className="text-xs font-medium text-[#5B6676]">
                     Comprehensive exam configurations, marks roster entry, CCE grading, printable marks cards & analytics
                   </p>
                 </div>
@@ -976,26 +976,26 @@ const ExaminationPage = () => {
               {/* Header Right Controls */}
               <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
                 {/* Academic Year Switcher */}
-                <div className="flex items-center gap-2 bg-[#2D4D77] px-3 py-1.5 rounded-xl border border-[#2D4D77]">
-                  <Calendar className="w-4 h-4 text-[#F3F6FC]" />
-                  <span className="text-xs font-bold text-[#CBD5E1]">Session:</span>
+                <div className="flex items-center gap-2 bg-[#F3F1EA] px-3 py-1.5 rounded-xl border border-[#E4E2DA]">
+                  <Calendar className="w-4 h-4 text-[#5B6676]" />
+                  <span className="text-xs font-bold text-[#5B6676]">Session:</span>
                   <select
                     value={academicYear}
                     onChange={(e) => setAcademicYear(e.target.value)}
-                    className="bg-white text-xs font-bold text-[#203B61] px-2 py-0.5 rounded outline-none cursor-pointer hover:bg-[#DCEBFA]"
+                    className="bg-white text-xs font-bold text-[#1F2937] px-2 py-0.5 rounded border border-[#E4E2DA] outline-none cursor-pointer"
                   >
-                    <option value="2026-2027" className="bg-white text-[#203B61]">2026-2027 (Current)</option>
-                    <option value="2025-2026" className="bg-white text-[#203B61]">2025-2026</option>
-                    <option value="2024-2025" className="bg-white text-[#203B61]">2024-2025</option>
+                    <option value="2026-2027" className="bg-white text-[#1F2937]">2026-2027 (Current)</option>
+                    <option value="2025-2026" className="bg-white text-[#1F2937]">2025-2026</option>
+                    <option value="2024-2025" className="bg-white text-[#1F2937]">2024-2025</option>
                   </select>
                 </div>
 
                 {/* Audit Logs button */}
                 <button
                   onClick={handleViewAuditLogs}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#2D4D77] hover:bg-[#203B61] text-white hover:text-[#DCEBFA] text-xs font-bold transition-all border border-[#2D4D77] cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F3F1EA] hover:bg-[#E4E2DA] text-[#1F2937] text-xs font-bold transition-all border border-[#E4E2DA] cursor-pointer shadow-xs"
                 >
-                  <History className="w-4 h-4 text-[#F3F6FC]" />
+                  <History className="w-4 h-4 text-[#5B6676]" />
                   <span>Audit Logs</span>
                 </button>
 
@@ -1003,23 +1003,21 @@ const ExaminationPage = () => {
                 <button
                   onClick={loadMasterData}
                   disabled={isLoading}
-                  className="p-2 rounded-xl bg-[#2D4D77] hover:bg-[#203B61] text-[#F3F6FC] hover:text-[#DCEBFA] transition-all border border-[#2D4D77] cursor-pointer"
+                  className="p-2 rounded-xl bg-[#F3F1EA] hover:bg-[#E4E2DA] text-[#1F2937] transition-all border border-[#E4E2DA] cursor-pointer shadow-xs"
                   title="Reload Master Data"
                 >
-                  <RefreshCw className={`w-4 h-4 text-[#F3F6FC] ${isLoading ? 'animate-spin' : ''}`} />
+                  <RefreshCw className={`w-4 h-4 text-[#5B6676] ${isLoading ? 'animate-spin' : ''}`} />
                 </button>
               </div>
             </header>
 
             {/* 10 MODULE NAVIGATION TABS */}
-            <div className="bg-white rounded-2xl p-2 border border-slate-200 shadow-xs overflow-x-auto scrollbar-none">
+            <div className="bg-white rounded-2xl p-2 border border-[#E4E2DA] shadow-subtle overflow-x-auto scrollbar-none">
               <div className="flex items-center gap-1.5 min-w-max">
                 <button
                   onClick={() => handleTabChange('exam-types')}
                   className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 whitespace-nowrap ${
-                    activeTab === 'exam-types'
-                      ? 'bg-blue-900 text-white shadow-sm'
-                      : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'exam-types' ? 'bg-[var(--accent)] text-white shadow-xs font-bold' : 'text-[#5B6676] hover:bg-[#F3F1EA] hover:text-[#1F2937]'
                   }`}
                 >
                   <Layers className="w-4 h-4" />
@@ -1029,9 +1027,7 @@ const ExaminationPage = () => {
                 <button
                   onClick={() => handleTabChange('exam-names')}
                   className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 whitespace-nowrap ${
-                    activeTab === 'exam-names'
-                      ? 'bg-blue-900 text-white shadow-sm'
-                      : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'exam-names' ? 'bg-[var(--accent)] text-white shadow-xs font-bold' : 'text-[#5B6676] hover:bg-[#F3F1EA] hover:text-[#1F2937]'
                   }`}
                 >
                   <Calendar className="w-4 h-4" />
@@ -1041,9 +1037,7 @@ const ExaminationPage = () => {
                 <button
                   onClick={() => handleTabChange('marks-entry')}
                   className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 whitespace-nowrap ${
-                    activeTab === 'marks-entry'
-                      ? 'bg-blue-900 text-white shadow-sm'
-                      : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'marks-entry' ? 'bg-[var(--accent)] text-white shadow-xs font-bold' : 'text-[#5B6676] hover:bg-[#F3F1EA] hover:text-[#1F2937]'
                   }`}
                 >
                   <ClipboardCheck className="w-4 h-4" />
@@ -1053,9 +1047,7 @@ const ExaminationPage = () => {
                 <button
                   onClick={() => handleTabChange('modify-marks')}
                   className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 whitespace-nowrap ${
-                    activeTab === 'modify-marks'
-                      ? 'bg-blue-900 text-white shadow-sm'
-                      : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'modify-marks' ? 'bg-[var(--accent)] text-white shadow-xs font-bold' : 'text-[#5B6676] hover:bg-[#F3F1EA] hover:text-[#1F2937]'
                   }`}
                 >
                   <Edit3 className="w-4 h-4" />
@@ -1065,9 +1057,7 @@ const ExaminationPage = () => {
                 <button
                   onClick={() => handleTabChange('marks-card')}
                   className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 whitespace-nowrap ${
-                    activeTab === 'marks-card'
-                      ? 'bg-blue-900 text-white shadow-sm'
-                      : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'marks-card' ? 'bg-[var(--accent)] text-white shadow-xs font-bold' : 'text-[#5B6676] hover:bg-[#F3F1EA] hover:text-[#1F2937]'
                   }`}
                 >
                   <FileText className="w-4 h-4" />
@@ -1077,9 +1067,7 @@ const ExaminationPage = () => {
                 <button
                   onClick={() => handleTabChange('individual-marks')}
                   className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 whitespace-nowrap ${
-                    activeTab === 'individual-marks'
-                      ? 'bg-blue-900 text-white shadow-sm'
-                      : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'individual-marks' ? 'bg-[var(--accent)] text-white shadow-xs font-bold' : 'text-[#5B6676] hover:bg-[#F3F1EA] hover:text-[#1F2937]'
                   }`}
                 >
                   <GraduationCap className="w-4 h-4" />
@@ -1089,9 +1077,7 @@ const ExaminationPage = () => {
                 <button
                   onClick={() => handleTabChange('cce-skills')}
                   className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 whitespace-nowrap ${
-                    activeTab === 'cce-skills'
-                      ? 'bg-blue-900 text-white shadow-sm'
-                      : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'cce-skills' ? 'bg-[var(--accent)] text-white shadow-xs font-bold' : 'text-[#5B6676] hover:bg-[#F3F1EA] hover:text-[#1F2937]'
                   }`}
                 >
                   <Sparkles className="w-4 h-4" />
@@ -1101,9 +1087,7 @@ const ExaminationPage = () => {
                 <button
                   onClick={() => handleTabChange('allocation')}
                   className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 whitespace-nowrap ${
-                    activeTab === 'allocation'
-                      ? 'bg-blue-900 text-white shadow-sm'
-                      : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'allocation' ? 'bg-[var(--accent)] text-white shadow-xs font-bold' : 'text-[#5B6676] hover:bg-[#F3F1EA] hover:text-[#1F2937]'
                   }`}
                 >
                   <SlidersHorizontal className="w-4 h-4" />
@@ -1113,9 +1097,7 @@ const ExaminationPage = () => {
                 <button
                   onClick={() => handleTabChange('grading-engine')}
                   className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 whitespace-nowrap ${
-                    activeTab === 'grading-engine'
-                      ? 'bg-blue-900 text-white shadow-sm'
-                      : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'grading-engine' ? 'bg-[var(--accent)] text-white shadow-xs font-bold' : 'text-[#5B6676] hover:bg-[#F3F1EA] hover:text-[#1F2937]'
                   }`}
                 >
                   <Sliders className="w-4 h-4" />
@@ -1125,9 +1107,7 @@ const ExaminationPage = () => {
                 <button
                   onClick={() => handleTabChange('analytics')}
                   className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 whitespace-nowrap ${
-                    activeTab === 'analytics'
-                      ? 'bg-blue-900 text-white shadow-sm'
-                      : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'analytics' ? 'bg-[var(--accent)] text-white shadow-xs font-bold' : 'text-[#5B6676] hover:bg-[#F3F1EA] hover:text-[#1F2937]'
                   }`}
                 >
                   <BarChart2 className="w-4 h-4" />
@@ -1987,7 +1967,7 @@ const ExaminationPage = () => {
                 {selectedStudentCard && (
                   <div className="space-y-6">
                     {/* Student Hero Banner */}
-                    <div className="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 shadow-md">
+                    <div className="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-6 flex flex-col lg:flex-row items-center gap-6 shadow-md">
                       <div className="w-20 h-20 rounded-2xl bg-white/10 flex items-center justify-center text-3xl font-black border-2 border-white/20">
                         {selectedStudentCard.student.name.charAt(0)}
                       </div>

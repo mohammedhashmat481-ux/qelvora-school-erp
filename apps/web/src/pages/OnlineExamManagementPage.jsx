@@ -708,27 +708,27 @@ const OnlineExamManagementPage = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F5F8FC] font-sans text-[#253858] flex flex-col md:flex-row">
+    <div className="h-screen overflow-hidden bg-[var(--bg)] font-sans text-[#1F2937] flex flex-col lg:flex-row">
       {/* ─── Platform Main Sidebar ─── */}
       <Sidebar />
 
       {/* ─── Main Content Area ─── */}
       <div className="flex-1 flex flex-col min-w-0 pb-16">
       {/* ─── Top Header Ribbon ──────────────────────────────────────────────── */}
-      <div className="bg-[#203B61] border-b border-[#2D4D77] text-white sticky top-0 z-20 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border-b border-[#E4E2DA] text-[#1F2937] sticky top-0 z-20 shadow-subtle">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col lg:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-[#2D4D77] border border-[#2D4D77] flex items-center justify-center text-[#F3F6FC] shadow-md">
-              <MonitorPlay className="w-6 h-6 text-[#F3F6FC]" />
+            <div className="w-11 h-11 rounded-2xl bg-[var(--accent-soft)] border border-[var(--accent)]/20 flex items-center justify-center text-[var(--accent)] shadow-xs">
+              <MonitorPlay className="w-6 h-6 text-[var(--accent)]" />
             </div>
             <div>
               <div className="flex items-center gap-2.5">
-                <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">Online Exam System</h1>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#DCEBFA] text-[#203B61] text-[10px] font-black uppercase tracking-wider border border-[#93C5FD]">
+                <h1 className="text-xl sm:text-2xl font-black text-[#1F2937] tracking-tight">Online Exam System</h1>
+                <span className="px-2.5 py-0.5 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] text-[10px] font-bold uppercase tracking-wider border border-[var(--accent)]/20">
                   MCQ Engine Active
                 </span>
               </div>
-              <p className="text-xs text-[#CBD5E1] font-medium">
+              <p className="text-xs text-[#5B6676] font-medium">
                 Production-ready assessment engine with reusable question banks, automated evaluation & live proctoring signals.
               </p>
             </div>
@@ -737,31 +737,31 @@ const OnlineExamManagementPage = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate('/dashboard')}
-              className="px-3.5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white hover:text-[#DCEBFA] text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer border border-[#2D4D77]"
+              className="px-3.5 py-2 bg-[#F3F1EA] hover:bg-[#E4E2DA] text-[#1F2937] text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer border border-[#E4E2DA]"
               title="Return to Main Menu / Dashboard"
             >
-              <LayoutDashboard className="w-4 h-4 text-[#F3F6FC]" />
+              <LayoutDashboard className="w-4 h-4 text-[#5B6676]" />
               <span>Main Menu</span>
             </button>
             <button
               onClick={() => navigate('/student/online-exam')}
-              className="px-3.5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white hover:text-[#DCEBFA] text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer border border-[#2D4D77]"
+              className="px-3.5 py-2 bg-[#F3F1EA] hover:bg-[#E4E2DA] text-[#1F2937] text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer border border-[#E4E2DA]"
             >
-              <Eye className="w-4 h-4 text-[#F3F6FC]" />
+              <Eye className="w-4 h-4 text-[#5B6676]" />
               <span>Student View Portal</span>
             </button>
             <button
               onClick={handleOpenAddExam}
-              className="px-4 py-2 bg-[#2D4D77] hover:bg-[#203B61] active:scale-95 text-white hover:text-[#DCEBFA] text-xs font-bold rounded-xl flex items-center gap-2 shadow-sm transition-all cursor-pointer border border-[#2D4D77]"
+              className="px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] active:scale-95 text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow-xs transition-all cursor-pointer"
             >
-              <Plus className="w-4 h-4 text-[#F3F6FC]" />
+              <Plus className="w-4 h-4 text-white" />
               <span>Create Online Exam</span>
             </button>
           </div>
         </div>
 
         {/* ─── Modern Tabs Bar ─────────────────────────────────────────────────── */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center gap-2 overflow-x-auto scrollbar-none border-t border-[#2D4D77]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center gap-2 overflow-x-auto scrollbar-none border-t border-[#E4E2DA]">
           {[
             { id: 'dashboard', label: 'Overview & Analytics', icon: <TrendingUp className="w-4 h-4" /> },
             { id: 'exams', label: 'Exam Management', icon: <Layers className="w-4 h-4" /> },
@@ -774,8 +774,8 @@ const OnlineExamManagementPage = () => {
               onClick={() => setTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-3 text-xs font-bold transition-all border-b-2 cursor-pointer ${
                 activeTab === tab.id
-                  ? 'border-indigo-900 text-indigo-950 bg-indigo-50/50'
-                  : 'border-transparent text-slate-500 hover:text-slate-900 hover:border-slate-300'
+                  ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--accent-soft)]'
+                  : 'border-transparent text-[#5B6676] hover:text-[#1F2937] hover:border-[#E4E2DA]'
               }`}
             >
               {tab.icon}

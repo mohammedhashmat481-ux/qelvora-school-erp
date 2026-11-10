@@ -527,11 +527,31 @@ router.get(['/auth/attendance/report/details', '/report/details', '/details'], a
         });
       }
 
+      const isTeacher = (rec.employee_id || '').toUpperCase().startsWith('EMP') || 
+                        (rec.department || '').toLowerCase().includes('mathematics') ||
+                        (rec.department || '').toLowerCase().includes('physics') ||
+                        (rec.department || '').toLowerCase().includes('chemistry') ||
+                        (rec.department || '').toLowerCase().includes('english') ||
+                        (rec.department || '').toLowerCase().includes('social studies') ||
+                        (rec.department || '').toLowerCase().includes('computer science') ||
+                        (rec.department || '').toLowerCase().includes('faculty');
+
+      let category = 'Support Staff';
+      if (isTeacher) {
+        category = 'Teaching Faculty';
+      } else if ((rec.employee_id || '').toUpperCase().startsWith('NT') || (rec.department || '').toLowerCase().includes('operations')) {
+        category = 'Non-Teaching Staff';
+      } else if ((rec.employee_id || '').toUpperCase().startsWith('ADM') || (rec.department || '').toLowerCase().includes('leadership')) {
+        category = 'Administration';
+      }
+
       return {
         employee_id: rec.employee_id,
         name: rec.name,
         department: rec.department,
         designation: rec.designation,
+        category,
+        is_teacher: isTeacher,
         daily
       };
     });
@@ -556,11 +576,12 @@ router.get(['/auth/attendance/report/details', '/report/details', '/details'], a
 router.get(['/auth/attendance/daily-status', '/daily-status'], async (req, res) => {
   try {
     const dateStr = req.query.date_str || new Date().toISOString().split('T')[0];
+    const categoryFilter = (req.query.category || req.query.role || '').trim().toLowerCase();
     const dateObj = new Date(dateStr);
     const isSunday = dateObj.getDay() === 0;
 
     const allEmps = await getAllStaffAndEmployees();
-    const data = allEmps.map((rec, idx) => {
+    let data = allEmps.map((rec, idx) => {
       let status = rec.status || 'In Office';
       let punchIn = `${dateStr}T08:${String(20 + (idx % 15) * 2).padStart(2, '0')}:00.000Z`;
       let punchOut = status === 'Left Office' ? `${dateStr}T15:30:00.000Z` : null;
@@ -575,10 +596,44 @@ router.get(['/auth/attendance/daily-status', '/daily-status'], async (req, res) 
         punchOut = null;
       }
 
+      const override = getAttendanceOverride(rec.employee_id, dateStr);
+      if (override) {
+        status = override.status;
+        if (override.status === 'Absent' || override.status === 'Weekly Off') {
+          punchIn = null;
+          punchOut = null;
+        } else {
+          if (override.punch_in) punchIn = override.punch_in;
+          if (override.punch_out) punchOut = override.punch_out;
+        }
+      }
+
+      const isTeacher = (rec.employee_id || '').toUpperCase().startsWith('EMP') || 
+                        (rec.department || '').toLowerCase().includes('mathematics') ||
+                        (rec.department || '').toLowerCase().includes('physics') ||
+                        (rec.department || '').toLowerCase().includes('chemistry') ||
+                        (rec.department || '').toLowerCase().includes('english') ||
+                        (rec.department || '').toLowerCase().includes('social studies') ||
+                        (rec.department || '').toLowerCase().includes('computer science') ||
+                        (rec.department || '').toLowerCase().includes('faculty');
+
+      let category = 'Support Staff';
+      if (isTeacher) {
+        category = 'Teaching Faculty';
+      } else if ((rec.employee_id || '').toUpperCase().startsWith('NT') || (rec.department || '').toLowerCase().includes('operations')) {
+        category = 'Non-Teaching Staff';
+      } else if ((rec.employee_id || '').toUpperCase().startsWith('ADM') || (rec.department || '').toLowerCase().includes('leadership')) {
+        category = 'Administration';
+      }
+
       return {
         employee_id: rec.employee_id,
         name: rec.name,
         department: rec.department,
+        designation: rec.designation || (isTeacher ? 'Teaching Faculty' : 'Staff Member'),
+        role: rec.role || (isTeacher ? 'teacher' : 'staff'),
+        category,
+        is_teacher: isTeacher,
         status,
         punch_in: punchIn,
         punch_out: punchOut,
@@ -586,8 +641,21 @@ router.get(['/auth/attendance/daily-status', '/daily-status'], async (req, res) 
       };
     });
 
+    const totalTeachersCount = data.filter(d => d.is_teacher).length;
+    const totalStaffCount = data.length;
+
+    if (categoryFilter === 'teachers' || categoryFilter === 'teaching') {
+      data = data.filter(d => d.is_teacher);
+    } else if (categoryFilter === 'non-teaching') {
+      data = data.filter(d => d.category === 'Non-Teaching Staff');
+    } else if (categoryFilter === 'support') {
+      data = data.filter(d => d.category === 'Support Staff');
+    }
+
     res.json({
       status: true,
+      total_teachers: totalTeachersCount,
+      total_staff: totalStaffCount,
       data
     });
   } catch (err) {

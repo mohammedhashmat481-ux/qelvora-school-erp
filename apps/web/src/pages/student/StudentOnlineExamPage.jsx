@@ -61,7 +61,7 @@ const StudentOnlineExamPage = () => {
       {/* ─── Hero Header ────────────────────────────────────────────────────── */}
       <div className="bg-gradient-to-r from-indigo-900 via-indigo-950 to-slate-900 text-white border-b border-indigo-800/40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex flex-col lg:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg">
                 <MonitorPlay className="w-7 h-7 text-amber-400" />
@@ -150,7 +150,7 @@ const StudentOnlineExamPage = () => {
               return (
                 <div
                   key={exam.id}
-                  className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-indigo-300 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
+                  className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-indigo-300 transition-all flex flex-col lg:flex-row md:items-center justify-between gap-6"
                 >
                   <div className="space-y-2 flex-1">
                     <div className="flex flex-wrap items-center gap-2">

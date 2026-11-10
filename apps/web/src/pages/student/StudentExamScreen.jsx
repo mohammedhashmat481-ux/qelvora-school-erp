@@ -278,18 +278,18 @@ const StudentExamScreen = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col font-sans select-none">
+    <div className="min-h-screen bg-[var(--bg)] flex flex-col font-sans select-none text-[#1F2937]">
       {/* ─── Top Distraction-Free Header Ribbon ─────────────────────────────── */}
-      <header className="bg-[#172B4D] text-white px-4 sm:px-6 py-3 border-b border-[#29456D] flex items-center justify-between sticky top-0 z-20 shadow-md">
+      <header className="bg-white text-[#1F2937] px-4 sm:px-6 py-3 border-b border-[#E4E2DA] flex items-center justify-between sticky top-0 z-20 shadow-subtle">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#29456D] border border-[#29456D] flex items-center justify-center font-black text-white text-sm">
+          <div className="w-8 h-8 rounded-lg bg-[var(--accent-soft)] border border-[var(--accent)]/30 flex items-center justify-center font-black text-[var(--accent)] text-sm">
             MCQ
           </div>
           <div>
-            <h1 className="text-xs sm:text-sm font-black leading-tight max-w-md truncate">
+            <h1 className="text-xs sm:text-sm font-black leading-tight max-w-md truncate text-[#1F2937]">
               {examMeta?.title}
             </h1>
-            <span className="text-[10px] text-[#CBD5E1] font-mono">
+            <span className="text-[10px] text-[#5B6676] font-mono">
               {examMeta?.examCode} · {examMeta?.subject}
             </span>
           </div>
@@ -297,19 +297,19 @@ const StudentExamScreen = () => {
 
         <div className="flex items-center gap-4">
           {/* Autosave Status */}
-          <div className="hidden sm:flex items-center gap-1.5 text-[11px] font-semibold text-[#CBD5E1]">
+          <div className="hidden sm:flex items-center gap-1.5 text-[11px] font-semibold text-[#5B6676]">
             {savingStatus === 'saving' && (
-              <span className="text-[#DBEAFE] flex items-center gap-1">
+              <span className="text-[var(--accent)] flex items-center gap-1">
                 <RotateCcw className="w-3 h-3 animate-spin" /> Saving...
               </span>
             )}
             {savingStatus === 'saved' && (
-              <span className="text-emerald-400 flex items-center gap-1">
+              <span className="text-emerald-600 flex items-center gap-1">
                 <Check className="w-3.5 h-3.5" /> Answers Autosaved
               </span>
             )}
             {savingStatus === 'error' && (
-              <span className="text-rose-400 flex items-center gap-1">
+              <span className="text-rose-600 flex items-center gap-1">
                 <AlertTriangle className="w-3 h-3" /> Save pending
               </span>
             )}

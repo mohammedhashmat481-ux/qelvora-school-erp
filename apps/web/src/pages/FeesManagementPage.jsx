@@ -1548,28 +1548,28 @@ const FeesManagementPage = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row animate-fadeIn font-sans">
+    <div className="h-screen overflow-hidden bg-[var(--bg)] text-[#1F2937] flex flex-col lg:flex-row animate-fadeIn font-sans">
       <Sidebar />
 
-      <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden flex flex-col min-w-0 bg-[#F5F8FC] p-3 sm:p-5 lg:p-8 pb-28 md:pb-12">
+      <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden flex flex-col min-w-0 bg-[var(--bg)] p-3 sm:p-5 lg:p-8 pb-28 md:pb-12">
         <div className="w-full mx-auto space-y-4 sm:space-y-6">
 
             {/* TOP HEADER BAR */}
-            <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-[#203B61] p-4 rounded-2xl border border-[#2D4D77] shadow-sm text-white">
+            <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-[#E4E2DA] shadow-subtle text-[#1F2937]">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-xl bg-[#2D4D77] border border-[#2D4D77] flex items-center justify-center text-[#F3F6FC] shadow-md">
-                  <Receipt className="w-6 h-6 text-[#F3F6FC]" />
+                <div className="w-11 h-11 rounded-xl bg-[var(--accent-soft)] border border-[var(--accent)]/20 flex items-center justify-center text-[var(--accent)] shadow-xs">
+                  <Receipt className="w-6 h-6 text-[var(--accent)]" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                    <h1 className="text-xl sm:text-2xl font-black text-[#1F2937] tracking-tight">
                       Fees Management
                     </h1>
-                    <span className="text-[11px] font-black uppercase px-2.5 py-0.5 rounded-full bg-[#DCEBFA] text-[#203B61] border border-[#93C5FD]">
+                    <span className="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent)]/20">
                       Module
                     </span>
                   </div>
-                  <p className="text-xs font-medium text-[#CBD5E1]">
+                  <p className="text-xs font-medium text-[#5B6676]">
                     Comprehensive fee structures, collections, receipting & financial auditing
                   </p>
                 </div>
@@ -1578,42 +1578,42 @@ const FeesManagementPage = () => {
               {/* Header Controls: Academic Year Selector + User Badge + Logout */}
               <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
                 {/* Academic Year Switcher */}
-                <div className="flex items-center gap-2 bg-[#2D4D77] px-3 py-1.5 rounded-xl border border-[#2D4D77]">
-                  <Calendar className="w-4 h-4 text-[#F3F6FC]" />
-                  <span className="text-xs font-bold text-[#CBD5E1]">Year:</span>
+                <div className="flex items-center gap-2 bg-[#F3F1EA] px-3 py-1.5 rounded-xl border border-[#E4E2DA]">
+                  <Calendar className="w-4 h-4 text-[#5B6676]" />
+                  <span className="text-xs font-bold text-[#5B6676]">Year:</span>
                   <select
                     value={academicYear}
                     onChange={(e) => setAcademicYear(e.target.value)}
-                    className="bg-white text-xs font-bold text-[#203B61] px-2 py-0.5 rounded outline-none cursor-pointer hover:bg-[#DCEBFA]"
+                    className="bg-white text-xs font-bold text-[#1F2937] px-2 py-0.5 rounded border border-[#E4E2DA] outline-none cursor-pointer"
                   >
                     {academicYears.map(yr => (
-                      <option key={yr} value={yr} className="bg-white text-[#203B61]">
+                      <option key={yr} value={yr} className="bg-white text-[#1F2937]">
                         {yr} {yr === '2026-2027' ? '(Active)' : '(Closed)'}
                       </option>
                     ))}
                   </select>
                   {isYearClosed && (
-                    <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
+                    <span className="bg-[#FAF0DE] text-[#B7791F] text-[10px] font-bold px-1.5 py-0.5 rounded-sm border border-[#FAF0DE]">
                       Read-only
                     </span>
                   )}
                 </div>
 
                 {/* User Role Badge */}
-                <div className="hidden sm:inline-flex items-center gap-2 bg-[#2D4D77] px-3 py-1.5 rounded-xl border border-[#2D4D77]">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span className="text-xs font-bold text-white">{user?.name || 'Administrator'}</span>
-                  <span className="bg-[#203B61] text-[#DCEBFA] text-[10px] font-black px-2 py-0.5 rounded-md uppercase border border-[#2D4D77]">
+                <div className="hidden sm:inline-flex items-center gap-2 bg-[#F3F1EA] px-3 py-1.5 rounded-xl border border-[#E4E2DA]">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="text-xs font-bold text-[#1F2937]">{user?.name || 'Administrator'}</span>
+                  <span className="bg-white text-[var(--accent)] text-[10px] font-bold px-2 py-0.5 rounded-md uppercase border border-[#E4E2DA]">
                     {user?.role || 'Admin'}
                   </span>
                 </div>
 
                 <button
                   onClick={handleLogout}
-                  className="px-3 py-1.5 bg-rose-950/60 hover:bg-rose-800 border border-rose-800/80 active:scale-95 text-rose-200 hover:text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="px-3 py-1.5 bg-[#FBEAE8] hover:bg-[#F9D6D3] border border-[#F5C2BC] active:scale-95 text-[#B42318] font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
                   title="Logout"
                 >
-                  <LogOut className="w-3.5 h-3.5 text-rose-300" />
+                  <LogOut className="w-3.5 h-3.5 text-[#B42318]" />
                   <span>Logout</span>
                 </button>
               </div>
@@ -1741,7 +1741,7 @@ const FeesManagementPage = () => {
             </div>
 
             {/* HORIZONTAL INTERNAL NAVIGATION (Matches Qelvora School CRM Modern Navbar style) */}
-            <div className="w-full bg-white p-1.5 rounded-2xl border border-slate-200 shadow-2xs overflow-x-auto scrollbar-none">
+            <div className="w-full bg-white p-1.5 rounded-2xl border border-[#E4E2DA] shadow-subtle overflow-x-auto scrollbar-none">
               <div className="flex items-center gap-1.5 min-w-max">
                 {[
                   { id: 'overview', label: 'Overview', icon: <LayoutDashboard className="w-4 h-4" /> },
@@ -1763,8 +1763,8 @@ const FeesManagementPage = () => {
                       onClick={() => setTab(tabItem.id)}
                       className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
                         isActive
-                          ? 'bg-gradient-to-r from-slate-900 to-indigo-900 text-white shadow-sm border-l-3 border-blue-400'
-                          : 'text-slate-600 hover:text-indigo-950 hover:bg-slate-100'
+                          ? 'bg-[var(--accent)] text-white shadow-xs font-bold'
+                          : 'text-[#5B6676] hover:text-[#1F2937] hover:bg-[#F3F1EA]'
                       }`}
                     >
                       {tabItem.icon}

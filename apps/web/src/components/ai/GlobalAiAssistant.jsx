@@ -338,12 +338,12 @@ export default function GlobalAiAssistant() {
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40 flex items-center gap-2 sm:gap-2.5 px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gradient-to-r from-[#203B61] via-[#244B78] to-[#3978D5] text-white rounded-full shadow-2xl hover:shadow-blue-500/25 hover:scale-105 active:scale-95 transition-all duration-200 border-2 border-white/20 group cursor-pointer"
+          className="fixed bottom-20 right-4 lg:bottom-6 lg:right-6 z-40 flex items-center gap-2 sm:gap-2.5 px-3.5 py-2.5 sm:px-4 sm:py-3 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 border-2 border-white/20 group cursor-pointer"
           title="Open Qelvora AI Assistant"
         >
           <div className="relative">
             <Sparkles className="w-4 sm:w-5 h-4 sm:h-5 text-amber-300 animate-spin-slow" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full border border-[#203B61] animate-ping" />
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full border border-[#172B4D] animate-ping" />
           </div>
           <span className="font-extrabold text-xs sm:text-sm tracking-wide">AI Assist</span>
           <span className="hidden xs:inline-block text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider text-blue-100">
@@ -354,17 +354,17 @@ export default function GlobalAiAssistant() {
 
       {/* ── EXPANDED AI ASSISTANT PANEL / DRAWER ── */}
       {isOpen && (
-        <div className="fixed bottom-4 right-4 z-50 w-full max-w-[420px] sm:w-[420px] h-[640px] max-h-[92vh] bg-white rounded-3xl shadow-2xl border-2 border-[#172B4D]/20 flex flex-col overflow-hidden animate-slideUp font-sans">
+        <div className="fixed bottom-4 right-4 z-50 w-[calc(100vw-32px)] sm:w-[420px] max-w-[420px] h-[640px] max-h-[85vh] bottom-16 lg:bottom-4 right-4 bg-white rounded-3xl shadow-2xl border border-[#E4E2DA] shadow-modal flex flex-col overflow-hidden animate-slideUp font-sans">
           
           {/* Header Bar */}
-          <div className="bg-[#172B4D] text-white px-4 py-3 flex items-center justify-between border-b border-[#29456D]">
+          <div className="bg-white text-[#1F2937] px-4 py-3 flex items-center justify-between border-b border-[#E4E2DA]">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-xs">
                 <Sparkles className="w-4 h-4 text-amber-300" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <h3 className="text-sm font-black tracking-tight leading-tight">Qelvora AI Assistant</h3>
+                  <h3 className="text-sm font-bold text-[#1F2937] tracking-tight leading-tight">Qelvora AI Assistant</h3>
                   <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider ${
                     activeTier === 'premium' ? 'bg-amber-400 text-slate-900 shadow-xs' : 'bg-blue-400/20 text-blue-200'
                   }`}>

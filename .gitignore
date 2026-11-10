@@ -46,3 +46,13 @@ backend/data/
 services/gateway/uploads/resources/[0-9]*
 services/gateway/uploads/study-materials/*
 
+# Media & Demo Recordings
+*.mp3
+*.mp4
+demo_output/
+/*concat*.txt
+/audio_concat.txt
+/fees_audio_concat.txt
+/master_fees_concat.txt
+
+

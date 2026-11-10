@@ -47,6 +47,7 @@ const StudentExamScreen     = lazy(() => import('./pages/student/StudentExamScre
 const StudentExamResultPage = lazy(() => import('./pages/student/StudentExamResultPage'));
 const StudentFeesPage       = lazy(() => import('./pages/student/StudentFeesPage'));
 const StudentSafePickupPage = lazy(() => import('./pages/student/StudentSafePickupPage'));
+const AccessPrivilegePage   = lazy(() => import('./pages/AccessPrivilegePage'));
 
 // ─── Shared skeleton shown while any lazy page loads ──────────
 function PageLoader() {
@@ -160,6 +161,7 @@ function App() {
             <Route path="/profile-selection"   element={<ProfileSelectionPage />} />
             <Route path="/dashboard"           element={<DashboardPage />} />
             <Route path="/admin"               element={<AdminPage />} />
+            <Route path="/access-privilege"      element={<AccessPrivilegePage />} />
             <Route path="/teacher"             element={<TeacherSectionPage />} />
             <Route path="/teacher-section"     element={<TeacherSectionPage />} />
             

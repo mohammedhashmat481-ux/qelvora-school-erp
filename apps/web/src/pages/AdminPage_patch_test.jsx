@@ -575,7 +575,7 @@ const AdminPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col md:flex-row animate-fadeIn font-sans">
+    <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col lg:flex-row animate-fadeIn font-sans">
       <Sidebar />
       <div className="flex-1 bg-[#F7F9FC] flex flex-col min-w-0">
         <div className="min-h-[calc(100vh-4rem)] bg-white p-4 sm:p-6 overflow-y-auto">
@@ -1502,7 +1502,7 @@ const AdminPage = () => {
                         key={idx}
                         className="bg-gray-50 border border-gray-200 rounded-2xl p-5 hover:bg-white hover:shadow-md transition-all hover:scale-[1.01]"
                       >
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="flex flex-col lg:flex-row md:items-center justify-between gap-4">
                           {/* User info */}
                           <div className="flex items-center gap-4">
                             <div className="w-12 h-12 bg-amber-50 border border-amber-200 text-amber-600 rounded-full flex items-center justify-center shrink-0 font-bold">

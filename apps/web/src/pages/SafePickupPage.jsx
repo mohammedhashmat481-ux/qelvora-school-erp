@@ -834,35 +834,35 @@ A mobile/web app connecting Parents, Authorized Third Parties, and School Staff 
   const isTeacherView = activeTab === 'teacher-panel' || activeTab === 'logs' || (activeTab === 'settings' && lastSection === 'teacher');
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
+    <div className="h-screen overflow-hidden bg-[var(--bg)] text-[#253858] flex flex-col lg:flex-row font-sans">
       {/* Left Navigation Sidebar */}
       <Sidebar />
 
       {/* Main Workspace Area */}
-      <main className="flex-1 min-w-0 bg-[#F5F8FC] p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8">
+      <main className="flex-1 min-w-0 bg-[#F5F8FC] p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 lg:pb-8">
         <div className="max-w-7xl mx-auto space-y-6">
 
             {/* ── HEADER BANNER (DEDICATED PER PAGE: STUDENT PANEL vs TEACHER PANEL) ── */}
-            <div className="bg-[#203B61] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden border border-[#2D4D77]">
+            <div className="bg-white rounded-2xl p-5 md:p-6 text-[#1F2937] shadow-subtle relative overflow-hidden border border-[#E4E2DA]">
               <div className="absolute top-0 right-0 -mt-10 -mr-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
               
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+              <div className="flex flex-col lg:flex-row md:items-center justify-between gap-6 relative z-10">
                 <div className="space-y-2">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs font-bold uppercase tracking-wider">
-                    <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--accent-soft)] border border-[var(--accent)]/20 text-[var(--accent)] text-xs font-bold uppercase tracking-wider">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[var(--accent)]" />
                     <span>Qelvora School CRM Child Protection Suite</span>
                   </div>
 
                   {isTeacherView ? (
                     <>
-                      <h1 className="text-2xl md:text-4xl font-black text-white tracking-tight">
+                      <h1 className="text-xl md:text-2xl font-black text-[#1F2937] tracking-tight">
                         {activeTab === 'logs'
                           ? 'SafePickup — Security & Release Audit Trail'
                           : activeTab === 'settings'
                           ? 'SafePickup — System Settings'
                           : 'SafePickup — Teacher Panel'}
                       </h1>
-                      <p className="text-sm md:text-base text-slate-300 font-medium max-w-3xl">
+                      <p className="text-xs sm:text-sm text-[#5B6676] font-normal max-w-3xl">
                         {activeTab === 'logs'
                           ? 'Encrypted log of all child pickup verification events compliant with privacy standards.'
                           : activeTab === 'settings'
@@ -1048,7 +1048,7 @@ A mobile/web app connecting Parents, Authorized Third Parties, and School Staff 
                     </div>
 
                     {/* Active Target Details Card */}
-                    <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200 flex flex-col md:flex-row items-center gap-5">
+                    <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200 flex flex-col lg:flex-row items-center gap-5">
                       <img
                         src={selectedPickupPerson.photo}
                         alt="Authorized Person"
@@ -1310,7 +1310,7 @@ A mobile/web app connecting Parents, Authorized Third Parties, and School Staff 
                 {/* ── 🚪 FEATURE: CAMPUS DEPARTURE & EXIT TRACKER FOR PARENTS ── */}
                 {(studentSubTab === 'all' || studentSubTab === 'departure') && (
                   <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-6 animate-fadeIn">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div className="flex flex-col lg:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="flex h-3 w-3 relative">
@@ -1698,7 +1698,7 @@ A mobile/web app connecting Parents, Authorized Third Parties, and School Staff 
                 {(studentSubTab === 'all' || studentSubTab === 'roadmap') && (
                   <div className="space-y-6 animate-fadeIn">
                     {/* Header */}
-                    <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col lg:flex-row md:items-center justify-between gap-4">
                       <div className="space-y-1">
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-900 border border-blue-200 text-xs font-black uppercase tracking-wider">
                           <BookOpen className="w-3.5 h-3.5 text-blue-600" />
@@ -1836,7 +1836,7 @@ A mobile/web app connecting Parents, Authorized Third Parties, and School Staff 
                 {/* ── 🎯 SUB-VIEW 5: EXAM RESULTS & INDIVIDUAL MARKS (STUDENTS & PARENTS) ── */}
                 {(studentSubTab === 'all' || studentSubTab === 'exam-results') && (
                   <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-6 animate-fadeIn">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                    <div className="flex flex-col lg:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
                       <div>
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-900 border border-blue-200 text-xs font-black uppercase tracking-wider mb-2">
                           <Award className="w-3.5 h-3.5 text-blue-700" />
@@ -1973,7 +1973,7 @@ A mobile/web app connecting Parents, Authorized Third Parties, and School Staff 
                 )}
                 {(studentSubTab === 'all' || studentSubTab === 'pickup-request') && (
                   <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-6 animate-fadeIn">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                  <div className="flex flex-col lg:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
                     <div>
                       <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-900 border border-indigo-200 text-xs font-black uppercase tracking-wider mb-2">
                         <Radio className="w-3.5 h-3.5 text-indigo-900 animate-pulse" />
@@ -2037,7 +2037,7 @@ A mobile/web app connecting Parents, Authorized Third Parties, and School Staff 
 
                   {/* OPTION 1: MOM SELECTED */}
                   {pickupRequestOption === 'mom' && (
-                    <div className="bg-gradient-to-br from-indigo-50/50 via-white to-slate-50 rounded-2xl p-6 border border-indigo-100 flex flex-col md:flex-row items-center justify-between gap-6 animate-fadeIn">
+                    <div className="bg-gradient-to-br from-indigo-50/50 via-white to-slate-50 rounded-2xl p-6 border border-indigo-100 flex flex-col lg:flex-row items-center justify-between gap-6 animate-fadeIn">
                       <div className="flex items-center gap-4">
                         <img src={momProfile.photo} alt={momProfile.name} className="w-20 h-20 rounded-2xl object-cover ring-4 ring-indigo-900/10 shadow-md" />
                         <div className="space-y-1">
@@ -2068,7 +2068,7 @@ A mobile/web app connecting Parents, Authorized Third Parties, and School Staff 
 
                   {/* OPTION 2: DAD SELECTED */}
                   {pickupRequestOption === 'dad' && (
-                    <div className="bg-gradient-to-br from-indigo-50/50 via-white to-slate-50 rounded-2xl p-6 border border-indigo-100 flex flex-col md:flex-row items-center justify-between gap-6 animate-fadeIn">
+                    <div className="bg-gradient-to-br from-indigo-50/50 via-white to-slate-50 rounded-2xl p-6 border border-indigo-100 flex flex-col lg:flex-row items-center justify-between gap-6 animate-fadeIn">
                       <div className="flex items-center gap-4">
                         <img src={dadProfile.photo} alt={dadProfile.name} className="w-20 h-20 rounded-2xl object-cover ring-4 ring-indigo-900/10 shadow-md" />
                         <div className="space-y-1">
@@ -2210,7 +2210,7 @@ A mobile/web app connecting Parents, Authorized Third Parties, and School Staff 
                 
                 {/* Teacher Profile & Executive Summary Bar */}
                 <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-6">
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-6 border-b border-slate-100 pb-6">
+                  <div className="flex flex-col lg:flex-row items-center justify-between gap-6 border-b border-slate-100 pb-6">
                     <div className="flex items-center gap-4">
                       <img
                         src={teacherProfile.photo}

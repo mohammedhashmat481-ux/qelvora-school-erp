@@ -38,15 +38,15 @@ const VideosPage = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
+    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col lg:flex-row font-sans">
       <Sidebar />
 
       <div className="flex-1 bg-[#F5F8FC] p-4 sm:p-6 lg:p-8 overflow-y-auto">
-        <header className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#203B61] border border-[#2D4D77] shadow-sm rounded-2xl p-6 text-white">
+        <header className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white border border-[#E4E2DA] shadow-subtle rounded-2xl p-5 sm:p-6 text-[#1F2937]">
           <div>
-            <div className="text-xs font-bold uppercase tracking-widest text-[#DCEBFA] mb-1">Classroom Lectures</div>
-            <h1 className="text-2xl font-black text-white">Class Recordings</h1>
-            <p className="text-[#CBD5E1] text-sm mt-0.5">Recorded lessons and video lectures available for playback.</p>
+            <div className="text-xs font-bold uppercase tracking-widest text-[#5B6676] mb-1">Classroom Lectures</div>
+            <h1 className="text-xl sm:text-2xl font-black text-[#1F2937] tracking-tight">Class Recordings</h1>
+            <p className="text-[#5B6676] text-xs sm:text-sm mt-0.5">Recorded lessons and video lectures available for playback.</p>
           </div>
         </header>
 
@@ -81,7 +81,7 @@ const VideosPage = () => {
                   <span className="z-10 tracking-widest drop-shadow">{vid.subject}</span>
                   
                   {/* Play Button Overlay */}
-                  <div className="absolute w-12 h-12 bg-white/20 group-hover:bg-white/90 text-white group-hover:text-[#203B61] rounded-full flex items-center justify-center text-lg backdrop-blur-sm group-hover:scale-110 transition-all shadow border border-white/30 group-hover:border-transparent">
+                  <div className="absolute w-12 h-12 bg-white/20 group-hover:bg-white/90 text-white group-hover:text-[#172B4D] rounded-full flex items-center justify-center text-lg backdrop-blur-sm group-hover:scale-110 transition-all shadow border border-white/30 group-hover:border-transparent">
                     ▶
                   </div>
 
@@ -94,14 +94,14 @@ const VideosPage = () => {
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                   <div className="space-y-1.5">
                     <div className="flex justify-between items-center text-[10px]">
-                      <span className="font-extrabold text-[#203B61] uppercase tracking-wider bg-[#2D4D77]/5 border border-[#2D4D77]/10 px-2 py-0.5 rounded">
+                      <span className="font-extrabold text-[#172B4D] uppercase tracking-wider bg-[#29456D]/5 border border-[#29456D]/10 px-2 py-0.5 rounded">
                         Class {vid.standard}-{vid.section}
                       </span>
                       <span className="text-stone-400 font-bold font-mono">
                         {vid.uploadDate ? new Date(vid.uploadDate).toLocaleDateString() : ''}
                       </span>
                     </div>
-                    <h3 className="text-sm font-bold text-stone-850 group-hover:text-[#203B61] transition-colors line-clamp-1">
+                    <h3 className="text-sm font-bold text-stone-850 group-hover:text-[#172B4D] transition-colors line-clamp-1">
                       {vid.title}
                     </h3>
                     <p className="text-stone-500 text-[11px] leading-relaxed line-clamp-2">

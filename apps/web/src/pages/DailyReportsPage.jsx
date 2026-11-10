@@ -565,17 +565,17 @@ export default function DailyReportsPage() {
   const summary = reportData?.summary;
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col md:flex-row font-sans">
+    <div className="h-screen overflow-hidden bg-[var(--bg)] text-[#1F2937] flex flex-col lg:flex-row font-sans">
       {/* Sidebar Navigation */}
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 bg-[#F5F8FC] p-3 sm:p-5 lg:p-7 overflow-y-auto print:p-0 print:bg-white">
+      <div className="flex-1 bg-[var(--bg)] p-3 sm:p-5 lg:p-7 overflow-y-auto print:p-0 print:bg-white">
         
         {/* ── TOP HEADER & TOOLBAR ── */}
-        <header className="mb-6 pb-4 border-b border-slate-200 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 print:hidden">
+        <header className="mb-6 pb-4 border-b border-[#E4E2DA] flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 print:hidden">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#203B61] to-[#2D4D77] p-2 flex items-center justify-center text-white shadow-md shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-[var(--accent-soft)] p-2 flex items-center justify-center text-[var(--accent)] border border-[var(--accent)]/20 shadow-xs shrink-0">
               {schoolSettings.schoolLogo ? (
                 <img
                   src={schoolSettings.schoolLogo}
@@ -583,19 +583,19 @@ export default function DailyReportsPage() {
                   className="w-full h-full object-contain"
                 />
               ) : (
-                <Building2 className="w-6 h-6 text-blue-200" />
+                <Building2 className="w-6 h-6 text-[var(--accent)]" />
               )}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-black text-[#203B61] tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-black text-[#1F2937] tracking-tight">
                   Daily Reports
                 </h1>
-                <span className="bg-blue-100 text-[#203B61] text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border border-blue-200 uppercase tracking-wider">
+                <span className="bg-[var(--accent-soft)] text-[var(--accent)] text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-[var(--accent)]/20 uppercase tracking-wider">
                   Principal Desk
                 </span>
               </div>
-              <p className="text-xs text-slate-500 font-medium mt-0.5">
+              <p className="text-xs text-[#5B6676] font-medium mt-0.5">
                 {schoolSettings.schoolName} — Official Institutional Daily Operations & Attendance Audit
               </p>
             </div>
@@ -610,7 +610,7 @@ export default function DailyReportsPage() {
                 onClick={() => setViewMode('document')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   viewMode === 'document'
-                    ? 'bg-[#203B61] text-white shadow-xs'
+                    ? 'bg-[#172B4D] text-white shadow-xs'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -622,7 +622,7 @@ export default function DailyReportsPage() {
                 onClick={() => setViewMode('dashboard')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   viewMode === 'dashboard'
-                    ? 'bg-[#203B61] text-white shadow-xs'
+                    ? 'bg-[#172B4D] text-white shadow-xs'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -643,12 +643,12 @@ export default function DailyReportsPage() {
               </button>
 
               <div className="flex items-center gap-1.5 px-2">
-                <Calendar className="w-3.5 h-3.5 text-[#2D4D77]" />
+                <Calendar className="w-3.5 h-3.5 text-[#29456D]" />
                 <input
                   type="date"
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  className="text-xs font-bold text-[#203B61] bg-transparent outline-none cursor-pointer"
+                  className="text-xs font-bold text-[#172B4D] bg-transparent outline-none cursor-pointer"
                 />
               </div>
 
@@ -668,7 +668,7 @@ export default function DailyReportsPage() {
               onClick={setToday}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                 isToday
-                  ? 'bg-[#203B61] text-white border-[#203B61] shadow-xs'
+                  ? 'bg-[#172B4D] text-white border-[#172B4D] shadow-xs'
                   : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
               }`}
             >
@@ -709,7 +709,7 @@ export default function DailyReportsPage() {
             <button
               type="button"
               onClick={handlePrint}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-[#203B61] border border-slate-200 hover:bg-slate-50 transition-all shadow-2xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-[#172B4D] border border-slate-200 hover:bg-slate-50 transition-all shadow-2xs"
             >
               <Printer className="w-3.5 h-3.5 text-slate-500" />
               <span>Print</span>
@@ -735,9 +735,9 @@ export default function DailyReportsPage() {
           <div className="bg-white rounded-3xl border-2 border-slate-300 shadow-xl p-6 sm:p-10 max-w-5xl mx-auto my-2 text-slate-900 font-sans print:border-none print:shadow-none print:p-0">
             
             {/* 1. Official School Letterhead Header */}
-            <div className="border-b-4 border-[#203B61] pb-5 mb-6 text-center relative">
+            <div className="border-b-4 border-[#172B4D] pb-5 mb-6 text-center relative">
               <div className="flex items-center justify-between gap-4 mb-2">
-                <div className="w-16 h-16 rounded-2xl bg-[#203B61] text-white flex items-center justify-center p-2 shadow-xs shrink-0">
+                <div className="w-16 h-16 rounded-2xl bg-[#172B4D] text-white flex items-center justify-center p-2 shadow-xs shrink-0">
                   {schoolSettings.schoolLogo ? (
                     <img src={schoolSettings.schoolLogo} alt="Logo" className="w-full h-full object-contain" />
                   ) : (
@@ -746,10 +746,10 @@ export default function DailyReportsPage() {
                 </div>
 
                 <div className="flex-1 text-center">
-                  <h1 className="text-2xl sm:text-3xl font-black text-[#203B61] tracking-tight uppercase">
+                  <h1 className="text-2xl sm:text-3xl font-black text-[#172B4D] tracking-tight uppercase">
                     {schoolSettings.schoolName}
                   </h1>
-                  <p className="text-xs sm:text-sm font-extrabold text-[#2D4D77] uppercase tracking-widest mt-0.5">
+                  <p className="text-xs sm:text-sm font-extrabold text-[#29456D] uppercase tracking-widest mt-0.5">
                     DAILY INSTITUTIONAL OPERATIONS & ATTENDANCE AUDIT REPORT
                   </p>
                   <p className="text-[11px] text-slate-500 font-medium">
@@ -775,8 +775,8 @@ export default function DailyReportsPage() {
             {/* 2. SECTION 1: Executive Operations Summary Box */}
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-2 pb-1 border-b-2 border-slate-200">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#203B61]" />
-                <h2 className="text-xs font-black uppercase tracking-wider text-[#203B61]">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#172B4D]" />
+                <h2 className="text-xs font-black uppercase tracking-wider text-[#172B4D]">
                   1. Executive Institutional Operations Summary
                 </h2>
               </div>
@@ -784,11 +784,11 @@ export default function DailyReportsPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Student Attendance Summary Block */}
                 <div className="p-3.5 rounded-xl border border-blue-200 bg-blue-50/40">
-                  <span className="text-[11px] font-extrabold text-[#203B61] uppercase tracking-wider block mb-1">
+                  <span className="text-[11px] font-extrabold text-[#172B4D] uppercase tracking-wider block mb-1">
                     Student Turnout (All Grades)
                   </span>
                   <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-2xl font-black text-[#203B61]">
+                    <span className="text-2xl font-black text-[#172B4D]">
                       {summary?.studentAttendance?.percentage || 94.2}%
                     </span>
                     <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
@@ -848,8 +848,8 @@ export default function DailyReportsPage() {
             <div className="mb-6">
               <div className="flex items-center justify-between mb-2 pb-1 border-b-2 border-slate-200">
                 <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#203B61]" />
-                  <h2 className="text-xs font-black uppercase tracking-wider text-[#203B61]">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#172B4D]" />
+                  <h2 className="text-xs font-black uppercase tracking-wider text-[#172B4D]">
                     2. Class-by-Class Student Attendance Register
                   </h2>
                 </div>
@@ -861,15 +861,15 @@ export default function DailyReportsPage() {
               <div className="overflow-x-auto rounded-xl border border-slate-300">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="bg-[#203B61] text-white font-bold text-[11px] uppercase tracking-wider">
-                      <th className="py-2 px-3 border-r border-[#2D4D77]">Sl.</th>
-                      <th className="py-2 px-3 border-r border-[#2D4D77]">Grade & Sec</th>
-                      <th className="py-2 px-3 border-r border-[#2D4D77]">Room</th>
-                      <th className="py-2 px-3 border-r border-[#2D4D77]">Class Teacher</th>
-                      <th className="py-2 px-3 text-center border-r border-[#2D4D77]">Strength</th>
-                      <th className="py-2 px-3 text-center border-r border-[#2D4D77]">Present</th>
-                      <th className="py-2 px-3 text-center border-r border-[#2D4D77]">Absent</th>
-                      <th className="py-2 px-3 text-center border-r border-[#2D4D77]">Late</th>
+                    <tr className="bg-[#172B4D] text-white font-bold text-[11px] uppercase tracking-wider">
+                      <th className="py-2 px-3 border-r border-[#29456D]">Sl.</th>
+                      <th className="py-2 px-3 border-r border-[#29456D]">Grade & Sec</th>
+                      <th className="py-2 px-3 border-r border-[#29456D]">Room</th>
+                      <th className="py-2 px-3 border-r border-[#29456D]">Class Teacher</th>
+                      <th className="py-2 px-3 text-center border-r border-[#29456D]">Strength</th>
+                      <th className="py-2 px-3 text-center border-r border-[#29456D]">Present</th>
+                      <th className="py-2 px-3 text-center border-r border-[#29456D]">Absent</th>
+                      <th className="py-2 px-3 text-center border-r border-[#29456D]">Late</th>
                       <th className="py-2 px-3 text-center">Turnout Rate</th>
                     </tr>
                   </thead>
@@ -877,7 +877,7 @@ export default function DailyReportsPage() {
                     {reportData?.classes?.map((c, i) => (
                       <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'}>
                         <td className="py-2 px-3 border-r border-slate-200 text-slate-500 font-bold">{i + 1}</td>
-                        <td className="py-2 px-3 border-r border-slate-200 font-bold text-[#203B61]">
+                        <td className="py-2 px-3 border-r border-slate-200 font-bold text-[#172B4D]">
                           Class {c.standard}-{c.section}
                         </td>
                         <td className="py-2 px-3 border-r border-slate-200 text-slate-600 font-mono">{c.roomNumber || '-'}</td>
@@ -912,7 +912,7 @@ export default function DailyReportsPage() {
                       <td className="py-2 px-3 text-center border-r border-slate-300 text-amber-800">
                         {summary?.studentAttendance?.late || 8}
                       </td>
-                      <td className="py-2 px-3 text-center text-[#203B61] font-black">
+                      <td className="py-2 px-3 text-center text-[#172B4D] font-black">
                         {summary?.studentAttendance?.percentage || 94.2}%
                       </td>
                     </tr>
@@ -958,7 +958,7 @@ export default function DailyReportsPage() {
                           <td className="py-2 px-3 border-r border-rose-100 font-bold text-slate-900">{a.studentName}</td>
                           <td className="py-2 px-3 border-r border-rose-100">Class {a.standard}-{a.section}</td>
                           <td className="py-2 px-3 border-r border-rose-100">{a.parentName || 'Parent'}</td>
-                          <td className="py-2 px-3 border-r border-rose-100 font-mono font-bold text-[#203B61]">{a.parentPhone || '+91 98765 00000'}</td>
+                          <td className="py-2 px-3 border-r border-rose-100 font-mono font-bold text-[#172B4D]">{a.parentPhone || '+91 98765 00000'}</td>
                           <td className="py-2 px-3 border-r border-rose-100 text-rose-800 font-semibold">{a.reason || 'Uninformed'}</td>
                           <td className="py-2 px-3 text-center">
                             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
@@ -996,13 +996,13 @@ export default function DailyReportsPage() {
               <div className="overflow-x-auto rounded-xl border border-slate-300">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="bg-[#2D4D77] text-white font-bold text-[11px] uppercase tracking-wider">
-                      <th className="py-2 px-3 border-r border-[#203B61]">Sl.</th>
-                      <th className="py-2 px-3 border-r border-[#203B61]">Emp ID</th>
-                      <th className="py-2 px-3 border-r border-[#203B61]">Faculty Member Name</th>
-                      <th className="py-2 px-3 border-r border-[#203B61]">Department / Subject</th>
-                      <th className="py-2 px-3 text-center border-r border-[#203B61]">Status</th>
-                      <th className="py-2 px-3 text-center border-r border-[#203B61]">In-Time</th>
+                    <tr className="bg-[#29456D] text-white font-bold text-[11px] uppercase tracking-wider">
+                      <th className="py-2 px-3 border-r border-[#172B4D]">Sl.</th>
+                      <th className="py-2 px-3 border-r border-[#172B4D]">Emp ID</th>
+                      <th className="py-2 px-3 border-r border-[#172B4D]">Faculty Member Name</th>
+                      <th className="py-2 px-3 border-r border-[#172B4D]">Department / Subject</th>
+                      <th className="py-2 px-3 text-center border-r border-[#172B4D]">Status</th>
+                      <th className="py-2 px-3 text-center border-r border-[#172B4D]">In-Time</th>
                       <th className="py-2 px-3">Substitute Covering</th>
                     </tr>
                   </thead>
@@ -1054,12 +1054,12 @@ export default function DailyReportsPage() {
 
                 <div>
                   <div className="h-14 flex items-end justify-center pb-1">
-                    <div className="border border-slate-400 px-2 py-0.5 rounded text-[10px] text-[#203B61] font-mono font-black uppercase">
+                    <div className="border border-slate-400 px-2 py-0.5 rounded text-[10px] text-[#172B4D] font-mono font-black uppercase">
                       Approved & Signed
                     </div>
                   </div>
                   <div className="border-t-2 border-slate-800 pt-1">
-                    <p className="uppercase tracking-wider font-black text-[#203B61]">Principal / Head of Institution</p>
+                    <p className="uppercase tracking-wider font-black text-[#172B4D]">Principal / Head of Institution</p>
                     <p className="text-[10px] text-slate-500 font-normal">{schoolSettings.schoolName}</p>
                   </div>
                 </div>
@@ -1085,7 +1085,7 @@ export default function DailyReportsPage() {
                   <div className="p-2 rounded-xl bg-blue-50 text-blue-700"><Users className="w-4 h-4" /></div>
                 </div>
                 <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-2xl sm:text-3xl font-black text-[#203B61]">{summary?.studentAttendance?.percentage || 94.2}%</span>
+                  <span className="text-2xl sm:text-3xl font-black text-[#172B4D]">{summary?.studentAttendance?.percentage || 94.2}%</span>
                   <span className="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">{summary?.studentAttendance?.present || 358} Present</span>
                 </div>
                 <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden mb-2 mt-2">
@@ -1105,7 +1105,7 @@ export default function DailyReportsPage() {
                   <div className="p-2 rounded-xl bg-emerald-50 text-emerald-700"><UserCheck className="w-4 h-4" /></div>
                 </div>
                 <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-2xl sm:text-3xl font-black text-[#203B61]">{summary?.teacherAttendance?.present || 23}/{summary?.teacherAttendance?.totalTeachers || 24}</span>
+                  <span className="text-2xl sm:text-3xl font-black text-[#172B4D]">{summary?.teacherAttendance?.present || 23}/{summary?.teacherAttendance?.totalTeachers || 24}</span>
                   <span className="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">{summary?.teacherAttendance?.percentage || 95.8}% Turnout</span>
                 </div>
                 <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden mb-2 mt-2">
@@ -1124,7 +1124,7 @@ export default function DailyReportsPage() {
                   <div className="p-2 rounded-xl bg-indigo-50 text-indigo-700"><IndianRupee className="w-4 h-4" /></div>
                 </div>
                 <div className="flex items-baseline gap-1.5 mb-1">
-                  <span className="text-2xl sm:text-3xl font-black text-[#203B61]">₹{(summary?.finances?.totalCollectedToday || 25700).toLocaleString('en-IN')}</span>
+                  <span className="text-2xl sm:text-3xl font-black text-[#172B4D]">₹{(summary?.finances?.totalCollectedToday || 25700).toLocaleString('en-IN')}</span>
                 </div>
                 <div className="text-[11px] text-slate-500 font-medium mb-2">{summary?.finances?.receiptsCount || 3} Receipts issued</div>
                 <div className="flex flex-wrap gap-1.5 pt-1 border-t border-slate-100">
@@ -1140,7 +1140,7 @@ export default function DailyReportsPage() {
                   <div className="p-2 rounded-xl bg-amber-50 text-amber-700"><ShieldCheck className="w-4 h-4" /></div>
                 </div>
                 <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-2xl sm:text-3xl font-black text-[#203B61]">{summary?.academicOperations?.periodsConducted || 70}/{summary?.academicOperations?.periodsScheduled || 72}</span>
+                  <span className="text-2xl sm:text-3xl font-black text-[#172B4D]">{summary?.academicOperations?.periodsConducted || 70}/{summary?.academicOperations?.periodsScheduled || 72}</span>
                   <span className="text-[11px] font-bold text-slate-500">Periods</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-emerald-700 font-bold mb-2">
@@ -1155,13 +1155,13 @@ export default function DailyReportsPage() {
             </div>
 
             {/* ── TABS BAR ── */}
-            <div className="bg-white rounded-2xl p-3 border border-slate-200 shadow-2xs mb-5 flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="bg-white rounded-2xl p-3 border border-slate-200 shadow-2xs mb-5 flex flex-col lg:flex-row md:items-center justify-between gap-3">
               <div className="flex items-center gap-1.5 overflow-x-auto">
                 <button
                   type="button"
                   onClick={() => setActiveTab('classes')}
                   className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'classes' ? 'bg-[#203B61] text-white' : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'classes' ? 'bg-[#172B4D] text-white' : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <FileSpreadsheet className="w-3.5 h-3.5" />
@@ -1183,7 +1183,7 @@ export default function DailyReportsPage() {
                   type="button"
                   onClick={() => setActiveTab('faculty')}
                   className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'faculty' ? 'bg-[#203B61] text-white' : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'faculty' ? 'bg-[#172B4D] text-white' : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <UserCheck className="w-3.5 h-3.5" />
@@ -1194,7 +1194,7 @@ export default function DailyReportsPage() {
                   type="button"
                   onClick={() => setActiveTab('finances')}
                   className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'finances' ? 'bg-[#203B61] text-white' : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'finances' ? 'bg-[#172B4D] text-white' : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <IndianRupee className="w-3.5 h-3.5" />
@@ -1233,7 +1233,7 @@ export default function DailyReportsPage() {
               <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#EFF4FA] text-[#203B61] font-extrabold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                    <thead className="bg-[#EFF4FA] text-[#172B4D] font-extrabold uppercase tracking-wider text-[11px] border-b border-slate-200">
                       <tr>
                         <th className="py-3 px-4">Standard & Sec</th>
                         <th className="py-3 px-4">Room</th>
@@ -1249,7 +1249,7 @@ export default function DailyReportsPage() {
                     <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                       {filteredClasses.map((cls, idx) => (
                         <tr key={idx} className="hover:bg-[#F1F6FD] transition-colors">
-                          <td className="py-3 px-4 font-black text-[#203B61]">Class {cls.standard}-{cls.section}</td>
+                          <td className="py-3 px-4 font-black text-[#172B4D]">Class {cls.standard}-{cls.section}</td>
                           <td className="py-3 px-4 text-slate-500">{cls.roomNumber || '-'}</td>
                           <td className="py-3 px-4 font-semibold text-slate-800">{cls.classTeacher}</td>
                           <td className="py-3 px-3 text-center font-bold">{cls.strength}</td>
@@ -1267,7 +1267,7 @@ export default function DailyReportsPage() {
                             <button
                               type="button"
                               onClick={() => setSelectedClassModal(cls)}
-                              className="px-2.5 py-1 rounded-lg text-xs font-bold text-[#203B61] bg-blue-50 hover:bg-blue-100 border border-blue-200"
+                              className="px-2.5 py-1 rounded-lg text-xs font-bold text-[#172B4D] bg-blue-50 hover:bg-blue-100 border border-blue-200"
                             >
                               {cls.absent > 0 ? `View ${cls.absent} Absentees` : 'Class Roster'}
                             </button>
@@ -1285,7 +1285,7 @@ export default function DailyReportsPage() {
               <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#EFF4FA] text-[#203B61] font-extrabold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                    <thead className="bg-[#EFF4FA] text-[#172B4D] font-extrabold uppercase tracking-wider text-[11px] border-b border-slate-200">
                       <tr>
                         <th className="py-3 px-4">Student Name</th>
                         <th className="py-3 px-3">Roll No</th>
@@ -1299,7 +1299,7 @@ export default function DailyReportsPage() {
                     <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                       {filteredAbsentees.map((abs, idx) => (
                         <tr key={idx} className="hover:bg-rose-50/20">
-                          <td className="py-3 px-4 font-bold text-[#203B61]">{abs.studentName}</td>
+                          <td className="py-3 px-4 font-bold text-[#172B4D]">{abs.studentName}</td>
                           <td className="py-3 px-3 font-mono font-bold text-slate-600">{abs.rollNumber || '-'}</td>
                           <td className="py-3 px-3 font-semibold">Class {abs.standard}-{abs.section}</td>
                           <td className="py-3 px-4">{abs.parentName || 'Parent'}</td>
@@ -1329,7 +1329,7 @@ export default function DailyReportsPage() {
               <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#EFF4FA] text-[#203B61] font-extrabold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                    <thead className="bg-[#EFF4FA] text-[#172B4D] font-extrabold uppercase tracking-wider text-[11px] border-b border-slate-200">
                       <tr>
                         <th className="py-3 px-4">Faculty Member</th>
                         <th className="py-3 px-3">Emp ID</th>
@@ -1342,7 +1342,7 @@ export default function DailyReportsPage() {
                     <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                       {filteredTeachers.map((tch, idx) => (
                         <tr key={idx} className="hover:bg-slate-50">
-                          <td className="py-3 px-4 font-bold text-[#203B61]">{tch.name}</td>
+                          <td className="py-3 px-4 font-bold text-[#172B4D]">{tch.name}</td>
                           <td className="py-3 px-3 font-mono font-bold text-slate-500">{tch.empId}</td>
                           <td className="py-3 px-4">{tch.dept}</td>
                           <td className="py-3 px-3 text-center">
@@ -1367,7 +1367,7 @@ export default function DailyReportsPage() {
               <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#EFF4FA] text-[#203B61] font-extrabold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                    <thead className="bg-[#EFF4FA] text-[#172B4D] font-extrabold uppercase tracking-wider text-[11px] border-b border-slate-200">
                       <tr>
                         <th className="py-3 px-4">Receipt #</th>
                         <th className="py-3 px-4">Student Name</th>
@@ -1380,7 +1380,7 @@ export default function DailyReportsPage() {
                     <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                       {filteredReceipts.map((rcp, idx) => (
                         <tr key={idx} className="hover:bg-slate-50">
-                          <td className="py-3 px-4 font-mono font-bold text-[#203B61]">{rcp.receiptNumber}</td>
+                          <td className="py-3 px-4 font-mono font-bold text-[#172B4D]">{rcp.receiptNumber}</td>
                           <td className="py-3 px-4 font-bold">{rcp.studentName}</td>
                           <td className="py-3 px-3">{rcp.standard}-{rcp.section || 'A'}</td>
                           <td className="py-3 px-4">{rcp.head || 'Tuition Fee'}</td>
@@ -1400,7 +1400,7 @@ export default function DailyReportsPage() {
         {selectedClassModal && (
           <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
             <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl overflow-hidden border border-slate-200">
-              <div className="p-4 bg-[#203B61] text-white flex justify-between items-center">
+              <div className="p-4 bg-[#172B4D] text-white flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <GraduationCap className="w-5 h-5 text-blue-300" />
                   <div>
@@ -1430,7 +1430,7 @@ export default function DailyReportsPage() {
                       <div key={i} className="p-3 rounded-xl border border-rose-100 bg-rose-50/20 flex items-center justify-between gap-2">
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-black text-[#203B61]">{abs.studentName}</span>
+                            <span className="text-xs font-black text-[#172B4D]">{abs.studentName}</span>
                             <span className="text-[10px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-bold">Roll: {abs.rollNumber || '-'}</span>
                           </div>
                           <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Parent: {abs.parentName} • {abs.parentPhone}</p>
@@ -1461,7 +1461,7 @@ export default function DailyReportsPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedClassModal(null)}
-                  className="px-4 py-1.5 rounded-xl text-xs font-bold bg-[#203B61] text-white hover:bg-[#2D4D77]"
+                  className="px-4 py-1.5 rounded-xl text-xs font-bold bg-[#172B4D] text-white hover:bg-[#29456D]"
                 >
                   Close
                 </button>

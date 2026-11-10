@@ -35,6 +35,50 @@ export default function StudentHomeworkPage() {
   // Homework & Assignments State
   const [homeworkList, setHomeworkList] = useState([]);
 
+  // Learning Roadmap State
+  const [learningRoadmap] = useState([
+    {
+      id: 'LR-01',
+      subject: 'Mathematics',
+      title: 'Algebraic Equations & Quadratic Graphs',
+      progress: 75,
+      targetDate: 'Nov 30, 2026',
+      badges: ['Mastery Unit', '92% Quiz Avg']
+    },
+    {
+      id: 'LR-02',
+      subject: 'Science (Physics)',
+      title: 'Mechanics & Newton Laws of Motion',
+      progress: 60,
+      targetDate: 'Dec 15, 2026',
+      badges: ['Lab Certified']
+    },
+    {
+      id: 'LR-03',
+      subject: 'Computer Science',
+      title: 'Python Fundamentals & Loops',
+      progress: 90,
+      targetDate: 'Oct 30, 2026',
+      badges: ['Top Performer', 'Project Done']
+    },
+    {
+      id: 'LR-04',
+      subject: 'English Literature',
+      title: 'Creative Writing & Prose Analysis',
+      progress: 45,
+      targetDate: 'Jan 10, 2027',
+      badges: ['Grammar Level 4']
+    }
+  ]);
+
+  const filteredHomework = homeworkList.filter(hw => {
+    if (activeFilter === 'ALL') return true;
+    if (activeFilter === 'PENDING') return hw.status === 'Pending';
+    if (activeFilter === 'SUBMITTED') return hw.status === 'Submitted';
+    if (activeFilter === 'REVIEWED') return hw.status === 'Reviewed';
+    return true;
+  });
+
   const loadHomework = async () => {
     setIsLoading(true);
     try {
@@ -141,34 +185,32 @@ export default function StudentHomeworkPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col md:flex-row font-sans">
+    <div className="min-h-screen bg-[var(--bg)] text-[#1F2937] flex flex-col lg:flex-row font-sans">
       <Sidebar />
 
-      <main className="flex-1 min-w-0 bg-[#F7F9FC] p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8">
+      <main className="flex-1 min-w-0 bg-[var(--bg)] p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 lg:pb-8">
         <div className="max-w-7xl mx-auto space-y-6">
 
             {/* Premium Header Banner */}
-            <div className="bg-[#172B4D] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden border border-[#29456D]">
-              <div className="absolute top-0 right-0 -mt-10 -mr-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-                <div className="space-y-2">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-400/20 text-blue-300 text-xs font-bold tracking-wider uppercase">
+            <div className="bg-white rounded-2xl p-4 sm:p-5 md:p-6 text-[#1F2937] shadow-subtle border border-[#E4E2DA]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+                <div className="space-y-1.5 min-w-0 flex-1">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[var(--accent-soft)] border border-[var(--accent)]/20 text-[var(--accent)] text-[10px] sm:text-xs font-bold tracking-wider uppercase">
                     <BookOpen className="w-3.5 h-3.5" />
                     <span>Academic Success Hub</span>
                   </div>
-                  <h1 className="text-2xl md:text-3xl font-black tracking-tight text-white">
+                  <h1 className="text-lg sm:text-xl md:text-2xl font-black tracking-tight text-[#1F2937] leading-tight break-words">
                     Homework & Learning Map
                   </h1>
-                  <p className="text-sm text-slate-300 max-w-2xl font-normal leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[#5B6676] max-w-2xl font-normal leading-relaxed break-words">
                     Track daily homework assignments, project deadlines, and yearly competency milestones for {studentName}.
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <span className="px-4 py-2 rounded-2xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-black flex items-center gap-1.5 shadow-xs">
-                    <CheckCircle className="w-4 h-4 text-emerald-400" />
-                    <span>3 Tasks Completed This Week</span>
+                <div className="flex items-center gap-3 pt-2 sm:pt-0 shrink-0">
+                  <span className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-[#EAF4EF] text-[#2F7D5B] border border-[#2F7D5B]/20 text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs">
+                    <CheckCircle className="w-4 h-4 text-[#2F7D5B]" />
+                    <span>3 Tasks Completed</span>
                   </span>
                 </div>
               </div>

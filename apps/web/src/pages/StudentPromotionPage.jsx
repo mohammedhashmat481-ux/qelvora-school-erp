@@ -376,47 +376,47 @@ const StudentPromotionPage = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-[#F5F8FC] font-sans text-[#253858] antialiased">
+    <div className="flex flex-col lg:flex-row h-screen overflow-hidden bg-[#F5F8FC] font-sans text-[#253858] antialiased">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 pb-20 md:pb-0 overflow-y-auto">
         {/* Top Header */}
-        <header className="h-16 bg-[#203B61] border-b border-[#2D4D77] text-white px-6 flex items-center justify-between shrink-0 shadow-xs z-10">
+        <header className="h-16 bg-white border-b border-[#E4E2DA] text-[#1F2937] px-6 flex items-center justify-between shrink-0 shadow-subtle z-10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#2D4D77] text-[#F3F6FC] border border-[#2D4D77] flex items-center justify-center shadow-md">
+            <div className="w-10 h-10 rounded-xl bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent)]/20 flex items-center justify-center shadow-xs">
               <GraduationCap className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-base font-black text-white tracking-tight flex items-center gap-2">
+              <h1 className="text-base font-black text-[#1F2937] tracking-tight flex items-center gap-2">
                 <span>Student Promotion & Academic Year Management</span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#DCEBFA] text-[#203B61] border border-[#93C5FD]">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#DBEAFE] text-[#172B4D] border border-[#93C5FD]">
                   Annual Rollover
                 </span>
               </h1>
-              <p className="text-xs text-[#CBD5E1]">
+              <p className="text-xs text-[#5B6676]">
                 Bulk promote students across standards and safeguard graduating final-year cohorts into Alumni records.
               </p>
             </div>
           </div>
 
           {/* Academic Year Selector Pills */}
-          <div className="flex items-center gap-2 bg-[#2D4D77] p-1 rounded-xl border border-[#2D4D77]">
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-white rounded-lg border border-[#2D4D77] text-xs font-black text-[#203B61] shadow-2xs">
+          <div className="flex items-center gap-2 bg-[#F3F1EA] p-1 rounded-xl border border-[#E4E2DA]">
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-white rounded-lg border border-[#29456D] text-xs font-black text-[#172B4D] shadow-2xs">
               <span className="text-[10px] uppercase text-slate-500 font-bold">Current:</span>
               <span>{currentAcademicYear}</span>
             </div>
-            <ArrowRight className="w-3.5 h-3.5 text-[#DCEBFA] font-black" />
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-[#DCEBFA] rounded-lg border border-[#93C5FD] text-xs font-black text-[#203B61] shadow-2xs">
-              <span className="text-[10px] uppercase text-[#203B61] font-bold">Next:</span>
+            <ArrowRight className="w-3.5 h-3.5 text-[#DBEAFE] font-black" />
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-[#DBEAFE] rounded-lg border border-[#93C5FD] text-xs font-black text-[#172B4D] shadow-2xs">
+              <span className="text-[10px] uppercase text-[#172B4D] font-bold">Next:</span>
               <span>{nextAcademicYear}</span>
             </div>
           </div>
         </header>
 
         {/* Tab Navigation Ribbon */}
-        <div className="bg-white border-b border-slate-200 px-6 py-2 flex items-center justify-between gap-3 shrink-0">
+        <div className="bg-white border-b border-[#E4E2DA] px-6 py-2 flex items-center justify-between gap-3 shrink-0">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setTab('promote')}

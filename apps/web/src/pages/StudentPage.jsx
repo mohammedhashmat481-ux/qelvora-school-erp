@@ -35,7 +35,7 @@ export default function StudentPage() {
     <div className="min-h-screen bg-slate-50 p-6">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-sm border p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="bg-white rounded-xl shadow-sm border p-6 flex flex-col lg:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold text-slate-800">Student Learning Portal</h1>
             <p className="text-slate-500 text-sm">Welcome back, {student.name} ({student.standard} - Section {student.section})</p>

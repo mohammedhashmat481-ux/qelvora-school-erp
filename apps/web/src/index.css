@@ -2,90 +2,142 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Navy Blue + White Professional SaaS Color Palette ── */
+/* ── QELVORA International School Design System (Light, Classic, Premium) ── */
 :root {
-  /* Global Design System Palette */
-  --sidebar-bg: #203B61;
-  --sidebar-hover: #2D4D77;
-  --menu-active-bg: #DCEBFA;
-  --menu-active-text: #244B78;
-  --sidebar-text: #F3F6FC;
+  /* Canvas & Surfaces */
+  --bg: #F8F7F3;
+  --surface: #FFFFFF;
+  --surface-2: #F3F1EA;
+  --border: #E4E2DA;
+  --text: #1F2937;
+  --text-muted: #5B6676;
 
-  /* Canvas & Backgrounds */
-  --page-bg: #F5F8FC;
+  /* Role Accents */
+  --accent-admin: #3F6486;
+  --accent-admin-soft: #E6EDF4;
+  --accent-admin-hover: #345575;
+
+  --accent-teacher: #4F7A64;
+  --accent-teacher-soft: #E7F0EA;
+  --accent-teacher-hover: #416650;
+
+  --accent-family: #4A6F94;
+  --accent-family-soft: #E8EFF6;
+  --accent-family-hover: #3E5F80;
+
+  /* Default Active Role Accent (Admin/Principal by default, overridden by [data-role]) */
+  --accent: #3F6486;
+  --accent-soft: #E6EDF4;
+  --accent-hover: #345575;
+
+  /* Decorative Gold (Small touches only) */
+  --gold: #B8864B;
+  --gold-text: #8A6228;
+  --gold-soft: #F9F5EC;
+
+  /* Semantic Status Colors (with soft tint backgrounds) */
+  --success: #2F7D5B;
+  --success-soft: #EAF4EF;
+  --warning: #B7791F;
+  --warning-soft: #FAF0DE;
+  --danger: #B42318;
+  --danger-soft: #FBEAE8;
+  --info: #2B6CB0;
+  --info-soft: #EBF2FA;
+
+  /* Premium Light Theme Sidebar Tokens (No Dark Navy) */
+  --sidebar-bg: #FFFFFF;
+  --sidebar-border: #E4E2DA;
+  --sidebar-hover: #F3F1EA;
+  --sidebar-text: #5B6676;
+  --sidebar-text-active: var(--accent);
+  --menu-active-bg: var(--accent-soft);
+  --menu-active-text: var(--accent);
+
+  /* Page Canvas & Card */
+  --page-bg: #F8F7F3;
   --card-bg: #FFFFFF;
-  --secondary-bg: #EDF3F9;
-  --border-color: #E3EAF2;
-  --divider-color: #E8EDF4;
+  --secondary-bg: #F3F1EA;
+  --border-color: #E4E2DA;
+  --divider-color: #E4E2DA;
 
   /* Primary Interactive Buttons */
-  --primary-btn: #3478C8;
-  --primary-btn-hover: #2866AE;
+  --primary-btn: var(--accent);
+  --primary-btn-hover: var(--accent-hover);
 
   /* Typography */
-  --heading-text: #203B61;
-  --body-text: #253858;
-  --secondary-text: #718096;
+  --heading-text: #1F2937;
+  --body-text: #1F2937;
+  --secondary-text: #5B6676;
   --muted-text: #8A9AAF;
 
   /* Forms & Tables */
   --input-bg: #FFFFFF;
-  --input-border: #E3EAF2;
-  --table-header-bg: #EDF3F9;
-  --table-row-hover: #F5F8FC;
-  --focus-ring: #3478C8;
+  --input-border: #E4E2DA;
+  --table-header-bg: #F3F1EA;
+  --table-row-hover: #F8F7F3;
+  --focus-ring: var(--accent);
 
-  /* Status Colors */
-  --success: #168653;
-  --success-bg: #DDF5E8;
-  --warning: #B7791F;
-  --warning-bg: #FFF1D6;
-  --danger: #D64545;
-  --danger-bg: #FCE4E4;
-  --info: #3478C8;
-  --info-bg: #E8EFFF;
-
-  /* Header & Footer Theme */
-  --header-bg: #203B61;
-  --header-text: #FFFFFF;
-  --header-logo: #FFFFFF;
-  --header-icons: #F3F6FC;
-  --header-hover-bg: #2D4D77;
-  --header-hover-text: #DCEBFA;
-  --header-border: #2D4D77;
-  --sticky-header-bg: #203B61;
+  /* Header & Footer Theme (Light, Calm, Professional) */
+  --header-bg: #FFFFFF;
+  --header-text: #1F2937;
+  --header-logo: #1F2937;
+  --header-icons: #5B6676;
+  --header-hover-bg: #F3F1EA;
+  --header-hover-text: var(--accent);
+  --header-border: #E4E2DA;
+  --sticky-header-bg: #FFFFFF;
   --dropdown-bg: #FFFFFF;
-  --dropdown-text: #253858;
-  --dropdown-hover-bg: #DCEBFA;
+  --dropdown-text: #1F2937;
+  --dropdown-hover-bg: #F3F1EA;
 
-  --footer-bg: #203B61;
-  --footer-headings: #FFFFFF;
-  --footer-text: #8A9AAF;
-  --footer-links: #F3F6FC;
-  --footer-link-hover: #DCEBFA;
-  --footer-border: #2D4D77;
-  --footer-accent: #2D4D77;
+  --footer-bg: #FFFFFF;
+  --footer-headings: #1F2937;
+  --footer-text: #5B6676;
+  --footer-links: #5B6676;
+  --footer-link-hover: var(--accent);
+  --footer-border: #E4E2DA;
+  --footer-accent: var(--accent-soft);
 
   /* Velzon mapping for compatibility */
-  --velzon-bg: #F5F8FC;
+  --velzon-bg: #F8F7F3;
   --velzon-card: #FFFFFF;
-  --velzon-primary: #3478C8;
-  --velzon-primary-hover: #2866AE;
-  --velzon-secondary: #203B61;
-  --velzon-secondary-hover: #2D4D77;
-  --velzon-text-body: #253858;
-  --velzon-text-muted: #718096;
-  --velzon-sidebar-bg: #203B61;
-  --velzon-border: #E3EAF2;
-  --velzon-shadow: 0 1px 3px rgba(32, 59, 97, 0.05);
+  --velzon-primary: var(--accent);
+  --velzon-primary-hover: var(--accent-hover);
+  --velzon-secondary: var(--accent-soft);
+  --velzon-secondary-hover: #F3F1EA;
+  --velzon-text-body: #1F2937;
+  --velzon-text-muted: #5B6676;
+  --velzon-sidebar-bg: #FFFFFF;
+  --velzon-border: #E4E2DA;
+  --velzon-shadow: 0 1px 2px rgba(31, 41, 55, 0.05);
 
-  --gold-50: #F5F8FC;
-  --gold-100: #EDF3F9;
-  --gold-250: #2D4D77;
-  --gold-500: #203B61;
-  --gold-600: #2D4D77;
-  --gold-700: #203B61;
-  --gold-800: #203B61;
+  --gold-50: #F9F5EC;
+  --gold-100: #F3F1EA;
+  --gold-250: #B8864B;
+  --gold-500: #8A6228;
+  --gold-600: #8A6228;
+  --gold-700: #8A6228;
+  --gold-800: #8A6228;
+}
+
+/* Role-Driven CSS Theme Overrides */
+[data-role="admin"], [data-role="principal"] {
+  --accent: var(--accent-admin);
+  --accent-soft: var(--accent-admin-soft);
+  --accent-hover: var(--accent-admin-hover);
+}
+
+[data-role="teacher"] {
+  --accent: var(--accent-teacher);
+  --accent-soft: var(--accent-teacher-soft);
+  --accent-hover: var(--accent-teacher-hover);
+}
+
+[data-role="student"], [data-role="parent"], [data-role="family"] {
+  --accent: var(--accent-family);
+  --accent-soft: var(--accent-family-soft);
+  --accent-hover: var(--accent-family-hover);
 }
 
 /* Base styles */
@@ -108,13 +160,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-  background-color: #F5F8FC;
-  color: #253858;
+  background-color: #F8F7F3;
+  color: #1F2937;
 }
 
 /* ── Navy Blue + White SaaS Element Defaults ── */
 h1, h2, h3, h4, h5, h6 {
-  color: #203B61;
+  color: #172B4D;
   font-family: 'Inter', sans-serif;
 }
 
@@ -130,7 +182,7 @@ table thead th {
 }
 
 table tbody tr:hover {
-  background-color: #F5F8FC;
+  background-color: #F8F7F3;
 }
 
 /* Input, select, textarea styling */
@@ -139,7 +191,7 @@ select,
 textarea {
   background-color: #FFFFFF;
   border-color: #E3EAF2;
-  color: #253858;
+  color: #1F2937;
   border-radius: 0.75rem;
 }
 
@@ -153,30 +205,32 @@ textarea:focus {
 
 /* ── Header & Sticky Header Standards ── */
 header:not(.login-page-nav):not(.clean-nav), .app-header {
-  background-color: #203B61;
-  color: #FFFFFF;
-  border-bottom: 1px solid #2D4D77;
+  background-color: #FFFFFF;
+  color: #1F2937;
+  border-bottom: 1px solid #E4E2DA;
 }
 
 header.sticky:not(.login-page-nav):not(.clean-nav), .sticky-header {
-  background-color: #203B61 !important;
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  color: #1F2937 !important;
+  border-bottom: 1px solid #E4E2DA !important;
 }
 
 header:not(.login-page-nav):not(.clean-nav) h1, header:not(.login-page-nav):not(.clean-nav) h2, header:not(.login-page-nav):not(.clean-nav) h3, header:not(.login-page-nav):not(.clean-nav) h4, header:not(.login-page-nav):not(.clean-nav) h5, header:not(.login-page-nav):not(.clean-nav) h6,
 .app-header h1, .app-header h2, .app-header h3, .app-header h4, .app-header h5, .app-header h6 {
-  color: #FFFFFF !important;
+  color: #1F2937 !important;
 }
 
 header:not(.login-page-nav):not(.clean-nav) a, .app-header a {
-  color: #FFFFFF;
+  color: #1F2937;
 }
 
 header:not(.login-page-nav):not(.clean-nav) a:hover, .app-header a:hover {
-  color: #DBEAFE;
+  color: #345575;
 }
 
 header:not(.login-page-nav):not(.clean-nav) svg, .app-header svg {
-  color: #F3F6FC;
+  color: inherit;
 }
 
 /* Header Dropdowns */
@@ -200,9 +254,9 @@ header:not(.login-page-nav):not(.clean-nav) .dropdown-item:hover, .app-header .d
 
 /* ── Footer Standards ── */
 footer:not(.login-page-footer):not(.clean-footer), .app-footer {
-  background-color: #172B4D !important;
-  color: #CBD5E1 !important;
-  border-top: 1px solid #29456D !important;
+  background-color: #FFFFFF !important;
+  color: #5B6676 !important;
+  border-top: 1px solid #E4E2DA !important;
 }
 
 footer:not(.login-page-footer):not(.clean-footer) h1, footer:not(.login-page-footer):not(.clean-footer) h2, footer:not(.login-page-footer):not(.clean-footer) h3, footer:not(.login-page-footer):not(.clean-footer) h4, footer:not(.login-page-footer):not(.clean-footer) h5, footer:not(.login-page-footer):not(.clean-footer) h6,
@@ -524,7 +578,7 @@ input, select, textarea {
 
 .btn-secondary {
   background-color: #FFFFFF;
-  color: #253858;
+  color: #1F2937;
   border: 1px solid #E3EAF2;
   font-family: 'Inter', sans-serif;
   font-weight: 600;
@@ -540,7 +594,7 @@ input, select, textarea {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 .btn-secondary:hover {
-  background-color: #F5F8FC;
+  background-color: #F8F7F3;
   border-color: #DCEBFA;
 }
 
@@ -638,4 +692,35 @@ input, select, textarea {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+}
+
+
+/* ── Responsive Table & Scroll Containers ── */
+.table-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 0.75rem;
+  border: 1px solid #E5EAF1;
+}
+.table-scroll-container::-webkit-scrollbar {
+  height: 6px;
+}
+.table-scroll-container::-webkit-scrollbar-track {
+  background: #F1F5F9;
+  border-radius: 4px;
+}
+.table-scroll-container::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

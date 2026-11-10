@@ -1985,7 +1985,10 @@ const AdminPage = () => {
       fetchEmployees();
       fetchRoles();
     }
-    if (activeTab === 'roles') fetchRoles(); 
+    if (activeTab === 'roles') {
+      navigate('/access-privilege', { replace: true });
+      return;
+    } 
     if (activeTab === 'daily_status') fetchDailyStatus(dailyStatusDate);
     if (activeTab === 'classes') {
       fetchClasses();
@@ -3681,7 +3684,7 @@ Office of the Principal / Academic Administration`
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F5F8FC] flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-[#2D4D77] border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-10 h-10 border-4 border-[#29456D] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -3701,23 +3704,23 @@ Office of the Principal / Academic Administration`
   }
 
   return (
-    <div className="min-h-screen md:h-screen flex flex-col md:flex-row bg-[#F5F8FC] text-[#253858] animate-fadeIn font-sans md:overflow-hidden">
+    <div className="min-h-screen md:h-screen flex flex-col lg:flex-row bg-[var(--bg)] text-[#1F2937] animate-fadeIn font-sans md:overflow-hidden">
       <Sidebar />
       {/* ── Main Content Container (Independently Scrollable on all viewports) ── */}
       <main className="flex-1 md:h-screen md:overflow-y-auto overflow-x-hidden flex flex-col min-w-0 px-2 py-3 sm:px-4 sm:py-5 lg:p-8 pb-32 md:pb-14 touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
         <div className="w-full max-w-full sm:max-w-7xl mx-auto space-y-4 sm:space-y-6">
 
         {/* Header Bar */}
-        <header className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3 bg-[#203B61] p-3 sm:p-4 rounded-2xl border border-[#2D4D77] shadow-sm text-white">
-          <div className="inline-flex items-center gap-2.5 bg-[#2D4D77] px-4 py-2 rounded-xl border border-[#2D4D77] shadow-2xs w-full sm:w-auto justify-between sm:justify-start">
+        <header className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3 bg-white p-3 sm:p-4 rounded-2xl border border-[#E4E2DA] shadow-subtle text-[#1F2937]">
+          <div className="inline-flex items-center gap-2.5 bg-[#F3F1EA] px-4 py-2 rounded-xl border border-[#E4E2DA] shadow-2xs w-full sm:w-auto justify-between sm:justify-start">
             <div className="flex items-center gap-2.5">
-              <span className="w-2.5 h-2.5 bg-blue-400 rounded-full shadow-[0_0_8px_rgba(96,165,250,0.8)] animate-pulse shrink-0"></span>
-              <span className="text-xs sm:text-sm text-[#CBD5E1] font-semibold tracking-tight truncate">
-                {t('logged_in_as')} <strong className="font-extrabold text-white">{user?.name}</strong>
+              <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse shrink-0"></span>
+              <span className="text-xs sm:text-sm text-[#5B6676] font-semibold tracking-tight truncate">
+                {t('logged_in_as')} <strong className="font-extrabold text-[#1F2937]">{user?.name}</strong>
               </span>
             </div>
             {user?.role && (
-              <span className="bg-[#203B61] text-[#DCEBFA] text-[10px] sm:text-[11px] font-black px-2.5 py-0.5 rounded-md uppercase tracking-wider shrink-0 border border-[#2D4D77]">
+              <span className="bg-white text-[var(--accent)] text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-md uppercase tracking-wider shrink-0 border border-[#E4E2DA]">
                 {user?.role}
               </span>
             )}
@@ -3725,9 +3728,9 @@ Office of the Principal / Academic Administration`
 
           <button
             onClick={handleLogout}
-            className="w-full sm:w-auto px-4 py-2 bg-rose-950/60 hover:bg-rose-800 text-rose-200 hover:text-white active:scale-95 font-bold text-xs rounded-xl shadow-xs transition-all duration-200 flex items-center justify-center gap-2 border border-rose-800/80 cursor-pointer shrink-0"
+            className="w-full sm:w-auto px-4 py-2 bg-[#FBEAE8] hover:bg-[#F9D6D3] text-[#B42318] active:scale-95 font-bold text-xs rounded-xl shadow-xs transition-all duration-200 flex items-center justify-center gap-2 border border-[#F5C2BC] cursor-pointer shrink-0"
           >
-            <LogOutIcon className="w-3.5 h-3.5 text-rose-300" />
+            <LogOutIcon className="w-3.5 h-3.5 text-[#B42318]" />
             <span>Logout</span>
           </button>
         </header>
@@ -3737,7 +3740,7 @@ Office of the Principal / Academic Administration`
 
         {/* Horizontal Navigation Tabs */}
         {['settings', 'roles', 'employees', 'consolidated', 'details', 'daily_status', 'individual_details', 'ai_settings'].includes(activeTab) && (
-          <div className="w-full bg-slate-100/80 p-1 sm:p-1.5 rounded-2xl border border-slate-200/80 mb-6">
+          <div className="w-full bg-white p-1 sm:p-1.5 rounded-2xl border border-[#E4E2DA] shadow-subtle mb-6">
             <div className="flex gap-1.5 overflow-x-auto py-1 px-1 items-center justify-start w-full touch-pan-x" style={{ WebkitOverflowScrolling: 'touch' }}>
               {[
                 { id: 'settings', label: 'School Settings', icon: <SettingsIcon className="w-4 h-4 shrink-0" /> },
@@ -3756,8 +3759,8 @@ Office of the Principal / Academic Administration`
                     onClick={() => navigate(`/admin?tab=${tObj.id}`)}
                     className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm whitespace-nowrap transition-all duration-150 flex items-center gap-2 cursor-pointer shrink-0 ${
                       isActive
-                        ? 'bg-[#2D4D77] text-white shadow-sm font-semibold'
-                        : 'bg-white/80 hover:bg-white text-slate-600 hover:text-slate-900 border border-slate-200/60 font-medium shadow-2xs'
+                        ? 'bg-[var(--accent)] text-white shadow-xs font-bold'
+                        : 'bg-[#F8F7F3] hover:bg-[#F3F1EA] text-[#5B6676] hover:text-[#1F2937] border border-[#E4E2DA]/60 font-medium'
                     }`}
                   >
                     <span className={isActive ? 'text-blue-100' : 'text-slate-400'}>
@@ -3779,8 +3782,8 @@ Office of the Principal / Academic Administration`
             {/* Header Bar */}
             <div className="bg-white px-4 sm:px-6 lg:px-8 py-3.5 sm:py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#203B61] border border-blue-100 flex items-center justify-center shrink-0">
-                  <SettingsIcon className="w-5 h-5 text-[#203B61]" />
+                <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#172B4D] border border-blue-100 flex items-center justify-center shrink-0">
+                  <SettingsIcon className="w-5 h-5 text-[#172B4D]" />
                 </div>
                 <div>
                   <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
@@ -3802,7 +3805,7 @@ Office of the Principal / Academic Administration`
                   type="button"
                   onClick={handleSave}
                   disabled={isSaving || isLoading}
-                  className="px-4 py-2 bg-[#2D4D77] hover:bg-[#203B61] active:scale-[0.98] text-white font-semibold text-xs sm:text-sm rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="px-4 py-2 bg-[#29456D] hover:bg-[#172B4D] active:scale-[0.98] text-white font-semibold text-xs sm:text-sm rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   {isSaving ? (
                     <>
@@ -3822,7 +3825,7 @@ Office of the Principal / Academic Administration`
             <div className="p-3 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 bg-slate-50/40">
               {isLoading ? (
                 <div className="flex justify-center py-16">
-                  <span className="w-8 h-8 border-3 border-[#2D4D77] border-t-transparent rounded-full animate-spin" />
+                  <span className="w-8 h-8 border-3 border-[#29456D] border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : (
                 <div className="space-y-4 sm:space-y-6">
@@ -3838,7 +3841,7 @@ Office of the Principal / Academic Administration`
                           Updates apply dynamically across portals, attendance kiosk, and reports.
                         </p>
                       </div>
-                      <span className="text-[11px] bg-blue-50 text-[#203B61] font-semibold px-2.5 py-0.5 rounded-md border border-blue-100">
+                      <span className="text-[11px] bg-blue-50 text-[#172B4D] font-semibold px-2.5 py-0.5 rounded-md border border-blue-100">
                         Live System Branding
                       </span>
                     </div>
@@ -3898,7 +3901,7 @@ Office of the Principal / Academic Administration`
                               type="text"
                               value={settings.schoolName || ''}
                               onChange={(e) => setSettings({ ...settings, schoolName: e.target.value })}
-                              className="w-full px-3.5 py-2 bg-slate-50/50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-slate-900 focus:border-[#2D4D77] focus:ring-2 focus:ring-blue-600/10 outline-none transition-all text-sm"
+                              className="w-full px-3.5 py-2 bg-slate-50/50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-slate-900 focus:border-[#29456D] focus:ring-2 focus:ring-blue-600/10 outline-none transition-all text-sm"
                               placeholder="e.g. Qelvora School CRM"
                             />
                           </div>
@@ -3911,7 +3914,7 @@ Office of the Principal / Academic Administration`
                               type="text"
                               value={settings.logoSubtext || ''}
                               onChange={(e) => setSettings({ ...settings, logoSubtext: e.target.value })}
-                              className="w-full px-3.5 py-2 bg-slate-50/50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-slate-900 focus:border-[#2D4D77] focus:ring-2 focus:ring-blue-600/10 outline-none transition-all text-sm"
+                              className="w-full px-3.5 py-2 bg-slate-50/50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-slate-900 focus:border-[#29456D] focus:ring-2 focus:ring-blue-600/10 outline-none transition-all text-sm"
                               placeholder="e.g. Empowering Educational Excellence"
                             />
                           </div>
@@ -3925,7 +3928,7 @@ Office of the Principal / Academic Administration`
                             <select
                               value={settings.board || 'CBSE'}
                               onChange={(e) => setSettings({ ...settings, board: e.target.value })}
-                              className="flex-1 px-3.5 py-2 bg-slate-50/50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-slate-900 font-medium text-sm focus:border-[#2D4D77] focus:ring-2 focus:ring-blue-600/10 outline-none cursor-pointer"
+                              className="flex-1 px-3.5 py-2 bg-slate-50/50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-slate-900 font-medium text-sm focus:border-[#29456D] focus:ring-2 focus:ring-blue-600/10 outline-none cursor-pointer"
                             >
                               {(settings.boardsList || ['CBSE', 'STATE', 'ICSE']).map(boardOpt => (
                                 <option key={boardOpt} value={boardOpt}>{boardOpt}</option>
@@ -3968,7 +3971,7 @@ Office of the Principal / Academic Administration`
                             onChange={(e) => handleToggleSetting('face_auth_enabled', e.target.checked)}
                             className="sr-only peer"
                           />
-                          <div className="w-10 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2D4D77]"></div>
+                          <div className="w-10 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#29456D]"></div>
                         </label>
                       </div>
 
@@ -3989,7 +3992,7 @@ Office of the Principal / Academic Administration`
                             onChange={(e) => handleToggleSetting('location_auth_enabled', e.target.checked)}
                             className="sr-only peer"
                           />
-                          <div className="w-10 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2D4D77]"></div>
+                          <div className="w-10 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#29456D]"></div>
                         </label>
                       </div>
                     </div>
@@ -4027,7 +4030,7 @@ Office of the Principal / Academic Administration`
                               type="time"
                               value={settings.office_start_time || '08:30'}
                               onChange={(e) => setSettings({ ...settings, office_start_time: e.target.value })}
-                              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#2D4D77] focus:ring-1 focus:ring-blue-600/10 outline-none"
+                              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#29456D] focus:ring-1 focus:ring-blue-600/10 outline-none"
                             />
                           </div>
 
@@ -4039,7 +4042,7 @@ Office of the Principal / Academic Administration`
                               type="time"
                               value={settings.office_end_time || '16:00'}
                               onChange={(e) => setSettings({ ...settings, office_end_time: e.target.value })}
-                              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#2D4D77] focus:ring-1 focus:ring-blue-600/10 outline-none"
+                              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#29456D] focus:ring-1 focus:ring-blue-600/10 outline-none"
                             />
                           </div>
 
@@ -4053,7 +4056,7 @@ Office of the Principal / Academic Administration`
                                 min="0"
                                 value={settings.grace_period_mins || 0}
                                 onChange={(e) => setSettings({ ...settings, grace_period_mins: e.target.value })}
-                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#2D4D77] focus:ring-1 focus:ring-blue-600/10 outline-none pr-12"
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#29456D] focus:ring-1 focus:ring-blue-600/10 outline-none pr-12"
                               />
                               <span className="absolute right-3 top-2 text-[10px] font-semibold text-slate-400">min</span>
                             </div>
@@ -4077,7 +4080,7 @@ Office of the Principal / Academic Administration`
                                 type="number" step="0.1" min="0.1"
                                 value={settings.hours_per_subject || 1}
                                 onChange={(e) => setSettings({ ...settings, hours_per_subject: e.target.value })}
-                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#2D4D77] focus:ring-1 focus:ring-blue-600/10 outline-none pr-12"
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#29456D] focus:ring-1 focus:ring-blue-600/10 outline-none pr-12"
                               />
                               <span className="absolute right-3 top-2 text-[10px] font-semibold text-slate-400">hrs</span>
                             </div>
@@ -4092,7 +4095,7 @@ Office of the Principal / Academic Administration`
                                 type="number" min="1"
                                 value={settings.period_duration_mins || 45}
                                 onChange={(e) => setSettings({ ...settings, period_duration_mins: e.target.value })}
-                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#2D4D77] focus:ring-1 focus:ring-blue-600/10 outline-none pr-12"
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#29456D] focus:ring-1 focus:ring-blue-600/10 outline-none pr-12"
                               />
                               <span className="absolute right-3 top-2 text-[10px] font-semibold text-slate-400">min</span>
                             </div>
@@ -4107,7 +4110,7 @@ Office of the Principal / Academic Administration`
                                 type="number" min="0"
                                 value={settings.game_period_mins || 45}
                                 onChange={(e) => setSettings({ ...settings, game_period_mins: e.target.value })}
-                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#2D4D77] focus:ring-1 focus:ring-blue-600/10 outline-none pr-12"
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#29456D] focus:ring-1 focus:ring-blue-600/10 outline-none pr-12"
                               />
                               <span className="absolute right-3 top-2 text-[10px] font-semibold text-slate-400">min</span>
                             </div>
@@ -4130,7 +4133,7 @@ Office of the Principal / Academic Administration`
                                   type="number" min="0"
                                   value={settings.lunch_break_mins || 45}
                                   onChange={(e) => setSettings({ ...settings, lunch_break_mins: e.target.value })}
-                                  className="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#2D4D77] focus:ring-1 focus:ring-blue-600/10 outline-none pr-8"
+                                  className="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#29456D] focus:ring-1 focus:ring-blue-600/10 outline-none pr-8"
                                 />
                                 <span className="absolute right-2 top-2 text-[9px] text-slate-400">min</span>
                               </div>
@@ -4141,7 +4144,7 @@ Office of the Principal / Academic Administration`
                                 type="time"
                                 value={settings.lunch_break_start || '12:00'}
                                 onChange={(e) => setSettings({ ...settings, lunch_break_start: e.target.value })}
-                                className="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#2D4D77] focus:ring-1 focus:ring-blue-600/10 outline-none"
+                                className="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#29456D] focus:ring-1 focus:ring-blue-600/10 outline-none"
                               />
                             </div>
                           </div>
@@ -4154,7 +4157,7 @@ Office of the Principal / Academic Administration`
                                   type="number" min="0"
                                   value={settings.small_break_mins || 15}
                                   onChange={(e) => setSettings({ ...settings, small_break_mins: e.target.value })}
-                                  className="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#2D4D77] focus:ring-1 focus:ring-blue-600/10 outline-none pr-8"
+                                  className="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#29456D] focus:ring-1 focus:ring-blue-600/10 outline-none pr-8"
                                 />
                                 <span className="absolute right-2 top-2 text-[9px] text-slate-400">min</span>
                               </div>
@@ -4165,7 +4168,7 @@ Office of the Principal / Academic Administration`
                                 type="time"
                                 value={settings.small_break_start || '10:30'}
                                 onChange={(e) => setSettings({ ...settings, small_break_start: e.target.value })}
-                                className="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#2D4D77] focus:ring-1 focus:ring-blue-600/10 outline-none"
+                                className="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-medium text-xs focus:border-[#29456D] focus:ring-1 focus:ring-blue-600/10 outline-none"
                               />
                             </div>
                           </div>
@@ -4200,7 +4203,7 @@ Office of the Principal / Academic Administration`
                             type="number" step="0.5" min="1" max="24"
                             value={settings.hours_per_day || 8}
                             onChange={(e) => setSettings({ ...settings, hours_per_day: e.target.value })}
-                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-semibold text-sm focus:border-[#2D4D77] focus:ring-1 focus:ring-blue-600/10 outline-none pr-14"
+                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-semibold text-sm focus:border-[#29456D] focus:ring-1 focus:ring-blue-600/10 outline-none pr-14"
                           />
                           <span className="absolute right-3 top-2.5 text-[10px] font-semibold text-slate-400">hrs/day</span>
                         </div>
@@ -4215,7 +4218,7 @@ Office of the Principal / Academic Administration`
                             type="number" step="0.5" min="1"
                             value={settings.hours_per_week || 40}
                             onChange={(e) => setSettings({ ...settings, hours_per_week: e.target.value })}
-                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-semibold text-sm focus:border-[#2D4D77] focus:ring-1 focus:ring-blue-600/10 outline-none pr-16"
+                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-semibold text-sm focus:border-[#29456D] focus:ring-1 focus:ring-blue-600/10 outline-none pr-16"
                           />
                           <span className="absolute right-3 top-2.5 text-[10px] font-semibold text-slate-400">hrs/week</span>
                         </div>
@@ -4230,7 +4233,7 @@ Office of the Principal / Academic Administration`
                             type="number" step="0.5" min="1"
                             value={settings.hours_per_month || 160}
                             onChange={(e) => setSettings({ ...settings, hours_per_month: e.target.value })}
-                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-semibold text-sm focus:border-[#2D4D77] focus:ring-1 focus:ring-blue-600/10 outline-none pr-18"
+                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-semibold text-sm focus:border-[#29456D] focus:ring-1 focus:ring-blue-600/10 outline-none pr-18"
                           />
                           <span className="absolute right-3 top-2.5 text-[10px] font-semibold text-slate-400">hrs/month</span>
                         </div>
@@ -4244,7 +4247,7 @@ Office of the Principal / Academic Administration`
                           type="text"
                           value={settings.weekly_off || 'Sunday'}
                           onChange={(e) => setSettings({ ...settings, weekly_off: e.target.value })}
-                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-semibold text-sm focus:border-[#2D4D77] focus:ring-1 focus:ring-blue-600/10 outline-none"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 font-semibold text-sm focus:border-[#29456D] focus:ring-1 focus:ring-blue-600/10 outline-none"
                           placeholder="e.g. Sunday"
                         />
                       </div>
@@ -4258,7 +4261,7 @@ Office of the Principal / Academic Administration`
 
           {/* Institutional Information Banner */}
           <div className="bg-blue-50/80 border border-blue-200/80 rounded-xl p-4 mb-6 flex items-start gap-3">
-            <svg className="w-5 h-5 text-[#203B61] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-5 h-5 text-[#172B4D] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <div>
@@ -4274,7 +4277,7 @@ Office of the Principal / Academic Administration`
             <button
               onClick={handleSave}
               disabled={isSaving || isLoading}
-              className="px-6 py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold text-xs sm:text-sm rounded-xl shadow-sm transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+              className="px-6 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold text-xs sm:text-sm rounded-xl shadow-sm transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
             >
               {isSaving ? (
                 <>
@@ -4301,7 +4304,7 @@ Office of the Principal / Academic Administration`
         {activeTab === 'consolidated' && (
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 mb-8 text-gray-900 animate-fadeIn">
             <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#203B61] flex items-center justify-center border border-blue-100">
+              <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#172B4D] flex items-center justify-center border border-blue-100">
                 <BarChart2 className="w-5 h-5" />
               </div>
               <div>
@@ -4324,7 +4327,7 @@ Office of the Principal / Academic Administration`
                   value={deptFilter} 
                   onChange={e => setDeptFilter(e.target.value)} 
                   onKeyDown={e => e.key === 'Enter' && fetchConsolidated()}
-                  className="w-full pl-9 pr-8 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 text-gray-800 font-semibold outline-none focus:border-[#2D4D77] focus:bg-white transition-all" 
+                  className="w-full pl-9 pr-8 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 text-gray-800 font-semibold outline-none focus:border-[#29456D] focus:bg-white transition-all" 
                 />
                 {deptFilter && (
                   <button 
@@ -4337,7 +4340,7 @@ Office of the Principal / Academic Administration`
                   </button>
                 )}
               </div>
-              <button onClick={fetchConsolidated} className="px-4 py-2 bg-[#2D4D77] text-white rounded-lg text-sm font-semibold hover:bg-[#203B61] transition-all flex items-center gap-1.5 shadow-xs">
+              <button onClick={fetchConsolidated} className="px-4 py-2 bg-[#29456D] text-white rounded-lg text-sm font-semibold hover:bg-[#172B4D] transition-all flex items-center gap-1.5 shadow-xs">
                 <RefreshCw className="w-3.5 h-3.5" /> Load Report
               </button>
               <button onClick={() => handleExport('consolidated')} disabled={exportingType==='consolidated'} className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700 disabled:opacity-50 flex items-center gap-1.5 transition-colors shadow-xs">
@@ -4396,7 +4399,7 @@ Office of the Principal / Academic Administration`
                           <button
                             type="button"
                             onClick={() => setDeptFilter('')}
-                            className="mt-2 text-xs font-semibold text-[#203B61] hover:underline cursor-pointer"
+                            className="mt-2 text-xs font-semibold text-[#172B4D] hover:underline cursor-pointer"
                           >
                             Clear search filter
                           </button>
@@ -4452,7 +4455,7 @@ Office of the Principal / Academic Administration`
         {activeTab === 'details' && (
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 mb-8 text-gray-900 animate-fadeIn">
             <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#203B61] flex items-center justify-center border border-blue-100">
+              <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#172B4D] flex items-center justify-center border border-blue-100">
                 <FileText className="w-5 h-5" />
               </div>
               <div>
@@ -4475,7 +4478,7 @@ Office of the Principal / Academic Administration`
                   value={deptFilter} 
                   onChange={e => setDeptFilter(e.target.value)} 
                   onKeyDown={e => e.key === 'Enter' && fetchDetails()}
-                  className="w-full pl-9 pr-8 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 text-gray-800 font-semibold outline-none focus:border-[#2D4D77] focus:bg-white transition-all" 
+                  className="w-full pl-9 pr-8 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 text-gray-800 font-semibold outline-none focus:border-[#29456D] focus:bg-white transition-all" 
                 />
                 {deptFilter && (
                   <button 
@@ -4488,7 +4491,7 @@ Office of the Principal / Academic Administration`
                   </button>
                 )}
               </div>
-              <button onClick={fetchDetails} className="px-4 py-2 bg-[#2D4D77] text-white rounded-lg text-sm font-semibold hover:bg-[#203B61] transition-all flex items-center gap-1.5 shadow-xs">
+              <button onClick={fetchDetails} className="px-4 py-2 bg-[#29456D] text-white rounded-lg text-sm font-semibold hover:bg-[#172B4D] transition-all flex items-center gap-1.5 shadow-xs">
                 <RefreshCw className="w-3.5 h-3.5" /> Load Report
               </button>
               <button onClick={() => handleExport('details')} disabled={exportingType==='details'} className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700 disabled:opacity-50 flex items-center gap-1.5 transition-colors shadow-xs">
@@ -4549,7 +4552,7 @@ Office of the Principal / Academic Administration`
                           <button
                             type="button"
                             onClick={() => setDeptFilter('')}
-                            className="mt-2 text-xs font-semibold text-[#203B61] hover:underline cursor-pointer"
+                            className="mt-2 text-xs font-semibold text-[#172B4D] hover:underline cursor-pointer"
                           >
                             Clear search filter
                           </button>
@@ -4676,10 +4679,10 @@ Office of the Principal / Academic Administration`
         {/* DAILY OPERATIONAL STATUS MONITOR TAB */}
         {activeTab === 'daily_status' && (
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 mb-8 text-gray-900 animate-fadeIn">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div className="flex flex-col lg:flex-row md:items-center justify-between gap-4 mb-6">
               <div>
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#203B61] flex items-center justify-center border border-blue-100">
+                  <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#172B4D] flex items-center justify-center border border-blue-100">
                     <CalendarDays className="w-5 h-5" />
                   </div>
                   <div>
@@ -4722,7 +4725,7 @@ Office of the Principal / Academic Administration`
                   </button>
                   <button
                     onClick={() => setDailyStatusDate(new Date().toLocaleDateString('en-CA'))}
-                    className="px-2.5 py-1 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold text-xs rounded-lg transition-colors cursor-pointer"
+                    className="px-2.5 py-1 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold text-xs rounded-lg transition-colors cursor-pointer"
                   >
                     Today
                   </button>
@@ -4749,7 +4752,7 @@ Office of the Principal / Academic Administration`
                   placeholder="Search by Employee ID, Name, Role, or Status..."
                   value={dailySearchQuery}
                   onChange={(e) => setDailySearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] transition-all"
+                  className="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] transition-all"
                 />
                 {dailySearchQuery && (
                   <button 
@@ -4764,7 +4767,7 @@ Office of the Principal / Academic Administration`
               <select
                 value={deptFilter}
                 onChange={(e) => setDeptFilter(e.target.value)}
-                className="px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] cursor-pointer"
+                className="px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] cursor-pointer"
               >
                 <option value="ALL">All Departments</option>
                 <option value="Mathematics">Mathematics</option>
@@ -4839,7 +4842,7 @@ Office of the Principal / Academic Administration`
                   {dailyStatusFilter !== 'ALL' && (
                     <div className="flex items-center justify-between bg-stone-100 px-4 py-2 rounded-xl text-xs border border-stone-200">
                       <span className="font-bold text-stone-700">
-                        Filtering by status: <strong className="text-[#203B61] uppercase font-mono">{dailyStatusFilter.replace(/_/g, ' ')}</strong>
+                        Filtering by status: <strong className="text-[#172B4D] uppercase font-mono">{dailyStatusFilter.replace(/_/g, ' ')}</strong>
                       </span>
                       <button 
                         onClick={() => setDailyStatusFilter('ALL')}
@@ -4883,7 +4886,7 @@ Office of the Principal / Academic Administration`
                     <p className="text-gray-500 text-xs italic font-medium">No employees found matching the active search or filters.</p>
                     <button 
                       onClick={() => { setDailyStatusFilter('ALL'); setDailySearchQuery(''); setDeptFilter('ALL'); }} 
-                      className="mt-2 text-[#203B61] font-bold text-xs hover:underline cursor-pointer"
+                      className="mt-2 text-[#172B4D] font-bold text-xs hover:underline cursor-pointer"
                     >
                       Reset All Filters
                     </button>
@@ -4908,7 +4911,7 @@ Office of the Principal / Academic Administration`
                     <tbody className="divide-y divide-gray-200 bg-white">
                       {filteredData.map((d, i) => (
                         <tr key={i} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-4 py-3 font-mono font-bold text-[#203B61] cursor-pointer hover:underline" onClick={() => handleUserClick(d.employee_id)}>{d.employee_id}</td>
+                          <td className="px-4 py-3 font-mono font-bold text-[#172B4D] cursor-pointer hover:underline" onClick={() => handleUserClick(d.employee_id)}>{d.employee_id}</td>
                           <td className="px-4 py-3 font-bold text-gray-850">{d.name}</td>
                           <td className="px-4 py-3 text-gray-500 font-semibold">{d.department || 'Academic Staff'}</td>
                           <td className="px-4 py-3 font-mono text-emerald-600 font-bold">{d.punch_in ? new Date(d.punch_in).toLocaleTimeString() : '—'}</td>
@@ -4947,9 +4950,9 @@ Office of the Principal / Academic Administration`
         {/* PERSONAL DETAILS REPORT TAB */}
         {activeTab === 'individual_details' && (
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 mb-8 text-gray-900 animate-fadeIn">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div className="flex flex-col lg:flex-row md:items-center justify-between gap-4 mb-6">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#203B61] flex items-center justify-center border border-blue-100">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#172B4D] flex items-center justify-center border border-blue-100">
                   <User className="w-5 h-5" />
                 </div>
                 <div>
@@ -4964,7 +4967,7 @@ Office of the Principal / Academic Administration`
                   <select
                     value={selectedEmpIdForDetails}
                     onChange={(e) => setSelectedEmpIdForDetails(e.target.value)}
-                    className="px-3.5 py-2 border border-slate-200 rounded-xl text-xs bg-slate-50 text-slate-900 font-bold outline-none cursor-pointer focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77]"
+                    className="px-3.5 py-2 border border-slate-200 rounded-xl text-xs bg-slate-50 text-slate-900 font-bold outline-none cursor-pointer focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D]"
                   >
                     <option value="">-- All Employees ({details.employees.length}) --</option>
                     {details.employees.map(e => (
@@ -4983,7 +4986,7 @@ Office of the Principal / Academic Administration`
                   {[2024,2025,2026,2027].map(y => <option key={y} value={y}>{y}</option>)}
                 </select>
 
-                <button onClick={fetchDetails} className="px-4 py-2 bg-[#2D4D77] text-white rounded-xl text-xs font-bold hover:bg-[#203B61] transition-all cursor-pointer">
+                <button onClick={fetchDetails} className="px-4 py-2 bg-[#29456D] text-white rounded-xl text-xs font-bold hover:bg-[#172B4D] transition-all cursor-pointer">
                   Load Report
                 </button>
 
@@ -5003,7 +5006,7 @@ Office of the Principal / Academic Administration`
             ) : details ? (
               <div className="space-y-6">
                 <p className="text-xs text-gray-600 font-medium">
-                  Showing records for <span className="font-bold text-[#203B61]">{MONTH_NAMES[details.month]} {details.year}</span> • {details.days_in_month} days in month
+                  Showing records for <span className="font-bold text-[#172B4D]">{MONTH_NAMES[details.month]} {details.year}</span> • {details.days_in_month} days in month
                 </p>
 
                 {(() => {
@@ -5103,8 +5106,8 @@ Office of the Principal / Academic Administration`
             {/* Header */}
             <div className="bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#203B61] shrink-0">
-                  <ShieldCheck className="w-5 h-5 text-[#203B61]" />
+                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#172B4D] shrink-0">
+                  <ShieldCheck className="w-5 h-5 text-[#172B4D]" />
                 </div>
                 <div>
                   <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
@@ -5129,7 +5132,7 @@ Office of the Principal / Academic Administration`
                     });
                     setIsRoleModalOpen(true);
                   }}
-                  className="px-4 py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer active:scale-95 shrink-0"
+                  className="px-4 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer active:scale-95 shrink-0"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add New Role</span>
@@ -5146,13 +5149,13 @@ Office of the Principal / Academic Administration`
                     placeholder="Search roles by name or code..."
                     value={rolesSearch}
                     onChange={(e) => setRolesSearch(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 font-medium text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none transition-all shadow-2xs"
+                    className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 font-medium text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none transition-all shadow-2xs"
                   />
                   <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
                 </div>
 
                 <div className="text-xs font-semibold text-slate-500">
-                  Total Configured Roles: <span className="text-[#203B61] font-bold">{roles.length}</span>
+                  Total Configured Roles: <span className="text-[#172B4D] font-bold">{roles.length}</span>
                 </div>
               </div>
 
@@ -5204,12 +5207,12 @@ Office of the Principal / Academic Administration`
                             <td className="px-5 py-4">
                               <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium border ${
                                 r.GantAdminPrevillage 
-                                  ? 'bg-blue-50 text-[#203B61] border-blue-200' 
+                                  ? 'bg-blue-50 text-[#172B4D] border-blue-200' 
                                   : 'bg-slate-100 text-slate-600 border-slate-200'
                               }`}>
                                 {r.GantAdminPrevillage ? (
                                   <>
-                                    <ShieldCheck className="w-3.5 h-3.5 text-[#203B61]" />
+                                    <ShieldCheck className="w-3.5 h-3.5 text-[#172B4D]" />
                                     <span>Admin Privilege</span>
                                   </>
                                 ) : (
@@ -5227,8 +5230,8 @@ Office of the Principal / Academic Administration`
                                   <span>All Menus ({MENU_PRIVILEGES.length})</span>
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 text-[#203B61] border border-blue-200" title={`Granted menus: ${(r.permissions || ['dashboard']).join(', ')}`}>
-                                  <ShieldCheck className="w-3.5 h-3.5 text-[#203B61]" />
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 text-[#172B4D] border border-blue-200" title={`Granted menus: ${(r.permissions || ['dashboard']).join(', ')}`}>
+                                  <ShieldCheck className="w-3.5 h-3.5 text-[#172B4D]" />
                                   <span>{(r.permissions?.length) || (r.GantAdminPrevillage ? MENU_PRIVILEGES.length : 1)} / {MENU_PRIVILEGES.length} Menus</span>
                                 </span>
                               )}
@@ -5393,17 +5396,17 @@ Office of the Principal / Academic Administration`
           return (
             <div className="space-y-6 animate-fadeIn pb-12">
               {/* Executive Header Banner */}
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 p-6 flex flex-col lg:flex-row md:items-center md:justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#2D4D77]/10 border border-[#2D4D77]/20 flex items-center justify-center text-[#203B61] shrink-0 shadow-2xs">
-                    <History className="w-6 h-6 text-[#203B61]" />
+                  <div className="w-12 h-12 rounded-2xl bg-[#29456D]/10 border border-[#29456D]/20 flex items-center justify-center text-[#172B4D] shrink-0 shadow-2xs">
+                    <History className="w-6 h-6 text-[#172B4D]" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2.5 flex-wrap">
                       <h2 className="text-xl font-bold text-slate-900 tracking-tight">
                         Class Sessions & Punctuality Radar
                       </h2>
-                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#2D4D77]/10 text-[#203B61] border border-[#2D4D77]/20">
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#29456D]/10 text-[#172B4D] border border-[#29456D]/20">
                         Principal Supervision
                       </span>
                     </div>
@@ -5416,7 +5419,7 @@ Office of the Principal / Academic Administration`
                 <div className="flex items-center gap-2.5 flex-wrap">
                   <button
                     onClick={() => setShowLogSessionModal(true)}
-                    className="px-4 py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white text-xs font-semibold rounded-xl shadow-xs transition-all flex items-center gap-2 cursor-pointer hover:shadow-md"
+                    className="px-4 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white text-xs font-semibold rounded-xl shadow-xs transition-all flex items-center gap-2 cursor-pointer hover:shadow-md"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Log Class Check-In</span>
@@ -5442,8 +5445,8 @@ Office of the Principal / Academic Administration`
                     <p className="text-2xl font-bold text-slate-900 mt-1">{totalSessions}</p>
                     <span className="text-[11px] text-slate-400 mt-0.5 inline-block">Scheduled across classes</span>
                   </div>
-                  <div className="w-11 h-11 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#203B61]">
-                    <BookOpen className="w-5 h-5 text-[#203B61]" />
+                  <div className="w-11 h-11 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#172B4D]">
+                    <BookOpen className="w-5 h-5 text-[#172B4D]" />
                   </div>
                 </div>
 
@@ -5504,7 +5507,7 @@ Office of the Principal / Academic Administration`
               {/* Late Threshold Legend Banner */}
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs">
                 <span className="font-bold text-slate-700 flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-[#203B61]" />
+                  <ShieldCheck className="w-4 h-4 text-[#172B4D]" />
                   <span>Principal Punctuality Thresholds:</span>
                 </span>
                 <div className="flex items-center gap-3 flex-wrap font-medium">
@@ -5532,7 +5535,7 @@ Office of the Principal / Academic Administration`
                 <div className="flex flex-col gap-3.5">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
-                      <Filter className="w-4 h-4 text-[#203B61]" />
+                      <Filter className="w-4 h-4 text-[#172B4D]" />
                       <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">Supervision Filters</span>
                     </div>
 
@@ -5582,7 +5585,7 @@ Office of the Principal / Academic Administration`
                       <select
                         value={classSessionsStandardFilter}
                         onChange={(e) => setClassSessionsStandardFilter(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none cursor-pointer"
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none cursor-pointer"
                       >
                         <option value="All">All Classes (Standards)</option>
                         {standardOptions.map(std => (
@@ -5599,7 +5602,7 @@ Office of the Principal / Academic Administration`
                       <select
                         value={classSessionsSectionFilter}
                         onChange={(e) => setClassSessionsSectionFilter(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none cursor-pointer"
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none cursor-pointer"
                       >
                         <option value="All">All Sections</option>
                         {sectionOptions.map(sec => (
@@ -5616,7 +5619,7 @@ Office of the Principal / Academic Administration`
                       <select
                         value={classSessionsPunctualityFilter}
                         onChange={(e) => setClassSessionsPunctualityFilter(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none cursor-pointer"
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none cursor-pointer"
                       >
                         <option value="All">All Check-In Statuses</option>
                         <option value="on-time">🟢 On-Time Only</option>
@@ -5635,7 +5638,7 @@ Office of the Principal / Academic Administration`
                       <select
                         value={classSessionsTeacherFilter}
                         onChange={(e) => setClassSessionsTeacherFilter(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none cursor-pointer"
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none cursor-pointer"
                       >
                         <option value="All">All Faculty Members</option>
                         {teacherOptions.map(t => (
@@ -5655,7 +5658,7 @@ Office of the Principal / Academic Administration`
                           placeholder="Search teacher, room..."
                           value={classSessionsSearch}
                           onChange={(e) => setClassSessionsSearch(e.target.value)}
-                          className="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none text-slate-800 transition-all"
+                          className="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none text-slate-800 transition-all"
                         />
                         <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-400" />
                       </div>
@@ -5708,7 +5711,7 @@ Office of the Principal / Academic Administration`
                         setClassSessionsPunctualityFilter('All');
                         setClassSessionsSearch('');
                       }}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
                     >
                       <RefreshCw className="w-4 h-4" />
                       <span>Reset Filters</span>
@@ -5780,7 +5783,7 @@ Office of the Principal / Academic Administration`
                                       ? 'bg-orange-500 text-white'
                                       : severity === 'yellow'
                                       ? 'bg-amber-500 text-white'
-                                      : 'bg-gradient-to-br from-[#203B61] to-[#1D4ED8] text-white'
+                                      : 'bg-gradient-to-br from-[#172B4D] to-[#1D4ED8] text-white'
                                   }`}>
                                     {teacherName.charAt(0).toUpperCase()}
                                   </div>
@@ -5806,8 +5809,8 @@ Office of the Principal / Academic Administration`
 
                               {/* Subject */}
                               <td className="px-5 py-4 whitespace-nowrap">
-                                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50/70 border border-blue-100 text-[#203B61] font-semibold">
-                                  <BookOpen className="w-3 h-3 text-[#203B61]" />
+                                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50/70 border border-blue-100 text-[#172B4D] font-semibold">
+                                  <BookOpen className="w-3 h-3 text-[#172B4D]" />
                                   <span>{subjectName}</span>
                                 </div>
                               </td>
@@ -5990,7 +5993,7 @@ Office of the Principal / Academic Administration`
                           </div>
                           <div>
                             <span className="text-[10px] font-bold text-slate-400 uppercase">Class & Period</span>
-                            <p className="text-xs font-bold text-[#203B61]">
+                            <p className="text-xs font-bold text-[#172B4D]">
                               Class {selectedLateSession.standard || selectedLateSession.class?.standard}-{selectedLateSession.section || selectedLateSession.class?.section} (P{selectedLateSession.period})
                             </p>
                           </div>
@@ -6023,7 +6026,7 @@ Office of the Principal / Academic Administration`
                           type="text"
                           value={lateNoticeSubject}
                           onChange={(e) => setLateNoticeSubject(e.target.value)}
-                          className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none"
+                          className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none"
                         />
                       </div>
 
@@ -6036,7 +6039,7 @@ Office of the Principal / Academic Administration`
                           rows={6}
                           value={lateNoticeMessage}
                           onChange={(e) => setLateNoticeMessage(e.target.value)}
-                          className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none leading-relaxed"
+                          className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none leading-relaxed"
                         />
                         <span className="text-[11px] text-slate-400 mt-1 block">
                           This notice will be recorded on the faculty member's portal and school communications ledger.
@@ -6086,7 +6089,7 @@ Office of the Principal / Academic Administration`
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-fadeIn">
                   <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-lg overflow-hidden flex flex-col transform transition-all">
                     {/* Header */}
-                    <div className="bg-[#2D4D77] px-6 py-4 flex items-center justify-between text-white">
+                    <div className="bg-[#29456D] px-6 py-4 flex items-center justify-between text-white">
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
                           <History className="w-4 h-4 text-white" />
@@ -6115,7 +6118,7 @@ Office of the Principal / Academic Administration`
                           <select
                             value={logSessionForm.teacher}
                             onChange={(e) => setLogSessionForm({ ...logSessionForm, teacher: e.target.value })}
-                            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none cursor-pointer"
+                            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none cursor-pointer"
                           >
                             <option value="">Select Faculty...</option>
                             {(employees || []).map(emp => (
@@ -6143,7 +6146,7 @@ Office of the Principal / Academic Administration`
                           <select
                             value={logSessionForm.standard}
                             onChange={(e) => setLogSessionForm({ ...logSessionForm, standard: e.target.value })}
-                            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none cursor-pointer"
+                            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none cursor-pointer"
                           >
                             {Array.from(new Set(['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th', ...(classes || []).map(c => c.standard)])).map(std => (
                               <option key={std} value={std}>{std}</option>
@@ -6157,7 +6160,7 @@ Office of the Principal / Academic Administration`
                           <select
                             value={logSessionForm.section}
                             onChange={(e) => setLogSessionForm({ ...logSessionForm, section: e.target.value })}
-                            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none cursor-pointer"
+                            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none cursor-pointer"
                           >
                             {['A', 'B', 'C', 'D'].map(sec => (
                               <option key={sec} value={sec}>Section {sec}</option>
@@ -6174,7 +6177,7 @@ Office of the Principal / Academic Administration`
                         <select
                           value={logSessionForm.subject}
                           onChange={(e) => setLogSessionForm({ ...logSessionForm, subject: e.target.value })}
-                          className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none cursor-pointer"
+                          className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none cursor-pointer"
                         >
                           <option value="">Select Subject...</option>
                           {(subjects || []).map(sub => (
@@ -6205,7 +6208,7 @@ Office of the Principal / Academic Administration`
                               onClick={() => setLogSessionForm({ ...logSessionForm, period: pNum })}
                               className={`py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
                                 Number(logSessionForm.period) === pNum
-                                  ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-xs'
+                                  ? 'bg-[#29456D] text-white border-[#29456D] shadow-xs'
                                   : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
                               }`}
                             >
@@ -6227,7 +6230,7 @@ Office of the Principal / Academic Administration`
                         <button
                           type="submit"
                           disabled={isLoggingSession}
-                          className="px-5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white rounded-xl text-xs font-semibold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                          className="px-5 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white rounded-xl text-xs font-semibold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                         >
                           {isLoggingSession ? (
                             <>
@@ -6326,8 +6329,8 @@ Office of the Principal / Academic Administration`
               {/* ════════ HEADER BAR ════════ */}
               <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 p-6 sm:p-7 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
                 <div className="flex items-start sm:items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#2D4D77]/10 border border-[#2D4D77]/20 flex items-center justify-center text-[#203B61] shrink-0 shadow-2xs">
-                    <MessageSquare className="w-6 h-6 text-[#203B61]" />
+                  <div className="w-12 h-12 rounded-2xl bg-[#29456D]/10 border border-[#29456D]/20 flex items-center justify-center text-[#172B4D] shrink-0 shadow-2xs">
+                    <MessageSquare className="w-6 h-6 text-[#172B4D]" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2.5 flex-wrap">
@@ -6338,7 +6341,7 @@ Office of the Principal / Academic Administration`
                         <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
                         {stats.averageRating} / 5.0 Rating
                       </span>
-                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-[#203B61] border border-blue-200">
+                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-[#172B4D] border border-blue-200">
                         {stats.totalReviews} Total Verified Reviews
                       </span>
                     </div>
@@ -6352,7 +6355,7 @@ Office of the Principal / Academic Administration`
                   <button
                     type="button"
                     onClick={handleOpenAddFeedbackModal}
-                    className="px-4 py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-bold rounded-xl transition-all shadow-xs flex items-center gap-2 text-xs cursor-pointer"
+                    className="px-4 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold rounded-xl transition-all shadow-xs flex items-center gap-2 text-xs cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
                     <span>+ Submit Evaluation</span>
@@ -6372,7 +6375,7 @@ Office of the Principal / Academic Administration`
                     className="p-2.5 bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 rounded-xl transition-all shadow-2xs cursor-pointer"
                     title="Refresh evaluations"
                   >
-                    <RefreshCw className={`w-4 h-4 ${loadingAdminFeedback ? 'animate-spin text-[#203B61]' : ''}`} />
+                    <RefreshCw className={`w-4 h-4 ${loadingAdminFeedback ? 'animate-spin text-[#172B4D]' : ''}`} />
                   </button>
                 </div>
               </div>
@@ -6453,7 +6456,7 @@ Office of the Principal / Academic Administration`
                       <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                         Total Evaluations
                       </span>
-                      <span className="p-2 rounded-xl bg-blue-50 text-[#203B61]">
+                      <span className="p-2 rounded-xl bg-blue-50 text-[#172B4D]">
                         <MessageSquare className="w-4 h-4" />
                       </span>
                     </div>
@@ -6597,7 +6600,7 @@ Office of the Principal / Academic Administration`
                         placeholder="Search student, teacher, subject..."
                         value={feedbackSearch}
                         onChange={(e) => setFeedbackSearch(e.target.value)}
-                        className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none text-slate-900 placeholder-slate-400 transition-all"
+                        className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none text-slate-900 placeholder-slate-400 transition-all"
                       />
                       {feedbackSearch && (
                         <button
@@ -6616,7 +6619,7 @@ Office of the Principal / Academic Administration`
                         onClick={() => setFeedbackViewMode('card')}
                         className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                           feedbackViewMode === 'card'
-                            ? 'bg-white text-[#203B61] shadow-2xs'
+                            ? 'bg-white text-[#172B4D] shadow-2xs'
                             : 'text-slate-500 hover:text-slate-800'
                         }`}
                         title="Card Grid View"
@@ -6628,7 +6631,7 @@ Office of the Principal / Academic Administration`
                         onClick={() => setFeedbackViewMode('table')}
                         className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                           feedbackViewMode === 'table'
-                            ? 'bg-white text-[#203B61] shadow-2xs'
+                            ? 'bg-white text-[#172B4D] shadow-2xs'
                             : 'text-slate-500 hover:text-slate-800'
                         }`}
                         title="Detailed Table View"
@@ -6672,7 +6675,7 @@ Office of the Principal / Academic Administration`
                       <select
                         value={feedbackTeacherFilter}
                         onChange={(e) => setFeedbackTeacherFilter(e.target.value)}
-                        className="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-800 outline-none focus:border-[#2D4D77] cursor-pointer"
+                        className="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-800 outline-none focus:border-[#29456D] cursor-pointer"
                       >
                         <option value="All">All Faculty</option>
                         {teachersList.map((t) => (
@@ -6687,7 +6690,7 @@ Office of the Principal / Academic Administration`
                       <select
                         value={feedbackClassFilter}
                         onChange={(e) => setFeedbackClassFilter(e.target.value)}
-                        className="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-800 outline-none focus:border-[#2D4D77] cursor-pointer"
+                        className="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-800 outline-none focus:border-[#29456D] cursor-pointer"
                       >
                         <option value="All">All Classes</option>
                         {classesList.map((c) => (
@@ -6704,7 +6707,7 @@ Office of the Principal / Academic Administration`
                       <select
                         value={feedbackSortBy}
                         onChange={(e) => setFeedbackSortBy(e.target.value)}
-                        className="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-800 outline-none focus:border-[#2D4D77] cursor-pointer"
+                        className="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-800 outline-none focus:border-[#29456D] cursor-pointer"
                       >
                         <option value="newest">Newest First</option>
                         <option value="highest">Highest Rating (5★)</option>
@@ -6723,7 +6726,7 @@ Office of the Principal / Academic Administration`
                           setFeedbackTeacherFilter('All');
                           setFeedbackClassFilter('All');
                         }}
-                        className="text-[11px] font-bold text-[#203B61] hover:underline cursor-pointer"
+                        className="text-[11px] font-bold text-[#172B4D] hover:underline cursor-pointer"
                       >
                         Reset Filters
                       </button>
@@ -6762,7 +6765,7 @@ Office of the Principal / Academic Administration`
                     <button
                       type="button"
                       onClick={handleOpenAddFeedbackModal}
-                      className="px-3.5 py-1.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-bold rounded-xl text-xs transition-all cursor-pointer shadow-xs"
+                      className="px-3.5 py-1.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold rounded-xl text-xs transition-all cursor-pointer shadow-xs"
                     >
                       + Submit Evaluation
                     </button>
@@ -6786,7 +6789,7 @@ Office of the Principal / Academic Administration`
                           <div className="flex items-start justify-between gap-3 mb-3">
                             <div className="flex items-center gap-3">
                               <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-xs shrink-0 ${
-                                isParent ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-[#203B61]'
+                                isParent ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-[#172B4D]'
                               }`}>
                                 {initials}
                               </div>
@@ -6796,7 +6799,7 @@ Office of the Principal / Academic Administration`
                                 </h4>
                                 <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-slate-500 font-medium">
                                   <span className={`px-2 py-0.2 rounded-md font-bold uppercase ${
-                                    isParent ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-blue-50 text-[#203B61] border border-blue-200'
+                                    isParent ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-blue-50 text-[#172B4D] border border-blue-200'
                                   }`}>
                                     {isParent ? 'Parent / Guardian' : 'Enrolled Student'}
                                   </span>
@@ -6821,7 +6824,7 @@ Office of the Principal / Academic Administration`
                               <span className="font-bold text-slate-800">👨‍🏫 {f.teacherName}</span>
                               <span className="text-[10px] font-semibold text-slate-400">• {f.subject}</span>
                             </div>
-                            <span className="text-[10px] font-bold text-[#203B61] bg-white border border-slate-200 px-2 py-0.5 rounded-md">
+                            <span className="text-[10px] font-bold text-[#172B4D] bg-white border border-slate-200 px-2 py-0.5 rounded-md">
                               {f.class}
                             </span>
                           </div>
@@ -6949,7 +6952,7 @@ Office of the Principal / Academic Administration`
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
                   <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden animate-scaleUp">
                     {/* Modal Header */}
-                    <div className="bg-gradient-to-r from-[#203B61] to-[#1D4ED8] p-6 text-white flex items-center justify-between">
+                    <div className="bg-gradient-to-r from-[#172B4D] to-[#1D4ED8] p-6 text-white flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="p-2.5 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20">
                           <MessageSquare className="w-5 h-5 text-white" />
@@ -6979,7 +6982,7 @@ Office of the Principal / Academic Administration`
                             onClick={() => setAddFeedbackForm(prev => ({ ...prev, evaluatorType: 'Student' }))}
                             className={`py-2 px-3 rounded-xl border font-bold text-center transition-all cursor-pointer flex items-center justify-center gap-2 ${
                               addFeedbackForm.evaluatorType === 'Student'
-                                ? 'bg-blue-50 border-[#2D4D77] text-[#203B61] ring-2 ring-[#1E3A8A]/20'
+                                ? 'bg-blue-50 border-[#29456D] text-[#172B4D] ring-2 ring-[#1E3A8A]/20'
                                 : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-white'
                             }`}
                           >
@@ -7014,7 +7017,7 @@ Office of the Principal / Academic Administration`
                               const val = e.target.value;
                               setAddFeedbackForm(prev => addFeedbackForm.evaluatorType === 'Parent' ? { ...prev, parentName: val } : { ...prev, studentName: val });
                             }}
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-[#2D4D77] text-slate-900"
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-[#29456D] text-slate-900"
                           />
                         </div>
                         <div>
@@ -7029,7 +7032,7 @@ Office of the Principal / Academic Administration`
                               const val = e.target.value;
                               setAddFeedbackForm(prev => addFeedbackForm.evaluatorType === 'Parent' ? { ...prev, studentName: val } : { ...prev, rollNumber: val });
                             }}
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-[#2D4D77] text-slate-900"
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-[#29456D] text-slate-900"
                           />
                         </div>
                       </div>
@@ -7049,7 +7052,7 @@ Office of the Principal / Academic Administration`
                                 subject: matchMapping?.subject || prev.subject
                               }));
                             }}
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-[#2D4D77] text-slate-900 cursor-pointer"
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-[#29456D] text-slate-900 cursor-pointer"
                           >
                             {teachersList.map((t) => (
                               <option key={t._id || t.id} value={t.name}>{t.name}</option>
@@ -7063,7 +7066,7 @@ Office of the Principal / Academic Administration`
                             placeholder="e.g. Mathematics"
                             value={addFeedbackForm.subject}
                             onChange={(e) => setAddFeedbackForm(prev => ({ ...prev, subject: e.target.value }))}
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-[#2D4D77] text-slate-900"
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-[#29456D] text-slate-900"
                           />
                         </div>
                       </div>
@@ -7075,7 +7078,7 @@ Office of the Principal / Academic Administration`
                           <select
                             value={addFeedbackForm.standard}
                             onChange={(e) => setAddFeedbackForm(prev => ({ ...prev, standard: e.target.value }))}
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-[#2D4D77] text-slate-900 cursor-pointer"
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-[#29456D] text-slate-900 cursor-pointer"
                           >
                             {Array.from(new Set(classesList.map(c => c.standard))).map((std) => (
                               <option key={std} value={std}>Class {std}</option>
@@ -7087,7 +7090,7 @@ Office of the Principal / Academic Administration`
                           <select
                             value={addFeedbackForm.section}
                             onChange={(e) => setAddFeedbackForm(prev => ({ ...prev, section: e.target.value }))}
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-[#2D4D77] text-slate-900 cursor-pointer"
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-[#29456D] text-slate-900 cursor-pointer"
                           >
                             {['A', 'B', 'C', 'D'].map((sec) => (
                               <option key={sec} value={sec}>Section {sec}</option>
@@ -7133,7 +7136,7 @@ Office of the Principal / Academic Administration`
                           placeholder="Write constructive evaluation notes, pedagogy feedback, or practical suggestions..."
                           value={addFeedbackForm.feedback}
                           onChange={(e) => setAddFeedbackForm(prev => ({ ...prev, feedback: e.target.value }))}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-[#2D4D77] text-slate-900 text-xs"
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-[#29456D] text-slate-900 text-xs"
                         />
                       </div>
 
@@ -7149,7 +7152,7 @@ Office of the Principal / Academic Administration`
                         <button
                           type="submit"
                           disabled={isSubmittingFeedback}
-                          className="px-5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white font-bold rounded-xl transition-all cursor-pointer shadow-xs flex items-center gap-2"
+                          className="px-5 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold rounded-xl transition-all cursor-pointer shadow-xs flex items-center gap-2"
                         >
                           {isSubmittingFeedback ? <Spinner size="sm" /> : <SaveIcon className="w-4 h-4" />}
                           <span>Save Evaluation</span>
@@ -7168,8 +7171,8 @@ Office of the Principal / Academic Administration`
             {/* Header */}
             <div className="bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#203B61] shrink-0">
-                  <UsersRound className="w-5 h-5 text-[#203B61]" />
+                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#172B4D] shrink-0">
+                  <UsersRound className="w-5 h-5 text-[#172B4D]" />
                 </div>
                 <div>
                   <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
@@ -7182,7 +7185,7 @@ Office of the Principal / Academic Administration`
               </div>
               <button
                 onClick={handleAddClick}
-                className="px-4 py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer active:scale-95 shrink-0"
+                className="px-4 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer active:scale-95 shrink-0"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add Employee</span>
@@ -7197,7 +7200,7 @@ Office of the Principal / Academic Administration`
                   onClick={() => setEmpFilterTab('all')}
                   className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                     empFilterTab === 'all'
-                      ? 'bg-[#203B61] text-white shadow-xs'
+                      ? 'bg-[#172B4D] text-white shadow-xs'
                       : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
                   }`}
                 >
@@ -7214,7 +7217,7 @@ Office of the Principal / Academic Administration`
                   onClick={() => setEmpFilterTab('class_teacher')}
                   className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                     empFilterTab === 'class_teacher'
-                      ? 'bg-[#203B61] text-white shadow-xs'
+                      ? 'bg-[#172B4D] text-white shadow-xs'
                       : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
                   }`}
                 >
@@ -7231,7 +7234,7 @@ Office of the Principal / Academic Administration`
                   onClick={() => setEmpFilterTab('non_class_teacher')}
                   className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                     empFilterTab === 'non_class_teacher'
-                      ? 'bg-[#203B61] text-white shadow-xs'
+                      ? 'bg-[#172B4D] text-white shadow-xs'
                       : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
                   }`}
                 >
@@ -7248,7 +7251,7 @@ Office of the Principal / Academic Administration`
                   onClick={() => setEmpFilterTab('staff')}
                   className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                     empFilterTab === 'staff'
-                      ? 'bg-[#203B61] text-white shadow-xs'
+                      ? 'bg-[#172B4D] text-white shadow-xs'
                       : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
                   }`}
                 >
@@ -7269,7 +7272,7 @@ Office of the Principal / Academic Administration`
                     placeholder="Search employees by name, ID, or email..."
                     value={empSearch}
                     onChange={e => setEmpSearch(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 font-medium text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none transition-all shadow-2xs"
+                    className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 font-medium text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none transition-all shadow-2xs"
                   />
                   <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
                 </div>
@@ -7341,12 +7344,12 @@ Office of the Principal / Academic Administration`
                                       <div className="font-semibold text-slate-900 text-sm flex items-center gap-1.5 flex-wrap">
                                         <span 
                                           onClick={() => handleUserClick(emp._id)}
-                                          className="cursor-pointer hover:underline text-slate-900 hover:text-[#203B61]"
+                                          className="cursor-pointer hover:underline text-slate-900 hover:text-[#172B4D]"
                                         >
                                           {emp.name}
                                         </span> 
                                         {emp.is_super_admin ? (
-                                          <span className="text-[10px] bg-blue-50 text-[#203B61] px-2 py-0.5 rounded-md font-semibold border border-blue-200">
+                                          <span className="text-[10px] bg-blue-50 text-[#172B4D] px-2 py-0.5 rounded-md font-semibold border border-blue-200">
                                             Super Admin
                                           </span>
                                         ) : (emp.role?.toLowerCase() === 'admin' || emp.role?.toLowerCase() === 'super_admin' || emp.teacherType === 'Staff') ? (
@@ -7392,7 +7395,7 @@ Office of the Principal / Academic Administration`
                                       onChange={() => handleEmpToggle(realIdx, 'skip_face')} 
                                       className="sr-only peer" 
                                     />
-                                    <div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2D4D77]"></div>
+                                    <div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#29456D]"></div>
                                   </label>
                                 </td>
 
@@ -7404,7 +7407,7 @@ Office of the Principal / Academic Administration`
                                       onChange={() => handleEmpToggle(realIdx, 'skip_location')} 
                                       className="sr-only peer" 
                                     />
-                                    <div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2D4D77]"></div>
+                                    <div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#29456D]"></div>
                                   </label>
                                 </td>
 
@@ -7412,7 +7415,7 @@ Office of the Principal / Academic Administration`
                                   <button
                                     type="button"
                                     onClick={() => handleDirectLogin(emp)}
-                                    className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-[#203B61] font-semibold text-xs rounded-lg transition-colors border border-indigo-200 flex items-center justify-center gap-1.5 mx-auto cursor-pointer"
+                                    className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-[#172B4D] font-semibold text-xs rounded-lg transition-colors border border-indigo-200 flex items-center justify-center gap-1.5 mx-auto cursor-pointer"
                                     title={`Directly login as ${emp.name}`}
                                   >
                                     <LogInIcon className="w-3.5 h-3.5" />
@@ -7439,7 +7442,7 @@ Office of the Principal / Academic Administration`
                                   <select 
                                     value={getMergedRoleOptions(roles, emp.role).find(r => r.code.toLowerCase() === (emp.role || '').toLowerCase())?.code || emp.role} 
                                     onChange={e => handleEmpRole(realIdx, e.target.value)} 
-                                    className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-800 font-medium text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none cursor-pointer"
+                                    className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-800 font-medium text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none cursor-pointer"
                                   >
                                     {getMergedRoleOptions(roles, emp.role).map(r => (
                                       <option key={r.code} value={r.code}>{r.name}</option>
@@ -7533,12 +7536,12 @@ Office of the Principal / Academic Administration`
                                   <div className="font-semibold text-gray-900 flex items-center gap-1.5 flex-wrap">
                                     <span 
                                       onClick={() => handleUserClick(emp._id)}
-                                      className="cursor-pointer hover:underline text-[#203B61] hover:text-[#405189] font-bold"
+                                      className="cursor-pointer hover:underline text-[#172B4D] hover:text-[#405189] font-bold"
                                     >
                                       {emp.name}
                                     </span>
                                     {emp.is_super_admin ? (
-                                      <span className="text-[9px] bg-blue-50 text-[#203B61] px-1.5 py-0.5 rounded-full font-bold border border-blue-200">Super Admin</span>
+                                      <span className="text-[9px] bg-blue-50 text-[#172B4D] px-1.5 py-0.5 rounded-full font-bold border border-blue-200">Super Admin</span>
                                     ) : (emp.role?.toLowerCase() === 'admin' || emp.role?.toLowerCase() === 'super_admin' || emp.teacherType === 'Staff') ? (
                                       <span className="text-[9px] bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded-full font-bold border border-slate-300">{emp.role || 'Staff'}</span>
                                     ) : (emp.isClassTeacher || emp.teacherType === 'Class Teacher') ? (
@@ -7625,7 +7628,7 @@ Office of the Principal / Academic Administration`
                               </button>
                               <button
                                 onClick={() => handleOpenResetPasswordModal(emp._id, emp.name)}
-                                className="flex-1 py-2 bg-stone-50 hover:bg-[#2D4D77] text-[#405189] hover:text-white border border-[#e9ebec] rounded-lg text-xs font-bold transition-all text-center"
+                                className="flex-1 py-2 bg-stone-50 hover:bg-[#29456D] text-[#405189] hover:text-white border border-[#e9ebec] rounded-lg text-xs font-bold transition-all text-center"
                               >
                                 Reset Pass
                               </button>
@@ -7652,10 +7655,10 @@ Office of the Principal / Academic Administration`
         {activeTab === 'classes' && (
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden mb-8 text-slate-900 animate-fadeIn">
             {/* Header with Overview Stats */}
-            <div className="bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-200/80 flex flex-col lg:flex-row justify-between items-start md:items-center gap-4">
               <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#203B61] shrink-0">
-                  <School className="w-5 h-5 text-[#203B61]" />
+                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#172B4D] shrink-0">
+                  <School className="w-5 h-5 text-[#172B4D]" />
                 </div>
                 <div>
                   <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
@@ -7672,13 +7675,13 @@ Office of the Principal / Academic Administration`
                 <button
                   type="button"
                   onClick={() => navigate('/academic-management?bulk=true')}
-                  className="px-3.5 py-2 bg-white hover:bg-slate-50 text-[#203B61] font-bold text-xs rounded-xl border border-blue-200 shadow-2xs transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
+                  className="px-3.5 py-2 bg-white hover:bg-slate-50 text-[#172B4D] font-bold text-xs rounded-xl border border-blue-200 shadow-2xs transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
                 >
-                  <Upload className="w-3.5 h-3.5 text-[#203B61]" />
+                  <Upload className="w-3.5 h-3.5 text-[#172B4D]" />
                   <span>Bulk Upload Students</span>
                 </button>
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700">
-                  <span className="w-2 h-2 rounded-full bg-[#2D4D77]"></span>
+                  <span className="w-2 h-2 rounded-full bg-[#29456D]"></span>
                   <span>Total Classes: <strong className="text-slate-900">{classes.length}</strong></span>
                 </div>
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700">
@@ -7705,7 +7708,7 @@ Office of the Principal / Academic Administration`
                         </>
                       ) : (
                         <>
-                          <Plus className="w-4 h-4 text-[#203B61]" />
+                          <Plus className="w-4 h-4 text-[#172B4D]" />
                           <span>Add New Class</span>
                         </>
                       )}
@@ -7735,7 +7738,7 @@ Office of the Principal / Academic Administration`
                       <select
                         value={classStandard}
                         onChange={(e) => setClassStandard(e.target.value)}
-                        className="flex-1 px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs cursor-pointer shadow-2xs"
+                        className="flex-1 px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs cursor-pointer shadow-2xs"
                       >
                         {(settings.standardsList || ['Nursery', 'LKG', 'UKG', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th']).map(std => (
                           <option key={std} value={std}>{std}</option>
@@ -7791,7 +7794,7 @@ Office of the Principal / Academic Administration`
                       required
                       value={classSection}
                       onChange={(e) => setClassSection(e.target.value.toUpperCase())}
-                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs uppercase shadow-2xs"
+                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs uppercase shadow-2xs"
                     />
                   </div>
 
@@ -7803,7 +7806,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={classBoard}
                       onChange={(e) => setClassBoard(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs cursor-pointer shadow-2xs"
+                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs cursor-pointer shadow-2xs"
                     >
                       {['CBSE', 'STATE', 'ICSE', 'IGCSE', 'IB'].map(b => (
                         <option key={b} value={b}>{b}</option>
@@ -7819,7 +7822,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={classTeacherId}
                       onChange={(e) => setClassTeacherId(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs cursor-pointer shadow-2xs"
+                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs cursor-pointer shadow-2xs"
                     >
                       <option value="">-- Select Teacher --</option>
                       {(Array.isArray(employees) ? employees : []).filter(emp => !emp.is_super_admin && !['admin', 'parent', 'student'].includes((emp.role || '').toLowerCase())).map(tch => (
@@ -7839,7 +7842,7 @@ Office of the Principal / Academic Administration`
                         placeholder="e.g. Room 101"
                         value={classRoomNumber}
                         onChange={(e) => setClassRoomNumber(e.target.value)}
-                        className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs shadow-2xs"
+                        className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs shadow-2xs"
                       />
                     </div>
                     <div>
@@ -7851,7 +7854,7 @@ Office of the Principal / Academic Administration`
                         min="0"
                         value={classStrength}
                         onChange={(e) => setClassStrength(e.target.value)}
-                        className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs shadow-2xs"
+                        className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs shadow-2xs"
                       />
                     </div>
                   </div>
@@ -7870,7 +7873,7 @@ Office of the Principal / Academic Administration`
                     <button
                       type="submit"
                       disabled={isSavingClass}
-                      className="flex-1 py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-xs cursor-pointer disabled:opacity-50"
+                      className="flex-1 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-xs cursor-pointer disabled:opacity-50"
                     >
                       {isSavingClass ? (
                         <>
@@ -7891,7 +7894,7 @@ Office of the Principal / Academic Administration`
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                       <span>Registered Classes</span>
-                      <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-[#203B61] border border-blue-200">
+                      <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-[#172B4D] border border-blue-200">
                         {filteredClasses.length}
                       </span>
                     </h3>
@@ -7907,7 +7910,7 @@ Office of the Principal / Academic Administration`
                         onClick={() => setClassBoardFilter(b)}
                         className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
                           classBoardFilter === b
-                            ? 'bg-[#2D4D77] text-white border-[#2D4D77]'
+                            ? 'bg-[#29456D] text-white border-[#29456D]'
                             : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
                         }`}
                       >
@@ -7925,7 +7928,7 @@ Office of the Principal / Academic Administration`
                     value={classSearch}
                     onChange={(e) => setClassSearch(e.target.value)}
                     placeholder="Search classes by standard, section, teacher, or room..."
-                    className="w-full pl-9 pr-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none text-xs font-medium shadow-2xs transition-all"
+                    className="w-full pl-9 pr-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none text-xs font-medium shadow-2xs transition-all"
                   />
                   {classSearch && (
                     <button
@@ -8026,10 +8029,10 @@ Office of the Principal / Academic Administration`
                                       setSubjectClassFilter(cls.standard);
                                       setActiveTab('subjects');
                                     }}
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 hover:bg-blue-100 text-[#203B61] border border-blue-200 text-[10px] font-bold transition-all cursor-pointer shadow-2xs"
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 hover:bg-blue-100 text-[#172B4D] border border-blue-200 text-[10px] font-bold transition-all cursor-pointer shadow-2xs"
                                     title={`View ${classSubjectsCount} subjects registered for Class ${cls.standard}`}
                                   >
-                                    <BookOpen className="w-2.5 h-2.5 text-[#203B61]" />
+                                    <BookOpen className="w-2.5 h-2.5 text-[#172B4D]" />
                                     <span>{classSubjectsCount} Subjects</span>
                                   </button>
                                   <button
@@ -8062,7 +8065,7 @@ Office of the Principal / Academic Administration`
                               <td className="px-4 py-3.5">
                                 <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-bold border tracking-wide ${
                                   boardName === 'CBSE' 
-                                    ? 'bg-blue-50 text-[#203B61] border-blue-200' 
+                                    ? 'bg-blue-50 text-[#172B4D] border-blue-200' 
                                     : boardName === 'ICSE'
                                       ? 'bg-teal-50 text-teal-800 border-teal-200'
                                       : boardName === 'STATE'
@@ -8078,7 +8081,7 @@ Office of the Principal / Academic Administration`
                                     <span className="text-[10px] uppercase font-bold text-slate-400 block">Class Teacher:</span>
                                     {cls.classTeacher?.name || cls.classTeacherName ? (
                                       <div className="flex items-center gap-2 mt-0.5">
-                                        <div className="w-5 h-5 rounded-full bg-blue-100 text-[#203B61] font-bold text-[10px] flex items-center justify-center shrink-0">
+                                        <div className="w-5 h-5 rounded-full bg-blue-100 text-[#172B4D] font-bold text-[10px] flex items-center justify-center shrink-0">
                                           {(cls.classTeacher?.name || cls.classTeacherName).charAt(0).toUpperCase()}
                                         </div>
                                         <span className="font-bold text-slate-800">
@@ -8146,7 +8149,7 @@ Office of the Principal / Academic Administration`
                                   <button
                                     type="button"
                                     onClick={() => handleStartEditClass(cls)}
-                                    className="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#203B61] border border-blue-200 transition-colors flex items-center justify-center cursor-pointer shadow-2xs active:scale-95"
+                                    className="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#172B4D] border border-blue-200 transition-colors flex items-center justify-center cursor-pointer shadow-2xs active:scale-95"
                                     title="Edit Class"
                                   >
                                     <Edit3 className="w-3.5 h-3.5" />
@@ -8184,7 +8187,7 @@ Office of the Principal / Academic Administration`
             {/* Header with Title and Quick Stats */}
             <div className="bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#203B61] to-blue-700 text-white flex items-center justify-center shadow-xs shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#172B4D] to-blue-700 text-white flex items-center justify-center shadow-xs shrink-0">
                   <BookOpen className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -8200,9 +8203,9 @@ Office of the Principal / Academic Administration`
               {/* Stats Badges */}
               <div className="flex flex-wrap items-center gap-2.5">
                 <div className="px-3.5 py-1.5 rounded-xl bg-blue-50/80 border border-blue-200/60 flex items-center gap-2 text-xs">
-                  <BookOpen className="w-3.5 h-3.5 text-[#203B61]" />
+                  <BookOpen className="w-3.5 h-3.5 text-[#172B4D]" />
                   <span className="text-slate-600 font-medium">Total Subjects:</span>
-                  <span className="font-bold text-[#203B61]">{subjects.length}</span>
+                  <span className="font-bold text-[#172B4D]">{subjects.length}</span>
                 </div>
                 <div className="px-3.5 py-1.5 rounded-xl bg-indigo-50/80 border border-indigo-200/60 flex items-center gap-2 text-xs">
                   <School className="w-3.5 h-3.5 text-indigo-700" />
@@ -8224,7 +8227,7 @@ Office of the Principal / Academic Administration`
                       </>
                     ) : (
                       <>
-                        <Plus className="w-4 h-4 text-[#203B61]" />
+                        <Plus className="w-4 h-4 text-[#172B4D]" />
                         <span>Add New Subject</span>
                       </>
                     )}
@@ -8241,7 +8244,7 @@ Office of the Principal / Academic Administration`
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <School className="w-3.5 h-3.5 text-[#203B61]" />
+                        <School className="w-3.5 h-3.5 text-[#172B4D]" />
                         <span>1. Select Class *</span>
                       </span>
                       <span className="text-[10px] font-medium text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
@@ -8251,7 +8254,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={subjectForm.standard || ''}
                       onChange={(e) => handleSelectClassForSubject(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs shadow-2xs cursor-pointer"
+                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs shadow-2xs cursor-pointer"
                     >
                       <option value="">-- Choose Class (from Class Management) --</option>
                       <option value="All">Universal / All Classes</option>
@@ -8297,7 +8300,7 @@ Office of the Principal / Academic Administration`
                           };
                         });
                       }}
-                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs shadow-2xs"
+                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs shadow-2xs"
                     />
 
                     {/* Quick Subject Suggestions */}
@@ -8321,7 +8324,7 @@ Office of the Principal / Academic Administration`
                             }}
                             className={`px-2 py-0.5 rounded-md text-[10px] font-medium transition-colors cursor-pointer border ${
                               subjectForm.name === suggestedName
-                                ? 'bg-[#2D4D77] text-white border-[#2D4D77]'
+                                ? 'bg-[#29456D] text-white border-[#29456D]'
                                 : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
                             }`}
                           >
@@ -8343,7 +8346,7 @@ Office of the Principal / Academic Administration`
                       placeholder="e.g. MATH-10A"
                       value={subjectForm.code}
                       onChange={(e) => setSubjectForm(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
-                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 font-mono text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none shadow-2xs"
+                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 font-mono text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none shadow-2xs"
                     />
                   </div>
 
@@ -8356,7 +8359,7 @@ Office of the Principal / Academic Administration`
                       <select
                         value={subjectForm.type}
                         onChange={(e) => setSubjectForm(prev => ({ ...prev, type: e.target.value }))}
-                        className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs shadow-2xs"
+                        className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs shadow-2xs"
                       >
                         <option value="Core">Core Subject</option>
                         <option value="Elective">Elective</option>
@@ -8376,7 +8379,7 @@ Office of the Principal / Academic Administration`
                         max="20"
                         value={subjectForm.weeklyHours}
                         onChange={(e) => setSubjectForm(prev => ({ ...prev, weeklyHours: e.target.value }))}
-                        className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs shadow-2xs"
+                        className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs shadow-2xs"
                       />
                     </div>
                   </div>
@@ -8385,7 +8388,7 @@ Office of the Principal / Academic Administration`
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <User className="w-3.5 h-3.5 text-[#203B61]" />
+                        <User className="w-3.5 h-3.5 text-[#172B4D]" />
                         <span>5. Assigned Faculty Educator</span>
                       </span>
                       <span className="text-[10px] text-slate-400">Optional</span>
@@ -8393,7 +8396,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={subjectForm.teacherId || ''}
                       onChange={(e) => setSubjectForm(prev => ({ ...prev, teacherId: e.target.value }))}
-                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs shadow-2xs cursor-pointer"
+                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs shadow-2xs cursor-pointer"
                     >
                       <option value="">-- No Educator Assigned (Unassigned) --</option>
                       {employees.filter(emp => !emp.is_super_admin && !['admin', 'parent', 'student'].includes((emp.role || '').toLowerCase())).map(t => (
@@ -8411,7 +8414,7 @@ Office of the Principal / Academic Administration`
                         <button
                           type="submit"
                           disabled={isSavingSubject}
-                          className="flex-1 py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-xs cursor-pointer"
+                          className="flex-1 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-xs cursor-pointer"
                         >
                           {isSavingSubject ? (
                             <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
@@ -8435,7 +8438,7 @@ Office of the Principal / Academic Administration`
                         <button
                           type="submit"
                           disabled={isSavingSubject}
-                          className="flex-1 py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-xs cursor-pointer"
+                          className="flex-1 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-xs cursor-pointer"
                         >
                           {isSavingSubject ? (
                             <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
@@ -8474,7 +8477,7 @@ Office of the Principal / Academic Administration`
                       placeholder="Search subjects, codes, or classes..."
                       value={subjectSearch}
                       onChange={(e) => setSubjectSearch(e.target.value)}
-                      className="w-full pl-9 pr-3.5 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs shadow-2xs"
+                      className="w-full pl-9 pr-3.5 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs shadow-2xs"
                     />
                     {subjectSearch && (
                       <button
@@ -8491,7 +8494,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={subjectClassFilter}
                       onChange={(e) => setSubjectClassFilter(e.target.value)}
-                      className="px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-800 font-semibold text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none shadow-2xs cursor-pointer"
+                      className="px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-800 font-semibold text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none shadow-2xs cursor-pointer"
                     >
                       <option value="All">All Classes ({subjects.length})</option>
                       <option value="Universal">Universal / General</option>
@@ -8506,7 +8509,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={subjectTypeFilter}
                       onChange={(e) => setSubjectTypeFilter(e.target.value)}
-                      className="px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-800 font-semibold text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none shadow-2xs cursor-pointer"
+                      className="px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-800 font-semibold text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none shadow-2xs cursor-pointer"
                     >
                       <option value="All">All Categories</option>
                       <option value="Core">Core</option>
@@ -8525,7 +8528,7 @@ Office of the Principal / Academic Administration`
                   </div>
                 ) : filteredSubjects.length === 0 ? (
                   <div className="text-center py-14 bg-slate-50 rounded-2xl border border-dashed border-slate-300 p-6">
-                    <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#203B61] flex items-center justify-center mx-auto mb-3">
+                    <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#172B4D] flex items-center justify-center mx-auto mb-3">
                       <BookOpen className="w-6 h-6" />
                     </div>
                     <p className="text-sm font-bold text-slate-800">No subjects found</p>
@@ -8537,7 +8540,7 @@ Office of the Principal / Academic Administration`
                     {(subjectSearch || subjectClassFilter !== 'All' || subjectTypeFilter !== 'All') && (
                       <button
                         onClick={() => { setSubjectSearch(''); setSubjectClassFilter('All'); setSubjectTypeFilter('All'); }}
-                        className="mt-3 px-3.5 py-1.5 bg-[#2D4D77] text-white rounded-xl text-xs font-semibold hover:bg-blue-800 cursor-pointer"
+                        className="mt-3 px-3.5 py-1.5 bg-[#29456D] text-white rounded-xl text-xs font-semibold hover:bg-blue-800 cursor-pointer"
                       >
                         Reset Filters
                       </button>
@@ -8571,7 +8574,7 @@ Office of the Principal / Academic Administration`
                               {/* Subject Name & Code */}
                               <td className="px-4 py-3.5 font-bold text-slate-900">
                                 <div className="flex items-center gap-2.5">
-                                  <div className="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 text-[#203B61] flex items-center justify-center shrink-0">
+                                  <div className="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 text-[#172B4D] flex items-center justify-center shrink-0">
                                     <BookOpen className="w-3.5 h-3.5" />
                                   </div>
                                   <div>
@@ -8596,7 +8599,7 @@ Office of the Principal / Academic Administration`
                                 ) : (
                                   <div className="inline-flex items-center gap-1.5">
                                     <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-900 font-bold text-xs border border-blue-200/70">
-                                      <School className="w-3.5 h-3.5 text-[#203B61]" />
+                                      <School className="w-3.5 h-3.5 text-[#172B4D]" />
                                       <span>Class {sub.standard} {sub.section ? `- ${sub.section}` : ''}</span>
                                     </span>
                                     <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide uppercase bg-amber-50 text-amber-800 border border-amber-200/80">
@@ -8610,7 +8613,7 @@ Office of the Principal / Academic Administration`
                               <td className="px-4 py-3.5">
                                 {sub.assignedTeacher ? (
                                   <div className="flex items-center gap-1.5">
-                                    <div className="w-6 h-6 rounded-full bg-indigo-100 text-[#203B61] font-bold text-[10px] flex items-center justify-center shrink-0">
+                                    <div className="w-6 h-6 rounded-full bg-indigo-100 text-[#172B4D] font-bold text-[10px] flex items-center justify-center shrink-0">
                                       {sub.assignedTeacher.teacherName?.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
@@ -8677,7 +8680,7 @@ Office of the Principal / Academic Administration`
                                   </button>
                                   <button
                                     onClick={() => handleStartEditSubject(sub)}
-                                    className="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#203B61] border border-blue-200/80 transition-all flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105"
+                                    className="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#172B4D] border border-blue-200/80 transition-all flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105"
                                     title="Edit Subject"
                                   >
                                     <Edit3 className="w-3.5 h-3.5" />
@@ -8762,7 +8765,7 @@ Office of the Principal / Academic Administration`
             {/* Header with Title and Quick Stats */}
             <div className="bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#203B61] to-blue-700 text-white flex items-center justify-center shadow-xs shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#172B4D] to-blue-700 text-white flex items-center justify-center shadow-xs shrink-0">
                   <Link2 className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -8778,9 +8781,9 @@ Office of the Principal / Academic Administration`
               {/* Stats Badges */}
               <div className="flex flex-wrap items-center gap-2.5">
                 <div className="px-3.5 py-1.5 rounded-xl bg-blue-50/80 border border-blue-200/60 flex items-center gap-2 text-xs">
-                  <Link2 className="w-3.5 h-3.5 text-[#203B61]" />
+                  <Link2 className="w-3.5 h-3.5 text-[#172B4D]" />
                   <span className="text-slate-600 font-medium">Total Assignments:</span>
-                  <span className="font-bold text-[#203B61]">{mappings.length}</span>
+                  <span className="font-bold text-[#172B4D]">{mappings.length}</span>
                 </div>
                 <div className="px-3.5 py-1.5 rounded-xl bg-indigo-50/80 border border-indigo-200/60 flex items-center gap-2 text-xs">
                   <UsersRound className="w-3.5 h-3.5 text-indigo-700" />
@@ -8811,7 +8814,7 @@ Office of the Principal / Academic Administration`
                       </>
                     ) : (
                       <>
-                        <Plus className="w-4 h-4 text-[#203B61]" />
+                        <Plus className="w-4 h-4 text-[#172B4D]" />
                         <span>Assign Subject Teacher</span>
                       </>
                     )}
@@ -8828,7 +8831,7 @@ Office of the Principal / Academic Administration`
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <UsersRound className="w-3.5 h-3.5 text-[#203B61]" />
+                        <UsersRound className="w-3.5 h-3.5 text-[#172B4D]" />
                         <span>1. Teacher *</span>
                       </span>
                       <span className="text-[10px] font-medium text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
@@ -8838,7 +8841,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={mappingForm.teacherId}
                       onChange={(e) => setMappingForm(prev => ({ ...prev, teacherId: e.target.value }))}
-                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs cursor-pointer shadow-2xs"
+                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs cursor-pointer shadow-2xs"
                     >
                       <option value="">-- Select Teacher --</option>
                       {(Array.isArray(employees) ? employees : [])
@@ -8855,7 +8858,7 @@ Office of the Principal / Academic Administration`
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <School className="w-3.5 h-3.5 text-[#203B61]" />
+                        <School className="w-3.5 h-3.5 text-[#172B4D]" />
                         <span>2. Class *</span>
                       </span>
                       <span className="text-[10px] font-medium text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200">
@@ -8865,7 +8868,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={mappingForm.classId}
                       onChange={(e) => setMappingForm(prev => ({ ...prev, classId: e.target.value }))}
-                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs cursor-pointer shadow-2xs"
+                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs cursor-pointer shadow-2xs"
                     >
                       <option value="">-- Select Class (from Class Management) --</option>
                       {classes.map(cls => (
@@ -8880,7 +8883,7 @@ Office of the Principal / Academic Administration`
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <BookOpen className="w-3.5 h-3.5 text-[#203B61]" />
+                        <BookOpen className="w-3.5 h-3.5 text-[#172B4D]" />
                         <span>3. Subject *</span>
                       </span>
                       <span className="text-[10px] font-medium text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
@@ -8901,7 +8904,7 @@ Office of the Principal / Academic Administration`
                           <select
                             value={mappingForm.subjectId}
                             onChange={(e) => setMappingForm(prev => ({ ...prev, subjectId: e.target.value }))}
-                            className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs cursor-pointer shadow-2xs"
+                            className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs cursor-pointer shadow-2xs"
                           >
                             <option value="">-- Select Subject (from Subject Management) --</option>
                             {sortedSubList.map(sub => {
@@ -8933,7 +8936,7 @@ Office of the Principal / Academic Administration`
                         <button
                           type="submit"
                           disabled={isSavingMapping}
-                          className="flex-1 py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-xs cursor-pointer"
+                          className="flex-1 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-xs cursor-pointer"
                         >
                           {isSavingMapping ? (
                             <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
@@ -8957,7 +8960,7 @@ Office of the Principal / Academic Administration`
                         <button
                           type="submit"
                           disabled={isSavingMapping}
-                          className="flex-1 py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-xs cursor-pointer"
+                          className="flex-1 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-xs cursor-pointer"
                         >
                           {isSavingMapping ? (
                             <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
@@ -8996,7 +8999,7 @@ Office of the Principal / Academic Administration`
                       placeholder="Search assignments by teacher, subject, class..."
                       value={mappingSearch}
                       onChange={(e) => setMappingSearch(e.target.value)}
-                      className="w-full pl-9 pr-3.5 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none font-medium text-xs shadow-2xs"
+                      className="w-full pl-9 pr-3.5 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none font-medium text-xs shadow-2xs"
                     />
                     {mappingSearch && (
                       <button
@@ -9013,7 +9016,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={mappingClassFilter}
                       onChange={(e) => setMappingClassFilter(e.target.value)}
-                      className="px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-800 font-semibold text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none shadow-2xs cursor-pointer"
+                      className="px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-800 font-semibold text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none shadow-2xs cursor-pointer"
                     >
                       <option value="All">All Classes ({classes.length})</option>
                       {classes.map(cls => (
@@ -9027,7 +9030,7 @@ Office of the Principal / Academic Administration`
                     <select
                       value={mappingSubjectFilter}
                       onChange={(e) => setMappingSubjectFilter(e.target.value)}
-                      className="px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-800 font-semibold text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none shadow-2xs cursor-pointer"
+                      className="px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-800 font-semibold text-xs focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none shadow-2xs cursor-pointer"
                     >
                       <option value="All">All Subjects ({subjects.length})</option>
                       {subjects.map(sub => (
@@ -9047,7 +9050,7 @@ Office of the Principal / Academic Administration`
                   </div>
                 ) : filteredMappings.length === 0 ? (
                   <div className="text-center py-14 bg-slate-50 rounded-2xl border border-dashed border-slate-300 p-6">
-                    <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#203B61] flex items-center justify-center mx-auto mb-3">
+                    <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#172B4D] flex items-center justify-center mx-auto mb-3">
                       <Link2 className="w-6 h-6" />
                     </div>
                     <p className="text-sm font-bold text-slate-800">No assignments found</p>
@@ -9059,7 +9062,7 @@ Office of the Principal / Academic Administration`
                     {(mappingSearch || mappingClassFilter !== 'All' || mappingSubjectFilter !== 'All') && (
                       <button
                         onClick={() => { setMappingSearch(''); setMappingClassFilter('All'); setMappingSubjectFilter('All'); setMappingTeacherFilter('All'); }}
-                        className="mt-3 px-3.5 py-1.5 bg-[#2D4D77] text-white rounded-xl text-xs font-semibold hover:bg-blue-800 cursor-pointer"
+                        className="mt-3 px-3.5 py-1.5 bg-[#29456D] text-white rounded-xl text-xs font-semibold hover:bg-blue-800 cursor-pointer"
                       >
                         Reset Filters
                       </button>
@@ -9098,7 +9101,7 @@ Office of the Principal / Academic Administration`
                               {/* Teacher Column */}
                               <td className="px-4 py-3.5">
                                 <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#203B61] to-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#172B4D] to-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
                                     {teacherName.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}
                                   </div>
                                   <div>
@@ -9116,7 +9119,7 @@ Office of the Principal / Academic Administration`
                               <td className="px-4 py-3.5">
                                 <div className="inline-flex items-center gap-1.5">
                                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-900 font-bold text-xs border border-blue-200/70">
-                                    <School className="w-3.5 h-3.5 text-[#203B61]" />
+                                    <School className="w-3.5 h-3.5 text-[#172B4D]" />
                                     <span>Class {classStd} - {classSec}</span>
                                   </span>
                                   <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide uppercase bg-amber-50 text-amber-800 border border-amber-200/80">
@@ -9128,8 +9131,8 @@ Office of the Principal / Academic Administration`
                               {/* Subject Column */}
                               <td className="px-4 py-3.5">
                                 <div className="flex items-center gap-2">
-                                  <span className="inline-flex items-center gap-1.5 font-bold text-[#203B61]">
-                                    <BookOpen className="w-3.5 h-3.5 text-[#203B61]" />
+                                  <span className="inline-flex items-center gap-1.5 font-bold text-[#172B4D]">
+                                    <BookOpen className="w-3.5 h-3.5 text-[#172B4D]" />
                                     <span>{subName}</span>
                                   </span>
                                   {subCode && (
@@ -9160,7 +9163,7 @@ Office of the Principal / Academic Administration`
                                   </button>
                                   <button
                                     onClick={() => handleStartEditMapping(map)}
-                                    className="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#203B61] border border-blue-200/80 transition-all flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105"
+                                    className="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#172B4D] border border-blue-200/80 transition-all flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105"
                                     title="Edit Assignment"
                                   >
                                     <Edit3 className="w-3.5 h-3.5" />
@@ -9305,17 +9308,17 @@ Office of the Principal / Academic Administration`
           return (
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden mb-8 text-slate-900">
               {/* Header */}
-              <div className="bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-200/80 flex flex-col lg:flex-row justify-between items-start md:items-center gap-4">
                 <div className="flex items-center gap-3.5">
-                  <div className="w-11 h-11 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#203B61] shrink-0 shadow-2xs">
-                    <CalendarDays className="w-5 h-5 text-[#203B61]" />
+                  <div className="w-11 h-11 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#172B4D] shrink-0 shadow-2xs">
+                    <CalendarDays className="w-5 h-5 text-[#172B4D]" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2.5">
                       <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
                         Academic Timetable Matrix
                       </h2>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-blue-50 text-[#203B61] border border-blue-200">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-blue-50 text-[#172B4D] border border-blue-200">
                         Live Sync
                       </span>
                     </div>
@@ -9337,7 +9340,7 @@ Office of the Principal / Academic Administration`
                     }}
                     className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
                       selectedViewType === 'class'
-                        ? 'bg-[#2D4D77] text-white shadow-2xs'
+                        ? 'bg-[#29456D] text-white shadow-2xs'
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
@@ -9357,7 +9360,7 @@ Office of the Principal / Academic Administration`
                     }}
                     className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
                       selectedViewType === 'teacher'
-                        ? 'bg-[#2D4D77] text-white shadow-2xs'
+                        ? 'bg-[#29456D] text-white shadow-2xs'
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
@@ -9374,13 +9377,13 @@ Office of the Principal / Academic Administration`
                     {selectedViewType === 'class' ? (
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
-                          <School className="w-3.5 h-3.5 text-[#203B61]" />
+                          <School className="w-3.5 h-3.5 text-[#172B4D]" />
                           <span>Select Class:</span>
                         </span>
                         <select
                           value={selectedClassForGrid}
                           onChange={(e) => handleClassGridSelect(e.target.value)}
-                          className="bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-bold outline-none text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] shadow-2xs cursor-pointer min-w-[220px]"
+                          className="bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-bold outline-none text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] shadow-2xs cursor-pointer min-w-[220px]"
                         >
                           <option value="">-- Choose Class --</option>
                           {classes.map(cls => {
@@ -9406,13 +9409,13 @@ Office of the Principal / Academic Administration`
                     ) : (
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
-                          <User className="w-3.5 h-3.5 text-[#203B61]" />
+                          <User className="w-3.5 h-3.5 text-[#172B4D]" />
                           <span>Select Faculty:</span>
                         </span>
                         <select
                           value={selectedTeacherForGrid}
                           onChange={(e) => handleTeacherGridSelect(e.target.value)}
-                          className="bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-bold outline-none text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] shadow-2xs cursor-pointer min-w-[220px]"
+                          className="bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-bold outline-none text-slate-800 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] shadow-2xs cursor-pointer min-w-[220px]"
                         >
                           <option value="">-- Choose Faculty --</option>
                           {employees.filter(e => !e.is_super_admin && !['admin', 'parent', 'student'].includes((e.role || '').toLowerCase())).map(t => {
@@ -9443,7 +9446,7 @@ Office of the Principal / Academic Administration`
                     <button
                       type="button"
                       onClick={handleAutoGenerateTimetable}
-                      className="px-3.5 py-2 bg-gradient-to-r from-[#203B61] to-blue-700 hover:from-blue-800 hover:to-blue-900 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer hover:shadow-md"
+                      className="px-3.5 py-2 bg-gradient-to-r from-[#172B4D] to-blue-700 hover:from-blue-800 hover:to-blue-900 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer hover:shadow-md"
                       title="Automatically populate empty periods using verified teacher-class mappings"
                     >
                       <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
@@ -9479,7 +9482,7 @@ Office of the Principal / Academic Administration`
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-3.5 mb-6">
                   {/* Active Target Banner */}
                   <div className="bg-blue-50/70 border border-blue-200/80 rounded-2xl p-3.5 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#2D4D77] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+                    <div className="w-10 h-10 rounded-xl bg-[#29456D] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
                       {selectedViewType === 'class' ? <School className="w-5 h-5" /> : <User className="w-5 h-5" />}
                     </div>
                     <div className="min-w-0">
@@ -9628,9 +9631,9 @@ Office of the Principal / Academic Administration`
                                       <button
                                         type="button"
                                         onClick={() => handleOpenEditCellModal(d, p.period)}
-                                        className="text-slate-400 hover:text-[#203B61] hover:border-[#2D4D77] font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-1 mx-auto py-2 px-3 rounded-xl border border-dashed border-slate-250 bg-slate-50/50 hover:bg-blue-50/60 transition-all cursor-pointer shadow-2xs hover:scale-102"
+                                        className="text-slate-400 hover:text-[#172B4D] hover:border-[#29456D] font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-1 mx-auto py-2 px-3 rounded-xl border border-dashed border-slate-250 bg-slate-50/50 hover:bg-blue-50/60 transition-all cursor-pointer shadow-2xs hover:scale-102"
                                       >
-                                        <Plus className="w-3 h-3 text-[#203B61]" />
+                                        <Plus className="w-3 h-3 text-[#172B4D]" />
                                         <span>Add Period</span>
                                       </button>
                                     </td>
@@ -9645,8 +9648,8 @@ Office of the Principal / Academic Administration`
                                 return (
                                   <td key={d} className="p-2.5 border-r border-slate-200 text-center align-middle last:border-r-0">
                                     <div className="rounded-xl border border-blue-100 bg-gradient-to-b from-blue-50/60 to-white p-3 shadow-2xs text-center relative group hover:border-blue-300 transition-all">
-                                      <div className="font-extrabold text-[11px] text-[#203B61] uppercase tracking-wide truncate flex items-center justify-center gap-1">
-                                        <BookOpen className="w-3 h-3 shrink-0 text-[#203B61]" />
+                                      <div className="font-extrabold text-[11px] text-[#172B4D] uppercase tracking-wide truncate flex items-center justify-center gap-1">
+                                        <BookOpen className="w-3 h-3 shrink-0 text-[#172B4D]" />
                                         <span className="truncate">{subjectName}</span>
                                       </div>
                                       <div className="text-[10px] font-semibold text-slate-600 mt-1 truncate flex items-center justify-center gap-1">
@@ -9658,7 +9661,7 @@ Office of the Principal / Academic Administration`
                                         <button
                                           type="button"
                                           onClick={() => handleOpenEditCellModal(d, p.period, slot)}
-                                          className="hover:scale-110 transition-all text-[#203B61] hover:underline cursor-pointer flex items-center gap-0.5"
+                                          className="hover:scale-110 transition-all text-[#172B4D] hover:underline cursor-pointer flex items-center gap-0.5"
                                         >
                                           <Edit3 className="w-2.5 h-2.5" />
                                           <span>Edit</span>
@@ -9698,7 +9701,7 @@ Office of the Principal / Academic Administration`
             </button>
             
             <div className="flex flex-col sm:flex-row items-center gap-6 mb-8 pb-6 border-b border-gray-200">
-              <div className="w-20 h-20 bg-[#2D4D77] rounded-full flex items-center justify-center shadow-md shadow-sm shrink-0">
+              <div className="w-20 h-20 bg-[#29456D] rounded-full flex items-center justify-center shadow-md shadow-sm shrink-0">
                 <span className="text-3xl font-bold text-white">{selectedUserDashboard.name?.charAt(0)?.toUpperCase() || 'U'}</span>
               </div>
               <div className="text-center sm:text-left flex-1">
@@ -9723,7 +9726,7 @@ Office of the Principal / Academic Administration`
                 <p className="text-gray-900 font-medium">{selectedUserDashboard.phone || 'N/A'}</p>
               </div>
               <div className="bg-stone-50 rounded-xl p-4 border border-[#e9ebec]">
-                <p className="text-xs text-[#203B61] uppercase tracking-wider mb-1">Employee ID</p>
+                <p className="text-xs text-[#172B4D] uppercase tracking-wider mb-1">Employee ID</p>
                 <p className="text-[#405189] font-bold">{selectedUserDashboard.employee_id || 'N/A'}</p>
               </div>
               <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
@@ -9745,11 +9748,11 @@ Office of the Principal / Academic Administration`
                 </p>
               </div>
               <div className="bg-stone-50 rounded-xl p-4 border border-[#e9ebec]">
-                <p className="text-xs text-[#203B61] uppercase tracking-wider mb-1">Employee Password</p>
+                <p className="text-xs text-[#172B4D] uppercase tracking-wider mb-1">Employee Password</p>
                 <p className="text-gray-900 font-bold tracking-wider">{selectedUserDashboard.plain_password || 'N/A'}</p>
               </div>
               <div className="bg-blue-50/60 rounded-xl p-4 border border-blue-200">
-                <p className="text-xs text-[#203B61] font-bold uppercase tracking-wider mb-1">Primary Subject</p>
+                <p className="text-xs text-[#172B4D] font-bold uppercase tracking-wider mb-1">Primary Subject</p>
                 <p className="text-slate-900 font-bold text-sm">{selectedUserDashboard.primary_subject || 'Not Specified'}</p>
               </div>
               <div className="bg-amber-50/60 rounded-xl p-4 border border-amber-200">
@@ -9761,7 +9764,7 @@ Office of the Principal / Academic Administration`
             {/* Insurance Details Section (Admin-Editable) */}
             <div className="mt-6 pt-6 border-t border-gray-200">
               <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[#203B61]" />
+                <ShieldCheck className="w-4 h-4 text-[#172B4D]" />
                 <span>Institutional Insurance Record</span>
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -9772,7 +9775,7 @@ Office of the Principal / Academic Administration`
                     value={modalInsuranceId}
                     onChange={(e) => setModalInsuranceId(e.target.value)}
                     placeholder="e.g. INS-982312"
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 text-sm focus:ring-2 focus:ring-1 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none transition-all"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 text-sm focus:ring-2 focus:ring-1 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all"
                   />
                 </div>
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 flex flex-col">
@@ -9782,14 +9785,14 @@ Office of the Principal / Academic Administration`
                     value={modalInsuranceProvider}
                     onChange={(e) => setModalInsuranceProvider(e.target.value)}
                     placeholder="e.g. MetLife / BlueCross"
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 text-sm focus:ring-2 focus:ring-1 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none transition-all"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 text-sm focus:ring-2 focus:ring-1 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all"
                   />
                 </div>
               </div>
               <button
                 onClick={handleSaveModalInsurance}
                 disabled={modalSaving}
-                className="w-full mt-4 py-3 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold rounded-xl transition-all shadow-sm disabled:opacity-50 flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+                className="w-full mt-4 py-3 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold rounded-xl transition-all shadow-sm disabled:opacity-50 flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
               >
                 {modalSaving ? (
                   <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span> Saving Insurance Details...</>
@@ -9802,7 +9805,7 @@ Office of the Principal / Academic Administration`
             {/* Document Upload & Retrieval Section */}
             <div className="mt-6 pt-6 border-t border-gray-200">
               <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-[#203B61]" />
+                <FileText className="w-4 h-4 text-[#172B4D]" />
                 <span>Identity & Verification Documents</span>
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -9813,7 +9816,7 @@ Office of the Principal / Academic Administration`
                     <label className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold block">Government ID Card</label>
                     {selectedUserDashboard.govt_id_filename ? (
                       <div className="flex items-center gap-2 mb-3 bg-white border border-slate-200 px-3 py-2 rounded-lg">
-                        <FileText className="w-4 h-4 text-[#203B61]" />
+                        <FileText className="w-4 h-4 text-[#172B4D]" />
                         <span className="text-slate-700 text-xs truncate max-w-[200px]" title={selectedUserDashboard.govt_id_filename}>
                           {selectedUserDashboard.govt_id_filename}
                         </span>
@@ -9856,7 +9859,7 @@ Office of the Principal / Academic Administration`
                     <label className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold block">Insurance Policy Doc</label>
                     {selectedUserDashboard.insurance_filename ? (
                       <div className="flex items-center gap-2 mb-3 bg-white border border-slate-200 px-3 py-2 rounded-lg">
-                        <FileText className="w-4 h-4 text-[#203B61]" />
+                        <FileText className="w-4 h-4 text-[#172B4D]" />
                         <span className="text-slate-700 text-xs truncate max-w-[200px]" title={selectedUserDashboard.insurance_filename}>
                           {selectedUserDashboard.insurance_filename}
                         </span>
@@ -9900,7 +9903,7 @@ Office of the Principal / Academic Administration`
             {(selectedUserDashboard.role === 'teacher' || selectedUserDashboard.role === 'user') && (
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <CalendarDays className="w-4 h-4 text-[#203B61]" />
+                  <CalendarDays className="w-4 h-4 text-[#172B4D]" />
                   <span>Faculty Timetable & Schedule</span>
                 </h3>
                 
@@ -9931,7 +9934,7 @@ Office of the Principal / Academic Administration`
                             <div key={idx} className="bg-white border border-stone-250 rounded-xl p-2.5 shadow-sm text-center">
                               <span className="block text-[10px] text-gray-400 font-bold uppercase">Period {s.period}</span>
                               <span className="block text-xs font-bold text-slate-800 mt-0.5">{s.subject?.name || s.subject || 'N/A'}</span>
-                              <span className="block text-[9px] text-[#203B61] font-semibold mt-0.5">
+                              <span className="block text-[9px] text-[#172B4D] font-semibold mt-0.5">
                                 {s.class ? `Class ${s.class.standard}-${s.class.section}` : 'N/A'}
                               </span>
                               <span className="block text-[8px] text-gray-400 font-mono mt-0.5">
@@ -9978,7 +9981,7 @@ Office of the Principal / Academic Administration`
                                     {slot ? (
                                       <div className="rounded border border-stone-200 bg-slate-50 p-1">
                                         <div className="text-[10px] font-black text-stone-850 truncate">{slot.subject?.name || slot.subject || 'N/A'}</div>
-                                        <div className="text-[8px] text-[#203B61] font-black mt-0.5 truncate">
+                                        <div className="text-[8px] text-[#172B4D] font-black mt-0.5 truncate">
                                           {slot.class ? `${slot.class.standard}-${slot.class.section}` : 'N/A'}
                                         </div>
                                       </div>
@@ -10016,7 +10019,7 @@ Office of the Principal / Academic Administration`
             </button>
 
             <h3 className="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2.5">
-              <ShieldCheck className="w-5 h-5 text-[#203B61]" />
+              <ShieldCheck className="w-5 h-5 text-[#172B4D]" />
               <span>{editingRole ? 'Edit Role & Menu Access Privileges' : 'Create New Institutional Role'}</span>
             </h3>
             <p className="text-xs text-slate-500 mb-6 font-normal">
@@ -10031,7 +10034,7 @@ Office of the Principal / Academic Administration`
                     type="text"
                     required
                     value={editingRole ? roleForm.RoleCode : 'AUTO-GENERATED'}
-                    className="w-full px-4 py-2.5 bg-gray-100 border border-gray-300 rounded-xl text-gray-500 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none transition-all cursor-not-allowed font-mono text-xs"
+                    className="w-full px-4 py-2.5 bg-gray-100 border border-gray-300 rounded-xl text-gray-500 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all cursor-not-allowed font-mono text-xs"
                     disabled={true}
                   />
                 </div>
@@ -10044,7 +10047,7 @@ Office of the Principal / Academic Administration`
                     value={roleForm.Rolename}
                     onChange={(e) => setRoleForm({ ...roleForm, Rolename: e.target.value })}
                     placeholder="e.g. Academic Supervisor"
-                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none transition-all text-xs sm:text-sm font-semibold"
+                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all text-xs sm:text-sm font-semibold"
                   />
                 </div>
               </div>
@@ -10070,7 +10073,7 @@ Office of the Principal / Academic Administration`
                       }}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2D4D77]"></div>
+                    <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#29456D]"></div>
                   </label>
                 </div>
               </div>
@@ -10080,9 +10083,9 @@ Office of the Principal / Academic Administration`
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <Layers className="w-4 h-4 text-[#2D4D77]" />
+                      <Layers className="w-4 h-4 text-[#29456D]" />
                       <label className="block text-sm font-bold text-gray-900">Menu Access Privileges</label>
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-[#203B61]">
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-[#172B4D]">
                         {(roleForm.permissions || []).length} of {MENU_PRIVILEGES.length} Granted
                       </span>
                     </div>
@@ -10132,7 +10135,7 @@ Office of the Principal / Academic Administration`
                           type="checkbox"
                           checked={isChecked}
                           onChange={() => {}} // Handled by parent div
-                          className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#2D4D77] focus:ring-[#93C5FD] pointer-events-none"
+                          className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#29456D] focus:ring-[#93C5FD] pointer-events-none"
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5">
@@ -10178,7 +10181,7 @@ Office of the Principal / Academic Administration`
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 bg-[#2D4D77] hover:bg-[#203B61] text-white font-bold rounded-xl shadow-md transition-all active:scale-95 text-center text-xs sm:text-sm"
+                  className="flex-1 py-3 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold rounded-xl shadow-md transition-all active:scale-95 text-center text-xs sm:text-sm"
                 >
                   {editingRole ? 'Save Changes' : 'Create Role'}
                 </button>
@@ -10202,7 +10205,7 @@ Office of the Principal / Academic Administration`
             </button>
 
             <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2.5">
-              <Plus className="w-5 h-5 text-[#203B61]" />
+              <Plus className="w-5 h-5 text-[#172B4D]" />
               <span>Add New Faculty Member</span>
             </h3>
 
@@ -10224,7 +10227,7 @@ Office of the Principal / Academic Administration`
                       }));
                     }}
                     placeholder="e.g. John"
-                    className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none text-xs transition-all shadow-2xs"
+                    className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none text-xs transition-all shadow-2xs"
                   />
                 </div>
                 <div>
@@ -10241,7 +10244,7 @@ Office of the Principal / Academic Administration`
                       }));
                     }}
                     placeholder="e.g. Michael"
-                    className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none text-xs transition-all shadow-2xs"
+                    className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none text-xs transition-all shadow-2xs"
                   />
                 </div>
                 <div>
@@ -10259,7 +10262,7 @@ Office of the Principal / Academic Administration`
                       }));
                     }}
                     placeholder="e.g. Doe"
-                    className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none text-xs transition-all shadow-2xs"
+                    className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none text-xs transition-all shadow-2xs"
                   />
                 </div>
               </div>
@@ -10273,7 +10276,7 @@ Office of the Principal / Academic Administration`
                   value={addForm.email}
                   onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
                   placeholder="e.g. teacher@school.com"
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all"
                 />
               </div>
 
@@ -10286,7 +10289,7 @@ Office of the Principal / Academic Administration`
                     value={addForm.phone}
                     onChange={(e) => setAddForm({ ...addForm, phone: e.target.value })}
                     placeholder="e.g. 9876543210"
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all"
                   />
                 </div>
                 <div>
@@ -10296,7 +10299,7 @@ Office of the Principal / Academic Administration`
                     value={addForm.employeeId}
                     onChange={(e) => setAddForm({ ...addForm, employeeId: e.target.value })}
                     placeholder="Auto-generated if blank"
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all"
                   />
                 </div>
               </div>
@@ -10310,7 +10313,7 @@ Office of the Principal / Academic Administration`
                     value={addForm.qualification}
                     onChange={(e) => setAddForm({ ...addForm, qualification: e.target.value })}
                     placeholder="e.g. M.Sc Mathematics"
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all"
                   />
                 </div>
                 <div>
@@ -10320,7 +10323,7 @@ Office of the Principal / Academic Administration`
                     min="0"
                     value={addForm.experience}
                     onChange={(e) => setAddForm({ ...addForm, experience: parseInt(e.target.value) || 0 })}
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all"
                   />
                 </div>
               </div>
@@ -10346,7 +10349,7 @@ Office of the Principal / Academic Administration`
                     value={addForm.password}
                     onChange={(e) => setAddForm({ ...addForm, password: e.target.value })}
                     placeholder="Default: Welcome@123"
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all"
                   />
                 </div>
               </div>
@@ -10362,7 +10365,7 @@ Office of the Principal / Academic Administration`
                     onClick={() => setAddForm(prev => ({ ...prev, teacherType: 'Non-Class Teacher', assignedClass: '' }))}
                     className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
                       addForm.teacherType !== 'Class Teacher'
-                        ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-xs'
+                        ? 'bg-[#29456D] text-white border-[#29456D] shadow-xs'
                         : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
                     }`}
                   >
@@ -10374,7 +10377,7 @@ Office of the Principal / Academic Administration`
                     onClick={() => setAddForm(prev => ({ ...prev, teacherType: 'Class Teacher', assignedClass: prev.assignedClass || (classes[0]?.standard || '10th'), assignedSection: prev.assignedSection || 'A' }))}
                     className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
                       addForm.teacherType === 'Class Teacher'
-                        ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-xs'
+                        ? 'bg-[#29456D] text-white border-[#29456D] shadow-xs'
                         : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
                     }`}
                   >
@@ -10467,7 +10470,7 @@ Office of the Principal / Academic Administration`
                       onChange={(e) => setAddForm({ ...addForm, createLogin: e.target.checked })}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2D4D77]"></div>
+                    <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#29456D]"></div>
                   </label>
                 </div>
               </div>
@@ -10483,7 +10486,7 @@ Office of the Principal / Academic Administration`
                 <button
                   type="submit"
                   disabled={isAddingFaculty}
-                  className="flex-1 py-3 bg-[#2D4D77] hover:bg-[#203B61] text-white font-bold shadow-sm font-bold rounded-xl shadow-lg transition-all active:scale-95 text-center disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 py-3 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold shadow-sm font-bold rounded-xl shadow-lg transition-all active:scale-95 text-center disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isAddingFaculty ? <><span className="w-4 h-4 border-2 border-stone-900 border-t-transparent rounded-full animate-spin"></span> Adding...</> : 'Add Teacher'}
                 </button>
@@ -10505,7 +10508,7 @@ Office of the Principal / Academic Administration`
             </button>
 
             <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2.5">
-              <Edit3 className="w-5 h-5 text-[#203B61]" />
+              <Edit3 className="w-5 h-5 text-[#172B4D]" />
               <span>Edit Faculty Member — {editingFaculty.name}</span>
             </h3>
 
@@ -10526,7 +10529,7 @@ Office of the Principal / Academic Administration`
                         name: [f, prev.middleName, prev.lastName].filter(Boolean).join(' ')
                       }));
                     }}
-                    className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none text-xs transition-all shadow-2xs"
+                    className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none text-xs transition-all shadow-2xs"
                   />
                 </div>
                 <div>
@@ -10542,7 +10545,7 @@ Office of the Principal / Academic Administration`
                         name: [prev.firstName, m, prev.lastName].filter(Boolean).join(' ')
                       }));
                     }}
-                    className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none text-xs transition-all shadow-2xs"
+                    className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none text-xs transition-all shadow-2xs"
                   />
                 </div>
                 <div>
@@ -10559,7 +10562,7 @@ Office of the Principal / Academic Administration`
                         name: [prev.firstName, prev.middleName, l].filter(Boolean).join(' ')
                       }));
                     }}
-                    className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none text-xs transition-all shadow-2xs"
+                    className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none text-xs transition-all shadow-2xs"
                   />
                 </div>
               </div>
@@ -10571,7 +10574,7 @@ Office of the Principal / Academic Administration`
                   required
                   value={editForm.email}
                   onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-1 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-1 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all"
                 />
               </div>
 
@@ -10582,7 +10585,7 @@ Office of the Principal / Academic Administration`
                     type="text"
                     value={editForm.phone}
                     onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-1 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-1 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all"
                   />
                 </div>
                 <div>
@@ -10591,7 +10594,7 @@ Office of the Principal / Academic Administration`
                     type="text"
                     value={editForm.qualification}
                     onChange={(e) => setEditForm({ ...editForm, qualification: e.target.value })}
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-1 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-1 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all"
                   />
                 </div>
               </div>
@@ -10604,7 +10607,7 @@ Office of the Principal / Academic Administration`
                     min="0"
                     value={editForm.experience}
                     onChange={(e) => setEditForm({ ...editForm, experience: parseInt(e.target.value) || 0 })}
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-1 focus:ring-[#93C5FD] focus:border-[#2D4D77] outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:ring-2 focus:ring-1 focus:ring-[#93C5FD] focus:border-[#29456D] outline-none transition-all"
                   />
                 </div>
                 <div>
@@ -10632,7 +10635,7 @@ Office of the Principal / Academic Administration`
                     onClick={() => setEditForm(prev => ({ ...prev, teacherType: 'Non-Class Teacher', assignedClass: '' }))}
                     className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
                       editForm.teacherType !== 'Class Teacher'
-                        ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-xs'
+                        ? 'bg-[#29456D] text-white border-[#29456D] shadow-xs'
                         : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
                     }`}
                   >
@@ -10644,7 +10647,7 @@ Office of the Principal / Academic Administration`
                     onClick={() => setEditForm(prev => ({ ...prev, teacherType: 'Class Teacher', assignedClass: prev.assignedClass || (classes[0]?.standard || '10th'), assignedSection: prev.assignedSection || 'A' }))}
                     className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
                       editForm.teacherType === 'Class Teacher'
-                        ? 'bg-[#2D4D77] text-white border-[#2D4D77] shadow-xs'
+                        ? 'bg-[#29456D] text-white border-[#29456D] shadow-xs'
                         : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
                     }`}
                   >
@@ -10798,7 +10801,7 @@ Office of the Principal / Academic Administration`
                 <button
                   type="submit"
                   disabled={isSavingFaculty}
-                  className="flex-1 py-3 bg-[#2D4D77] hover:bg-[#203B61] text-white font-bold shadow-sm font-bold rounded-xl shadow-lg transition-all active:scale-95 text-center disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 py-3 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold shadow-sm font-bold rounded-xl shadow-lg transition-all active:scale-95 text-center disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSavingFaculty ? <><span className="w-4 h-4 border-2 border-stone-900 border-t-transparent rounded-full animate-spin"></span> Saving...</> : 'Save Changes'}
                 </button>
@@ -10813,9 +10816,9 @@ Office of the Principal / Academic Administration`
 
       {/* Floating Save Changes Bar */}
       {hasChanges && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-stone-900/90 text-white px-6 py-4 rounded-2xl shadow-2xl border border-[#2D4D77]/20 backdrop-blur-md flex items-center gap-6 z-[100]">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-stone-900/90 text-white px-6 py-4 rounded-2xl shadow-2xl border border-[#29456D]/20 backdrop-blur-md flex items-center gap-6 z-[100]">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-[#2D4D77] rounded-full animate-pulse"></span>
+            <span className="w-2 h-2 bg-[#29456D] rounded-full animate-pulse"></span>
             <span className="text-sm font-medium text-stone-300">You have unsaved changes</span>
           </div>
           <div className="flex gap-3">
@@ -10830,7 +10833,7 @@ Office of the Principal / Academic Administration`
             <button
               onClick={handleSaveAllChanges}
               disabled={isSavingBulk}
-              className="px-5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold rounded-lg shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2 cursor-pointer"
+              className="px-5 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold rounded-lg shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2 cursor-pointer"
             >
               {isSavingBulk ? <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span> Saving...</> : <><SaveIcon className="w-4 h-4" /> Save All Changes</>}
             </button>
@@ -10844,7 +10847,7 @@ Office of the Principal / Academic Administration`
           <div className="bg-white border border-stone-200 rounded-3xl shadow-2xl w-full max-w-md relative overflow-hidden flex flex-col text-gray-900">
             <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
               <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide flex items-center gap-2">
-                <CalendarDays className="w-4 h-4 text-[#203B61]" />
+                <CalendarDays className="w-4 h-4 text-[#172B4D]" />
                 <span>{editCellEntryId ? 'Edit Timetable Slot' : 'Add Timetable Slot'}</span>
               </h3>
               <button
@@ -10912,7 +10915,7 @@ Office of the Principal / Academic Administration`
                 </div>
                 <div>
                   <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Period / Time:</p>
-                  <p className="text-xs font-black text-[#203B61]">
+                  <p className="text-xs font-black text-[#172B4D]">
                     Period {editCellPeriod} ({calculatedPeriods.find(p => Number(p.period) === Number(editCellPeriod))?.timeSlot || '09:00-09:45'})
                   </p>
                 </div>
@@ -10933,7 +10936,7 @@ Office of the Principal / Academic Administration`
                       <select
                         value={editCellSubjectId}
                         onChange={(e) => handleEditCellSubjectChange(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] text-slate-900 shadow-2xs cursor-pointer"
+                        className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] text-slate-900 shadow-2xs cursor-pointer"
                       >
                         <option value="">-- Choose Subject --</option>
                         {subjects.map(s => {
@@ -10966,7 +10969,7 @@ Office of the Principal / Academic Administration`
                       <select
                         value={editCellTeacherId}
                         onChange={(e) => setEditCellTeacherId(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] text-slate-900 shadow-2xs cursor-pointer"
+                        className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] text-slate-900 shadow-2xs cursor-pointer"
                       >
                         <option value="">-- Choose Faculty --</option>
                         {employees.filter(emp => !emp.is_super_admin && !['admin', 'parent', 'student'].includes((emp.role || '').toLowerCase())).map(t => {
@@ -11005,7 +11008,7 @@ Office of the Principal / Academic Administration`
                       <select
                         value={editCellClassId}
                         onChange={(e) => handleEditCellClassChange(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] text-slate-900 shadow-2xs cursor-pointer"
+                        className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] text-slate-900 shadow-2xs cursor-pointer"
                       >
                         <option value="">-- Choose Class --</option>
                         {classes.map(c => {
@@ -11036,7 +11039,7 @@ Office of the Principal / Academic Administration`
                       <select
                         value={editCellSubjectId}
                         onChange={(e) => setEditCellSubjectId(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] text-slate-900 shadow-2xs cursor-pointer"
+                        className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] text-slate-900 shadow-2xs cursor-pointer"
                       >
                         <option value="">-- Choose Subject --</option>
                         {subjects.map(s => (
@@ -11105,7 +11108,7 @@ Office of the Principal / Academic Administration`
                   type="button"
                   onClick={handleSaveCell}
                   disabled={isSavingCell}
-                  className="px-5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white font-black text-xs rounded-xl transition-all shadow-md disabled:opacity-50 cursor-pointer"
+                  className="px-5 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white font-black text-xs rounded-xl transition-all shadow-md disabled:opacity-50 cursor-pointer"
                 >
                   {isSavingCell ? 'Saving...' : 'Save Slot'}
                 </button>
@@ -11124,7 +11127,7 @@ Office of the Principal / Academic Administration`
             <div className="bg-stone-50 px-6 py-4 border-b border-stone-200 flex justify-between items-center">
               <div>
                 <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2.5">
-                  <CalendarDays className="w-5 h-5 text-[#203B61]" />
+                  <CalendarDays className="w-5 h-5 text-[#172B4D]" />
                   <span>Configure Teacher Timetable Matrix</span>
                 </h3>
                 <p className="text-xs text-stone-400 mt-0.5 font-medium">Configure all weekly periods for a specific teacher.</p>
@@ -11144,7 +11147,7 @@ Office of the Principal / Academic Administration`
                 <select
                   value={bulkSelectedTeacherId}
                   onChange={(e) => handleBulkTeacherChange(e.target.value)}
-                  className="w-full max-w-md bg-stone-50 border border-stone-250 rounded-xl px-4 py-2.5 text-xs font-bold outline-none focus:border-[#2D4D77] text-stone-850 shadow-sm cursor-pointer"
+                  className="w-full max-w-md bg-stone-50 border border-stone-250 rounded-xl px-4 py-2.5 text-xs font-bold outline-none focus:border-[#29456D] text-stone-850 shadow-sm cursor-pointer"
                 >
                   <option value="">-- Choose Teacher --</option>
                   {employees.filter(e => e.role === 'teacher' || e.role === 'user').map(t => (
@@ -11181,7 +11184,7 @@ Office of the Principal / Academic Administration`
                                   <select
                                     value={currentCell.classId || ''}
                                     onChange={(e) => handleBulkCellChange(day, p.period, 'classId', e.target.value)}
-                                    className="w-full text-[10px] bg-white border border-stone-200 rounded p-1 text-stone-850 font-bold focus:border-[#2D4D77] outline-none cursor-pointer"
+                                    className="w-full text-[10px] bg-white border border-stone-200 rounded p-1 text-stone-850 font-bold focus:border-[#29456D] outline-none cursor-pointer"
                                   >
                                     <option value="">-- Class --</option>
                                     {classes.map(c => (
@@ -11191,7 +11194,7 @@ Office of the Principal / Academic Administration`
                                   <select
                                     value={currentCell.subjectId || ''}
                                     onChange={(e) => handleBulkCellChange(day, p.period, 'subjectId', e.target.value)}
-                                    className="w-full text-[10px] bg-white border border-stone-200 rounded p-1 text-stone-850 font-bold focus:border-[#2D4D77] outline-none cursor-pointer"
+                                    className="w-full text-[10px] bg-white border border-stone-200 rounded p-1 text-stone-850 font-bold focus:border-[#29456D] outline-none cursor-pointer"
                                   >
                                     <option value="">-- Subject --</option>
                                     {subjects.map(s => (
@@ -11226,7 +11229,7 @@ Office of the Principal / Academic Administration`
                 type="button"
                 onClick={handleSaveBulkTimetable}
                 disabled={isSavingBulkTimetable || !bulkSelectedTeacherId}
-                className="px-5 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white font-black text-xs rounded-xl transition-all shadow-md disabled:opacity-50 cursor-pointer"
+                className="px-5 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white font-black text-xs rounded-xl transition-all shadow-md disabled:opacity-50 cursor-pointer"
               >
                 {isSavingBulkTimetable ? 'Saving...' : 'Save Weekly Timetable'}
               </button>
@@ -11414,14 +11417,14 @@ Office of the Principal / Academic Administration`
               </div>
               <div className="flex justify-between items-center text-slate-600">
                 <span className="font-medium">Primary Board:</span>
-                <span className="text-[#203B61] font-semibold">{settings.board || 'CBSE'}</span>
+                <span className="text-[#172B4D] font-semibold">{settings.board || 'CBSE'}</span>
               </div>
             </div>
 
             <button
               type="button"
               onClick={() => setShowSaveSuccessModal(false)}
-              className="w-full py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs cursor-pointer"
+              className="w-full py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs cursor-pointer"
             >
               Done & Continue
             </button>
@@ -11433,8 +11436,8 @@ Office of the Principal / Academic Administration`
       {showRoleSaveModal && savedRoleInfo && (
         <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-xl w-full max-w-sm overflow-hidden text-center p-6 relative">
-            <div className="w-12 h-12 rounded-full bg-blue-50 text-[#203B61] border border-blue-200 flex items-center justify-center mx-auto mb-3">
-              <ShieldCheck className="w-6 h-6 text-[#203B61]" />
+            <div className="w-12 h-12 rounded-full bg-blue-50 text-[#172B4D] border border-blue-200 flex items-center justify-center mx-auto mb-3">
+              <ShieldCheck className="w-6 h-6 text-[#172B4D]" />
             </div>
             <h3 className="text-base font-bold text-slate-900 mb-1">
               {savedRoleInfo.type === 'create' ? 'Role Created Successfully' : 'Role Updated Successfully'}
@@ -11454,7 +11457,7 @@ Office of the Principal / Academic Administration`
               </div>
               <div className="flex justify-between items-center text-slate-600">
                 <span className="font-medium">Admin Privilege:</span>
-                <span className={savedRoleInfo.adminPriv ? 'text-[#203B61] font-semibold' : 'text-slate-600 font-medium'}>
+                <span className={savedRoleInfo.adminPriv ? 'text-[#172B4D] font-semibold' : 'text-slate-600 font-medium'}>
                   {savedRoleInfo.adminPriv ? 'Granted' : 'Standard'}
                 </span>
               </div>
@@ -11472,7 +11475,7 @@ Office of the Principal / Academic Administration`
                 setShowRoleSaveModal(false);
                 setSavedRoleInfo(null);
               }}
-              className="w-full py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs cursor-pointer"
+              className="w-full py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-xs cursor-pointer"
             >
               Done & Continue
             </button>
@@ -11529,7 +11532,7 @@ Office of the Principal / Academic Administration`
                   value={resetPasswordInput}
                   onChange={(e) => setResetPasswordInput(e.target.value)}
                   placeholder="At least 8 characters"
-                  className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 font-medium text-xs outline-none focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] shadow-2xs"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 font-medium text-xs outline-none focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] shadow-2xs"
                   autoFocus
                 />
               </div>
@@ -11549,7 +11552,7 @@ Office of the Principal / Academic Administration`
                 <button
                   type="submit"
                   disabled={isResettingPassword || !resetPasswordInput}
-                  className="flex-1 py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold text-xs rounded-xl shadow-xs transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+                  className="flex-1 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold text-xs rounded-xl shadow-xs transition-all cursor-pointer active:scale-95 disabled:opacity-50"
                 >
                   {isResettingPassword ? 'Resetting...' : 'Confirm Reset'}
                 </button>
@@ -11585,7 +11588,7 @@ Office of the Principal / Academic Administration`
               value={newBoardInput}
               onChange={(e) => setNewBoardInput(e.target.value)}
               placeholder="e.g. IGCSE"
-              className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold text-sm outline-none focus:border-[#2D4D77] focus:ring-2 focus:ring-blue-600/10 mb-4 uppercase"
+              className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold text-sm outline-none focus:border-[#29456D] focus:ring-2 focus:ring-blue-600/10 mb-4 uppercase"
               autoFocus
             />
 
@@ -11616,7 +11619,7 @@ Office of the Principal / Academic Administration`
                     toast.error("Please enter a board name");
                   }
                 }}
-                className="flex-1 py-2 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold text-xs rounded-xl shadow-sm transition-all"
+                className="flex-1 py-2 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold text-xs rounded-xl shadow-sm transition-all"
               >
                 Add Board
               </button>

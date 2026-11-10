@@ -129,37 +129,35 @@ export default function StudentSafePickupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col md:flex-row font-sans">
+    <div className="min-h-screen bg-[var(--bg)] text-[#1F2937] flex flex-col lg:flex-row font-sans">
       <Sidebar />
 
-      <main className="flex-1 min-w-0 bg-[#F7F9FC] p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8">
+      <main className="flex-1 min-w-0 bg-[var(--bg)] p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 lg:pb-8">
         <div className="max-w-7xl mx-auto space-y-6">
 
             {/* Premium Header Banner */}
-            <div className="bg-[#172B4D] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden border border-[#29456D]">
-              <div className="absolute top-0 right-0 -mt-10 -mr-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-                <div className="space-y-2">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-400/20 text-blue-300 text-xs font-bold tracking-wider uppercase">
+            <div className="bg-white rounded-2xl p-4 sm:p-5 md:p-6 text-[#1F2937] shadow-subtle border border-[#E4E2DA]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+                <div className="space-y-1.5">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[var(--accent-soft)] border border-[var(--accent)]/20 text-[var(--accent)] text-[10px] sm:text-xs font-bold tracking-wider uppercase">
                     <ShieldCheck className="w-3.5 h-3.5" />
                     <span>Safe Student Dismissal Protocol</span>
                   </div>
-                  <h1 className="text-2xl md:text-3xl font-black tracking-tight text-white">
+                  <h1 className="text-lg sm:text-xl md:text-2xl font-black tracking-tight text-[#1F2937] leading-tight break-words">
                     Safe Pickup & Campus Status
                   </h1>
-                  <p className="text-sm text-slate-300 max-w-2xl font-normal leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[#5B6676] max-w-2xl font-normal leading-relaxed">
                     Live gate exit verification, transit tracking, and single-click daily pickup delegation with encrypted guardian QR passes.
                   </p>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className={`px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-wider border flex items-center gap-2 shadow-xs ${
+                  <span className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border flex items-center gap-2 shadow-xs ${
                     departureStatus.hasDeparted
-                      ? 'bg-indigo-500/20 text-indigo-300 border-indigo-400/30'
-                      : 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30'
+                      ? 'bg-[#EBF2FA] text-[#2B6CB0] border-[#2B6CB0]/20'
+                      : 'bg-[#EAF4EF] text-[#2F7D5B] border-[#2F7D5B]/20'
                   }`}>
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
                     <span>{departureStatus.hasDeparted ? '🚪 DEPARTED CAMPUS' : '🏫 INSIDE CAMPUS / CLASSROOM'}</span>
                   </span>
                 </div>
@@ -168,7 +166,7 @@ export default function StudentSafePickupPage() {
 
             {/* 1. CAMPUS DEPARTURE & EXIT TRACKER */}
             <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-6 animate-fadeIn">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div className="flex flex-col lg:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="flex h-3 w-3 relative">
@@ -281,7 +279,7 @@ export default function StudentSafePickupPage() {
 
             {/* 2. DAILY PICKUP AUTHORIZATION SYSTEM */}
             <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-6 animate-fadeIn">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+              <div className="flex flex-col lg:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
                 <div>
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-900 border border-indigo-200 text-xs font-black uppercase tracking-wider mb-2">
                     <Radio className="w-3.5 h-3.5 text-indigo-900 animate-pulse" />
@@ -343,7 +341,7 @@ export default function StudentSafePickupPage() {
 
               {/* Option 1: MOM */}
               {pickupRequestOption === 'mom' && (
-                <div className="bg-gradient-to-br from-indigo-50/50 via-white to-slate-50 rounded-2xl p-6 border border-indigo-100 flex flex-col md:flex-row items-center justify-between gap-6 animate-fadeIn">
+                <div className="bg-gradient-to-br from-indigo-50/50 via-white to-slate-50 rounded-2xl p-6 border border-indigo-100 flex flex-col lg:flex-row items-center justify-between gap-6 animate-fadeIn">
                   <div className="flex items-center gap-4">
                     <img src={momProfile.photo} alt={momProfile.name} className="w-20 h-20 rounded-2xl object-cover ring-4 ring-indigo-900/10 shadow-md" />
                     <div className="space-y-1">
@@ -374,7 +372,7 @@ export default function StudentSafePickupPage() {
 
               {/* Option 2: DAD */}
               {pickupRequestOption === 'dad' && (
-                <div className="bg-gradient-to-br from-indigo-50/50 via-white to-slate-50 rounded-2xl p-6 border border-indigo-100 flex flex-col md:flex-row items-center justify-between gap-6 animate-fadeIn">
+                <div className="bg-gradient-to-br from-indigo-50/50 via-white to-slate-50 rounded-2xl p-6 border border-indigo-100 flex flex-col lg:flex-row items-center justify-between gap-6 animate-fadeIn">
                   <div className="flex items-center gap-4">
                     <img src={dadProfile.photo} alt={dadProfile.name} className="w-20 h-20 rounded-2xl object-cover ring-4 ring-indigo-900/10 shadow-md" />
                     <div className="space-y-1">

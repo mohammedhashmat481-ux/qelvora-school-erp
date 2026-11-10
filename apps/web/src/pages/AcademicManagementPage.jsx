@@ -689,7 +689,7 @@ export default function AcademicManagementPage() {
   }, [students]);
 
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-[#F5F8FC] font-sans text-[#253858] antialiased">
+    <div className="flex flex-col lg:flex-row h-screen overflow-hidden bg-[#F5F8FC] font-sans text-[#253858] antialiased">
       {/* ── Platform Sidebar ── */}
       <Sidebar />
 
@@ -697,21 +697,21 @@ export default function AcademicManagementPage() {
       <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden flex flex-col min-w-0 pb-28 md:pb-16">
         
         {/* ── Header Bar ── */}
-        <header className="bg-[#203B61] text-white px-4 sm:px-6 py-4 sm:py-5 border-b border-[#2D4D77] shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <header className="bg-white text-[#1F2937] px-4 sm:px-6 py-4 sm:py-5 border-b border-[#E4E2DA] shadow-subtle flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-start sm:items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-[#2D4D77] text-white flex items-center justify-center shadow-xs shrink-0 border border-[#3A5F8F]">
-              <School className="w-6 h-6 text-[#93C5FD]" />
+            <div className="w-11 h-11 rounded-2xl bg-[var(--accent-soft)] text-[var(--accent)] flex items-center justify-center shadow-xs shrink-0 border border-[var(--accent)]/20">
+              <School className="w-6 h-6 text-[var(--accent)]" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-lg sm:text-xl font-extrabold text-white tracking-tight">
+                <h1 className="text-lg sm:text-xl font-extrabold text-[#1F2937] tracking-tight">
                   Academic Management & Student Records
                 </h1>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#DCEBFA] text-[#244B78] border border-[#BBD7F5]">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#DBEAFE] text-[#244B78] border border-[#BBD7F5]">
                   CBSE / SATS Integrated
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-blue-100/90 font-normal mt-0.5">
+              <p className="text-xs sm:text-sm text-[#5B6676] font-normal mt-0.5">
                 Class & section rosters, real-time profile editing, SATS search, and bulk template ingestion.
               </p>
             </div>
@@ -720,13 +720,13 @@ export default function AcademicManagementPage() {
           {/* Academic Session Selector & Actions */}
           <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
             {/* Session Selector */}
-            <div className="flex items-center gap-1.5 bg-[#2D4D77] px-3 py-2 rounded-xl border border-[#3A5F8F] text-xs font-semibold text-white shadow-2xs">
-              <Calendar className="w-3.5 h-3.5 text-blue-200" />
-              <span className="text-[11px] text-blue-100 font-medium uppercase tracking-wider">Session:</span>
+            <div className="flex items-center gap-1.5 bg-[#F3F1EA] px-3 py-2 rounded-xl border border-[#E4E2DA] text-xs font-semibold text-[#1F2937] shadow-2xs">
+              <Calendar className="w-3.5 h-3.5 text-[#5B6676]" />
+              <span className="text-[11px] text-[#5B6676] font-medium uppercase tracking-wider">Session:</span>
               <select
                 value={academicYear}
                 onChange={(e) => setAcademicYear(e.target.value)}
-                className="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer pr-1"
+                className="bg-transparent text-[#1F2937] font-bold text-xs focus:outline-none cursor-pointer pr-1"
                 title="Select Academic Session"
               >
                 {ACADEMIC_YEARS.map(yr => (
@@ -740,7 +740,7 @@ export default function AcademicManagementPage() {
               onClick={() => fetchData()}
               disabled={loading}
               title="Refresh Roster Data"
-              className="p-2.5 rounded-xl bg-[#2D4D77] hover:bg-[#385B8A] active:scale-95 text-blue-100 hover:text-white border border-[#3A5F8F] transition-all cursor-pointer shadow-2xs"
+              className="p-2.5 rounded-xl bg-[#F3F1EA] hover:bg-[#E4E2DA] active:scale-95 text-[#5B6676] hover:text-[#1F2937] border border-[#E4E2DA] transition-all cursor-pointer shadow-2xs"
               aria-label="Refresh Roster"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -750,7 +750,7 @@ export default function AcademicManagementPage() {
             <button
               onClick={() => downloadBulkTemplate('xlsx')}
               title="Download Excel Ingestion Template"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#2D4D77] hover:bg-[#385B8A] active:scale-95 text-blue-100 hover:text-white border border-[#3A5F8F] text-xs font-semibold transition-all cursor-pointer shadow-2xs"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#29456D] hover:bg-[#385B8A] active:scale-95 text-blue-100 hover:text-white border border-[#3A5F8F] text-xs font-semibold transition-all cursor-pointer shadow-2xs"
             >
               <Download className="w-3.5 h-3.5 text-blue-200" />
               <span>Template</span>
@@ -785,7 +785,7 @@ export default function AcademicManagementPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4.5">
             
             {/* 1. Total Enrolled */}
-            <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex items-center justify-between transition-all hover:border-[#DCEBFA]">
+            <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex items-center justify-between transition-all hover:border-[#DBEAFE]">
               <div>
                 <p className="text-[11px] font-bold text-[#718096] uppercase tracking-wider">Total Enrolled</p>
                 <h3 className="text-2xl sm:text-3xl font-extrabold text-[#253858] tracking-tight mt-0.5">{students.length}</h3>
@@ -794,13 +794,13 @@ export default function AcademicManagementPage() {
                   <span>Active Academic Roster</span>
                 </p>
               </div>
-              <div className="w-11 h-11 rounded-2xl bg-[#DCEBFA] text-[#244B78] flex items-center justify-center shrink-0 shadow-2xs">
+              <div className="w-11 h-11 rounded-2xl bg-[#DBEAFE] text-[#244B78] flex items-center justify-center shrink-0 shadow-2xs">
                 <GraduationCap className="w-6 h-6" />
               </div>
             </div>
 
             {/* 2. Gender Ratio */}
-            <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex items-center justify-between transition-all hover:border-[#DCEBFA]">
+            <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex items-center justify-between transition-all hover:border-[#DBEAFE]">
               <div>
                 <p className="text-[11px] font-bold text-[#718096] uppercase tracking-wider">Gender Ratio</p>
                 <div className="flex items-baseline gap-2 mt-0.5">
@@ -816,7 +816,7 @@ export default function AcademicManagementPage() {
             </div>
 
             {/* 3. SATS Tracking */}
-            <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex items-center justify-between transition-all hover:border-[#DCEBFA]">
+            <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex items-center justify-between transition-all hover:border-[#DBEAFE]">
               <div>
                 <p className="text-[11px] font-bold text-[#718096] uppercase tracking-wider">SATS Tracking</p>
                 <h3 className="text-2xl sm:text-3xl font-extrabold text-purple-700 tracking-tight mt-0.5">{satsRegisteredCount}</h3>
@@ -830,7 +830,7 @@ export default function AcademicManagementPage() {
             </div>
 
             {/* 4. Classes & Sections */}
-            <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex items-center justify-between transition-all hover:border-[#DCEBFA]">
+            <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex items-center justify-between transition-all hover:border-[#DBEAFE]">
               <div>
                 <p className="text-[11px] font-bold text-[#718096] uppercase tracking-wider">Classes & Sections</p>
                 <h3 className="text-2xl sm:text-3xl font-extrabold text-indigo-700 tracking-tight mt-0.5">
@@ -864,8 +864,8 @@ export default function AcademicManagementPage() {
                 onClick={() => { setSelectedStandard('ALL'); setSelectedSection('ALL'); }}
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer border ${
                   selectedStandard === 'ALL'
-                    ? 'bg-[#203B61] text-white border-[#203B61] shadow-xs'
-                    : 'bg-white text-[#253858] border-[#E6ECF3] hover:bg-[#F5F8FC] hover:border-[#DCEBFA]'
+                    ? 'bg-[#172B4D] text-white border-[#172B4D] shadow-xs'
+                    : 'bg-white text-[#253858] border-[#E6ECF3] hover:bg-[#F5F8FC] hover:border-[#DBEAFE]'
                 }`}
               >
                 All Classes ({students.length})
@@ -884,14 +884,14 @@ export default function AcademicManagementPage() {
                     }}
                     className={`px-3 py-2 rounded-xl text-xs font-bold shrink-0 transition-all flex items-center gap-1.5 cursor-pointer border ${
                       isSelected
-                        ? 'bg-[#203B61] text-white border-[#203B61] shadow-xs'
-                        : 'bg-white text-[#253858] border-[#E6ECF3] hover:bg-[#F5F8FC] hover:border-[#DCEBFA]'
+                        ? 'bg-[#172B4D] text-white border-[#172B4D] shadow-xs'
+                        : 'bg-white text-[#253858] border-[#E6ECF3] hover:bg-[#F5F8FC] hover:border-[#DBEAFE]'
                     }`}
                   >
                     <span>{std}</span>
                     {count > 0 && (
                       <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                        isSelected ? 'bg-[#2D4D77] text-white' : 'bg-[#F5F8FC] text-[#718096] border border-[#E6ECF3]'
+                        isSelected ? 'bg-[#29456D] text-white' : 'bg-[#F5F8FC] text-[#718096] border border-[#E6ECF3]'
                       }`}>
                         {count}
                       </span>
@@ -951,7 +951,7 @@ export default function AcademicManagementPage() {
           </div>
 
           {/* ── Search & Filter Controls ── */}
-          <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+          <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-[#E6ECF3] shadow-[0_2px_8px_rgba(32,59,97,0.04)] flex flex-col lg:flex-row items-stretch md:items-center justify-between gap-3">
             
             {/* Search Input */}
             <div className="relative flex-1">
@@ -961,7 +961,7 @@ export default function AcademicManagementPage() {
                 placeholder="Search by student name, roll number, SATS ID, admission no, or phone..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-9 py-2.5 bg-[#F5F8FC] border border-[#E6ECF3] rounded-xl text-xs font-medium text-[#253858] placeholder:text-[#718096] focus:outline-none focus:bg-white focus:border-[#3978D5] focus:ring-2 focus:ring-[#DCEBFA] transition-all"
+                className="w-full pl-10 pr-9 py-2.5 bg-[#F5F8FC] border border-[#E6ECF3] rounded-xl text-xs font-medium text-[#253858] placeholder:text-[#718096] focus:outline-none focus:bg-white focus:border-[#3978D5] focus:ring-2 focus:ring-[#DBEAFE] transition-all"
               />
               {searchQuery && (
                 <button
@@ -1057,7 +1057,7 @@ export default function AcademicManagementPage() {
             </div>
           ) : filteredStudents.length === 0 ? (
             <div className="bg-white rounded-2xl border border-[#E6ECF3] p-12 sm:p-14 text-center flex flex-col items-center justify-center gap-3.5 shadow-2xs">
-              <div className="w-14 h-14 rounded-2xl bg-[#DCEBFA] text-[#244B78] flex items-center justify-center shadow-xs">
+              <div className="w-14 h-14 rounded-2xl bg-[#DBEAFE] text-[#244B78] flex items-center justify-center shadow-xs">
                 <Users className="w-7 h-7" />
               </div>
               <h3 className="text-base font-bold text-[#253858]">No student records found</h3>
@@ -1102,7 +1102,7 @@ export default function AcademicManagementPage() {
                             {/* Student Name & Avatar */}
                             <td className="py-3 px-4">
                               <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#203B61] to-[#3978D5] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#172B4D] to-[#3978D5] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
                                   {student.photoUrl ? (
                                     <img src={student.photoUrl} alt="" className="w-full h-full object-cover rounded-xl" />
                                   ) : (
@@ -1155,7 +1155,7 @@ export default function AcademicManagementPage() {
 
                             {/* Class & Section */}
                             <td className="py-3 px-3">
-                              <span className="px-2.5 py-1 rounded-lg bg-[#DCEBFA] text-[#244B78] font-bold text-xs border border-[#BBD7F5]">
+                              <span className="px-2.5 py-1 rounded-lg bg-[#DBEAFE] text-[#244B78] font-bold text-xs border border-[#BBD7F5]">
                                 {student.standard} - {student.section}
                               </span>
                             </td>
@@ -1220,7 +1220,7 @@ export default function AcademicManagementPage() {
                                   type="button"
                                   onClick={() => setQuickViewStudent(student)}
                                   title="Quick View Student Profile"
-                                  className="p-1.5 rounded-lg text-[#718096] hover:text-[#244B78] hover:bg-[#DCEBFA] transition-all cursor-pointer"
+                                  className="p-1.5 rounded-lg text-[#718096] hover:text-[#244B78] hover:bg-[#DBEAFE] transition-all cursor-pointer"
                                 >
                                   <Eye className="w-3.5 h-3.5" />
                                 </button>
@@ -1265,7 +1265,7 @@ export default function AcademicManagementPage() {
                       {/* Top Header Row */}
                       <div className="flex items-start justify-between gap-2.5">
                         <div className="flex items-center gap-2.5 min-w-0">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#203B61] to-[#3978D5] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#172B4D] to-[#3978D5] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
                             {student.photoUrl ? (
                               <img src={student.photoUrl} alt="" className="w-full h-full object-cover rounded-xl" />
                             ) : (
@@ -1334,7 +1334,7 @@ export default function AcademicManagementPage() {
                           <button
                             type="button"
                             onClick={() => handleOpenEditModal(student)}
-                            className="px-3 py-1.5 bg-[#DCEBFA] hover:bg-[#C9E0F7] text-[#244B78] text-xs font-bold rounded-lg border border-[#BBD7F5] flex items-center gap-1 transition-all cursor-pointer"
+                            className="px-3 py-1.5 bg-[#DBEAFE] hover:bg-[#C9E0F7] text-[#244B78] text-xs font-bold rounded-lg border border-[#BBD7F5] flex items-center gap-1 transition-all cursor-pointer"
                           >
                             <Edit2 className="w-3 h-3" />
                             <span>Edit</span>
@@ -1368,7 +1368,7 @@ export default function AcademicManagementPage() {
                     <div>
                       {/* Top Row: Class & Status */}
                       <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="px-2.5 py-1 rounded-lg bg-[#DCEBFA] text-[#244B78] font-bold text-xs border border-[#BBD7F5]">
+                        <span className="px-2.5 py-1 rounded-lg bg-[#DBEAFE] text-[#244B78] font-bold text-xs border border-[#BBD7F5]">
                           {student.standard} - {student.section}
                         </span>
                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase inline-flex items-center gap-1 ${
@@ -1381,7 +1381,7 @@ export default function AcademicManagementPage() {
 
                       {/* Student Info */}
                       <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#203B61] to-[#3978D5] text-white font-bold text-sm flex items-center justify-center shrink-0 shadow-xs">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#172B4D] to-[#3978D5] text-white font-bold text-sm flex items-center justify-center shrink-0 shadow-xs">
                           {student.photoUrl ? (
                             <img src={student.photoUrl} alt="" className="w-full h-full object-cover rounded-xl" />
                           ) : (
@@ -1438,7 +1438,7 @@ export default function AcademicManagementPage() {
                         <button
                           type="button"
                           onClick={() => handleOpenEditModal(student)}
-                          className="px-2.5 py-1 bg-[#DCEBFA] text-[#244B78] hover:bg-[#C9E0F7] rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer border border-[#BBD7F5]"
+                          className="px-2.5 py-1 bg-[#DBEAFE] text-[#244B78] hover:bg-[#C9E0F7] rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer border border-[#BBD7F5]"
                         >
                           <Edit2 className="w-3 h-3" />
                           <span>Edit</span>
@@ -1472,7 +1472,7 @@ export default function AcademicManagementPage() {
           <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden">
             
             {/* Modal Header */}
-            <div className="px-6 py-4 bg-[#203B61] text-white flex items-center justify-between shrink-0">
+            <div className="px-6 py-4 bg-[#172B4D] text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-600/30 border border-blue-400/40 text-blue-300 flex items-center justify-center">
                   {profileModalMode === 'add' ? <Plus className="w-5 h-5" /> : <Edit2 className="w-5 h-5" />}
@@ -2254,7 +2254,7 @@ export default function AcademicManagementPage() {
                     type="button"
                     disabled={isDownloadingTemplate}
                     onClick={() => handleDownloadTemplateFile('xlsx')}
-                    className="px-3 py-1.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-semibold text-xs rounded-xl shadow-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    className="px-3 py-1.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-semibold text-xs rounded-xl shadow-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Excel (.xlsx)</span>
@@ -2281,7 +2281,7 @@ export default function AcademicManagementPage() {
                     onClick={() => setBulkUploadScope('auto')}
                     className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
                       bulkUploadScope === 'auto'
-                        ? 'bg-blue-50/70 border-[#2D4D77] text-[#244B78] shadow-xs'
+                        ? 'bg-blue-50/70 border-[#29456D] text-[#244B78] shadow-xs'
                         : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                   >
@@ -2304,7 +2304,7 @@ export default function AcademicManagementPage() {
                     onClick={() => setBulkUploadScope('specific')}
                     className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
                       bulkUploadScope === 'specific'
-                        ? 'bg-blue-50/70 border-[#2D4D77] text-[#244B78] shadow-xs'
+                        ? 'bg-blue-50/70 border-[#29456D] text-[#244B78] shadow-xs'
                         : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                   >
@@ -2333,7 +2333,7 @@ export default function AcademicManagementPage() {
                       <select
                         value={bulkTargetStandard}
                         onChange={(e) => setBulkTargetStandard(e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none cursor-pointer"
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none cursor-pointer"
                       >
                         {dynamicStandardsList.map(std => (
                           <option key={std} value={std}>{std}</option>
@@ -2350,7 +2350,7 @@ export default function AcademicManagementPage() {
                         value={bulkTargetSection}
                         onChange={(e) => setBulkTargetSection(e.target.value.toUpperCase())}
                         placeholder="e.g. A"
-                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#2D4D77] outline-none"
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#93C5FD]/20 focus:border-[#29456D] outline-none"
                       />
                     </div>
                   </div>
@@ -2373,7 +2373,7 @@ export default function AcademicManagementPage() {
                   className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all ${
                     bulkFile 
                       ? 'border-emerald-400 bg-emerald-50/40' 
-                      : 'border-slate-300 hover:border-[#2D4D77] bg-slate-50/60 hover:bg-blue-50/20 cursor-pointer'
+                      : 'border-slate-300 hover:border-[#29456D] bg-slate-50/60 hover:bg-blue-50/20 cursor-pointer'
                   }`}
                   onClick={() => {
                     document.getElementById('academic-bulk-file-input')?.click();
@@ -2576,7 +2576,7 @@ export default function AcademicManagementPage() {
                   type="button"
                   disabled={!bulkFile || bulkCommitting}
                   onClick={handleCommitBulkUpload}
-                  className="w-full sm:w-2/3 py-2.5 bg-[#2D4D77] hover:bg-[#203B61] text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="w-full sm:w-2/3 py-2.5 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   {bulkCommitting ? (
                     <>
@@ -2672,7 +2672,7 @@ export default function AcademicManagementPage() {
                     setSelectedSection('ALL');
                     setBulkSuccessResult(null);
                   }}
-                  className="w-full sm:flex-1 py-3 bg-[#2D4D77] hover:bg-[#203B61] text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full sm:flex-1 py-3 bg-[#29456D] hover:bg-[#172B4D] text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Eye className="w-4 h-4" />
                   <span>View Class {bulkSuccessResult.classesAffected[0].standard} Roster</span>
@@ -2697,7 +2697,7 @@ export default function AcademicManagementPage() {
       {quickViewStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
           <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-lg overflow-hidden animate-scaleIn">
-            <div className="px-6 py-4 bg-[#203B61] text-white flex items-center justify-between">
+            <div className="px-6 py-4 bg-[#172B4D] text-white flex items-center justify-between">
               <h3 className="text-sm font-black tracking-tight text-white flex items-center gap-2">
                 <span>Student Quick Profile</span>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-blue-500/20 text-blue-200">
