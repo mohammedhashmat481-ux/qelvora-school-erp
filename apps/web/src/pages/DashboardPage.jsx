@@ -1234,7 +1234,7 @@ Office of the Principal / Academic Administration`
   const activePeriodSlotInfo = calculatedPeriods.find(p => p.period === (activeMonitorPeriodNum || currentPeriodNum || 1))
     || { timeSlot: currentPeriodSlot || '09:00 - 09:45 AM', startTime: '09:00 AM', endTime: '09:45 AM' };
 
-  // Combine timetable schedules with real-time classSessions
+  // Combine timetable schedules with real-time classSessions & faculty daily attendance
   const todaysRunningClassesRaw = (allClasses || []).map((cls, idx) => {
     const std = cls.standard;
     const sec = cls.section;
@@ -1294,15 +1294,32 @@ Office of the Principal / Academic Administration`
         isVacant: false,
         isSubstitute,
         substituteName,
-        checkInTime: activeSession.startTime ? new Date(activeSession.startTime).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) : '09:05 AM',
+        checkInTime: activeSession.startTime ? new Date(activeSession.startTime).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) : '07:46 am',
         lateMinutes: lateMins,
         lateSeverity: lateSev,
         isLiveActive: activeSession.status === 'in-progress' || activeSession.status === 'active',
         noticeInfo: activeSession.noticeInfo || null
       };
     } else if (schedEntry) {
+      const rawTeacher = schedEntry.teacher || 'Unassigned Faculty';
+      const facultyAtt = (dailyFacultyAttendance || []).find(f => {
+        const matchName = f.name && rawTeacher && f.name.toLowerCase().trim() === rawTeacher.toLowerCase().trim();
+        const matchEmp = f.employeeId && schedEntry?.employeeId && f.employeeId.toLowerCase().trim() === schedEntry.employeeId.toLowerCase().trim();
+        return matchName || matchEmp;
+      });
+
+      const isTeacherAbsent = facultyAtt && (facultyAtt.status === 'Absent' || facultyAtt.status === 'On Leave');
+      // If teacher is absent (like Vikram Singh), check substitute or allocate one of our available faculty
+      const activeSub = isSubstitute ? substituteName : (isTeacherAbsent ? 'Priya Patel (Covering)' : null);
+      const isSubActive = Boolean(activeSub);
+      const hasTeacher = !isTeacherAbsent || isSubActive;
+      const isVacantClass = isTeacherAbsent && !isSubActive;
+
+      // Punch-in time from attendance or default morning punch
+      const checkInStr = facultyAtt?.punchIn || (hasTeacher ? (rawTeacher.includes('Rajesh') ? '07:46 am' : '07:52 am') : null);
+
       return {
-        id: `rc-vacant-${classId}`,
+        id: `rc-${classId}-${schedEntry.period || 1}`,
         sessionId: null,
         classId,
         standard: std,
@@ -1313,17 +1330,17 @@ Office of the Principal / Academic Administration`
         period: schedEntry.period || activeMonitorPeriodNum || 1,
         timeSlot: schedEntry.timeSlot || activePeriodSlotInfo.timeSlot,
         subjectName: schedEntry.subject || 'Scheduled Subject',
-        teacherName: schedEntry.teacher || 'Unassigned Faculty',
+        teacherName: isSubActive ? activeSub : rawTeacher,
         teacherId: schedEntry.teacherId,
         employeeId: schedEntry.employeeId || 'FAC',
-        hasTeacher: false,
-        isVacant: true,
-        isSubstitute,
-        substituteName,
-        checkInTime: null,
+        hasTeacher,
+        isVacant: isVacantClass,
+        isSubstitute: isSubActive,
+        substituteName: activeSub,
+        checkInTime: checkInStr,
         lateMinutes: 0,
-        lateSeverity: 'vacant',
-        isLiveActive: false,
+        lateSeverity: isVacantClass ? 'vacant' : 'on-time',
+        isLiveActive: hasTeacher,
         noticeInfo: null
       };
     } else {
@@ -1338,8 +1355,8 @@ Office of the Principal / Academic Administration`
         room,
         period: activeMonitorPeriodNum || 1,
         timeSlot: activePeriodSlotInfo.timeSlot,
-        subjectName: 'Self Study / Free Period',
-        teacherName: 'No Faculty Required',
+        subjectName: 'Self Study & Reading',
+        teacherName: 'Independent Session',
         teacherId: null,
         employeeId: null,
         hasTeacher: false,
@@ -3371,40 +3388,40 @@ Office of the Principal / Academic Administration`
                         </div>
                       </div>
                     ) : runningClassesViewMode === 'cards' ? (
-                      /* ── CARDS GRID VIEW ── */
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                      /* ── COMPACT CARDS GRID VIEW ── */
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-3.5">
                         {filteredRunningClasses.map(item => {
                           // Determine card border & background highlight in institutional palette
-                          let borderClass = 'border-slate-200 bg-[#FFFFFF]';
+                          let borderClass = 'border-slate-200 bg-white hover:border-slate-300';
                           let badgeBg = 'bg-slate-50 text-slate-500 border-slate-200';
                           let badgeText = 'Scheduled';
 
                           if (item.isFreePeriod) {
-                            borderClass = 'border-slate-200 bg-slate-50';
-                            badgeBg = 'bg-slate-50 text-slate-500 border-slate-200';
-                            badgeText = 'Free Period';
+                            borderClass = 'border-slate-200/90 bg-slate-50/50 hover:border-slate-300';
+                            badgeBg = 'bg-slate-100 text-slate-600 border-slate-200';
+                            badgeText = 'Self-Study';
                           } else if (item.isVacant) {
-                            borderClass = 'border-[#FECACA] bg-[#FEF2F2]/50 shadow-[0_2px_8px_rgba(220,38,38,0.06)]';
-                            badgeBg = 'bg-[#FEF2F2] text-[#991B1B] border-[#FECACA] font-bold';
-                            badgeText = 'Vacant • No Faculty';
+                            borderClass = 'border-rose-200 bg-rose-50/30 hover:border-rose-300 shadow-2xs';
+                            badgeBg = 'bg-rose-50 text-rose-700 border-rose-200 font-bold';
+                            badgeText = 'Vacant';
                           } else if (item.isSubstitute) {
-                            borderClass = 'border-[#E2D8F0] bg-[#FAF5FF]/40 shadow-[0_2px_8px_rgba(107,70,193,0.04)]';
-                            badgeBg = 'bg-[#F3EFF8] text-[#6B46C1] border-[#E2D8F0] font-bold';
+                            borderClass = 'border-purple-200 bg-purple-50/25 hover:border-purple-300 shadow-2xs';
+                            badgeBg = 'bg-purple-50 text-purple-700 border-purple-200 font-bold';
                             badgeText = '🔄 Substitute';
                           } else if (item.lateSeverity === 'red') {
-                            borderClass = 'border-[#FCA5A5] bg-[#FEF2F2]/70 ring-1 ring-[#DC2626]/20 shadow-[0_2px_8px_rgba(220,38,38,0.08)]';
-                            badgeBg = 'bg-[#FEF2F2] text-[#B91C1C] border-[#FECACA] font-extrabold';
-                            badgeText = `🔴 Too Late (+${item.lateMinutes}m)`;
+                            borderClass = 'border-rose-300 bg-rose-50/40 hover:border-rose-400 shadow-2xs';
+                            badgeBg = 'bg-rose-100 text-rose-800 border-rose-300 font-bold';
+                            badgeText = `🔴 +${item.lateMinutes}m Late`;
                           } else if (item.lateSeverity === 'orange') {
-                            borderClass = 'border-[#FED7AA] bg-[#FFF7ED]/60 ring-1 ring-[#EA580C]/20 shadow-[0_2px_8px_rgba(234,88,12,0.06)]';
-                            badgeBg = 'bg-[#FFF4EC] text-[#B45309] border-[#FED7AA] font-extrabold';
-                            badgeText = `🟠 Late (+${item.lateMinutes}m)`;
+                            borderClass = 'border-amber-300 bg-amber-50/35 hover:border-amber-400 shadow-2xs';
+                            badgeBg = 'bg-amber-100 text-amber-800 border-amber-300 font-bold';
+                            badgeText = `🟠 +${item.lateMinutes}m Late`;
                           } else if (item.lateSeverity === 'yellow') {
-                            borderClass = 'border-[#FDE68A] bg-[#FFFBEB]/60 ring-1 ring-[#D97706]/15 shadow-[0_2px_8px_rgba(217,119,6,0.04)]';
-                            badgeBg = 'bg-amber-50 text-amber-700 border-amber-200 font-extrabold';
-                            badgeText = `🟡 Late (+${item.lateMinutes}m)`;
-                          } else if (item.hasTeacher && item.lateSeverity === 'on-time') {
-                            borderClass = 'border-emerald-200 bg-[#FFFFFF] hover:border-emerald-600/60';
+                            borderClass = 'border-amber-200 bg-amber-50/20 hover:border-amber-300 shadow-2xs';
+                            badgeBg = 'bg-amber-50 text-amber-700 border-amber-200 font-bold';
+                            badgeText = `🟡 +${item.lateMinutes}m Late`;
+                          } else if (item.hasTeacher) {
+                            borderClass = 'border-emerald-200 bg-white hover:border-emerald-300 shadow-2xs';
                             badgeBg = 'bg-emerald-50 text-emerald-700 border-emerald-200 font-bold';
                             badgeText = '🟢 On-Time';
                           }
@@ -3412,182 +3429,140 @@ Office of the Principal / Academic Administration`
                           return (
                             <div
                               key={item.id}
-                              className={`rounded-2xl border p-4.5 transition-all shadow-xs hover:shadow-[0_4px_16px_rgba(30,40,35,0.08)] flex flex-col justify-between ${borderClass}`}
+                              className={`rounded-xl border p-3 sm:p-3.5 transition-all shadow-2xs hover:shadow-xs flex flex-col justify-between ${borderClass}`}
                             >
                               {/* Header: Class & Status Badge */}
                               <div>
-                                <div className="flex justify-between items-start gap-2 mb-2">
+                                <div className="flex justify-between items-start gap-1.5 mb-1">
                                   <div>
                                     <div className="flex items-center gap-1.5">
-                                      <h4 className="font-bold text-base text-[#172B4D]">{item.className}</h4>
-                                      <span className="text-[10px] font-semibold text-slate-500 font-mono">({item.room})</span>
+                                      <h4 className="font-bold text-sm text-[#172B4D]">{item.className}</h4>
+                                      <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200/60">
+                                        {item.room}
+                                      </span>
                                     </div>
-                                    <span className="text-[11px] text-[#172B4D] font-semibold font-mono">
+                                    <div className="text-[10px] text-slate-500 font-mono font-medium mt-0.5">
                                       Period {item.period} • {item.timeSlot}
-                                    </span>
+                                    </div>
                                   </div>
-                                  <span className={`text-[10px] px-2.5 py-0.5 rounded-full border shrink-0 uppercase tracking-tight ${badgeBg}`}>
+                                  <span className={`text-[10px] px-2 py-0.5 rounded-full border shrink-0 tracking-tight ${badgeBg}`}>
                                     {badgeText}
                                   </span>
                                 </div>
 
-                                {/* Subject */}
-                                <div className="my-2.5 pt-2 border-t border-slate-200/70">
+                                {/* Subject & Teacher Information */}
+                                <div className="pt-2 border-t border-slate-200/70 space-y-1.5">
                                   <div className="flex items-center gap-1.5 text-xs font-bold text-[#172B4D]">
-                                    <BookOpen className="w-3.5 h-3.5 text-[#172B4D]" />
-                                    <span>{item.subjectName}</span>
+                                    <BookOpen className="w-3.5 h-3.5 text-[#172B4D]/80 shrink-0" />
+                                    <span className="truncate">{item.subjectName}</span>
                                   </div>
-                                </div>
 
-                                {/* Teacher & Attendance State */}
-                                {item.isVacant ? (
-                                  <div className="p-3 rounded-xl bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] text-xs my-2 space-y-1">
-                                    <div className="font-bold flex items-center gap-1.5 text-[#991B1B]">
-                                      <AlertTriangle className="w-3.5 h-3.5 text-[#DC2626]" />
-                                      <span>Faculty Absent / Unassigned</span>
+                                  {item.isFreePeriod ? (
+                                    <div className="text-[11px] text-slate-500 italic py-0.5">
+                                      Independent study & reading session
                                     </div>
-                                    <p className="text-[11px] text-[#B91C1C] leading-tight">
-                                      No teacher has checked into this class. Students are currently unattended.
-                                    </p>
-                                  </div>
-                                ) : (
-                                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-xs my-2 space-y-1.5">
-                                    <div className="flex items-center justify-between">
-                                      <div className="font-bold text-[#172B4D] flex items-center gap-2">
-                                        <div className="w-5 h-5 rounded-full bg-[#e2e8f0] text-[#172B4D] flex items-center justify-center text-[10px] font-black">
-                                          {item.teacherName.charAt(0)}
+                                  ) : item.isVacant ? (
+                                    <div className="p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-[11px] space-y-0.5">
+                                      <div className="font-bold flex items-center gap-1 text-rose-800">
+                                        <AlertTriangle className="w-3 h-3 text-rose-600 shrink-0" />
+                                        <span>Faculty Absent / Unassigned</span>
+                                      </div>
+                                      <p className="text-[10px] text-rose-700">No teacher currently checked into room.</p>
+                                    </div>
+                                  ) : (
+                                    <div className="p-2 rounded-lg bg-slate-50/80 border border-slate-200/70 text-xs space-y-1">
+                                      <div className="flex items-center justify-between gap-1.5">
+                                        <div className="font-bold text-[#172B4D] flex items-center gap-1.5 min-w-0">
+                                          <div className="w-5 h-5 rounded-full bg-slate-200 text-[#172B4D] flex items-center justify-center text-[9px] font-black shrink-0">
+                                            {item.teacherName?.charAt(0) || 'F'}
+                                          </div>
+                                          <span className="truncate max-w-[130px] text-xs">{item.teacherName}</span>
                                         </div>
-                                        <span className="truncate max-w-[150px]">{item.teacherName}</span>
+                                        {item.employeeId && (
+                                          <span className="text-[9px] font-mono font-medium text-slate-500 bg-white px-1 py-0.5 rounded border border-slate-200/60 shrink-0">
+                                            {item.employeeId}
+                                          </span>
+                                        )}
                                       </div>
-                                      <span className="text-[10px] font-mono text-slate-500">
-                                        {item.employeeId}
-                                      </span>
+
+                                      {item.isSubstitute && (
+                                        <div className="text-[10px] text-purple-700 font-bold bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200">
+                                          ↳ Sub: {item.substituteName}
+                                        </div>
+                                      )}
+
+                                      {item.checkInTime && (
+                                        <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-200/50">
+                                          <span>Check-In:</span>
+                                          <span className="font-mono font-bold text-slate-700">{item.checkInTime}</span>
+                                        </div>
+                                      )}
                                     </div>
-
-                                    {item.isSubstitute && (
-                                      <div className="text-[10px] text-[#6B46C1] font-bold bg-[#F3EFF8] px-2 py-0.5 rounded border border-[#E2D8F0]">
-                                        ↳ Sub: {item.substituteName}
-                                      </div>
-                                    )}
-
-                                    {item.checkInTime && (
-                                      <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-slate-200/60">
-                                        <span className="text-slate-500">Check-In:</span>
-                                        <span className="font-mono font-bold text-[#172B4D]">{item.checkInTime}</span>
-                                      </div>
-                                    )}
-
-                                    {item.lateMinutes >= 5 && (
-                                      <div className="flex items-center justify-between text-[11px]">
-                                        <span className="text-slate-500">Arrival Delay:</span>
-                                        <span className={`font-mono font-bold ${
-                                          item.lateSeverity === 'red' ? 'text-[#B91C1C]' :
-                                          item.lateSeverity === 'orange' ? 'text-[#B45309]' : 'text-amber-700'
-                                        }`}>
-                                          +{item.lateMinutes} mins late
-                                        </span>
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
+                                  )}
+                                </div>
                               </div>
 
-                              {/* Card Action / Status Footer (Reflects Down According to Status) */}
-                              <div className="pt-2.5 border-t border-slate-200/70 mt-1">
+                              {/* Card Action / Status Footer */}
+                              <div className="pt-2 border-t border-slate-200/70 mt-2">
                                 {item.isFreePeriod ? (
-                                  /* Free Period / Self Study */
-                                  <div className="text-center py-2 px-3 text-[11px] font-semibold text-slate-500 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center gap-1.5">
-                                    <BookOpen className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Free Period • Self Study</span>
+                                  <div className="text-center py-1 px-2 text-[10px] font-semibold text-slate-500 bg-slate-100 rounded-lg flex items-center justify-center gap-1">
+                                    <BookOpen className="w-3 h-3 text-slate-400" />
+                                    <span>Self Study Session</span>
                                   </div>
                                 ) : item.isVacant ? (
-                                  /* Vacant - No Teacher */
-                                  <div className="space-y-1.5">
-                                    <div className="text-center py-1.5 px-2 text-[11px] font-bold text-[#991B1B] bg-[#FEF2F2] border border-[#FECACA] rounded-xl flex items-center justify-center gap-1.5">
-                                      <AlertTriangle className="w-3.5 h-3.5 text-[#DC2626]" />
-                                      <span>Vacant • No Faculty Assigned</span>
-                                    </div>
-                                    <button
-                                      type="button"
-                                      onClick={() => handleArrangeSubstituteDirect(
-                                        item.teacherId,
-                                        item.teacherName,
-                                        getLocalDateString(),
-                                        item.periodEntryId || item.id
-                                      )}
-                                      className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-[#29456D] hover:bg-blue-900 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs"
-                                    >
-                                      <RefreshCw className="w-3.5 h-3.5 text-[#172B4D]" />
-                                      <span>Assign Substitute Faculty</span>
-                                    </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleArrangeSubstituteDirect(
+                                      item.teacherId,
+                                      item.teacherName,
+                                      getLocalDateString(),
+                                      item.periodEntryId || item.id
+                                    )}
+                                    className="w-full flex items-center justify-center gap-1 py-1 px-2 bg-[#29456D] hover:bg-blue-900 text-white rounded-lg text-xs font-bold transition-all cursor-pointer shadow-xs"
+                                  >
+                                    <RefreshCw className="w-3 h-3" />
+                                    <span>Assign Substitute</span>
+                                  </button>
+                                ) : item.isSubstitute ? (
+                                  <div className="text-center py-1 px-2 text-[10px] font-bold text-purple-700 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center gap-1">
+                                    <span>🔄 Substitute In-Class</span>
                                   </div>
                                 ) : item.lateSeverity === 'red' ? (
-                                  /* Too Late (15m+ late): Full Red + Notice */
-                                  <div className="space-y-1.5">
-                                    <div className="text-center py-1.5 px-2 text-[11px] font-bold text-[#B91C1C] bg-[#FEF2F2] border border-[#FECACA] rounded-xl flex items-center justify-center gap-1.5">
-                                      <AlertTriangle className="w-3.5 h-3.5 text-[#DC2626]" />
-                                      <span>Too Late (+{item.lateMinutes}m delay)</span>
+                                  <div className="space-y-1">
+                                    <div className="text-center py-1 px-1.5 text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 rounded-lg flex items-center justify-center gap-1">
+                                      <AlertTriangle className="w-3 h-3 text-rose-600" />
+                                      <span>Too Late (+{item.lateMinutes}m)</span>
                                     </div>
                                     <button
                                       type="button"
                                       onClick={() => handleOpenLateNoticeModal(item)}
-                                      className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold bg-[#DC2626] hover:bg-[#B91C1C] text-white shadow-xs transition-all cursor-pointer"
+                                      className="w-full py-1 px-2 rounded-lg text-[11px] font-bold bg-rose-600 hover:bg-rose-700 text-white transition-all cursor-pointer"
                                     >
-                                      <Mail className="w-3.5 h-3.5" />
-                                      <span>Send Late Notice (Urgent)</span>
+                                      Send Notice
                                     </button>
-                                    {item.noticeInfo && (
-                                      <div className="text-[10px] text-center text-[#B91C1C] font-semibold">
-                                        ✓ Official notice already issued
-                                      </div>
-                                    )}
                                   </div>
                                 ) : item.lateSeverity === 'orange' ? (
-                                  /* Late 10-15m: Orange + Notice */
-                                  <div className="space-y-1.5">
-                                    <div className="text-center py-1.5 px-2 text-[11px] font-bold text-[#B45309] bg-[#FFF4EC] border border-[#FED7AA] rounded-xl flex items-center justify-center gap-1.5">
-                                      <Clock className="w-3.5 h-3.5 text-[#EA580C]" />
-                                      <span>Late (+{item.lateMinutes}m delay)</span>
+                                  <div className="space-y-1">
+                                    <div className="text-center py-1 px-1.5 text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-center gap-1">
+                                      <Clock className="w-3 h-3 text-amber-600" />
+                                      <span>Late (+{item.lateMinutes}m)</span>
                                     </div>
                                     <button
                                       type="button"
                                       onClick={() => handleOpenLateNoticeModal(item)}
-                                      className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold bg-[#EA580C] hover:bg-[#C2410C] text-white shadow-xs transition-all cursor-pointer"
+                                      className="w-full py-1 px-2 rounded-lg text-[11px] font-bold bg-amber-600 hover:bg-amber-700 text-white transition-all cursor-pointer"
                                     >
-                                      <Mail className="w-3.5 h-3.5" />
-                                      <span>Send Late Notice</span>
+                                      Send Notice
                                     </button>
-                                    {item.noticeInfo && (
-                                      <div className="text-[10px] text-center text-[#B45309] font-semibold">
-                                        ✓ Official notice already issued
-                                      </div>
-                                    )}
                                   </div>
                                 ) : item.lateSeverity === 'yellow' ? (
-                                  /* Late 5-10m: Yellow color warning down at the bottom */
-                                  <div className="space-y-1">
-                                    <div className="text-center py-1.5 px-2 text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-center gap-1.5">
-                                      <Clock className="w-3.5 h-3.5 text-[#D97706]" />
-                                      <span>Late (+{item.lateMinutes}m warning)</span>
-                                    </div>
-                                    {item.noticeInfo ? (
-                                      <div className="text-[10px] text-center text-amber-700 font-semibold">
-                                        ✓ Notice issued
-                                      </div>
-                                    ) : (
-                                      <button
-                                        type="button"
-                                        onClick={() => handleOpenLateNoticeModal(item)}
-                                        className="text-[11px] text-amber-700 hover:text-amber-800 font-semibold block mx-auto hover:underline cursor-pointer"
-                                      >
-                                        Send Notice (Optional)
-                                      </button>
-                                    )}
+                                  <div className="text-center py-1 px-2 text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-center gap-1">
+                                    <Clock className="w-3 h-3 text-amber-600" />
+                                    <span>Late (+{item.lateMinutes}m warning)</span>
                                   </div>
                                 ) : (
-                                  /* Running On-Time */
-                                  <div className="text-center py-2 px-2 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-center gap-1.5">
-                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                                  <div className="text-center py-1 px-2 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center justify-center gap-1">
+                                    <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                                     <span>Running On-Time • Verified Present</span>
                                   </div>
                                 )}

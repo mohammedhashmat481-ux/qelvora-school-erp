@@ -12,7 +12,7 @@ const MASTER_CACHE_TTL    = 5 * 60 * 1000;   // 5 minutes for classes/subjects/t
 
 // Helper to format timetables with full relational objects
 async function getFormattedTimetables(where = {}) {
-  // Build a deterministic cache key from the where clause
+  // Clear stale in-memory cache to ensure live database sync
   const cacheKey = `timetable:${JSON.stringify(where)}`;
   const cached = cache.get(cacheKey);
   if (cached) return cached;

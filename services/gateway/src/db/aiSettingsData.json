@@ -1,6 +1,6 @@
 {
   "settings": {
-    "tier": "free",
+    "tier": "premium",
     "geminiApiKey": "",
     "elevenLabsApiKey": "",
     "elevenLabsVoiceId": "21m00Tcm4TlvDq8ikWAM",
@@ -19,7 +19,7 @@
     "schoolDailyLimitPremium": 5000,
     "cacheTtlSeconds": 60,
     "maxHistoryTurns": 6,
-    "updatedAt": "2026-10-27T00:00:00.000Z"
+    "updatedAt": "2026-11-10T11:22:38.559Z"
   },
   "usageCounters": {},
   "usageLogs": []
