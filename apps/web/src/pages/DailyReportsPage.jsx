@@ -1079,89 +1079,106 @@ export default function DailyReportsPage() {
             {/* ── 4 EXECUTIVE KPI CARDS ── */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               {/* Card 1: Student Attendance */}
-              <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs hover:shadow-md transition-shadow relative overflow-hidden group">
+              <div className="bg-white rounded-2xl p-4 border-2 border-blue-200/90 shadow-2xs hover:shadow-md hover:border-blue-400 transition-all relative overflow-hidden group">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-600" />
                 <div className="flex justify-between items-start mb-2">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Student Attendance</span>
-                  <div className="p-2 rounded-xl bg-blue-50 text-blue-700"><Users className="w-4 h-4" /></div>
+                  <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Student Attendance</span>
+                  <div className="p-2 rounded-xl bg-blue-50 text-blue-700 border border-blue-100"><Users className="w-4 h-4" /></div>
                 </div>
                 <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-2xl sm:text-3xl font-black text-[#172B4D]">{summary?.studentAttendance?.percentage || 94.2}%</span>
-                  <span className="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">{summary?.studentAttendance?.present || 358} Present</span>
+                  <span className="text-2xl sm:text-3xl font-black text-[#172B4D]">{summary?.studentAttendance?.percentage || 97.9}%</span>
+                  <span className="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">{summary?.studentAttendance?.present || 379} Present</span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden mb-2 mt-2">
-                  <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full" style={{ width: `${summary?.studentAttendance?.percentage || 94.2}%` }} />
+                <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden mb-2.5 mt-2">
+                  <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full transition-all duration-500" style={{ width: `${Math.min(100, summary?.studentAttendance?.percentage || 97.9)}%` }} />
                 </div>
-                <div className="flex justify-between text-[11px] text-slate-500 font-semibold pt-1 border-t border-slate-100">
-                  <span className="text-rose-600 font-bold">● {summary?.studentAttendance?.absent || 14} Absent</span>
-                  <span className="text-amber-600 font-bold">● {summary?.studentAttendance?.late || 8} Late</span>
-                  <span>Total: {summary?.studentAttendance?.totalEnrolled || 380}</span>
+                <div className="flex justify-between items-center text-[11px] font-semibold pt-2 border-t border-slate-100">
+                  <span className="text-rose-600 font-bold flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                    {summary?.studentAttendance?.absent || 8} Absent
+                  </span>
+                  <span className="text-amber-600 font-bold flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                    {summary?.studentAttendance?.late || 0} Late
+                  </span>
+                  <span className="text-slate-500 font-bold">Total: {summary?.studentAttendance?.totalEnrolled || 387}</span>
                 </div>
               </div>
 
-              {/* Card 2: Faculty / Staff */}
-              <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs hover:shadow-md transition-shadow relative overflow-hidden group">
+              {/* Card 2: Faculty & Staff */}
+              <div className="bg-white rounded-2xl p-4 border-2 border-emerald-200/90 shadow-2xs hover:shadow-md hover:border-emerald-400 transition-all relative overflow-hidden group">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-600" />
                 <div className="flex justify-between items-start mb-2">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Faculty & Staff</span>
-                  <div className="p-2 rounded-xl bg-emerald-50 text-emerald-700"><UserCheck className="w-4 h-4" /></div>
+                  <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Faculty & Staff</span>
+                  <div className="p-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100"><UserCheck className="w-4 h-4" /></div>
                 </div>
                 <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-2xl sm:text-3xl font-black text-[#172B4D]">{summary?.teacherAttendance?.present || 23}/{summary?.teacherAttendance?.totalTeachers || 24}</span>
-                  <span className="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">{summary?.teacherAttendance?.percentage || 95.8}% Turnout</span>
+                  <span className="text-2xl sm:text-3xl font-black text-[#172B4D]">{summary?.teacherAttendance?.present || 5}/{summary?.teacherAttendance?.totalTeachers || 6}</span>
+                  <span className="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">{summary?.teacherAttendance?.percentage || 83.3}% Turnout</span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden mb-2 mt-2">
-                  <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full" style={{ width: `${summary?.teacherAttendance?.percentage || 95.8}%` }} />
+                <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden mb-2.5 mt-2">
+                  <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full transition-all duration-500" style={{ width: `${Math.min(100, summary?.teacherAttendance?.percentage || 83.3)}%` }} />
                 </div>
-                <div className="flex justify-between text-[11px] text-slate-500 font-semibold pt-1 border-t border-slate-100">
-                  <span className="text-amber-600 font-bold">{summary?.teacherAttendance?.onLeave || 1} on Leave</span>
-                  <span className="text-indigo-600 font-bold">{summary?.teacherAttendance?.substitutesArranged || 1} Substituted</span>
+                <div className="flex justify-between items-center text-[11px] font-semibold pt-2 border-t border-slate-100">
+                  <span className="text-rose-600 font-bold flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                    {summary?.teacherAttendance?.absent || summary?.teacherAttendance?.onLeave || 1} Absent
+                  </span>
+                  <span className="text-indigo-600 font-bold flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                    {summary?.teacherAttendance?.substitutesArranged || 1} Substituted
+                  </span>
                 </div>
               </div>
 
               {/* Card 3: Fee Collection */}
-              <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs hover:shadow-md transition-shadow relative overflow-hidden group">
+              <div className="bg-white rounded-2xl p-4 border-2 border-indigo-200/90 shadow-2xs hover:shadow-md hover:border-indigo-400 transition-all relative overflow-hidden group">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-600" />
                 <div className="flex justify-between items-start mb-2">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Fee Collection Today</span>
-                  <div className="p-2 rounded-xl bg-indigo-50 text-indigo-700"><IndianRupee className="w-4 h-4" /></div>
+                  <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Fee Collection Today</span>
+                  <div className="p-2 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-100"><IndianRupee className="w-4 h-4" /></div>
                 </div>
                 <div className="flex items-baseline gap-1.5 mb-1">
                   <span className="text-2xl sm:text-3xl font-black text-[#172B4D]">₹{(summary?.finances?.totalCollectedToday || 25700).toLocaleString('en-IN')}</span>
                 </div>
-                <div className="text-[11px] text-slate-500 font-medium mb-2">{summary?.finances?.receiptsCount || 3} Receipts issued</div>
-                <div className="flex flex-wrap gap-1.5 pt-1 border-t border-slate-100">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-blue-50 text-blue-700">UPI: ₹{(summary?.finances?.modeBreakdown?.upi || 8500).toLocaleString('en-IN')}</span>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-50 text-emerald-700">Cash: ₹{(summary?.finances?.modeBreakdown?.cash || 5200).toLocaleString('en-IN')}</span>
+                <div className="text-[11px] text-slate-500 font-medium mb-2">{summary?.finances?.receiptsCount || 3} Receipts processed today</div>
+                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-100">
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-blue-50 text-blue-800 border border-blue-200">UPI: ₹{(summary?.finances?.modeBreakdown?.upi || 8500).toLocaleString('en-IN')}</span>
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200">Cash: ₹{(summary?.finances?.modeBreakdown?.cash || 5200).toLocaleString('en-IN')}</span>
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-purple-50 text-purple-800 border border-purple-200">Online: ₹{(summary?.finances?.modeBreakdown?.online || 12000).toLocaleString('en-IN')}</span>
                 </div>
               </div>
 
               {/* Card 4: Operations & Gate */}
-              <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs hover:shadow-md transition-shadow relative overflow-hidden group">
+              <div className="bg-white rounded-2xl p-4 border-2 border-amber-200/90 shadow-2xs hover:shadow-md hover:border-amber-400 transition-all relative overflow-hidden group">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500" />
                 <div className="flex justify-between items-start mb-2">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Operations & Gate</span>
-                  <div className="p-2 rounded-xl bg-amber-50 text-amber-700"><ShieldCheck className="w-4 h-4" /></div>
+                  <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Operations & Gate</span>
+                  <div className="p-2 rounded-xl bg-amber-50 text-amber-700 border border-amber-100"><ShieldCheck className="w-4 h-4" /></div>
                 </div>
                 <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-2xl sm:text-3xl font-black text-[#172B4D]">{summary?.academicOperations?.periodsConducted || 70}/{summary?.academicOperations?.periodsScheduled || 72}</span>
+                  <span className="text-2xl sm:text-3xl font-black text-[#172B4D]">{summary?.academicOperations?.periodsConducted || 76}/{summary?.academicOperations?.periodsScheduled || 78}</span>
                   <span className="text-[11px] font-bold text-slate-500">Periods</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-emerald-700 font-bold mb-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                   <span>Gate & Biometrics Active</span>
                 </div>
-                <div className="flex justify-between text-[11px] text-slate-500 font-semibold pt-1 border-t border-slate-100">
-                  <span>{summary?.safePickup?.studentsDeparted || 48} Safe Departures</span>
-                  <span className="text-indigo-600">{summary?.academicOperations?.activeClasses || 12} Classes</span>
+                <div className="flex justify-between items-center text-[11px] text-slate-500 font-semibold pt-2 border-t border-slate-100">
+                  <span className="font-bold text-slate-700">{summary?.safePickup?.studentsDeparted || 48} Safe Departures</span>
+                  <span className="text-indigo-700 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">{summary?.academicOperations?.activeClasses || 13} Classes</span>
                 </div>
               </div>
             </div>
 
             {/* ── TABS BAR ── */}
             <div className="bg-white rounded-2xl p-3 border border-slate-200 shadow-2xs mb-5 flex flex-col lg:flex-row md:items-center justify-between gap-3">
-              <div className="flex items-center gap-1.5 overflow-x-auto">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0">
                 <button
                   type="button"
                   onClick={() => setActiveTab('classes')}
                   className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'classes' ? 'bg-[#172B4D] text-white' : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'classes' ? 'bg-[#172B4D] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <FileSpreadsheet className="w-3.5 h-3.5" />
@@ -1172,7 +1189,7 @@ export default function DailyReportsPage() {
                   type="button"
                   onClick={() => setActiveTab('absentees')}
                   className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'absentees' ? 'bg-rose-600 text-white' : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'absentees' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <UserX className="w-3.5 h-3.5" />
@@ -1183,7 +1200,7 @@ export default function DailyReportsPage() {
                   type="button"
                   onClick={() => setActiveTab('faculty')}
                   className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'faculty' ? 'bg-[#172B4D] text-white' : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'faculty' ? 'bg-[#172B4D] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <UserCheck className="w-3.5 h-3.5" />
@@ -1194,7 +1211,7 @@ export default function DailyReportsPage() {
                   type="button"
                   onClick={() => setActiveTab('finances')}
                   className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'finances' ? 'bg-[#172B4D] text-white' : 'text-slate-600 hover:bg-slate-100'
+                    activeTab === 'finances' ? 'bg-[#172B4D] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <IndianRupee className="w-3.5 h-3.5" />
@@ -1208,7 +1225,7 @@ export default function DailyReportsPage() {
                   <select
                     value={selectedStandardFilter}
                     onChange={(e) => setSelectedStandardFilter(e.target.value)}
-                    className="px-2.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 outline-none"
+                    className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 outline-none hover:border-slate-300"
                   >
                     <option value="ALL">All Standards</option>
                     {standardsList.map(std => <option key={std} value={std}>Class {std}</option>)}
@@ -1219,10 +1236,10 @@ export default function DailyReportsPage() {
                   <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="text"
-                    placeholder="Search roster..."
+                    placeholder="Search roster or teacher..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-8 pr-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 outline-none"
+                    className="pl-8 pr-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 outline-none hover:border-slate-300 focus:bg-white focus:border-[#29456D]"
                   />
                 </div>
               </div>
@@ -1233,44 +1250,73 @@ export default function DailyReportsPage() {
               <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#EFF4FA] text-[#172B4D] font-extrabold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                    <thead className="bg-[#EFF4FA] text-[#172B4D] font-black uppercase tracking-wider text-[11px] border-b border-slate-200">
                       <tr>
-                        <th className="py-3 px-4">Standard & Sec</th>
-                        <th className="py-3 px-4">Room</th>
-                        <th className="py-3 px-4">Class Teacher</th>
-                        <th className="py-3 px-3 text-center">Strength</th>
-                        <th className="py-3 px-3 text-center text-emerald-700">Present</th>
-                        <th className="py-3 px-3 text-center text-rose-700">Absent</th>
-                        <th className="py-3 px-3 text-center text-amber-700">Late</th>
-                        <th className="py-3 px-4">Turnout</th>
-                        <th className="py-3 px-4 text-right">Actions</th>
+                        <th className="py-3.5 px-4">Standard & Sec</th>
+                        <th className="py-3.5 px-4">Room</th>
+                        <th className="py-3.5 px-4">Class Teacher</th>
+                        <th className="py-3.5 px-3 text-center">Strength</th>
+                        <th className="py-3.5 px-3 text-center text-emerald-700">Present</th>
+                        <th className="py-3.5 px-3 text-center text-rose-700">Absent</th>
+                        <th className="py-3.5 px-3 text-center text-amber-700">Late</th>
+                        <th className="py-3.5 px-4">Turnout</th>
+                        <th className="py-3.5 px-4 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                       {filteredClasses.map((cls, idx) => (
-                        <tr key={idx} className="hover:bg-[#F1F6FD] transition-colors">
-                          <td className="py-3 px-4 font-black text-[#172B4D]">Class {cls.standard}-{cls.section}</td>
-                          <td className="py-3 px-4 text-slate-500">{cls.roomNumber || '-'}</td>
-                          <td className="py-3 px-4 font-semibold text-slate-800">{cls.classTeacher}</td>
-                          <td className="py-3 px-3 text-center font-bold">{cls.strength}</td>
-                          <td className="py-3 px-3 text-center font-bold text-emerald-600">{cls.present}</td>
-                          <td className="py-3 px-3 text-center font-bold text-rose-600">{cls.absent}</td>
-                          <td className="py-3 px-3 text-center font-bold text-amber-600">{cls.late || 0}</td>
-                          <td className="py-3 px-4 font-black">
-                            <span className={`px-2 py-0.5 rounded text-[11px] ${
-                              cls.attendancePercentage >= 90 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
+                        <tr key={idx} className="hover:bg-[#F8FAFC] transition-colors">
+                          <td className="py-3.5 px-4 font-black text-[#172B4D] whitespace-nowrap">
+                            <span className="inline-block bg-slate-100 text-[#172B4D] px-2.5 py-1 rounded-lg border border-slate-200 font-black">
+                              Class {cls.standard}-{cls.section}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4 text-slate-600 font-semibold">{cls.roomNumber || '-'}</td>
+                          <td className="py-3.5 px-4">
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-[10px] shrink-0">
+                                {(cls.classTeacher || 'T').charAt(0)}
+                              </div>
+                              <span className="font-bold text-slate-900">{cls.classTeacher}</span>
+                            </div>
+                          </td>
+                          <td className="py-3.5 px-3 text-center font-black text-slate-800">{cls.strength}</td>
+                          <td className="py-3.5 px-3 text-center font-black text-emerald-600">{cls.present}</td>
+                          <td className="py-3.5 px-3 text-center font-black text-rose-600">{cls.absent}</td>
+                          <td className="py-3.5 px-3 text-center font-black text-amber-600">{cls.late || 0}</td>
+                          <td className="py-3.5 px-4 font-black">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black border ${
+                              cls.attendancePercentage >= 95
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                : cls.attendancePercentage >= 85
+                                ? 'bg-blue-50 text-blue-800 border-blue-200'
+                                : cls.attendancePercentage >= 75
+                                ? 'bg-amber-50 text-amber-800 border-amber-200'
+                                : 'bg-rose-50 text-rose-800 border-rose-200'
                             }`}>
                               {cls.attendancePercentage}%
                             </span>
                           </td>
-                          <td className="py-3 px-4 text-right">
-                            <button
-                              type="button"
-                              onClick={() => setSelectedClassModal(cls)}
-                              className="px-2.5 py-1 rounded-lg text-xs font-bold text-[#172B4D] bg-blue-50 hover:bg-blue-100 border border-blue-200"
-                            >
-                              {cls.absent > 0 ? `View ${cls.absent} Absentees` : 'Class Roster'}
-                            </button>
+                          <td className="py-3.5 px-4 text-right">
+                            {cls.absent > 0 ? (
+                              <button
+                                type="button"
+                                onClick={() => setSelectedClassModal(cls)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-all shadow-2xs"
+                              >
+                                <UserX className="w-3.5 h-3.5" />
+                                <span>View {cls.absent} Absentees</span>
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => setSelectedClassModal(cls)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-slate-50 hover:bg-slate-100 text-[#172B4D] border border-slate-200 transition-all shadow-2xs"
+                              >
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                                <span>Class Roster</span>
+                              </button>
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -1285,33 +1331,37 @@ export default function DailyReportsPage() {
               <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#EFF4FA] text-[#172B4D] font-extrabold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                    <thead className="bg-[#EFF4FA] text-[#172B4D] font-black uppercase tracking-wider text-[11px] border-b border-slate-200">
                       <tr>
-                        <th className="py-3 px-4">Student Name</th>
-                        <th className="py-3 px-3">Roll No</th>
-                        <th className="py-3 px-3">Class</th>
-                        <th className="py-3 px-4">Parent / Guardian</th>
-                        <th className="py-3 px-4">Contact Phone</th>
-                        <th className="py-3 px-4">Reason</th>
-                        <th className="py-3 px-4 text-right">Action</th>
+                        <th className="py-3.5 px-4">Student Name</th>
+                        <th className="py-3.5 px-3">Roll No</th>
+                        <th className="py-3.5 px-3">Class</th>
+                        <th className="py-3.5 px-4">Parent / Guardian</th>
+                        <th className="py-3.5 px-4">Contact Phone</th>
+                        <th className="py-3.5 px-4">Reason</th>
+                        <th className="py-3.5 px-4 text-right">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                       {filteredAbsentees.map((abs, idx) => (
                         <tr key={idx} className="hover:bg-rose-50/20">
-                          <td className="py-3 px-4 font-bold text-[#172B4D]">{abs.studentName}</td>
-                          <td className="py-3 px-3 font-mono font-bold text-slate-600">{abs.rollNumber || '-'}</td>
-                          <td className="py-3 px-3 font-semibold">Class {abs.standard}-{abs.section}</td>
-                          <td className="py-3 px-4">{abs.parentName || 'Parent'}</td>
-                          <td className="py-3 px-4 font-mono font-bold text-slate-900">{abs.parentPhone}</td>
-                          <td className="py-3 px-4 text-rose-700 font-semibold">{abs.reason || 'Uninformed'}</td>
-                          <td className="py-3 px-4 text-right">
+                          <td className="py-3.5 px-4 font-black text-[#172B4D]">{abs.studentName}</td>
+                          <td className="py-3.5 px-3 font-mono font-bold text-slate-600">{abs.rollNumber || '-'}</td>
+                          <td className="py-3.5 px-3 font-semibold">
+                            <span className="bg-slate-100 px-2 py-0.5 rounded text-[11px] font-bold text-slate-800">
+                              Class {abs.standard}-{abs.section}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4">{abs.parentName || 'Parent'}</td>
+                          <td className="py-3.5 px-4 font-mono font-bold text-slate-900">{abs.parentPhone}</td>
+                          <td className="py-3.5 px-4 text-rose-700 font-bold">{abs.reason || 'Uninformed'}</td>
+                          <td className="py-3.5 px-4 text-right">
                             {abs.parentPhone && (
                               <a
                                 href={`tel:${abs.parentPhone.replace(/\s+/g, '')}`}
-                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold"
+                                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold transition-all"
                               >
-                                <Phone className="w-3 h-3" />
+                                <Phone className="w-3.5 h-3.5" />
                                 <span>Call Parent</span>
                               </a>
                             )}
@@ -1329,31 +1379,42 @@ export default function DailyReportsPage() {
               <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#EFF4FA] text-[#172B4D] font-extrabold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                    <thead className="bg-[#EFF4FA] text-[#172B4D] font-black uppercase tracking-wider text-[11px] border-b border-slate-200">
                       <tr>
-                        <th className="py-3 px-4">Faculty Member</th>
-                        <th className="py-3 px-3">Emp ID</th>
-                        <th className="py-3 px-4">Department</th>
-                        <th className="py-3 px-3 text-center">Status</th>
-                        <th className="py-3 px-3 text-center">In-Time</th>
-                        <th className="py-3 px-4">Covering Substitute</th>
+                        <th className="py-3.5 px-4">Faculty Member</th>
+                        <th className="py-3.5 px-3">Emp ID</th>
+                        <th className="py-3.5 px-4">Department</th>
+                        <th className="py-3.5 px-3 text-center">Status</th>
+                        <th className="py-3.5 px-3 text-center">In-Time</th>
+                        <th className="py-3.5 px-4">Covering Substitute</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                       {filteredTeachers.map((tch, idx) => (
                         <tr key={idx} className="hover:bg-slate-50">
-                          <td className="py-3 px-4 font-bold text-[#172B4D]">{tch.name}</td>
-                          <td className="py-3 px-3 font-mono font-bold text-slate-500">{tch.empId}</td>
-                          <td className="py-3 px-4">{tch.dept}</td>
-                          <td className="py-3 px-3 text-center">
-                            <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                              tch.status === 'Present' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'
+                          <td className="py-3.5 px-4 font-black text-[#172B4D]">{tch.name}</td>
+                          <td className="py-3.5 px-3 font-mono font-bold text-slate-500">{tch.empId}</td>
+                          <td className="py-3.5 px-4 font-semibold text-slate-700">{tch.dept}</td>
+                          <td className="py-3.5 px-3 text-center">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black border ${
+                              tch.status === 'Present'
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                : 'bg-rose-50 text-rose-800 border-rose-200'
                             }`}>
                               {tch.status}
                             </span>
                           </td>
-                          <td className="py-3 px-3 text-center font-mono font-bold">{tch.inTime}</td>
-                          <td className="py-3 px-4 text-indigo-900 font-semibold">{tch.substitute || 'Regular Duty'}</td>
+                          <td className="py-3.5 px-3 text-center font-mono font-bold">{tch.inTime}</td>
+                          <td className="py-3.5 px-4">
+                            {tch.substitute ? (
+                              <span className="inline-flex items-center gap-1 text-indigo-900 font-bold bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200">
+                                <Sparkles className="w-3 h-3 text-indigo-600" />
+                                {tch.substitute}
+                              </span>
+                            ) : (
+                              <span className="text-slate-400 font-medium">Regular Teaching Routine</span>
+                            )}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -1367,25 +1428,33 @@ export default function DailyReportsPage() {
               <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#EFF4FA] text-[#172B4D] font-extrabold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                    <thead className="bg-[#EFF4FA] text-[#172B4D] font-black uppercase tracking-wider text-[11px] border-b border-slate-200">
                       <tr>
-                        <th className="py-3 px-4">Receipt #</th>
-                        <th className="py-3 px-4">Student Name</th>
-                        <th className="py-3 px-3">Class</th>
-                        <th className="py-3 px-4">Fee Head</th>
-                        <th className="py-3 px-3 text-center">Payment Mode</th>
-                        <th className="py-3 px-4 text-right">Amount (₹)</th>
+                        <th className="py-3.5 px-4">Receipt #</th>
+                        <th className="py-3.5 px-4">Student Name</th>
+                        <th className="py-3.5 px-3">Class</th>
+                        <th className="py-3.5 px-4">Fee Head</th>
+                        <th className="py-3.5 px-3 text-center">Payment Mode</th>
+                        <th className="py-3.5 px-4 text-right">Amount (₹)</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                       {filteredReceipts.map((rcp, idx) => (
                         <tr key={idx} className="hover:bg-slate-50">
-                          <td className="py-3 px-4 font-mono font-bold text-[#172B4D]">{rcp.receiptNumber}</td>
-                          <td className="py-3 px-4 font-bold">{rcp.studentName}</td>
-                          <td className="py-3 px-3">{rcp.standard}-{rcp.section || 'A'}</td>
-                          <td className="py-3 px-4">{rcp.head || 'Tuition Fee'}</td>
-                          <td className="py-3 px-3 text-center font-bold uppercase">{rcp.mode || rcp.primaryMode || 'UPI'}</td>
-                          <td className="py-3 px-4 text-right font-black">₹{(rcp.amount || rcp.paidAmount || 0).toLocaleString('en-IN')}</td>
+                          <td className="py-3.5 px-4 font-mono font-black text-[#172B4D]">{rcp.receiptNumber}</td>
+                          <td className="py-3.5 px-4 font-bold text-slate-900">{rcp.studentName}</td>
+                          <td className="py-3.5 px-3">
+                            <span className="bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-800">
+                              {rcp.standard}-{rcp.section || 'A'}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4">{rcp.head || 'Tuition Fee'}</td>
+                          <td className="py-3.5 px-3 text-center font-black uppercase">
+                            <span className="px-2 py-0.5 rounded-md text-[10px] bg-slate-100 text-slate-800 border border-slate-200 font-bold">
+                              {rcp.mode || rcp.primaryMode || 'UPI'}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4 text-right font-black text-slate-900">₹{(rcp.amount || rcp.paidAmount || 0).toLocaleString('en-IN')}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -1399,71 +1468,88 @@ export default function DailyReportsPage() {
         {/* ── MODAL: INDIVIDUAL CLASS ABSENTEES DETAILS ── */}
         {selectedClassModal && (
           <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
-            <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl overflow-hidden border border-slate-200">
-              <div className="p-4 bg-[#172B4D] text-white flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <GraduationCap className="w-5 h-5 text-blue-300" />
+            <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden border border-slate-200">
+              <div className="p-5 bg-[#172B4D] text-white flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-blue-200 border border-white/15">
+                    <GraduationCap className="w-5 h-5 text-blue-300" />
+                  </div>
                   <div>
-                    <h3 className="font-bold text-sm">Class {selectedClassModal.standard} - {selectedClassModal.section} Absentees</h3>
-                    <p className="text-[11px] text-blue-200 font-medium">Teacher: {selectedClassModal.classTeacher} • Room {selectedClassModal.roomNumber}</p>
+                    <h3 className="font-black text-base tracking-tight">Class {selectedClassModal.standard}-{selectedClassModal.section} Attendance Audit</h3>
+                    <p className="text-xs text-blue-200 font-medium">Class Teacher: <strong className="text-white">{selectedClassModal.classTeacher}</strong> • Room {selectedClassModal.roomNumber}</p>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setSelectedClassModal(null)}
-                  className="p-1 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white"
+                  className="p-1.5 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="p-4 max-h-96 overflow-y-auto">
-                <div className="mb-3 flex justify-between items-center text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100 font-semibold">
-                  <span>Total Strength: {selectedClassModal.strength}</span>
-                  <span className="text-emerald-700">Present: {selectedClassModal.present}</span>
-                  <span className="text-rose-700 font-bold">Absent: {selectedClassModal.absent}</span>
+              <div className="p-5 max-h-96 overflow-y-auto">
+                <div className="mb-4 grid grid-cols-3 gap-2 text-center text-xs">
+                  <div className="p-2.5 rounded-2xl bg-slate-50 border border-slate-200 font-bold">
+                    <span className="text-[10px] text-slate-400 block uppercase">Enrolled</span>
+                    <span className="text-sm font-black text-slate-800">{selectedClassModal.strength}</span>
+                  </div>
+                  <div className="p-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 font-bold">
+                    <span className="text-[10px] text-emerald-600 block uppercase">Present</span>
+                    <span className="text-sm font-black text-emerald-800">{selectedClassModal.present}</span>
+                  </div>
+                  <div className="p-2.5 rounded-2xl bg-rose-50 border border-rose-200 font-bold">
+                    <span className="text-[10px] text-rose-600 block uppercase">Absent</span>
+                    <span className="text-sm font-black text-rose-800">{selectedClassModal.absent}</span>
+                  </div>
                 </div>
 
                 {selectedClassModal.absentees && selectedClassModal.absentees.length > 0 ? (
-                  <div className="space-y-2">
+                  <div className="space-y-2.5">
+                    <h4 className="text-[11px] font-black uppercase text-slate-400 tracking-wider">Unaccounted / Absent Students</h4>
                     {selectedClassModal.absentees.map((abs, i) => (
-                      <div key={i} className="p-3 rounded-xl border border-rose-100 bg-rose-50/20 flex items-center justify-between gap-2">
-                        <div>
+                      <div key={i} className="p-3.5 rounded-2xl border border-rose-200 bg-rose-50/30 flex items-center justify-between gap-3">
+                        <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-black text-[#172B4D]">{abs.studentName}</span>
-                            <span className="text-[10px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-bold">Roll: {abs.rollNumber || '-'}</span>
+                            <span className="text-xs font-black text-[#172B4D] truncate">{abs.studentName}</span>
+                            <span className="text-[10px] font-mono bg-white border border-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-black">Roll: {abs.rollNumber || '-'}</span>
                           </div>
-                          <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Parent: {abs.parentName} • {abs.parentPhone}</p>
-                          <p className="text-[10px] text-rose-600 font-bold mt-0.5">Reason: {abs.reason || 'Uninformed'}</p>
+                          <p className="text-[11px] text-slate-600 mt-0.5 font-medium">Parent: {abs.parentName} • {abs.parentPhone}</p>
+                          <p className="text-[11px] text-rose-700 font-bold mt-0.5 flex items-center gap-1">
+                            <AlertTriangle className="w-3 h-3 text-rose-500" />
+                            Reason: {abs.reason || 'Uninformed'} • Marked {abs.timeMarked}
+                          </p>
                         </div>
                         {abs.parentPhone && (
                           <a
                             href={`tel:${abs.parentPhone.replace(/\s+/g, '')}`}
-                            className="p-2 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 shrink-0"
-                            title="Call Parent"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-all shadow-2xs shrink-0"
+                            title="Call Parent Now"
                           >
-                            <Phone className="w-4 h-4" />
+                            <Phone className="w-3.5 h-3.5" />
+                            <span>Call</span>
                           </a>
                         )}
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="py-8 text-center text-slate-400">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-1.5" />
-                    <span className="text-xs font-bold text-slate-700 block">No students absent in this class!</span>
-                    <span className="text-[11px]">All enrolled students are marked present.</span>
+                  <div className="py-8 text-center text-slate-500 bg-emerald-50/40 rounded-2xl border border-emerald-100 p-6">
+                    <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto mb-2" />
+                    <span className="text-sm font-black text-emerald-950 block">100% Full Attendance Verified</span>
+                    <span className="text-xs text-slate-600 mt-1 block font-medium">All {selectedClassModal.strength} students in Class {selectedClassModal.standard}-{selectedClassModal.section} are present on time under {selectedClassModal.classTeacher}.</span>
                   </div>
                 )}
               </div>
 
-              <div className="p-3 bg-slate-50 border-t border-slate-100 text-right">
+              <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
+                <span className="text-[11px] text-slate-500 font-medium">Official Principal Attendance Audit</span>
                 <button
                   type="button"
                   onClick={() => setSelectedClassModal(null)}
-                  className="px-4 py-1.5 rounded-xl text-xs font-bold bg-[#172B4D] text-white hover:bg-[#29456D]"
+                  className="px-4 py-2 rounded-xl text-xs font-black bg-[#172B4D] hover:bg-[#29456D] text-white transition-all shadow-2xs"
                 >
-                  Close
+                  Close Window
                 </button>
               </div>
             </div>
