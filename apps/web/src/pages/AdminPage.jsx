@@ -60,7 +60,6 @@ import {
   Send,
   Mail
 } from 'lucide-react';
-import AiAssistantSettingsTab from '../components/admin/AiAssistantSettingsTab';
 
 const MONTH_NAMES = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -3739,12 +3738,11 @@ Office of the Principal / Academic Administration`
         <>
 
         {/* Horizontal Navigation Tabs */}
-        {['settings', 'roles', 'employees', 'consolidated', 'details', 'daily_status', 'individual_details', 'ai_settings'].includes(activeTab) && (
+        {['settings', 'roles', 'employees', 'consolidated', 'details', 'daily_status', 'individual_details'].includes(activeTab) && (
           <div className="w-full bg-white p-1 sm:p-1.5 rounded-2xl border border-[#E4E2DA] shadow-subtle mb-6">
             <div className="flex gap-1.5 overflow-x-auto py-1 px-1 items-center justify-start w-full touch-pan-x" style={{ WebkitOverflowScrolling: 'touch' }}>
               {[
                 { id: 'settings', label: 'School Settings', icon: <SettingsIcon className="w-4 h-4 shrink-0" /> },
-                { id: 'ai_settings', label: 'AI Assistant & Usage', icon: <Sparkles className="w-4 h-4 shrink-0 text-amber-500" /> },
                 { id: 'roles', label: 'Role', icon: <ShieldCheck className="w-4 h-4 shrink-0" /> },
                 { id: 'employees', label: t('employee_mgmt') || 'Employee Management', icon: <UsersRound className="w-4 h-4 shrink-0" /> },
                 { id: 'consolidated', label: 'Consolidated', icon: <BarChart2 className="w-4 h-4 shrink-0" /> },
@@ -4293,11 +4291,6 @@ Office of the Principal / Academic Administration`
             </button>
           </div>
           </>
-        )}
-
-        {/* AI ASSISTANT SETTINGS & USAGE TAB */}
-        {activeTab === 'ai_settings' && (
-          <AiAssistantSettingsTab />
         )}
 
          {/* CONSOLIDATED REPORT TAB */}

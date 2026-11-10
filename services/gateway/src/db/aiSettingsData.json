@@ -21,6 +21,111 @@
     "maxHistoryTurns": 6,
     "updatedAt": "2026-11-10T11:22:38.559Z"
   },
-  "usageCounters": {},
-  "usageLogs": []
+  "usageCounters": {
+    "2026-11-10": {
+      "users": {
+        "79685f91-4be4-4e6b-9ada-bdd72735c5c3": 2,
+        "admin-uuid-101": 4
+      },
+      "schoolTotal": 6
+    }
+  },
+  "usageLogs": [
+    {
+      "id": "ai-log-1794313660993-m6yjvc",
+      "timestamp": "2026-11-10T12:27:40.993Z",
+      "userId": "admin-uuid-101",
+      "userName": "Admin User",
+      "userRole": "admin",
+      "tier": "premium",
+      "model": "gemini-3.5-flash",
+      "promptTokens": 9,
+      "completionTokens": 36,
+      "totalTokens": 45,
+      "ttsChars": 143,
+      "estimatedCost": 0.00231,
+      "status": "success",
+      "querySnippet": "How many teachers are absent today?"
+    },
+    {
+      "id": "ai-log-1794313660919-j7om43",
+      "timestamp": "2026-11-10T12:27:40.919Z",
+      "userId": "admin-uuid-101",
+      "userName": "Admin User",
+      "userRole": "admin",
+      "tier": "premium",
+      "model": "gemini-3.5-flash",
+      "promptTokens": 7,
+      "completionTokens": 76,
+      "totalTokens": 83,
+      "ttsChars": 309,
+      "estimatedCost": 0.00499,
+      "status": "success",
+      "querySnippet": "Give me today's daily report"
+    },
+    {
+      "id": "ai-log-1794313345633-mm8ap0",
+      "timestamp": "2026-11-10T12:22:25.633Z",
+      "userId": "admin-uuid-101",
+      "userName": "Admin User",
+      "userRole": "admin",
+      "tier": "premium",
+      "model": "gemini-3.5-flash",
+      "promptTokens": 7,
+      "completionTokens": 35,
+      "totalTokens": 42,
+      "ttsChars": 137,
+      "estimatedCost": 0.00221,
+      "status": "success",
+      "querySnippet": "Give me today's daily report"
+    },
+    {
+      "id": "ai-log-1794313333539-4q0q8z",
+      "timestamp": "2026-11-10T12:22:13.539Z",
+      "userId": "admin-uuid-101",
+      "userName": "Admin User",
+      "userRole": "admin",
+      "tier": "premium",
+      "model": "gemini-3.5-flash",
+      "promptTokens": 9,
+      "completionTokens": 40,
+      "totalTokens": 49,
+      "ttsChars": 157,
+      "estimatedCost": 0.00254,
+      "status": "success",
+      "querySnippet": "How many teachers are absent today?"
+    },
+    {
+      "id": "ai-log-1794313037800-284524",
+      "timestamp": "2026-11-10T12:17:17.800Z",
+      "userId": "79685f91-4be4-4e6b-9ada-bdd72735c5c3",
+      "userName": "Admin User",
+      "userRole": "admin",
+      "tier": "premium",
+      "model": "gemini-3.5-flash",
+      "promptTokens": 1,
+      "completionTokens": 35,
+      "totalTokens": 36,
+      "ttsChars": 137,
+      "estimatedCost": 0.00221,
+      "status": "success",
+      "querySnippet": "hi"
+    },
+    {
+      "id": "ai-log-1794313020415-k4xyu9",
+      "timestamp": "2026-11-10T12:17:00.415Z",
+      "userId": "79685f91-4be4-4e6b-9ada-bdd72735c5c3",
+      "userName": "Admin User",
+      "userRole": "admin",
+      "tier": "premium",
+      "model": "gemini-3.5-flash",
+      "promptTokens": 5,
+      "completionTokens": 38,
+      "totalTokens": 43,
+      "ttsChars": 152,
+      "estimatedCost": 0.00246,
+      "status": "success",
+      "querySnippet": "Today's timetable"
+    }
+  ]
 }
