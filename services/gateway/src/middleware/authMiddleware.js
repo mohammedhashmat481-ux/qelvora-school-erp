@@ -47,6 +47,12 @@ export const protect = async (req, res, next) => {
       }
 
       req.user = formatLegacyId(user);
+      if (!req.user.schoolId && (decoded.schoolId || decoded.school_id)) {
+        req.user.schoolId = decoded.schoolId || decoded.school_id;
+      }
+      if (!req.user.permissions && decoded.permissions) {
+        req.user.permissions = decoded.permissions;
+      }
       next();
     } catch (error) {
       return res.status(401).json({ status: false, message: 'Not authorized, token failed' });

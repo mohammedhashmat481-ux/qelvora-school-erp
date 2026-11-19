@@ -1548,10 +1548,10 @@ const FeesManagementPage = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[var(--bg)] text-[#1F2937] flex flex-col lg:flex-row animate-fadeIn font-sans">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:flex-row bg-[var(--bg)] text-[#1F2937] animate-fadeIn font-sans lg:overflow-hidden">
       <Sidebar />
 
-      <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden flex flex-col min-w-0 bg-[var(--bg)] p-3 sm:p-5 lg:p-8 pb-28 md:pb-12">
+      <div className="flex-1 min-w-0 min-h-0 lg:h-screen lg:overflow-y-auto overflow-x-hidden flex flex-col bg-[var(--bg)] p-3 sm:p-5 lg:p-8 pb-28 lg:pb-12">
         <div className="w-full mx-auto space-y-4 sm:space-y-6">
 
             {/* TOP HEADER BAR */}

@@ -708,12 +708,12 @@ const OnlineExamManagementPage = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[var(--bg)] font-sans text-[#1F2937] flex flex-col lg:flex-row">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:flex-row bg-[var(--bg)] font-sans text-[#1F2937] lg:overflow-hidden">
       {/* ─── Platform Main Sidebar ─── */}
       <Sidebar />
 
       {/* ─── Main Content Area ─── */}
-      <div className="flex-1 flex flex-col min-w-0 pb-16">
+      <div className="flex-1 min-w-0 min-h-0 lg:h-screen lg:overflow-y-auto overflow-x-hidden flex flex-col pb-28 lg:pb-16">
       {/* ─── Top Header Ribbon ──────────────────────────────────────────────── */}
       <div className="bg-white border-b border-[#E4E2DA] text-[#1F2937] sticky top-0 z-20 shadow-subtle">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col lg:flex-row md:items-center justify-between gap-4">
@@ -1376,7 +1376,7 @@ const OnlineExamManagementPage = () => {
             {analyticsData && (
               <div className="space-y-6">
                 {/* Score Distribution Ribbon */}
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
                   {Object.entries(analyticsData.distribution || {}).map(([range, count]) => (
                     <div key={range} className="bg-white p-3.5 rounded-2xl border border-slate-200 text-center shadow-2xs">
                       <span className="text-[10px] font-bold text-slate-400 uppercase">{range}</span>

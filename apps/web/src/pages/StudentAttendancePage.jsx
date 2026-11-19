@@ -921,111 +921,113 @@ export default function StudentAttendancePage() {
   }, [roster]);
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F5F8FC] font-sans text-[#253858] flex flex-col lg:flex-row">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:flex-row bg-[#F5F8FC] font-sans text-[#253858] lg:overflow-hidden">
       {/* Platform Sidebar */}
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 pb-16">
-        {/* Sticky Page Header */}
-        <header className="bg-white border-b border-[#E4E2DA] text-[#1F2937] px-6 py-4 sticky top-0 z-20 shadow-subtle flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent)]/20 flex items-center justify-center shadow-xs">
-              <ClipboardCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-lg font-black text-[#1F2937] tracking-tight">Student Attendance System</h1>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#DBEAFE] text-[#172B4D] border border-[#93C5FD]">
-                  AY {academicYear}
-                </span>
+      <div className="flex-1 min-w-0 min-h-0 lg:h-screen lg:overflow-y-auto overflow-x-hidden flex flex-col pb-28 lg:pb-16">
+        {/* Sticky Unified Top Bar (Header + Tabs) */}
+        <div className="sticky top-0 z-20 bg-white border-b border-[#E4E2DA] shadow-subtle">
+          <header className="text-[#1F2937] px-4 sm:px-6 py-3.5 sm:py-4 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent)]/20 flex items-center justify-center shadow-xs">
+                <ClipboardCheck className="w-5 h-5" />
               </div>
-              <p className="text-xs text-[#5B6676] font-medium">
-                Manual, QR Card Scanner & Face Recognition Biometrics with Multi-Channel Parent Alerts
-              </p>
-            </div>
-          </div>
-
-          {/* Quick Date / Class Switcher Bar */}
-          <div className="flex items-center gap-2 flex-wrap text-xs">
-            <div className="flex items-center gap-1.5 bg-[#F3F1EA] px-3 py-1.5 rounded-xl border border-[#E4E2DA] font-semibold text-[#1F2937] shadow-xs">
-              <Calendar className="w-3.5 h-3.5 text-[#29456D]" />
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-transparent outline-none cursor-pointer font-bold text-[#172B4D]"
-              />
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-lg font-black text-[#1F2937] tracking-tight">Student Attendance System</h1>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#DBEAFE] text-[#172B4D] border border-[#93C5FD]">
+                    AY {academicYear}
+                  </span>
+                </div>
+                <p className="text-xs text-[#5B6676] font-medium">
+                  Manual, QR Card Scanner & Face Recognition Biometrics with Multi-Channel Parent Alerts
+                </p>
+              </div>
             </div>
 
-            <div className="flex items-center gap-1 bg-[#F3F1EA] p-1 rounded-xl border border-[#E4E2DA] font-bold text-[#1F2937] shadow-xs">
-              <select
-                value={selectedClass}
-                onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-white px-2 py-0.5 outline-none cursor-pointer text-[#172B4D] font-bold hover:bg-[#DBEAFE] rounded"
-              >
-                {['Nursery', 'LKG', 'UKG', '1st', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'].map(c => (
-                  <option key={c} value={c} className="bg-white text-[#172B4D]">Class {c}</option>
-                ))}
-              </select>
-              <span className="text-[#29456D]">|</span>
-              <select
-                value={selectedSection}
-                onChange={(e) => setSelectedSection(e.target.value)}
-                className="bg-white px-2 py-0.5 outline-none cursor-pointer text-[#172B4D] font-bold hover:bg-[#DBEAFE] rounded"
-              >
-                {['A', 'B', 'C', 'D'].map(s => (
-                  <option key={s} value={s} className="bg-white text-[#172B4D]">Sec {s}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </header>
+            {/* Quick Date / Class Switcher Bar */}
+            <div className="flex items-center gap-2 flex-wrap text-xs">
+              <div className="flex items-center gap-1.5 bg-[#F3F1EA] px-3 py-1.5 rounded-xl border border-[#E4E2DA] font-semibold text-[#1F2937] shadow-xs">
+                <Calendar className="w-3.5 h-3.5 text-[#29456D]" />
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="bg-transparent outline-none cursor-pointer font-bold text-[#172B4D]"
+                />
+              </div>
 
-        {/* Navigation Tabs Bar */}
-        <div className="bg-white border-b border-slate-200 px-6 py-2 sticky top-[73px] z-10 overflow-x-auto no-scrollbar">
-          <div className="flex items-center gap-1 min-w-max text-xs font-bold">
-            {[
-              { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-              { id: 'manual', label: '1. Manual Attendance', icon: ClipboardCheck },
-              { id: 'scan', label: '2. QR / Barcode Scan', icon: QrCode },
-              { id: 'face', label: '3. Face Recognition', icon: Camera },
-              { id: 'biometrics', label: 'Face Consent & Enrollment', icon: ShieldCheck },
-              { id: 'id-cards', label: 'Student ID Cards', icon: Award },
-              { id: 'reports', label: 'Registers & Reports', icon: FileText },
-              { id: 'notifications', label: 'Parent Alerts', icon: MessageSquare },
-              { id: 'settings', label: 'Rules & Settings', icon: Settings }
-            ].map(tabItem => {
-              const Icon = tabItem.icon;
-              const isActive = activeTab === tabItem.id;
-              return (
-                <button
-                  key={tabItem.id}
-                  type="button"
-                  onClick={() => setTab(tabItem.id)}
-                  className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-2 cursor-pointer ${
-                    isActive
-                      ? 'bg-[#29456D] text-white shadow-xs font-black'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                  }`}
+              <div className="flex items-center gap-1 bg-[#F3F1EA] p-1 rounded-xl border border-[#E4E2DA] font-bold text-[#1F2937] shadow-xs">
+                <select
+                  value={selectedClass}
+                  onChange={(e) => setSelectedClass(e.target.value)}
+                  className="bg-white px-2 py-0.5 outline-none cursor-pointer text-[#172B4D] font-bold hover:bg-[#DBEAFE] rounded"
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-blue-300' : 'text-slate-500'}`} />
-                  <span>{tabItem.label}</span>
-                </button>
-              );
-            })}
+                  {['Nursery', 'LKG', 'UKG', '1st', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'].map(c => (
+                    <option key={c} value={c} className="bg-white text-[#172B4D]">Class {c}</option>
+                  ))}
+                </select>
+                <span className="text-[#29456D]">|</span>
+                <select
+                  value={selectedSection}
+                  onChange={(e) => setSelectedSection(e.target.value)}
+                  className="bg-white px-2 py-0.5 outline-none cursor-pointer text-[#172B4D] font-bold hover:bg-[#DBEAFE] rounded"
+                >
+                  {['A', 'B', 'C', 'D'].map(s => (
+                    <option key={s} value={s} className="bg-white text-[#172B4D]">Sec {s}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </header>
+
+          {/* Navigation Tabs Bar */}
+          <div className="border-t border-slate-100 px-4 sm:px-6 py-2 overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-1 min-w-max text-xs font-bold">
+              {[
+                { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+                { id: 'manual', label: '1. Manual Attendance', icon: ClipboardCheck },
+                { id: 'scan', label: '2. QR / Barcode Scan', icon: QrCode },
+                { id: 'face', label: '3. Face Recognition', icon: Camera },
+                { id: 'biometrics', label: 'Face Consent & Enrollment', icon: ShieldCheck },
+                { id: 'id-cards', label: 'Student ID Cards', icon: Award },
+                { id: 'reports', label: 'Registers & Reports', icon: FileText },
+                { id: 'notifications', label: 'Parent Alerts', icon: MessageSquare },
+                { id: 'settings', label: 'Rules & Settings', icon: Settings }
+              ].map(tabItem => {
+                const Icon = tabItem.icon;
+                const isActive = activeTab === tabItem.id;
+                return (
+                  <button
+                    key={tabItem.id}
+                    type="button"
+                    onClick={() => setTab(tabItem.id)}
+                    className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-2 cursor-pointer ${
+                      isActive
+                        ? 'bg-[#29456D] text-white shadow-xs font-black'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    }`}
+                  >
+                    <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-blue-300' : 'text-slate-500'}`} />
+                    <span>{tabItem.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
         {/* Tab Content Canvas */}
-        <main className="p-6 flex-1 space-y-6">
+        <main className="p-4 sm:p-6 flex-1 space-y-6">
           {/* ─────────────────────────────────────────────────────────────
               TAB 1: DASHBOARD
           ───────────────────────────────────────────────────────────── */}
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
               {/* Metric KPI Cards */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3.5">
                 <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1">
                   <div className="flex items-center justify-between text-slate-500 text-xs font-bold">
                     <span>Enrolled</span>
@@ -1124,7 +1126,7 @@ export default function StudentAttendancePage() {
                   </div>
 
                   {/* Legend */}
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2 text-xs font-bold">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5 pt-2 text-xs font-bold">
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full bg-emerald-500 shrink-0" />
                       <span className="text-slate-700">Present: {dashboardData?.presentCount || 0}</span>
@@ -1186,7 +1188,7 @@ export default function StudentAttendancePage() {
               </div>
 
               {/* Quick Actions Shortcuts */}
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                 <button
                   type="button"
                   onClick={() => setTab('manual')}
@@ -2220,77 +2222,81 @@ export default function StudentAttendancePage() {
                 ) : reportData.length === 0 ? (
                   <div className="py-16 text-center text-xs text-slate-400 italic">No report data found.</div>
                 ) : reportType === 'daily' ? (
-                  <table className="w-full text-left border-collapse text-xs">
-                    <thead className="bg-slate-100 font-bold border-b border-slate-200 text-slate-700">
-                      <tr>
-                        <th className="py-2.5 px-3">Roll</th>
-                        <th className="py-2.5 px-3">Student Name</th>
-                        <th className="py-2.5 px-3">Class</th>
-                        <th className="py-2.5 px-3">Status</th>
-                        <th className="py-2.5 px-3">Check-In</th>
-                        <th className="py-2.5 px-3">Check-Out</th>
-                        <th className="py-2.5 px-3">Method</th>
-                        <th className="py-2.5 px-3">Remarks</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 font-medium">
-                      {reportData.map((row, idx) => (
-                        <tr key={idx} className="hover:bg-slate-50">
-                          <td className="py-2 px-3 font-mono">{row.rollNumber}</td>
-                          <td className="py-2 px-3 font-bold text-slate-900">{row.name}</td>
-                          <td className="py-2 px-3 text-slate-600 font-mono">{row.standard}-{row.section}</td>
-                          <td className="py-2 px-3">
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                              row.status === 'Present' ? 'bg-emerald-100 text-emerald-800' :
-                              row.status === 'Absent' ? 'bg-red-100 text-red-800' :
-                              row.status === 'Late' ? 'bg-amber-100 text-amber-800' : 'bg-purple-100 text-purple-800'
-                            }`}>
-                              {row.status}
-                            </span>
-                          </td>
-                          <td className="py-2 px-3 font-mono">{row.checkInTime || '-'}</td>
-                          <td className="py-2 px-3 font-mono">{row.checkOutTime || '-'}</td>
-                          <td className="py-2 px-3 text-[11px] font-bold uppercase text-slate-500">{row.method}</td>
-                          <td className="py-2 px-3 text-slate-500">{row.remarks || '-'}</td>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse text-xs">
+                      <thead className="bg-slate-100 font-bold border-b border-slate-200 text-slate-700">
+                        <tr>
+                          <th className="py-2.5 px-3">Roll</th>
+                          <th className="py-2.5 px-3">Student Name</th>
+                          <th className="py-2.5 px-3">Class</th>
+                          <th className="py-2.5 px-3">Status</th>
+                          <th className="py-2.5 px-3">Check-In</th>
+                          <th className="py-2.5 px-3">Check-Out</th>
+                          <th className="py-2.5 px-3">Method</th>
+                          <th className="py-2.5 px-3">Remarks</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 font-medium">
+                        {reportData.map((row, idx) => (
+                          <tr key={idx} className="hover:bg-slate-50">
+                            <td className="py-2 px-3 font-mono">{row.rollNumber}</td>
+                            <td className="py-2 px-3 font-bold text-slate-900">{row.name}</td>
+                            <td className="py-2 px-3 text-slate-600 font-mono">{row.standard}-{row.section}</td>
+                            <td className="py-2 px-3">
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                row.status === 'Present' ? 'bg-emerald-100 text-emerald-800' :
+                                row.status === 'Absent' ? 'bg-red-100 text-red-800' :
+                                row.status === 'Late' ? 'bg-amber-100 text-amber-800' : 'bg-purple-100 text-purple-800'
+                              }`}>
+                                {row.status}
+                              </span>
+                            </td>
+                            <td className="py-2 px-3 font-mono">{row.checkInTime || '-'}</td>
+                            <td className="py-2 px-3 font-mono">{row.checkOutTime || '-'}</td>
+                            <td className="py-2 px-3 text-[11px] font-bold uppercase text-slate-500">{row.method}</td>
+                            <td className="py-2 px-3 text-slate-500">{row.remarks || '-'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 ) : reportType === 'low-attendance' ? (
                   <div className="space-y-3">
                     <div className="p-3 bg-red-50 text-red-800 border border-red-200 rounded-xl text-xs font-bold flex items-center gap-2">
                       <AlertTriangle className="w-4 h-4 text-red-600" />
                       <span>The following students have attendance below {rules.lowAttendanceThreshold || 75}%. Follow-up recommended.</span>
                     </div>
-                    <table className="w-full text-left border-collapse text-xs">
-                      <thead className="bg-slate-100 font-bold border-b border-slate-200 text-slate-700">
-                        <tr>
-                          <th className="py-2.5 px-3">Student Name</th>
-                          <th className="py-2.5 px-3">Class</th>
-                          <th className="py-2.5 px-3">Attendance %</th>
-                          <th className="py-2.5 px-3">Attended / Total</th>
-                          <th className="py-2.5 px-3">Parent Name</th>
-                          <th className="py-2.5 px-3">Parent Phone</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 font-medium">
-                        {reportData.map((row, idx) => (
-                          <tr key={idx} className="hover:bg-slate-50">
-                            <td className="py-2 px-3 font-bold text-slate-900">{row.name}</td>
-                            <td className="py-2 px-3 font-mono">{row.standard}-{row.section}</td>
-                            <td className="py-2 px-3 font-bold text-red-700">{row.percentage}%</td>
-                            <td className="py-2 px-3 font-mono">{row.attendedClasses} / {row.totalClasses}</td>
-                            <td className="py-2 px-3 text-slate-700">{row.parentName || '-'}</td>
-                            <td className="py-2 px-3 font-mono text-slate-600">{row.parentPhone || '-'}</td>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead className="bg-slate-100 font-bold border-b border-slate-200 text-slate-700">
+                          <tr>
+                            <th className="py-2.5 px-3">Student Name</th>
+                            <th className="py-2.5 px-3">Class</th>
+                            <th className="py-2.5 px-3">Attendance %</th>
+                            <th className="py-2.5 px-3">Attended / Total</th>
+                            <th className="py-2.5 px-3">Parent Name</th>
+                            <th className="py-2.5 px-3">Parent Phone</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 font-medium">
+                          {reportData.map((row, idx) => (
+                            <tr key={idx} className="hover:bg-slate-50">
+                              <td className="py-2 px-3 font-bold text-slate-900">{row.name}</td>
+                              <td className="py-2 px-3 font-mono">{row.standard}-{row.section}</td>
+                              <td className="py-2 px-3 font-bold text-red-700">{row.percentage}%</td>
+                              <td className="py-2 px-3 font-mono">{row.attendedClasses} / {row.totalClasses}</td>
+                              <td className="py-2 px-3 text-slate-700">{row.parentName || '-'}</td>
+                              <td className="py-2 px-3 font-mono text-slate-600">{row.parentPhone || '-'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 ) : (
-                  <div className="text-xs">
+                  <div className="text-xs overflow-x-auto">
                     {/* Monthly Matrix view */}
-                    <table className="w-full text-left border-collapse text-[11px]">
+                    <table className="w-full text-left border-collapse text-[11px] min-w-[700px]">
                       <thead className="bg-slate-100 font-bold border-b border-slate-200">
                         <tr>
                           <th className="py-2 px-2">Student</th>

@@ -644,9 +644,9 @@ export default function AttendancePage() {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[var(--bg)] text-[#1F2937] flex flex-col lg:flex-row font-sans">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:flex-row bg-[var(--bg)] text-[#1F2937] font-sans lg:overflow-hidden">
       <Sidebar />
-      <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden bg-[var(--bg)] p-3 sm:p-5 lg:p-8 pb-28 md:pb-12">
+      <div className="flex-1 min-w-0 min-h-0 lg:h-screen lg:overflow-y-auto overflow-x-hidden bg-[var(--bg)] p-3 sm:p-5 lg:p-8 pb-28 lg:pb-12">
         
         {/* Top Header Card */}
         <div className="mb-6 bg-white border border-[#E4E2DA] rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

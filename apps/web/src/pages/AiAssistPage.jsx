@@ -279,10 +279,10 @@ export default function AiAssistPage() {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[var(--bg,#F8F7F3)] text-[#1F2937] flex flex-col lg:flex-row font-sans">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:flex-row bg-[var(--bg,#F8F7F3)] text-[#1F2937] font-sans lg:overflow-hidden">
       <Sidebar />
 
-      <div className="flex-1 bg-[var(--bg,#F8F7F3)] p-3 sm:p-5 lg:p-7 overflow-y-auto flex flex-col">
+      <div className="flex-1 min-w-0 min-h-0 lg:h-screen lg:overflow-y-auto overflow-x-hidden bg-[var(--bg,#F8F7F3)] p-3 sm:p-5 lg:p-7 flex flex-col pb-28 lg:pb-8">
         {/* Top Header */}
         <header className="mb-5 pb-4 border-b border-[#E4E2DA] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center gap-3">

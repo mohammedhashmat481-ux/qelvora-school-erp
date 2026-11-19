@@ -45,6 +45,7 @@ backend/data/
 # Uploaded dynamic assets
 services/gateway/uploads/resources/[0-9]*
 services/gateway/uploads/study-materials/*
+services/gateway/uploads/expenses/*
 
 # Media & Demo Recordings
 *.png

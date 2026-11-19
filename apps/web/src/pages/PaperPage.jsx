@@ -789,13 +789,13 @@ export default function PaperPage() {
   }, [settings.chaptersBySubject]);
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col lg:flex-row font-sans">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:flex-row bg-[#F5F8FC] text-[#253858] font-sans lg:overflow-hidden">
       {/* Platform Sidebar */}
       <div className="no-print">
         <Sidebar />
       </div>
 
-      <div className="flex-1 flex flex-col min-h-screen overflow-y-auto">
+      <div className="flex-1 min-w-0 min-h-0 lg:h-screen lg:overflow-y-auto overflow-x-hidden flex flex-col pb-28 lg:pb-12">
         {/* Top Header Bar */}
         <header className="bg-white border-b border-[#E4E2DA] text-[#1F2937] px-6 py-4 sticky top-0 z-30 shadow-subtle no-print">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">

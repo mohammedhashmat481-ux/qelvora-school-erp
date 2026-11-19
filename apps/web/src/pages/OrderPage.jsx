@@ -1302,7 +1302,7 @@ const OrderPage = () => {
     <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col lg:flex-row animate-fadeIn font-sans">
       <Sidebar />
       <div className="flex-1 bg-[#f3f3f9] flex flex-col min-w-0">
-        <div className="min-h-[calc(100vh-4rem)] bg-[#f3f3f9] p-4 sm:p-6 overflow-y-auto">
+        <div className="min-h-[calc(100vh-4rem)] bg-[#f3f3f9] p-4 sm:p-6 overflow-y-auto pb-28 lg:pb-12">
           <div className="w-full">
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">

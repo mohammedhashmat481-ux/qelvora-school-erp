@@ -43,7 +43,8 @@ import {
   Bell,
   BellRing,
   BadgeCheck,
-  Sparkles
+  Sparkles,
+  Plus
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -167,6 +168,10 @@ const Sidebar = () => {
     location.pathname === '/fees'
   );
 
+  const [isExpenseOpen, setIsExpenseOpen] = useState(
+    location.pathname === '/expenses' || location.pathname === '/expense-management'
+  );
+
   const [isPromotionOpen, setIsPromotionOpen] = useState(
     location.pathname === '/student-promotion' || location.pathname === '/promotion' || location.pathname === '/alumni'
   );
@@ -189,6 +194,9 @@ const Sidebar = () => {
     }
     if (location.pathname === '/fees') {
       setIsFeesOpen(true);
+    }
+    if (location.pathname === '/expenses' || location.pathname === '/expense-management') {
+      setIsExpenseOpen(true);
     }
     if (location.pathname === '/student-promotion' || location.pathname === '/promotion' || location.pathname === '/alumni') {
       setIsPromotionOpen(true);
@@ -232,6 +240,14 @@ const Sidebar = () => {
     const base = "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-150 border";
     const isFeesActive = location.pathname === '/fees';
     const isMatch = isFeesActive && (tab === tabName || (!tab && defaultForFees));
+    if (isMatch) return `${base} text-[var(--accent)] bg-[var(--accent-soft)] font-bold border-[var(--accent)]/30 border-l-[3px] border-l-[var(--accent)] rounded-r-lg rounded-l-none pl-2.5 shadow-xs`;
+    return `${base} text-[#475569] border-transparent hover:border-[#E4E2DA] hover:text-[#0F172A] hover:bg-[#F3F1EA]`;
+  };
+
+  const getExpenseSubLinkClass = (tabName, defaultForExpense = false) => {
+    const base = "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-150 border";
+    const isExpenseActive = location.pathname === '/expenses' || location.pathname === '/expense-management';
+    const isMatch = isExpenseActive && (tab === tabName || (!tab && defaultForExpense));
     if (isMatch) return `${base} text-[var(--accent)] bg-[var(--accent-soft)] font-bold border-[var(--accent)]/30 border-l-[3px] border-l-[var(--accent)] rounded-r-lg rounded-l-none pl-2.5 shadow-xs`;
     return `${base} text-[#475569] border-transparent hover:border-[#E4E2DA] hover:text-[#0F172A] hover:bg-[#F3F1EA]`;
   };
@@ -309,7 +325,7 @@ const Sidebar = () => {
     isAdmin ||
     (Array.isArray(user?.permissions) &&
       user.permissions.some(p =>
-        ['admin_panel', 'student_attendance', 'fees_management', 'student_promotion', 'examination', 'online_exam', 'safe_pickup', 'attendance'].includes(p)
+        ['admin_panel', 'student_attendance', 'fees_management', 'expense_management', 'student_promotion', 'examination', 'online_exam', 'safe_pickup', 'attendance'].includes(p)
       ));
   const isTeacher =
     !isAdmin &&
@@ -826,6 +842,60 @@ const Sidebar = () => {
                   <Link to="/fees?tab=settings" onClick={handleLinkClick} className={getFeesSubLinkClass('settings')}>
                     <Settings className="w-3.5 h-3.5 shrink-0" />
                     <span>Fee Settings</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            )}
+
+            {/* Expense Management Module Dropdown */}
+            {hasPermission('expense_management') && (
+            <div className="space-y-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsExpenseOpen(!isExpenseOpen);
+                  if (location.pathname !== '/expenses' && location.pathname !== '/expense-management') {
+                    navigate('/expenses?tab=dashboard');
+                    handleLinkClick();
+                  }
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer ${
+                  location.pathname === '/expenses' || location.pathname === '/expense-management'
+                    ? 'text-[#0F172A] bg-[#F1EFEA] font-bold border border-[#E4E2DA]'
+                    : 'text-[#334155] border border-transparent hover:border-[#E4E2DA] hover:bg-[#F3F1EA] hover:text-[#0F172A]'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Receipt className={`w-4 h-4 shrink-0 ${location.pathname === '/expenses' ? 'text-[var(--accent)]' : 'text-[#475569]'}`} />
+                  <span>Expense Management</span>
+                </div>
+                <ChevronDown className={`w-4 h-4 text-[#CBD5E1] transition-transform duration-200 ${isExpenseOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Expense Submenu List */}
+              {isExpenseOpen && (
+                <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#E4E2DA] ml-5 animate-fadeIn">
+                  <Link to="/expenses?tab=dashboard" onClick={handleLinkClick} className={getExpenseSubLinkClass('dashboard', true)}>
+                    <LayoutDashboard className="w-3.5 h-3.5 shrink-0" />
+                    <span>Expense Dashboard</span>
+                  </Link>
+                  <Link to="/expenses?tab=add" onClick={handleLinkClick} className={getExpenseSubLinkClass('add')}>
+                    <Plus className="w-3.5 h-3.5 shrink-0" />
+                    <span>Add Expense</span>
+                  </Link>
+                  <Link to="/expenses?tab=all" onClick={handleLinkClick} className={getExpenseSubLinkClass('all')}>
+                    <Receipt className="w-3.5 h-3.5 shrink-0" />
+                    <span>All Expenses</span>
+                  </Link>
+                  <Link to="/expenses?tab=reports" onClick={handleLinkClick} className={getExpenseSubLinkClass('reports')}>
+                    <FileSpreadsheet className="w-3.5 h-3.5 shrink-0" />
+                    <span>Expense Reports</span>
+                  </Link>
+                  <Link to="/expenses?tab=categories" onClick={handleLinkClick} className={getExpenseSubLinkClass('categories')}>
+                    <Layers className="w-3.5 h-3.5 shrink-0" />
+                    <span>Expense Categories</span>
                   </Link>
                 </div>
               )}

@@ -376,9 +376,9 @@ export default function SummaryPage() {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col lg:flex-row font-sans">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:flex-row bg-[#F5F8FC] text-[#253858] font-sans lg:overflow-hidden">
       <Sidebar />
-      <div className="flex-1 min-w-0 bg-[#F5F8FC] p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 lg:pb-8">
+      <div className="flex-1 min-w-0 min-h-0 lg:h-screen lg:overflow-y-auto overflow-x-hidden bg-[#F5F8FC] p-4 sm:p-6 lg:p-8 pb-28 lg:pb-12">
         <div className="max-w-6xl mx-auto space-y-6">
 
           {/* Centralized Study Material Library Shared Banner */}

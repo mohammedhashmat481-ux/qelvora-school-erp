@@ -25,6 +25,7 @@ const AttendancePage       = lazy(() => import('./pages/AttendancePage'));
 const DailyReportsPage     = lazy(() => import('./pages/DailyReportsPage'));
 const StudentAttendancePage = lazy(() => import('./pages/StudentAttendancePage'));
 const FeesManagementPage   = lazy(() => import('./pages/FeesManagementPage'));
+const ExpenseManagementPage = lazy(() => import('./pages/ExpenseManagementPage'));
 const ExaminationPage      = lazy(() => import('./pages/ExaminationPage'));
 const OnlineExamManagementPage = lazy(() => import('./pages/OnlineExamManagementPage'));
 const StudentPromotionPage = lazy(() => import('./pages/StudentPromotionPage'));
@@ -186,6 +187,9 @@ function App() {
             <Route path="/parent"              element={<StudentSafePickupPage />} />
             <Route path="/safe-pickup"         element={<SafePickupPage />} />
             <Route path="/fees"                element={<FeesManagementPage />} />
+            <Route path="/expenses"            element={<ExpenseManagementPage />} />
+            <Route path="/expenses/:tab"       element={<ExpenseManagementPage />} />
+            <Route path="/expense-management"  element={<Navigate to="/expenses" replace />} />
             <Route path="/examination"         element={<ExaminationPage />} />
             <Route path="/exams"               element={<ExaminationPage />} />
             <Route path="/online-exam"         element={<OnlineExamManagementPage />} />

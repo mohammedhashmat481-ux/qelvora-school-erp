@@ -33,6 +33,8 @@ import reportRoutes from './src/routes/reportRoutes.js';
 import aiAssistantRoutes from './src/routes/aiAssistantRoutes.js';
 import homeworkRoutes from './src/routes/homeworkRoutes.js';
 import noticeRoutes from './src/routes/noticeRoutes.js';
+import expenseRoutes from './src/routes/expenseRoutes.js';
+import connectMongo from './src/config/mongo.js';
 import { validateAiConfig } from './src/lib/ai/providers.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -131,6 +133,7 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/ai-assistant', aiAssistantRoutes);
 app.use('/api/homework', homeworkRoutes);
 app.use('/api/notices', noticeRoutes);
+app.use('/api/expenses', expenseRoutes);
 
 // Enhanced Health check endpoint with DB ping and performance metrics
 app.get(['/health', '/api/health'], async (req, res) => {
@@ -217,6 +220,7 @@ async function initRemoteDbIfNeeded() {
 
 server.listen(PORT, async () => {
   console.log(`🚀 Qelvora School CRM Gateway Server running on port ${PORT}`);
+  await connectMongo();
   await initRemoteDbIfNeeded();
 });
 

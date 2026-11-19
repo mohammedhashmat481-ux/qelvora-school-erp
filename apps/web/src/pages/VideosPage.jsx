@@ -38,10 +38,10 @@ const VideosPage = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F5F8FC] text-[#253858] flex flex-col lg:flex-row font-sans">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:flex-row bg-[#F5F8FC] text-[#253858] font-sans lg:overflow-hidden">
       <Sidebar />
 
-      <div className="flex-1 bg-[#F5F8FC] p-4 sm:p-6 lg:p-8 overflow-y-auto">
+      <div className="flex-1 min-w-0 min-h-0 lg:h-screen lg:overflow-y-auto overflow-x-hidden bg-[#F5F8FC] p-4 sm:p-6 lg:p-8 pb-28 lg:pb-12">
         <header className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white border border-[#E4E2DA] shadow-subtle rounded-2xl p-5 sm:p-6 text-[#1F2937]">
           <div>
             <div className="text-xs font-bold uppercase tracking-widest text-[#5B6676] mb-1">Classroom Lectures</div>

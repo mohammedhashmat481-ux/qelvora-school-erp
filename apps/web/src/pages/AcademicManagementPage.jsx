@@ -689,12 +689,12 @@ export default function AcademicManagementPage() {
   }, [students]);
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen overflow-hidden bg-[#F5F8FC] font-sans text-[#253858] antialiased">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:flex-row bg-[#F5F8FC] font-sans text-[#253858] antialiased lg:overflow-hidden">
       {/* ── Platform Sidebar ── */}
       <Sidebar />
 
       {/* ── Main Content Container (Independently Scrollable) ── */}
-      <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden flex flex-col min-w-0 pb-28 md:pb-16">
+      <div className="flex-1 min-w-0 min-h-0 lg:h-screen lg:overflow-y-auto overflow-x-hidden flex flex-col pb-28 lg:pb-16">
         
         {/* ── Header Bar ── */}
         <header className="bg-white text-[#1F2937] px-4 sm:px-6 py-4 sm:py-5 border-b border-[#E4E2DA] shadow-subtle flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -2441,7 +2441,7 @@ export default function AcademicManagementPage() {
               {/* Validation Summary Cards if available */}
               {bulkPreviewData && (
                 <div className="space-y-4 animate-fadeIn">
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
                     <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
                       <p className="text-[10px] text-slate-500 font-bold uppercase">Total Rows</p>
                       <h4 className="text-lg font-black text-slate-800">{bulkPreviewData.totalRows}</h4>

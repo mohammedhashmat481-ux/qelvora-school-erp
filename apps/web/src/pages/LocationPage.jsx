@@ -85,7 +85,7 @@ const LocationPage = () => {
     <div className="min-h-screen bg-[#F7F9FC] text-[#334155] flex flex-col lg:flex-row animate-fadeIn font-sans">
       <Sidebar />
       <div className="flex-1 bg-[#F7F9FC] flex flex-col min-w-0">
-        <div className="min-h-[calc(100vh-4rem)] bg-white overflow-y-auto">
+        <div className="min-h-[calc(100vh-4rem)] bg-white overflow-y-auto pb-28 lg:pb-12">
           {/* Header */}
       <div className="bg-stone-900 border-b border-stone-200">
         <div className="w-full mx-auto px-4 py-4 flex items-center justify-between">

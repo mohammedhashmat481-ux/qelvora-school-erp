@@ -834,12 +834,12 @@ A mobile/web app connecting Parents, Authorized Third Parties, and School Staff 
   const isTeacherView = activeTab === 'teacher-panel' || activeTab === 'logs' || (activeTab === 'settings' && lastSection === 'teacher');
 
   return (
-    <div className="h-screen overflow-hidden bg-[var(--bg)] text-[#253858] flex flex-col lg:flex-row font-sans">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:flex-row bg-[var(--bg)] text-[#253858] font-sans lg:overflow-hidden">
       {/* Left Navigation Sidebar */}
       <Sidebar />
 
       {/* Main Workspace Area */}
-      <main className="flex-1 min-w-0 bg-[#F5F8FC] p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 lg:pb-8">
+      <main className="flex-1 min-w-0 min-h-0 lg:h-screen lg:overflow-y-auto overflow-x-hidden bg-[#F5F8FC] p-4 sm:p-6 lg:p-8 pb-28 lg:pb-12">
         <div className="max-w-7xl mx-auto space-y-6">
 
             {/* ── HEADER BANNER (DEDICATED PER PAGE: STUDENT PANEL vs TEACHER PANEL) ── */}
@@ -2287,7 +2287,7 @@ A mobile/web app connecting Parents, Authorized Third Parties, and School Staff 
                   )}
 
                   {/* 4 Stat Overview Cards */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
                       <div className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Total Class Roster</div>
                       <div className="text-2xl font-black text-slate-900">{teacherProfile.totalStudents} <span className="text-xs font-medium text-slate-500">Students</span></div>

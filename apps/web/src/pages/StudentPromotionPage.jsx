@@ -376,12 +376,12 @@ const StudentPromotionPage = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen overflow-hidden bg-[#F5F8FC] font-sans text-[#253858] antialiased">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:flex-row bg-[#F5F8FC] font-sans text-[#253858] antialiased lg:overflow-hidden">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 pb-20 md:pb-0 overflow-y-auto">
+      <div className="flex-1 min-w-0 min-h-0 lg:h-screen lg:overflow-y-auto overflow-x-hidden flex flex-col pb-28 lg:pb-12">
         {/* Top Header */}
         <header className="h-16 bg-white border-b border-[#E4E2DA] text-[#1F2937] px-6 flex items-center justify-between shrink-0 shadow-subtle z-10">
           <div className="flex items-center gap-3">
@@ -1291,7 +1291,7 @@ const StudentPromotionPage = () => {
             )}
 
             {/* Impact Metric Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
                 <div className="text-[10px] uppercase font-black text-slate-500">Total Processed</div>
                 <div className="text-xl font-black text-slate-900 mt-0.5">{previewData.totalSelected}</div>

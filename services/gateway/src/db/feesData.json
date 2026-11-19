@@ -7,7 +7,7 @@
       "2024-2025"
     ],
     "receiptPrefix": "FEE/2026-27/",
-    "nextReceiptNumber": 2096,
+    "nextReceiptNumber": 2097,
     "lateFineRule": {
       "enabled": true,
       "type": "per_day",
@@ -9983,6 +9983,61 @@
       "status": "Active",
       "collectedBy": "Manoj Verma (Accounts Officer)",
       "remarks": "RTE non-tuition co-curricular token fee"
+    },
+    {
+      "id": "rec-1795087894060",
+      "receiptNumber": "FEE/2026-27/02096",
+      "academicYear": "2026-2027",
+      "studentId": "c030b24d-9ec2-40f1-b5b4-3d9881fdf312",
+      "studentName": "Rahul Student",
+      "rollNumber": "101",
+      "studentIdCode": "STU-10th-A-101",
+      "standard": "10th",
+      "section": "A",
+      "gender": "Male",
+      "parentName": "Mr. & Mrs. Sharma",
+      "parentPhone": "+91 98765 43210",
+      "quotaId": "q-general",
+      "quotaName": "General",
+      "paymentDate": "2026-11-19T11:31:34.024Z",
+      "paymentModes": [
+        {
+          "mode": "cash",
+          "amount": 17100,
+          "reference": "Cash Counter"
+        }
+      ],
+      "primaryMode": "CASH",
+      "subTotal": 9600,
+      "discount": 0,
+      "lateFine": 7500,
+      "waiveLateFineReason": null,
+      "paidAmount": 17100,
+      "tenderedAmount": 17100,
+      "changeToReturn": 0,
+      "amountInWords": "Seventeen Thousand One Hundred Rupees Only",
+      "collectedBy": "Admin User",
+      "status": "Active",
+      "remarks": "Fee collected successfully",
+      "items": [
+        {
+          "headId": "fh-tuition",
+          "headName": "Tuition Fee",
+          "amount": 9600,
+          "period": "Apr, May 2026"
+        }
+      ],
+      "createdAt": "2026-11-19T11:31:34.060Z"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "log-1795087894060",
+      "studentId": "c030b24d-9ec2-40f1-b5b4-3d9881fdf312",
+      "action": "COLLECT_FEE",
+      "details": "Generated receipt FEE/2026-27/02096 for Rahul Student (10th-A) amount ₹17100 via CASH",
+      "user": "Admin User",
+      "timestamp": "2026-11-19T11:31:34.060Z"
     }
   ]
 }

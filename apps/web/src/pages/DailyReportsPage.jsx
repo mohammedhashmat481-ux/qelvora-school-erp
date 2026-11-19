@@ -565,12 +565,12 @@ export default function DailyReportsPage() {
   const summary = reportData?.summary;
 
   return (
-    <div className="h-screen overflow-hidden bg-[var(--bg)] text-[#1F2937] flex flex-col lg:flex-row font-sans">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:flex-row bg-[var(--bg)] text-[#1F2937] font-sans lg:overflow-hidden">
       {/* Sidebar Navigation */}
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 bg-[var(--bg)] p-3 sm:p-5 lg:p-7 overflow-y-auto print:p-0 print:bg-white">
+      <div className="flex-1 min-w-0 min-h-0 lg:h-screen lg:overflow-y-auto overflow-x-hidden bg-[var(--bg)] p-3 sm:p-5 lg:p-7 pb-28 lg:pb-12 print:p-0 print:bg-white">
         
         {/* ── TOP HEADER & TOOLBAR ── */}
         <header className="mb-6 pb-4 border-b border-[#E4E2DA] flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 print:hidden">

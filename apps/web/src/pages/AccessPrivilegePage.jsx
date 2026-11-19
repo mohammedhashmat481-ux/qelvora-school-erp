@@ -221,6 +221,15 @@ const SYSTEM_MODULES = [
     isPageLevel: false
   },
   {
+    id: 'expense_management',
+    name: 'Expense Management',
+    category: 'Modules',
+    icon: Receipt,
+    iconBg: 'bg-rose-50 text-rose-600',
+    description: 'School daily expense recording, automated category totals, audit tracking, and Tally-style reports',
+    isPageLevel: false
+  },
+  {
     id: 'student_promotion',
     name: 'Student Promotion',
     category: 'Modules',
@@ -581,9 +590,9 @@ export default function AccessPrivilegePage() {
   }, [activeCategory, searchQuery]);
 
   return (
-    <div className="h-screen overflow-hidden bg-[var(--bg)] text-[#1F2937] flex flex-col lg:flex-row font-sans">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:flex-row bg-[var(--bg)] text-[#1F2937] font-sans lg:overflow-hidden">
       <Sidebar />
-      <div className="flex-1 h-screen overflow-y-auto overflow-x-hidden bg-[var(--bg)] p-3 sm:p-5 lg:p-6 pb-24 md:pb-12">
+      <div className="flex-1 min-w-0 min-h-0 lg:h-screen lg:overflow-y-auto overflow-x-hidden bg-[var(--bg)] p-3 sm:p-5 lg:p-6 pb-28 lg:pb-12">
         
         {/* Unified Executive Header */}
         <div className="mb-4 bg-white border border-[#E4E2DA] rounded-xl p-3.5 sm:p-4 shadow-2xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
