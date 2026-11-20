@@ -1224,6 +1224,28 @@ router.post('/exams', protect, authorize('admin', 'teacher'), async (req, res) =
       return res.status(400).json({ success: false, message: `Exam code '${code}' already exists` });
     }
 
+    // Security Settings (Default to Strict Mode)
+    const securitySettings = req.body.securitySettings || {
+      securityMode: req.body.securityMode || (enableIntegrityShield !== false ? 'STRICT' : 'STANDARD'),
+      requireFullscreen: req.body.requireFullscreen !== undefined ? Boolean(req.body.requireFullscreen) : true,
+      restrictCopyPaste: req.body.restrictCopyPaste !== undefined ? Boolean(req.body.restrictCopyPaste) : true,
+      monitorTabSwitch: req.body.monitorTabSwitch !== undefined ? Boolean(req.body.monitorTabSwitch) : true,
+      maxViolations: parseInt(req.body.maxViolations || maxIntegrityViolations || 3, 10),
+      autoSubmitOnViolations: req.body.autoSubmitOnViolations !== undefined ? Boolean(req.body.autoSubmitOnViolations) : true,
+      navigationMode: navigationMode || 'FREE',
+      shuffleQuestions: shuffleQuestions !== undefined ? Boolean(shuffleQuestions) : true,
+      shuffleOptions: shuffleOptions !== undefined ? Boolean(shuffleOptions) : true,
+      enableLiveProctoring: Boolean(req.body.enableLiveProctoring),
+      enableFaceDetection: Boolean(req.body.enableFaceDetection),
+      enableMicMonitoring: Boolean(req.body.enableMicMonitoring),
+      warningMessageTemplate: req.body.warningMessageTemplate || ''
+    };
+
+    const finalPoolConfig = {
+      ...(typeof randomPoolConfig === 'object' && randomPoolConfig !== null ? randomPoolConfig : {}),
+      securitySettings
+    };
+
     // Create exam
     const createdExam = await prisma.onlineExam.create({
       data: {
@@ -1242,17 +1264,17 @@ router.post('/exams', protect, authorize('admin', 'teacher'), async (req, res) =
         negativeMarkValue: parseFloat(negativeMarkValue) || 0.25,
         allowPartialCredit: Boolean(allowPartialCredit),
         maxAttempts: parseInt(maxAttempts, 10) || 1,
-        shuffleQuestions: Boolean(shuffleQuestions),
-        shuffleOptions: Boolean(shuffleOptions),
+        shuffleQuestions: securitySettings.shuffleQuestions,
+        shuffleOptions: securitySettings.shuffleOptions,
         enableQuestionRandomization: Boolean(enableQuestionRandomization),
-        randomPoolConfig: randomPoolConfig || null,
-        navigationMode,
+        randomPoolConfig: finalPoolConfig,
+        navigationMode: securitySettings.navigationMode || navigationMode,
         layoutMode,
         resultReleaseMode,
         resultReleaseTime: resultReleaseTime ? new Date(resultReleaseTime) : null,
         answerKeyReleaseMode,
-        enableIntegrityShield: Boolean(enableIntegrityShield),
-        maxIntegrityViolations: parseInt(maxIntegrityViolations, 10) || 5,
+        enableIntegrityShield: securitySettings.securityMode !== 'STANDARD',
+        maxIntegrityViolations: securitySettings.maxViolations || 3,
         status: 'DRAFT',
         startDateTime: startDate,
         endDateTime: endDate,
@@ -1402,6 +1424,24 @@ router.put('/exams/:id', protect, authorize('admin', 'teacher'), async (req, res
       });
     }
 
+    // Merge Security Settings if provided
+    const existingPoolConfig = (typeof existing.randomPoolConfig === 'object' && existing.randomPoolConfig !== null)
+      ? existing.randomPoolConfig
+      : {};
+    let finalPoolConfig = randomPoolConfig !== undefined ? randomPoolConfig : existing.randomPoolConfig;
+    let finalSecuritySettings = existingPoolConfig.securitySettings || null;
+
+    if (req.body.securitySettings) {
+      finalSecuritySettings = {
+        ...(existingPoolConfig.securitySettings || {}),
+        ...req.body.securitySettings
+      };
+      finalPoolConfig = {
+        ...(typeof finalPoolConfig === 'object' && finalPoolConfig !== null ? finalPoolConfig : {}),
+        securitySettings: finalSecuritySettings
+      };
+    }
+
     const updated = await prisma.onlineExam.update({
       where: { id },
       data: {
@@ -1419,17 +1459,17 @@ router.put('/exams/:id', protect, authorize('admin', 'teacher'), async (req, res
         negativeMarkValue: negativeMarkValue !== undefined ? parseFloat(negativeMarkValue) : existing.negativeMarkValue,
         allowPartialCredit: allowPartialCredit !== undefined ? Boolean(allowPartialCredit) : existing.allowPartialCredit,
         maxAttempts: maxAttempts !== undefined ? parseInt(maxAttempts, 10) : existing.maxAttempts,
-        shuffleQuestions: shuffleQuestions !== undefined ? Boolean(shuffleQuestions) : existing.shuffleQuestions,
-        shuffleOptions: shuffleOptions !== undefined ? Boolean(shuffleOptions) : existing.shuffleOptions,
+        shuffleQuestions: finalSecuritySettings?.shuffleQuestions !== undefined ? finalSecuritySettings.shuffleQuestions : (shuffleQuestions !== undefined ? Boolean(shuffleQuestions) : existing.shuffleQuestions),
+        shuffleOptions: finalSecuritySettings?.shuffleOptions !== undefined ? finalSecuritySettings.shuffleOptions : (shuffleOptions !== undefined ? Boolean(shuffleOptions) : existing.shuffleOptions),
         enableQuestionRandomization: enableQuestionRandomization !== undefined ? Boolean(enableQuestionRandomization) : existing.enableQuestionRandomization,
-        randomPoolConfig: randomPoolConfig !== undefined ? randomPoolConfig : existing.randomPoolConfig,
-        navigationMode: navigationMode || existing.navigationMode,
+        randomPoolConfig: finalPoolConfig,
+        navigationMode: finalSecuritySettings?.navigationMode || navigationMode || existing.navigationMode,
         layoutMode: layoutMode || existing.layoutMode,
         resultReleaseMode: resultReleaseMode || existing.resultReleaseMode,
         resultReleaseTime: resultReleaseTime !== undefined ? (resultReleaseTime ? new Date(resultReleaseTime) : null) : existing.resultReleaseTime,
         answerKeyReleaseMode: answerKeyReleaseMode || existing.answerKeyReleaseMode,
-        enableIntegrityShield: enableIntegrityShield !== undefined ? Boolean(enableIntegrityShield) : existing.enableIntegrityShield,
-        maxIntegrityViolations: maxIntegrityViolations !== undefined ? parseInt(maxIntegrityViolations, 10) : existing.maxIntegrityViolations,
+        enableIntegrityShield: finalSecuritySettings ? (finalSecuritySettings.securityMode !== 'STANDARD') : (enableIntegrityShield !== undefined ? Boolean(enableIntegrityShield) : existing.enableIntegrityShield),
+        maxIntegrityViolations: finalSecuritySettings?.maxViolations || (maxIntegrityViolations !== undefined ? parseInt(maxIntegrityViolations, 10) : existing.maxIntegrityViolations),
         startDateTime: startDateTime ? new Date(startDateTime) : existing.startDateTime,
         endDateTime: endDateTime ? new Date(endDateTime) : existing.endDateTime,
         status: status || existing.status
@@ -2009,6 +2049,21 @@ router.get('/student/exams/:id/lobby', protect, async (req, res) => {
     // If an attempt was completed and no more attempts allowed, provide direct redirect info
     const isCompleted = !activeAttempt && completedAttempt && (attempts.length >= exam.maxAttempts && !isStaff);
 
+    const secConfig = (typeof exam.randomPoolConfig === 'object' && exam.randomPoolConfig?.securitySettings) || {
+      securityMode: exam.enableIntegrityShield ? 'STRICT' : 'STANDARD',
+      requireFullscreen: exam.enableIntegrityShield !== false,
+      restrictCopyPaste: exam.enableIntegrityShield !== false,
+      monitorTabSwitch: exam.enableIntegrityShield !== false,
+      maxViolations: exam.maxIntegrityViolations || 3,
+      autoSubmitOnViolations: true,
+      navigationMode: exam.navigationMode || 'FREE',
+      shuffleQuestions: exam.shuffleQuestions !== false,
+      shuffleOptions: exam.shuffleOptions !== false,
+      enableLiveProctoring: false,
+      enableFaceDetection: false,
+      enableMicMonitoring: false
+    };
+
     res.json({
       success: true,
       isCompleted: Boolean(isCompleted),
@@ -2026,10 +2081,11 @@ router.get('/student/exams/:id/lobby', protect, async (req, res) => {
         negativeMarking: exam.negativeMarking,
         negativeMarkValue: exam.negativeMarkValue,
         maxAttempts: exam.maxAttempts,
-        navigationMode: exam.navigationMode,
+        navigationMode: secConfig.navigationMode || exam.navigationMode,
         layoutMode: exam.layoutMode,
         enableIntegrityShield: exam.enableIntegrityShield,
-        maxIntegrityViolations: exam.maxIntegrityViolations,
+        maxIntegrityViolations: secConfig.maxViolations || exam.maxIntegrityViolations,
+        securitySettings: secConfig,
         questionsCount: exam._count.questions,
         startDateTime: exam.startDateTime,
         endDateTime: exam.endDateTime,
@@ -2157,6 +2213,21 @@ router.get('/student/attempts/:attemptId/session', protect, async (req, res) => 
 
     const remainingSeconds = Math.max(0, Math.floor((new Date(attempt.deadlineTime).getTime() - Date.now()) / 1000));
 
+    const secConfig = (typeof exam.randomPoolConfig === 'object' && exam.randomPoolConfig?.securitySettings) || {
+      securityMode: exam.enableIntegrityShield ? 'STRICT' : 'STANDARD',
+      requireFullscreen: exam.enableIntegrityShield !== false,
+      restrictCopyPaste: exam.enableIntegrityShield !== false,
+      monitorTabSwitch: exam.enableIntegrityShield !== false,
+      maxViolations: exam.maxIntegrityViolations || 3,
+      autoSubmitOnViolations: true,
+      navigationMode: exam.navigationMode || 'FREE',
+      shuffleQuestions: exam.shuffleQuestions !== false,
+      shuffleOptions: exam.shuffleOptions !== false,
+      enableLiveProctoring: false,
+      enableFaceDetection: false,
+      enableMicMonitoring: false
+    };
+
     res.json({
       success: true,
       data: {
@@ -2166,10 +2237,12 @@ router.get('/student/attempts/:attemptId/session', protect, async (req, res) => 
         deadlineTime: attempt.deadlineTime,
         remainingSeconds,
         totalQuestions: clientQuestions.length,
-        navigationMode: exam.navigationMode,
+        navigationMode: secConfig.navigationMode || exam.navigationMode,
         layoutMode: exam.layoutMode,
         enableIntegrityShield: exam.enableIntegrityShield,
-        maxIntegrityViolations: exam.maxIntegrityViolations,
+        maxIntegrityViolations: secConfig.maxViolations || exam.maxIntegrityViolations,
+        integrityViolationsCount: attempt.integrityViolationsCount || 0,
+        securitySettings: secConfig,
         title: exam.title,
         subject: exam.subject,
         examCode: exam.examCode,
@@ -2512,6 +2585,21 @@ router.post('/student/exams/:id/start', protect, async (req, res) => {
 
     const remainingSeconds = Math.max(0, Math.floor((new Date(attempt.deadlineTime).getTime() - Date.now()) / 1000));
 
+    const secConfig = (typeof exam.randomPoolConfig === 'object' && exam.randomPoolConfig?.securitySettings) || {
+      securityMode: exam.enableIntegrityShield ? 'STRICT' : 'STANDARD',
+      requireFullscreen: exam.enableIntegrityShield !== false,
+      restrictCopyPaste: exam.enableIntegrityShield !== false,
+      monitorTabSwitch: exam.enableIntegrityShield !== false,
+      maxViolations: exam.maxIntegrityViolations || 3,
+      autoSubmitOnViolations: true,
+      navigationMode: exam.navigationMode || 'FREE',
+      shuffleQuestions: exam.shuffleQuestions !== false,
+      shuffleOptions: exam.shuffleOptions !== false,
+      enableLiveProctoring: false,
+      enableFaceDetection: false,
+      enableMicMonitoring: false
+    };
+
     res.json({
       success: true,
       data: {
@@ -2521,10 +2609,12 @@ router.post('/student/exams/:id/start', protect, async (req, res) => {
         deadlineTime: attempt.deadlineTime,
         remainingSeconds,
         totalQuestions: clientQuestions.length,
-        navigationMode: exam.navigationMode,
+        navigationMode: secConfig.navigationMode || exam.navigationMode,
         layoutMode: exam.layoutMode,
         enableIntegrityShield: exam.enableIntegrityShield,
-        maxIntegrityViolations: exam.maxIntegrityViolations,
+        maxIntegrityViolations: secConfig.maxViolations || exam.maxIntegrityViolations,
+        integrityViolationsCount: attempt.integrityViolationsCount || 0,
+        securitySettings: secConfig,
         title: exam.title,
         subject: exam.subject,
         examCode: exam.examCode,
@@ -2622,7 +2712,8 @@ router.post('/student/attempts/:attemptId/answer', protect, async (req, res) => 
 
 /**
  * POST /api/online-exam/student/attempts/:attemptId/integrity-event
- * Track integrity signals (fullscreen exit, tab switch, window blur)
+ * Track integrity signals (fullscreen exit, tab switch, window blur, shortcut blocked, copy/paste)
+ * Automatically enforces violation policy (1st: Warning, 2nd: Final Warning, 3rd: Auto-submit)
  */
 router.post('/student/attempts/:attemptId/integrity-event', protect, async (req, res) => {
   try {
@@ -2630,33 +2721,85 @@ router.post('/student/attempts/:attemptId/integrity-event', protect, async (req,
     const { eventType = 'TAB_SWITCH', details = '' } = req.body;
 
     const attempt = await prisma.onlineExamAttempt.findUnique({
-      where: { id: attemptId }
+      where: { id: attemptId },
+      include: {
+        exam: true
+      }
     });
 
     if (!attempt || attempt.status !== 'IN_PROGRESS') {
       return res.status(200).json({ success: false, message: 'Inactive attempt' });
     }
 
+    const exam = attempt.exam;
+    const secConfig = (typeof exam.randomPoolConfig === 'object' && exam.randomPoolConfig?.securitySettings) || {};
+    const maxAllowed = parseInt(secConfig.maxViolations || exam.maxIntegrityViolations || 3, 10);
+    const autoSubmitOnViolations = secConfig.autoSubmitOnViolations !== false;
+
     const newViolationCount = (attempt.integrityViolationsCount || 0) + 1;
 
-    await Promise.all([
-      prisma.onlineExamIntegrityLog.create({
+    // Record integrity violation log
+    await prisma.onlineExamIntegrityLog.create({
+      data: {
+        attemptId,
+        eventType,
+        details: String(details || 'Security violation detected')
+      }
+    });
+
+    // Check if threshold reached
+    if (newViolationCount >= maxAllowed && autoSubmitOnViolations) {
+      const terminationReason = `AUTOMATIC_SECURITY_TERMINATION: Maximum integrity violation limit (${newViolationCount}/${maxAllowed}) reached. Triggering event: ${eventType} (${details || ''})`;
+
+      await prisma.onlineExamAttempt.update({
+        where: { id: attemptId },
+        data: {
+          integrityViolationsCount: newViolationCount,
+          invalidationReason: terminationReason,
+          status: 'AUTO_SUBMITTED'
+        }
+      });
+
+      // Record termination log
+      await prisma.onlineExamIntegrityLog.create({
         data: {
           attemptId,
-          eventType,
-          details: String(details)
+          eventType: 'AUTO_SUBMITTED_VIOLATIONS',
+          details: terminationReason
         }
-      }),
-      prisma.onlineExamAttempt.update({
-        where: { id: attemptId },
-        data: { integrityViolationsCount: newViolationCount }
-      })
-    ]);
+      });
+
+      // Server-side authoritative evaluation of submitted answers
+      await evaluateAttemptOnServer(attemptId);
+
+      return res.json({
+        success: true,
+        violationsCount: newViolationCount,
+        maxAllowed,
+        autoSubmitted: true,
+        warning: `Integrity threshold exceeded (${newViolationCount}/${maxAllowed}). Examination terminated automatically and submitted for administrator review.`,
+        message: 'Examination auto-submitted due to excessive integrity violations.'
+      });
+    }
+
+    // Normal violation increment within threshold
+    await prisma.onlineExamAttempt.update({
+      where: { id: attemptId },
+      data: { integrityViolationsCount: newViolationCount }
+    });
+
+    const isFinalWarning = newViolationCount === (maxAllowed - 1);
+    const warningMsg = isFinalWarning
+      ? `FINAL WARNING: ${eventType}. One more violation will automatically submit and terminate your exam.`
+      : `Warning (${newViolationCount}/${maxAllowed}): ${eventType}. All suspicious actions are logged.`;
 
     res.json({
       success: true,
       violationsCount: newViolationCount,
-      warning: `Integrity signal recorded: ${eventType}`
+      maxAllowed,
+      autoSubmitted: false,
+      isFinalWarning,
+      warning: warningMsg
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -3191,6 +3334,210 @@ router.post('/admin/attempts/:attemptId/invalidate', protect, authorize('admin',
       success: true,
       message: 'Attempt invalidated successfully',
       data: formatLegacyId(updated)
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+/**
+ * GET /api/online-exam/admin/integrity-logs
+ * Paginated query for all integrity events and security audits across exams
+ */
+router.get('/admin/integrity-logs', protect, authorize('admin', 'teacher'), async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 25,
+      examId,
+      attemptId,
+      eventType,
+      search
+    } = req.query;
+
+    const take = parseInt(limit, 10);
+    const skip = (parseInt(page, 10) - 1) * take;
+
+    const where = {};
+    if (examId && examId !== 'ALL') {
+      where.attempt = { examId };
+    }
+    if (attemptId) {
+      where.attemptId = attemptId;
+    }
+    if (eventType && eventType !== 'ALL') {
+      where.eventType = eventType;
+    }
+    if (search && search.trim()) {
+      where.OR = [
+        { details: { contains: search.trim(), mode: 'insensitive' } },
+        { eventType: { contains: search.trim(), mode: 'insensitive' } },
+        { attempt: { studentName: { contains: search.trim(), mode: 'insensitive' } } },
+        { attempt: { rollNumber: { contains: search.trim(), mode: 'insensitive' } } }
+      ];
+    }
+
+    const [total, logs] = await Promise.all([
+      prisma.onlineExamIntegrityLog.count({ where }),
+      prisma.onlineExamIntegrityLog.findMany({
+        where,
+        take,
+        skip,
+        orderBy: { timestamp: 'desc' },
+        include: {
+          attempt: {
+            select: {
+              id: true,
+              studentId: true,
+              studentName: true,
+              standard: true,
+              section: true,
+              rollNumber: true,
+              status: true,
+              integrityViolationsCount: true,
+              invalidationReason: true,
+              exam: {
+                select: {
+                  id: true,
+                  title: true,
+                  examCode: true,
+                  subject: true
+                }
+              }
+            }
+          }
+        }
+      })
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        total,
+        page: parseInt(page, 10),
+        limit: take,
+        totalPages: Math.ceil(total / take),
+        logs
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+/**
+ * GET /api/online-exam/admin/attempts/:attemptId/integrity-logs
+ * Fetch complete chronological audit trail of integrity events for a specific attempt
+ */
+router.get('/admin/attempts/:attemptId/integrity-logs', protect, authorize('admin', 'teacher'), async (req, res) => {
+  try {
+    const { attemptId } = req.params;
+    const attempt = await prisma.onlineExamAttempt.findUnique({
+      where: { id: attemptId },
+      include: {
+        exam: {
+          select: {
+            id: true,
+            title: true,
+            examCode: true,
+            subject: true,
+            durationMinutes: true,
+            maxIntegrityViolations: true,
+            randomPoolConfig: true
+          }
+        },
+        integrityLogs: {
+          orderBy: { timestamp: 'asc' }
+        }
+      }
+    });
+
+    if (!attempt) {
+      return res.status(404).json({ success: false, message: 'Attempt not found' });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        attempt,
+        logs: attempt.integrityLogs
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+/**
+ * PUT /api/online-exam/exams/:id/security-settings
+ * Configure security preset & anti-cheating toggles for an exam
+ */
+router.put('/exams/:id/security-settings', protect, authorize('admin', 'teacher'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const exam = await prisma.onlineExam.findUnique({ where: { id } });
+    if (!exam) {
+      return res.status(404).json({ success: false, message: 'Exam not found' });
+    }
+
+    const {
+      securityMode = 'STRICT',
+      requireFullscreen = true,
+      restrictCopyPaste = true,
+      monitorTabSwitch = true,
+      maxViolations = 3,
+      autoSubmitOnViolations = true,
+      navigationMode = 'FREE',
+      shuffleQuestions = true,
+      shuffleOptions = true,
+      enableLiveProctoring = false,
+      enableFaceDetection = false,
+      enableMicMonitoring = false,
+      warningMessageTemplate = ''
+    } = req.body;
+
+    const securitySettings = {
+      securityMode,
+      requireFullscreen: Boolean(requireFullscreen),
+      restrictCopyPaste: Boolean(restrictCopyPaste),
+      monitorTabSwitch: Boolean(monitorTabSwitch),
+      maxViolations: parseInt(maxViolations, 10) || 3,
+      autoSubmitOnViolations: Boolean(autoSubmitOnViolations),
+      navigationMode,
+      shuffleQuestions: Boolean(shuffleQuestions),
+      shuffleOptions: Boolean(shuffleOptions),
+      enableLiveProctoring: Boolean(enableLiveProctoring),
+      enableFaceDetection: Boolean(enableFaceDetection),
+      enableMicMonitoring: Boolean(enableMicMonitoring),
+      warningMessageTemplate: String(warningMessageTemplate || '')
+    };
+
+    const existingPoolConfig = (typeof exam.randomPoolConfig === 'object' && exam.randomPoolConfig !== null)
+      ? exam.randomPoolConfig
+      : {};
+
+    const updated = await prisma.onlineExam.update({
+      where: { id },
+      data: {
+        enableIntegrityShield: securityMode !== 'STANDARD',
+        maxIntegrityViolations: securitySettings.maxViolations,
+        navigationMode: securitySettings.navigationMode || exam.navigationMode,
+        shuffleQuestions: securitySettings.shuffleQuestions,
+        shuffleOptions: securitySettings.shuffleOptions,
+        randomPoolConfig: {
+          ...existingPoolConfig,
+          securitySettings
+        }
+      }
+    });
+
+    res.json({
+      success: true,
+      message: 'Exam security settings updated successfully',
+      data: {
+        examId: updated.id,
+        securitySettings
+      }
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

@@ -38,7 +38,13 @@ import {
   Sliders,
   Sparkles,
   Info,
-  LayoutDashboard
+  LayoutDashboard,
+  ShieldAlert,
+  Camera,
+  Maximize2,
+  Lock,
+  AlertOctagon,
+  History
 } from 'lucide-react';
 import {
   getOnlineExamDashboardStats,
@@ -64,7 +70,10 @@ import {
   getExamAnalytics,
   exportExamResultsUrl,
   reEvaluateAttempt,
-  invalidateAttempt
+  invalidateAttempt,
+  getIntegrityLogs,
+  getAttemptIntegrityLogs,
+  updateExamSecuritySettings
 } from '../services/onlineExamService';
 import { getClasses } from '../services/authService';
 
@@ -174,6 +183,31 @@ const OnlineExamManagementPage = () => {
   const [analyticsData, setAnalyticsData] = useState(null);
   const [auditModal, setAuditModal] = useState({ open: false, type: 're-evaluate', attempt: null, reason: '' });
 
+  // ─── Tab 6: Anti-Cheating & Security State ─────────────────────────────
+  const [secSelectedExamId, setSecSelectedExamId] = useState('');
+  const [secForm, setSecForm] = useState({
+    securityMode: 'STRICT',
+    requireFullscreen: true,
+    restrictCopyPaste: true,
+    monitorTabSwitch: true,
+    maxViolations: 3,
+    autoSubmitOnViolations: true,
+    navigationMode: 'FREE',
+    shuffleQuestions: true,
+    shuffleOptions: true,
+    enableLiveProctoring: false,
+    enableFaceDetection: false,
+    enableMicMonitoring: false,
+    warningMessageTemplate: ''
+  });
+  const [isSecSaving, setIsSecSaving] = useState(false);
+  const [integrityLogs, setIntegrityLogs] = useState([]);
+  const [logsPagination, setLogsPagination] = useState({ page: 1, limit: 20, total: 0 });
+  const [logsFilterEventType, setLogsFilterEventType] = useState('ALL');
+  const [logsSearch, setLogsSearch] = useState('');
+  const [isLoadingLogs, setIsLoadingLogs] = useState(false);
+  const [attemptAuditModal, setAttemptAuditModal] = useState({ open: false, attempt: null, logs: [], isLoading: false });
+
   // ─── Initial Load ───────────────────────────────────────────────────────
   useEffect(() => {
     loadClasses();
@@ -190,6 +224,8 @@ const OnlineExamManagementPage = () => {
       loadQMetadata();
     } else if (activeTab === 'results') {
       loadExamsForAnalytics();
+    } else if (activeTab === 'security') {
+      loadSecurityTab();
     }
   }, [activeTab]);
 
@@ -206,6 +242,162 @@ const OnlineExamManagementPage = () => {
       const res = await getOnlineExamDashboardStats();
       if (res?.data) setStats(res.data);
     } catch {}
+  };
+
+  // ─── Security & Anti-Cheating Methods ───────────────────────────────────
+  const loadSecurityTab = async (examIdOverride) => {
+    try {
+      let targetId = examIdOverride || secSelectedExamId;
+      if (!targetId && exams.length > 0) {
+        targetId = exams[0].id;
+        setSecSelectedExamId(targetId);
+      } else if (!targetId) {
+        const examsRes = await getExams({ limit: 50 });
+        if (examsRes?.data && examsRes.data.length > 0) {
+          targetId = examsRes.data[0].id;
+          setSecSelectedExamId(targetId);
+          setExams(examsRes.data);
+        }
+      }
+      if (targetId) {
+        loadExamSecurityConfig(targetId);
+      }
+      loadIntegrityLogsList(targetId, 1);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const loadExamSecurityConfig = async (examId) => {
+    try {
+      const res = await getExamById(examId);
+      if (res?.data) {
+        const e = res.data;
+        const poolConf = typeof e.randomPoolConfig === 'string' ? JSON.parse(e.randomPoolConfig) : (e.randomPoolConfig || {});
+        const sec = poolConf.securitySettings || {
+          securityMode: e.enableIntegrityShield ? 'STRICT' : 'STANDARD',
+          requireFullscreen: e.enableIntegrityShield !== false,
+          restrictCopyPaste: e.enableIntegrityShield !== false,
+          monitorTabSwitch: e.enableIntegrityShield !== false,
+          maxViolations: e.maxIntegrityViolations || 3,
+          autoSubmitOnViolations: true,
+          navigationMode: e.navigationMode || 'FREE',
+          shuffleQuestions: e.shuffleQuestions !== false,
+          shuffleOptions: e.shuffleOptions !== false,
+          enableLiveProctoring: false,
+          enableFaceDetection: false,
+          enableMicMonitoring: false,
+          warningMessageTemplate: ''
+        };
+        setSecForm(sec);
+      }
+    } catch (err) {
+      toast.error('Failed to load exam security config');
+    }
+  };
+
+  const applySecurityPreset = (preset) => {
+    if (preset === 'STANDARD') {
+      setSecForm(prev => ({
+        ...prev,
+        securityMode: 'STANDARD',
+        requireFullscreen: false,
+        restrictCopyPaste: false,
+        monitorTabSwitch: true,
+        maxViolations: 5,
+        autoSubmitOnViolations: false,
+        enableLiveProctoring: false,
+        navigationMode: 'FREE'
+      }));
+      toast.success('Applied Standard Security preset');
+    } else if (preset === 'STRICT') {
+      setSecForm(prev => ({
+        ...prev,
+        securityMode: 'STRICT',
+        requireFullscreen: true,
+        restrictCopyPaste: true,
+        monitorTabSwitch: true,
+        maxViolations: 3,
+        autoSubmitOnViolations: true,
+        enableLiveProctoring: false,
+        navigationMode: 'FREE',
+        shuffleQuestions: true,
+        shuffleOptions: true
+      }));
+      toast.success('Applied Strict Security preset (Recommended)');
+    } else if (preset === 'PROCTORED') {
+      setSecForm(prev => ({
+        ...prev,
+        securityMode: 'PROCTORED',
+        requireFullscreen: true,
+        restrictCopyPaste: true,
+        monitorTabSwitch: true,
+        maxViolations: 2,
+        autoSubmitOnViolations: true,
+        enableLiveProctoring: true,
+        navigationMode: 'FORWARD_ONLY',
+        shuffleQuestions: true,
+        shuffleOptions: true
+      }));
+      toast.success('Applied Proctored Security preset');
+    }
+  };
+
+  const handleSaveSecuritySettings = async () => {
+    if (!secSelectedExamId) return toast.error('Select an examination first');
+    setIsSecSaving(true);
+    try {
+      await updateExamSecuritySettings(secSelectedExamId, secForm);
+      toast.success('Security policy and anti-cheating rules updated successfully!');
+      loadExams();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update security settings');
+    } finally {
+      setIsSecSaving(false);
+    }
+  };
+
+  const loadIntegrityLogsList = async (examId = secSelectedExamId, page = 1) => {
+    setIsLoadingLogs(true);
+    try {
+      const res = await getIntegrityLogs({
+        page,
+        limit: logsPagination.limit,
+        examId: examId || undefined,
+        eventType: logsFilterEventType !== 'ALL' ? logsFilterEventType : undefined,
+        search: logsSearch || undefined
+      });
+      if (res?.data) {
+        setIntegrityLogs(res.data.logs || []);
+        setLogsPagination({
+          page: res.data.page,
+          limit: res.data.limit,
+          total: res.data.total
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoadingLogs(false);
+    }
+  };
+
+  const openAttemptAuditTimeline = async (attemptId) => {
+    setAttemptAuditModal({ open: true, attempt: null, logs: [], isLoading: true });
+    try {
+      const res = await getAttemptIntegrityLogs(attemptId);
+      if (res?.data) {
+        setAttemptAuditModal({
+          open: true,
+          attempt: res.data.attempt,
+          logs: res.data.logs || [],
+          isLoading: false
+        });
+      }
+    } catch (err) {
+      toast.error('Failed to load candidate audit trail');
+      setAttemptAuditModal(prev => ({ ...prev, open: false, isLoading: false }));
+    }
   };
 
   // ─── Exam Management Methods ────────────────────────────────────────────
@@ -360,8 +552,24 @@ const OnlineExamManagementPage = () => {
     e.preventDefault();
     setIsExamSaving(true);
     try {
+      const securitySettings = {
+        securityMode: examForm.securityMode || (examForm.enableIntegrityShield ? 'STRICT' : 'STANDARD'),
+        requireFullscreen: examForm.requireFullscreen !== undefined ? examForm.requireFullscreen : true,
+        restrictCopyPaste: examForm.restrictCopyPaste !== undefined ? examForm.restrictCopyPaste : true,
+        monitorTabSwitch: examForm.monitorTabSwitch !== undefined ? examForm.monitorTabSwitch : true,
+        maxViolations: examForm.maxViolations || 3,
+        autoSubmitOnViolations: examForm.autoSubmitOnViolations !== false,
+        navigationMode: examForm.navigationMode || 'FREE',
+        shuffleQuestions: examForm.shuffleQuestions !== false,
+        shuffleOptions: examForm.shuffleOptions !== false,
+        enableLiveProctoring: Boolean(examForm.enableLiveProctoring)
+      };
+
       if (editingExam) {
-        await updateExam(editingExam.id, examForm);
+        await updateExam(editingExam.id, {
+          ...examForm,
+          securitySettings
+        });
         toast.success('Exam configuration updated');
       } else {
         let questionIdsToLink = [];
@@ -441,6 +649,7 @@ const OnlineExamManagementPage = () => {
 
         const payload = {
           ...examForm,
+          securitySettings,
           questionPaperUrl: paperUrl,
           questionPaperName: paperName,
           questionPaperSize: paperSize,
@@ -767,7 +976,8 @@ const OnlineExamManagementPage = () => {
             { id: 'exams', label: 'Exam Management', icon: <Layers className="w-4 h-4" /> },
             { id: 'questions', label: 'Question Bank', icon: <BookOpen className="w-4 h-4" /> },
             { id: 'results', label: 'Candidate Results & Audit', icon: <Award className="w-4 h-4" /> },
-            { id: 'conduct', label: 'Conduct & Preview', icon: <Play className="w-4 h-4" /> }
+            { id: 'conduct', label: 'Conduct & Preview', icon: <Play className="w-4 h-4" /> },
+            { id: 'security', label: 'Anti-Cheating & Security', icon: <ShieldAlert className="w-4 h-4 text-rose-500" /> }
           ].map(tab => (
             <button
               key={tab.id}
@@ -1467,6 +1677,14 @@ const OnlineExamManagementPage = () => {
                               <td className="py-3 px-4 text-right">
                                 <div className="flex items-center justify-end gap-1.5">
                                   <button
+                                    onClick={() => openAttemptAuditTimeline(cand.attemptId)}
+                                    className="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-lg text-[10px] font-bold cursor-pointer flex items-center gap-1"
+                                    title="View chronological integrity violation timeline"
+                                  >
+                                    <ShieldAlert className="w-3 h-3 text-amber-600" />
+                                    <span>Timeline</span>
+                                  </button>
+                                  <button
                                     onClick={() => setAuditModal({ open: true, type: 're-evaluate', attempt: cand, reason: '' })}
                                     className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold cursor-pointer"
                                     title="Re-run evaluation algorithm"
@@ -1547,7 +1765,537 @@ const OnlineExamManagementPage = () => {
             </div>
           </div>
         )}
+
+        {/* ═══════════════════════════════════════════════════════════════════ */}
+        {/* TAB 6: ANTI-CHEATING & SECURITY SETTINGS & AUDIT LOGS               */}
+        {/* ═══════════════════════════════════════════════════════════════════ */}
+        {activeTab === 'security' && (
+          <div className="space-y-6 animate-fadeIn">
+            {/* Top Config Header Card */}
+            <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600">
+                    <ShieldAlert className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm sm:text-base font-black text-slate-900">Anti-Cheating & Examination Security Policy</h2>
+                    <p className="text-[11px] text-slate-500 font-medium">Configure anti-cheating restrictions, fullscreen lockout, proctoring thresholds, and inspect real-time integrity incident logs.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleSaveSecuritySettings}
+                    disabled={isSecSaving || !secSelectedExamId}
+                    className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  >
+                    {isSecSaving ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                    <span>Save Security Policy</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Examination Selector */}
+              <div className="flex flex-wrap items-center gap-3">
+                <label className="text-xs font-bold text-slate-700">Target Examination:</label>
+                <select
+                  value={secSelectedExamId}
+                  onChange={(e) => {
+                    setSecSelectedExamId(e.target.value);
+                    loadExamSecurityConfig(e.target.value);
+                    loadIntegrityLogsList(e.target.value, 1);
+                  }}
+                  className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none flex-1 max-w-md"
+                >
+                  {exams.map(e => (
+                    <option key={e.id} value={e.id}>
+                      {e.title} ({e.examCode}) - {e.standard} ({e.subject})
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => loadSecurityTab(secSelectedExamId)}
+                  className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isLoadingLogs ? 'animate-spin' : ''}`} />
+                  <span>Refresh</span>
+                </button>
+              </div>
+
+              {/* ─── PRESET CARDS ─── */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-2">
+                {/* 1. Standard Mode */}
+                <div
+                  onClick={() => applySecurityPreset('STANDARD')}
+                  className={`p-4 rounded-2xl border-2 transition-all cursor-pointer space-y-2 ${
+                    secForm.securityMode === 'STANDARD'
+                      ? 'border-indigo-600 bg-indigo-50/60 shadow-sm ring-2 ring-indigo-200'
+                      : 'border-slate-200 bg-slate-50/60 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-black text-xs text-slate-900 flex items-center gap-1.5">
+                      <ShieldCheck className="w-4 h-4 text-indigo-700" />
+                      <span>Standard Mode</span>
+                    </span>
+                    {secForm.securityMode === 'STANDARD' && (
+                      <span className="px-2 py-0.5 rounded-full bg-indigo-600 text-white text-[9px] font-black uppercase">Active</span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                    Ideal for casual practice tests. Fullscreen is optional; gentle warnings on tab switches without automatic terminations.
+                  </p>
+                </div>
+
+                {/* 2. Strict Mode (Default) */}
+                <div
+                  onClick={() => applySecurityPreset('STRICT')}
+                  className={`p-4 rounded-2xl border-2 transition-all cursor-pointer space-y-2 ${
+                    secForm.securityMode === 'STRICT'
+                      ? 'border-rose-600 bg-rose-50/60 shadow-sm ring-2 ring-rose-200'
+                      : 'border-slate-200 bg-slate-50/60 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-black text-xs text-rose-950 flex items-center gap-1.5">
+                      <ShieldAlert className="w-4 h-4 text-rose-600" />
+                      <span>Strict Mode</span>
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[9px] font-black uppercase">Recommended</span>
+                  </div>
+                  <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                    Mandatory Fullscreen lockout, disabled copy/paste/right-click, developer shortcut blocks, and 3-strike tab-switch auto-submission.
+                  </p>
+                </div>
+
+                {/* 3. Proctored Mode */}
+                <div
+                  onClick={() => applySecurityPreset('PROCTORED')}
+                  className={`p-4 rounded-2xl border-2 transition-all cursor-pointer space-y-2 ${
+                    secForm.securityMode === 'PROCTORED'
+                      ? 'border-purple-600 bg-purple-50/60 shadow-sm ring-2 ring-purple-200'
+                      : 'border-slate-200 bg-slate-50/60 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-black text-xs text-purple-950 flex items-center gap-1.5">
+                      <Camera className="w-4 h-4 text-purple-700" />
+                      <span>Proctored Mode</span>
+                    </span>
+                    {secForm.securityMode === 'PROCTORED' && (
+                      <span className="px-2 py-0.5 rounded-full bg-purple-600 text-white text-[9px] font-black uppercase">Active</span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                    Full Strict Security + active webcam proctoring preview + forward-only question navigation + camera occlusion checks.
+                  </p>
+                </div>
+              </div>
+
+              {/* ─── GRANULAR CONTROLS MATRIX ─── */}
+              <div className="pt-2 border-t border-slate-100 space-y-3">
+                <span className="font-black text-xs text-slate-800 uppercase tracking-wider block">Granular Security Controls</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+                  <label className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={secForm.requireFullscreen}
+                      onChange={(e) => setSecForm({ ...secForm, requireFullscreen: e.target.checked })}
+                      className="rounded text-rose-600 focus:ring-rose-500"
+                    />
+                    <div>
+                      <strong className="block text-slate-800">Mandatory Fullscreen</strong>
+                      <span className="text-[10px] text-slate-500">Lockout overlay on fullscreen exit</span>
+                    </div>
+                  </label>
+
+                  <label className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={secForm.restrictCopyPaste}
+                      onChange={(e) => setSecForm({ ...secForm, restrictCopyPaste: e.target.checked })}
+                      className="rounded text-rose-600 focus:ring-rose-500"
+                    />
+                    <div>
+                      <strong className="block text-slate-800">Block Copy / Paste & Right-Click</strong>
+                      <span className="text-[10px] text-slate-500">Disables contextmenu & clipboard</span>
+                    </div>
+                  </label>
+
+                  <label className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={secForm.monitorTabSwitch}
+                      onChange={(e) => setSecForm({ ...secForm, monitorTabSwitch: e.target.checked })}
+                      className="rounded text-rose-600 focus:ring-rose-500"
+                    />
+                    <div>
+                      <strong className="block text-slate-800">Monitor Tab Switch & Window Blur</strong>
+                      <span className="text-[10px] text-slate-500">Records app switches and window blurs</span>
+                    </div>
+                  </label>
+
+                  <label className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={secForm.autoSubmitOnViolations}
+                      onChange={(e) => setSecForm({ ...secForm, autoSubmitOnViolations: e.target.checked })}
+                      className="rounded text-rose-600 focus:ring-rose-500"
+                    />
+                    <div>
+                      <strong className="block text-slate-800">Auto-Submit on Violation Limit</strong>
+                      <span className="text-[10px] text-slate-500">Terminates exam once strikes reached</span>
+                    </div>
+                  </label>
+
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                    <label className="font-bold text-slate-800 block text-[11px]">Maximum Violation Strikes</label>
+                    <select
+                      value={secForm.maxViolations}
+                      onChange={(e) => setSecForm({ ...secForm, maxViolations: parseInt(e.target.value, 10) })}
+                      className="w-full px-2 py-1 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-800"
+                    >
+                      <option value={1}>1 Violation (Instant Termination)</option>
+                      <option value={2}>2 Violations (1 Warning, then Terminate)</option>
+                      <option value={3}>3 Violations (Standard: 2 Warnings, then Terminate)</option>
+                      <option value={5}>5 Violations (Relaxed Threshold)</option>
+                    </select>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                    <label className="font-bold text-slate-800 block text-[11px]">Question Navigation Mode</label>
+                    <select
+                      value={secForm.navigationMode}
+                      onChange={(e) => setSecForm({ ...secForm, navigationMode: e.target.value })}
+                      className="w-full px-2 py-1 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-800"
+                    >
+                      <option value="FREE">Free Navigation (Candidates can jump & review)</option>
+                      <option value="FORWARD_ONLY">Forward Only (Cannot return to past questions)</option>
+                    </select>
+                  </div>
+
+                  <label className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={secForm.shuffleQuestions}
+                      onChange={(e) => setSecForm({ ...secForm, shuffleQuestions: e.target.checked })}
+                      className="rounded text-rose-600 focus:ring-rose-500"
+                    />
+                    <div>
+                      <strong className="block text-slate-800">Shuffle Questions Order</strong>
+                      <span className="text-[10px] text-slate-500">Randomized per-student question sequences</span>
+                    </div>
+                  </label>
+
+                  <label className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={secForm.shuffleOptions}
+                      onChange={(e) => setSecForm({ ...secForm, shuffleOptions: e.target.checked })}
+                      className="rounded text-rose-600 focus:ring-rose-500"
+                    />
+                    <div>
+                      <strong className="block text-slate-800">Shuffle Answer Options</strong>
+                      <span className="text-[10px] text-slate-500">Randomized option keys A/B/C/D</span>
+                    </div>
+                  </label>
+
+                  <label className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={secForm.enableLiveProctoring}
+                      onChange={(e) => setSecForm({ ...secForm, enableLiveProctoring: e.target.checked })}
+                      className="rounded text-purple-600 focus:ring-purple-500"
+                    />
+                    <div>
+                      <strong className="block text-purple-900">Live Webcam Proctoring</strong>
+                      <span className="text-[10px] text-slate-500">Requires camera feed & presence verification</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* ─── SUSPICIOUS ACTIVITY & SECURITY AUDIT LOGS TABLE ─── */}
+            <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden space-y-4 p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                <div className="flex items-center gap-2">
+                  <AlertOctagon className="w-4 h-4 text-rose-600" />
+                  <h3 className="font-black text-sm text-slate-900">Suspicious Activity & Security Incident Log</h3>
+                  <span className="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 font-bold text-[10px]">
+                    {logsPagination.total} Incidents Logged
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap">
+                  {/* Event Type Filter */}
+                  <select
+                    value={logsFilterEventType}
+                    onChange={(e) => {
+                      setLogsFilterEventType(e.target.value);
+                      setTimeout(() => loadIntegrityLogsList(secSelectedExamId, 1), 50);
+                    }}
+                    className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700"
+                  >
+                    <option value="ALL">All Event Types</option>
+                    <option value="TAB_SWITCH">Tab Switch</option>
+                    <option value="FULLSCREEN_EXIT">Fullscreen Exit</option>
+                    <option value="WINDOW_BLUR">Window Blur</option>
+                    <option value="COPY_ATTEMPT">Copy Attempt</option>
+                    <option value="PASTE_ATTEMPT">Paste Attempt</option>
+                    <option value="DEVTOOLS_BLOCKED">DevTools Blocked</option>
+                    <option value="SHORTCUT_BLOCKED">Shortcut Blocked</option>
+                    <option value="SCREENSHOT_ATTEMPT">Screenshot Attempt</option>
+                    <option value="AUTO_SUBMITTED_VIOLATIONS">Auto-Submitted on Violation</option>
+                  </select>
+
+                  {/* Search */}
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Search candidate / roll..."
+                      value={logsSearch}
+                      onChange={(e) => setLogsSearch(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && loadIntegrityLogsList(secSelectedExamId, 1)}
+                      className="pl-7 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-800 w-44 focus:outline-none"
+                    />
+                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-2" />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => loadIntegrityLogsList(secSelectedExamId, 1)}
+                    className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg cursor-pointer"
+                    title="Refresh logs"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${isLoadingLogs ? 'animate-spin' : ''}`} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Table */}
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
+                    <tr>
+                      <th className="py-2.5 px-3">Timestamp</th>
+                      <th className="py-2.5 px-3">Candidate</th>
+                      <th className="py-2.5 px-3">Exam Code</th>
+                      <th className="py-2.5 px-3">Violation Type</th>
+                      <th className="py-2.5 px-3">Recorded Signal Details</th>
+                      <th className="py-2.5 px-3">Total Strikes</th>
+                      <th className="py-2.5 px-3">Attempt Status</th>
+                      <th className="py-2.5 px-3 text-right">Audit</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                    {integrityLogs.length === 0 ? (
+                      <tr>
+                        <td colSpan={8} className="py-8 text-center text-slate-400">
+                          No suspicious activity or integrity violations recorded.
+                        </td>
+                      </tr>
+                    ) : (
+                      integrityLogs.map((log) => {
+                        const isSevere = ['AUTO_SUBMITTED_VIOLATIONS', 'DEVTOOLS_BLOCKED', 'SCREENSHOT_ATTEMPT'].includes(log.eventType);
+                        const isWarning = ['TAB_SWITCH', 'FULLSCREEN_EXIT', 'WINDOW_BLUR'].includes(log.eventType);
+
+                        return (
+                          <tr key={log.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="py-2.5 px-3 text-[11px] font-mono text-slate-500 whitespace-nowrap">
+                              {new Date(log.timestamp).toLocaleString()}
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <span className="font-bold text-slate-900 block">{log.attempt?.studentName || 'Student'}</span>
+                              <span className="text-[10px] text-slate-400">Roll: {log.attempt?.rollNumber || '-'} ({log.attempt?.standard}-{log.attempt?.section})</span>
+                            </td>
+                            <td className="py-2.5 px-3 font-mono text-[11px] font-bold text-slate-600">
+                              {log.attempt?.exam?.examCode || '-'}
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider inline-flex items-center gap-1 ${
+                                isSevere
+                                  ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                                  : isWarning
+                                  ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                                  : 'bg-purple-100 text-purple-800 border border-purple-300'
+                              }`}>
+                                <AlertTriangle className="w-3 h-3" />
+                                <span>{log.eventType.replace('_', ' ')}</span>
+                              </span>
+                            </td>
+                            <td className="py-2.5 px-3 text-[11px] text-slate-600 max-w-xs truncate" title={log.details}>
+                              {log.details || 'Integrity threshold event'}
+                            </td>
+                            <td className="py-2.5 px-3 font-black text-rose-600 text-xs">
+                              {log.attempt?.integrityViolationsCount || 0}
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                log.attempt?.status === 'AUTO_SUBMITTED' ? 'bg-rose-600 text-white' :
+                                log.attempt?.status === 'INVALIDATED' ? 'bg-slate-800 text-white' :
+                                log.attempt?.status === 'EVALUATED' ? 'bg-emerald-100 text-emerald-800' :
+                                'bg-slate-100 text-slate-700'
+                              }`}>
+                                {log.attempt?.status}
+                              </span>
+                            </td>
+                            <td className="py-2.5 px-3 text-right">
+                              <button
+                                type="button"
+                                onClick={() => openAttemptAuditTimeline(log.attemptId)}
+                                className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold cursor-pointer inline-flex items-center gap-1"
+                              >
+                                <History className="w-3 h-3" />
+                                <span>Timeline</span>
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Pagination */}
+              {logsPagination.total > logsPagination.limit && (
+                <div className="flex items-center justify-between text-xs pt-2">
+                  <span className="text-slate-500">
+                    Showing Page {logsPagination.page} of {Math.ceil(logsPagination.total / logsPagination.limit)}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      disabled={logsPagination.page <= 1}
+                      onClick={() => loadIntegrityLogsList(secSelectedExamId, logsPagination.page - 1)}
+                      className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold disabled:opacity-40"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      type="button"
+                      disabled={logsPagination.page * logsPagination.limit >= logsPagination.total}
+                      onClick={() => loadIntegrityLogsList(secSelectedExamId, logsPagination.page + 1)}
+                      className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold disabled:opacity-40"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* ─── MODAL: CANDIDATE ATTEMPT INTEGRITY AUDIT TIMELINE ──────────────── */}
+      {attemptAuditModal.open && (
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden animate-scaleUp">
+            <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+              <div className="flex items-center gap-2.5">
+                <ShieldAlert className="w-5 h-5 text-rose-600" />
+                <div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900">
+                    Candidate Security Audit Trail
+                  </h3>
+                  <p className="text-[10px] text-slate-500 font-medium">
+                    Chronological timeline of all browser signals, shortcut intercepts, and violations.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAttemptAuditModal({ open: false, attempt: null, logs: [], isLoading: false })}
+                className="text-slate-400 hover:text-slate-700 p-1 rounded-lg"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-5 space-y-4 text-xs">
+              {/* Candidate Info Card */}
+              {attemptAuditModal.attempt && (
+                <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+                  <div>
+                    <span className="text-[9px] font-bold text-slate-400 uppercase">Candidate</span>
+                    <div className="font-black text-slate-900 truncate">{attemptAuditModal.attempt.studentName}</div>
+                  </div>
+                  <div>
+                    <span className="text-[9px] font-bold text-slate-400 uppercase">Roll / Std</span>
+                    <div className="font-black text-slate-900">{attemptAuditModal.attempt.rollNumber || '-'} ({attemptAuditModal.attempt.standard})</div>
+                  </div>
+                  <div>
+                    <span className="text-[9px] font-bold text-slate-400 uppercase">Score / Result</span>
+                    <div className="font-black text-indigo-700">{attemptAuditModal.attempt.scoreObtained} pts ({attemptAuditModal.attempt.percentage}%)</div>
+                  </div>
+                  <div>
+                    <span className="text-[9px] font-bold text-slate-400 uppercase">Violations</span>
+                    <div className="font-black text-rose-600">{attemptAuditModal.attempt.integrityViolationsCount} Strikes</div>
+                  </div>
+                </div>
+              )}
+
+              {/* Termination Banner if applicable */}
+              {attemptAuditModal.attempt?.invalidationReason && (
+                <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 text-xs flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                  <div>
+                    <strong>Audit Notice:</strong> {attemptAuditModal.attempt.invalidationReason}
+                  </div>
+                </div>
+              )}
+
+              {/* Timeline List */}
+              <div className="space-y-3 pt-2">
+                <span className="font-black text-slate-800 text-xs block">Chronological Event Timeline</span>
+                {attemptAuditModal.isLoading ? (
+                  <div className="py-8 text-center text-slate-400">Loading audit trail...</div>
+                ) : attemptAuditModal.logs.length === 0 ? (
+                  <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-center text-emerald-800 font-medium">
+                    Clean Session: No integrity violations were logged during this attempt.
+                  </div>
+                ) : (
+                  <div className="space-y-2.5">
+                    {attemptAuditModal.logs.map((log, idx) => (
+                      <div key={log.id || idx} className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-rose-100 text-rose-700 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                          {idx + 1}
+                        </span>
+                        <div className="flex-1 space-y-0.5">
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-rose-950 text-xs">{log.eventType}</span>
+                            <span className="text-[10px] text-slate-400 font-mono">
+                              {new Date(log.timestamp).toLocaleTimeString()}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                            {log.details || 'Integrity anomaly recorded'}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-end gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => setAttemptAuditModal({ open: false, attempt: null, logs: [], isLoading: false })}
+                className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-xl cursor-pointer"
+              >
+                Close Audit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ─── MODAL: CREATE / EDIT EXAM ───────────────────────────────────────── */}
       {isExamModalOpen && (
@@ -1676,8 +2424,29 @@ const OnlineExamManagementPage = () => {
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                <span className="font-bold text-slate-800 block">Scoring & Proctoring Options</span>
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-800 block text-xs">Security & Anti-Cheating Preset</span>
+                  <select
+                    value={examForm.securityMode || 'STRICT'}
+                    onChange={(e) => {
+                      const mode = e.target.value;
+                      if (mode === 'STANDARD') {
+                        setExamForm({ ...examForm, securityMode: 'STANDARD', enableIntegrityShield: false, enableLiveProctoring: false, navigationMode: 'FREE' });
+                      } else if (mode === 'STRICT') {
+                        setExamForm({ ...examForm, securityMode: 'STRICT', enableIntegrityShield: true, enableLiveProctoring: false, navigationMode: 'FREE', shuffleQuestions: true, shuffleOptions: true });
+                      } else if (mode === 'PROCTORED') {
+                        setExamForm({ ...examForm, securityMode: 'PROCTORED', enableIntegrityShield: true, enableLiveProctoring: true, navigationMode: 'FORWARD_ONLY', shuffleQuestions: true, shuffleOptions: true });
+                      }
+                    }}
+                    className="px-2 py-1 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-800"
+                  >
+                    <option value="STANDARD">Standard Mode (Relaxed)</option>
+                    <option value="STRICT">Strict Mode (Default - Fullscreen & Anti-Cheat)</option>
+                    <option value="PROCTORED">Proctored Mode (Webcam & Forward-Only)</option>
+                  </select>
+                </div>
+
                 <div className="grid grid-cols-2 gap-2 text-[11px]">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -1713,8 +2482,28 @@ const OnlineExamManagementPage = () => {
                       onChange={(e) => setExamForm({ ...examForm, enableIntegrityShield: e.target.checked })}
                       className="rounded text-indigo-600"
                     />
-                    <span>Fullscreen & Tab-Switch Proctoring</span>
+                    <span>Fullscreen & Focus Lockout</span>
                   </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={examForm.enableLiveProctoring}
+                      onChange={(e) => setExamForm({ ...examForm, enableLiveProctoring: e.target.checked })}
+                      className="rounded text-purple-600"
+                    />
+                    <span className="text-purple-900 font-bold">Webcam Video Proctoring</span>
+                  </label>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-slate-500 font-bold">Navigation:</span>
+                    <select
+                      value={examForm.navigationMode || 'FREE'}
+                      onChange={(e) => setExamForm({ ...examForm, navigationMode: e.target.value })}
+                      className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[11px] font-bold"
+                    >
+                      <option value="FREE">Free</option>
+                      <option value="FORWARD_ONLY">Forward Only</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 

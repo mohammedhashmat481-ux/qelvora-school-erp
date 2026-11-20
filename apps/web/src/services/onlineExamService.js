@@ -182,3 +182,22 @@ export const invalidateAttempt = async (attemptId, data) => {
   const res = await api.post(`/online-exam/admin/attempts/${attemptId}/invalidate`, data);
   return res.data;
 };
+
+// =========================================================================
+// 5. ANTI-CHEATING & INTEGRITY AUDIT APIS
+// =========================================================================
+
+export const getIntegrityLogs = async (params = {}) => {
+  const res = await api.get('/online-exam/admin/integrity-logs', { params });
+  return res.data;
+};
+
+export const getAttemptIntegrityLogs = async (attemptId) => {
+  const res = await api.get(`/online-exam/admin/attempts/${attemptId}/integrity-logs`);
+  return res.data;
+};
+
+export const updateExamSecuritySettings = async (examId, data) => {
+  const res = await api.put(`/online-exam/exams/${examId}/security-settings`, data);
+  return res.data;
+};
