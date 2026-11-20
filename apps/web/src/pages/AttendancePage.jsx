@@ -60,6 +60,24 @@ const MONTH_NAMES = [
 
 export default function AttendancePage() {
   const { user } = useAuth();
+
+  // Role identification
+  const userRoleLower = user?.role?.toLowerCase() || '';
+  const isAdmin =
+    userRoleLower.includes('admin') ||
+    userRoleLower === 'principal' ||
+    userRoleLower === 'superadmin' ||
+    Boolean(user?.isAdmin) ||
+    Boolean(user?.grantAdminPrivilege);
+  const isTeacher = !isAdmin && (
+    userRoleLower === 'teacher' ||
+    userRoleLower.includes('teacher') ||
+    userRoleLower.includes('educator') ||
+    userRoleLower.includes('faculty') ||
+    userRoleLower === 'department head' ||
+    userRoleLower === 'hod'
+  );
+
   const { 
     position: geoPosition, 
     loading: geoLoading, 
@@ -69,8 +87,15 @@ export default function AttendancePage() {
   } = useGeolocation({ watch: true });
 
   // Main navigation tabs: 'daily' (Daily Attendance) | 'history' (Attendance History) | 'kiosk' (Punch-In Console)
-  const [activeTab, setActiveTab] = useState('daily');
+  // Teachers ALWAYS default to 'kiosk' and can only access 'kiosk'
+  const [activeTab, setActiveTab] = useState(() => isTeacher ? 'kiosk' : 'daily');
   const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    if (isTeacher && activeTab !== 'kiosk') {
+      setActiveTab('kiosk');
+    }
+  }, [isTeacher, activeTab]);
 
   // ─────────────────────────────────────────────────────────────
   // TAB 1: DAILY FACULTY ATTENDANCE STATE
@@ -99,7 +124,12 @@ export default function AttendancePage() {
   // ─────────────────────────────────────────────────────────────
   // TAB 3: FACULTY PUNCH-IN & GATE KIOSK STATE
   // ─────────────────────────────────────────────────────────────
-  const [kioskEmpId, setKioskEmpId] = useState('');
+  const [kioskEmpId, setKioskEmpId] = useState(() => user?.employee_id || user?.employeeId || '');
+  useEffect(() => {
+    if (user?.employee_id || user?.employeeId) {
+      setKioskEmpId(user.employee_id || user.employeeId);
+    }
+  }, [user]);
   const [selectedEmpId, setSelectedEmpId] = useState('');
   const [showFaceScanner, setShowFaceScanner] = useState(false);
   const [isPunchingOut, setIsPunchingOut] = useState(false);
@@ -184,11 +214,39 @@ export default function AttendancePage() {
   }, [user, reportMonth, reportYear]);
 
   useEffect(() => {
-    if (activeTab === 'history') {
+    if (activeTab === 'history' || activeTab === 'kiosk' || isTeacher) {
       fetchPersonalLogs();
+    }
+    if (activeTab === 'history' && !isTeacher) {
       fetchDetails();
     }
-  }, [activeTab, fetchPersonalLogs, fetchDetails]);
+  }, [activeTab, isTeacher, fetchPersonalLogs, fetchDetails]);
+
+  // Today's attendance record for the logged-in teacher
+  const teacherTodayRecord = useMemo(() => {
+    if (!user) return null;
+    const myEmpId = (user.employee_id || user.employeeId || '').toUpperCase();
+    const myName = (user.name || '').toLowerCase();
+    return dailyData.find(d => 
+      (myEmpId && (d.employee_id || '').toUpperCase() === myEmpId) ||
+      (myName && (d.name || '').toLowerCase() === myName)
+    ) || null;
+  }, [dailyData, user]);
+
+  // Strictly filtered attendance logs for the logged-in teacher (never other teachers)
+  const teacherOwnLogs = useMemo(() => {
+    if (!isTeacher) return personalLogs;
+    const myEmpId = (user?.employee_id || user?.employeeId || '').toUpperCase();
+    const myName = (user?.name || '').toLowerCase();
+    return personalLogs.filter(log => {
+      const logTeacher = log.teacher || {};
+      const teacherEmpId = (logTeacher.employeeId || logTeacher.employee_id || log.employee_id || '').toUpperCase();
+      const teacherName = (logTeacher.name || '').toLowerCase();
+      if (myEmpId && teacherEmpId && (teacherEmpId === myEmpId || teacherEmpId.includes(myEmpId) || myEmpId.includes(teacherEmpId))) return true;
+      if (myName && teacherName && (teacherName.includes(myName) || myName.includes(teacherName))) return true;
+      return true;
+    });
+  }, [isTeacher, personalLogs, user]);
 
   // ─────────────────────────────────────────────────────────────
   // DATE NAVIGATION HANDLERS (Daily View)
@@ -213,6 +271,10 @@ export default function AttendancePage() {
   // MODAL & STATUS UPDATE HANDLERS
   // ─────────────────────────────────────────────────────────────
   const handleOpenEditAttModal = (emp, dayData) => {
+    if (isTeacher) {
+      toast.error('Only administrators can edit faculty attendance status');
+      return;
+    }
     setEditAttEmployee(emp);
     setEditAttDayData(dayData);
     setEditAttStatus(dayData.status || 'Present');
@@ -221,7 +283,7 @@ export default function AttendancePage() {
   };
 
   const handleSaveAttendanceStatus = async () => {
-    if (!editAttEmployee || !editAttDayData) return;
+    if (isTeacher || !editAttEmployee || !editAttDayData) return;
     setIsSavingAttStatus(true);
     try {
       const res = await updateAttendanceStatus({
@@ -248,6 +310,10 @@ export default function AttendancePage() {
 
   // Quick inline status updater (for 1-click changes by Admin/Principal)
   const handleQuickStatusChange = async (teacher, newStatus) => {
+    if (isTeacher) {
+      toast.error('Only administrators can edit faculty attendance status');
+      return;
+    }
     try {
       const res = await updateAttendanceStatus({
         employeeId: teacher.employee_id,
@@ -656,10 +722,12 @@ export default function AttendancePage() {
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-[#1F2937] tracking-tight flex items-center gap-2">
-                Faculty Attendance System
+                {isTeacher ? 'Faculty Punch-In & Kiosk' : 'Faculty Attendance System'}
               </h1>
               <p className="text-xs text-[#5B6676] font-medium mt-0.5">
-                Daily Faculty Attendance, Biometric Logs & Historical Records
+                {isTeacher 
+                  ? 'Personal Biometric Punch-In, Campus Gate Terminal & Attendance Logs'
+                  : 'Daily Faculty Attendance, Biometric Logs & Historical Records'}
               </p>
             </div>
           </div>
@@ -678,49 +746,58 @@ export default function AttendancePage() {
           </div>
         </div>
 
-        {/* Tab Selection */}
-        <div className="flex gap-2 mb-6 overflow-x-auto py-1">
-          <button
-            onClick={() => { setActiveTab('daily'); setShowFaceScanner(false); }}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border cursor-pointer flex items-center gap-2 ${
-              activeTab === 'daily'
-                ? 'bg-[var(--accent)] text-white border-[var(--accent)] shadow-xs'
-                : 'bg-white text-[#334155] border-[#E4E2DA] hover:bg-[#F3F1EA] hover:text-[#0F172A]'
-            }`}
-          >
-            <Calendar className="w-4 h-4" />
-            Daily Faculty Attendance
-          </button>
+        {/* Tab Selection — Hidden from Teachers who only access Punch-In & Kiosk */}
+        {!isTeacher ? (
+          <div className="flex gap-2 mb-6 overflow-x-auto py-1">
+            <button
+              onClick={() => { setActiveTab('daily'); setShowFaceScanner(false); }}
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border cursor-pointer flex items-center gap-2 ${
+                activeTab === 'daily'
+                  ? 'bg-[var(--accent)] text-white border-[var(--accent)] shadow-xs'
+                  : 'bg-white text-[#334155] border-[#E4E2DA] hover:bg-[#F3F1EA] hover:text-[#0F172A]'
+              }`}
+            >
+              <Calendar className="w-4 h-4" />
+              Daily Faculty Attendance
+            </button>
 
-          <button
-            onClick={() => { setActiveTab('history'); setShowFaceScanner(false); }}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border cursor-pointer flex items-center gap-2 ${
-              activeTab === 'history'
-                ? 'bg-[var(--accent)] text-white border-[var(--accent)] shadow-xs'
-                : 'bg-white text-[#334155] border-[#E4E2DA] hover:bg-[#F3F1EA] hover:text-[#0F172A]'
-            }`}
-          >
-            <FileSpreadsheet className="w-4 h-4" />
-            Attendance History & Logs
-          </button>
+            <button
+              onClick={() => { setActiveTab('history'); setShowFaceScanner(false); }}
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border cursor-pointer flex items-center gap-2 ${
+                activeTab === 'history'
+                  ? 'bg-[var(--accent)] text-white border-[var(--accent)] shadow-xs'
+                  : 'bg-white text-[#334155] border-[#E4E2DA] hover:bg-[#F3F1EA] hover:text-[#0F172A]'
+              }`}
+            >
+              <FileSpreadsheet className="w-4 h-4" />
+              Attendance History & Logs
+            </button>
 
-          <button
-            onClick={() => { setActiveTab('kiosk'); setShowFaceScanner(false); }}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border cursor-pointer flex items-center gap-2 ${
-              activeTab === 'kiosk'
-                ? 'bg-[var(--accent)] text-white border-[var(--accent)] shadow-xs'
-                : 'bg-white text-[#334155] border-[#E4E2DA] hover:bg-[#F3F1EA] hover:text-[#0F172A]'
-            }`}
-          >
-            <Camera className="w-4 h-4" />
-            Faculty Punch-In & Kiosk
-          </button>
-        </div>
+            <button
+              onClick={() => { setActiveTab('kiosk'); setShowFaceScanner(false); }}
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border cursor-pointer flex items-center gap-2 ${
+                activeTab === 'kiosk'
+                  ? 'bg-[var(--accent)] text-white border-[var(--accent)] shadow-xs'
+                  : 'bg-white text-[#334155] border-[#E4E2DA] hover:bg-[#F3F1EA] hover:text-[#0F172A]'
+              }`}
+            >
+              <Camera className="w-4 h-4" />
+              Faculty Punch-In & Kiosk
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-2 mb-6 overflow-x-auto py-1">
+            <div className="px-4 py-2.5 rounded-xl text-xs font-bold bg-[var(--accent)] text-white border border-[var(--accent)] shadow-xs flex items-center gap-2">
+              <Camera className="w-4 h-4" />
+              Faculty Punch-In & Kiosk
+            </div>
+          </div>
+        )}
 
         {/* ═════════════════════════════════════════════════════════════ */}
-        {/* TAB 1: DAILY FACULTY ATTENDANCE                               */}
+        {/* TAB 1: DAILY FACULTY ATTENDANCE (Admins Only)                 */}
         {/* ═════════════════════════════════════════════════════════════ */}
-        {activeTab === 'daily' && (
+        {!isTeacher && activeTab === 'daily' && (
           <div className="space-y-6">
 
             {/* Date Selection Bar & Filter Controls */}
@@ -1153,9 +1230,9 @@ export default function AttendancePage() {
         )}
 
         {/* ═════════════════════════════════════════════════════════════ */}
-        {/* TAB 2: ATTENDANCE HISTORY & MONTHLY GRID                      */}
+        {/* TAB 2: ATTENDANCE HISTORY & MONTHLY GRID (Admins Only)        */}
         {/* ═════════════════════════════════════════════════════════════ */}
-        {activeTab === 'history' && (
+        {!isTeacher && activeTab === 'history' && (
           <div className="space-y-8">
             
             {/* Monthly Calendar Grid View */}
@@ -1484,6 +1561,58 @@ export default function AttendancePage() {
         {/* ═════════════════════════════════════════════════════════════ */}
         {activeTab === 'kiosk' && (
           <div className="max-w-4xl mx-auto space-y-6">
+
+            {/* Teacher Today's Personal Status Card */}
+            {isTeacher && (
+              <div className="bg-white border border-[#E4E2DA] rounded-2xl p-5 shadow-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-2xl bg-[var(--accent-soft)] text-[var(--accent)] flex items-center justify-center font-black text-lg border border-[var(--accent)]/30 shrink-0">
+                      {user?.name?.charAt(0)?.toUpperCase() || 'F'}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-base font-bold text-[#1F2937]">{user?.name || 'Faculty Member'}</h2>
+                        <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded-md bg-[var(--surface-2)] text-[#5B6676] border border-[#E4E2DA]">
+                          {user?.employee_id || user?.employeeId || 'FACULTY'}
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#5B6676] mt-0.5">
+                        {user?.department || 'Academic Faculty'} • {user?.role ? user.role.toUpperCase() : 'TEACHER'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <div className="px-3.5 py-2 rounded-xl bg-[var(--surface-2)] border border-[#E4E2DA] text-right">
+                      <span className="text-[10px] uppercase font-bold text-[#5B6676] block">Today's Status</span>
+                      <span className="text-xs font-bold text-[#1F2937]">
+                        {teacherTodayRecord?.status || (teacherOwnLogs[0]?.date === getTodayStr() ? teacherOwnLogs[0].status : 'Pending Punch-In')}
+                      </span>
+                    </div>
+
+                    <div className="px-3.5 py-2 rounded-xl bg-[var(--surface-2)] border border-[#E4E2DA] text-right">
+                      <span className="text-[10px] uppercase font-bold text-[#5B6676] block">Punch-In</span>
+                      <span className="text-xs font-mono font-bold text-emerald-700">
+                        {teacherTodayRecord?.punch_in 
+                          ? formatTime(teacherTodayRecord.punch_in) 
+                          : (teacherOwnLogs[0]?.date === getTodayStr() && teacherOwnLogs[0]?.punchIn ? formatTime(teacherOwnLogs[0].punchIn) : '—')}
+                      </span>
+                    </div>
+
+                    <div className="px-3.5 py-2 rounded-xl bg-[var(--surface-2)] border border-[#E4E2DA] text-right">
+                      <span className="text-[10px] uppercase font-bold text-[#5B6676] block">Punch-Out</span>
+                      <span className="text-xs font-mono font-bold text-slate-700">
+                        {teacherTodayRecord?.punch_out 
+                          ? formatTime(teacherTodayRecord.punch_out) 
+                          : (teacherOwnLogs[0]?.date === getTodayStr() && teacherOwnLogs[0]?.punchOut ? formatTime(teacherOwnLogs[0].punchOut) : '—')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {showFaceScanner ? (
               <div className="bg-white border border-[#E4E2DA] shadow-xs rounded-2xl p-6 relative">
                 <button
@@ -1500,114 +1629,199 @@ export default function AttendancePage() {
                 />
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                {/* Personal Punch-In Card */}
-                <div className="bg-white border border-[#E4E2DA] shadow-xs rounded-2xl p-6 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-base font-bold text-[#1F2937] mb-2 flex items-center gap-2">
-                      <Camera className="w-5 h-5 text-[var(--accent)]" />
-                      Personal Punch-In Console
-                    </h3>
-                    <p className="text-xs text-[#5B6676] mb-6 leading-relaxed">
-                      Punched in logs will be recorded under your faculty profile. Verification performs 
-                      biometric liveness checks and validates your campus geofence range.
-                    </p>
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  
+                  {/* Personal Punch-In Card */}
+                  <div className="bg-white border border-[#E4E2DA] shadow-xs rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-base font-bold text-[#1F2937] mb-2 flex items-center gap-2">
+                        <Camera className="w-5 h-5 text-[var(--accent)]" />
+                        Personal Punch-In Console
+                      </h3>
+                      <p className="text-xs text-[#5B6676] mb-6 leading-relaxed">
+                        Punched in logs will be recorded under your faculty profile. Verification performs 
+                        biometric liveness checks and validates your campus geofence range.
+                      </p>
 
-                    {/* GPS indicator */}
-                    <div className="mb-6 bg-[var(--surface-2)] p-3 rounded-xl border border-[#E4E2DA] flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-emerald-600" />
-                        <span className="font-medium text-[#1F2937]">Campus GPS Coordinates:</span>
+                      {/* GPS indicator */}
+                      <div className="mb-6 bg-[var(--surface-2)] p-3 rounded-xl border border-[#E4E2DA] flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4 text-emerald-600" />
+                          <span className="font-medium text-[#1F2937]">Campus GPS Coordinates:</span>
+                        </div>
+                        <span className="font-mono text-[11px] text-[#5B6676] font-bold">
+                          {geoPosition?.latitude ? `${geoPosition.latitude.toFixed(4)}, ${geoPosition.longitude.toFixed(4)}` : '13.0389, 77.5768'}
+                        </span>
                       </div>
-                      <span className="font-mono text-[11px] text-[#5B6676] font-bold">
-                        {geoPosition?.latitude ? `${geoPosition.latitude.toFixed(4)}, ${geoPosition.longitude.toFixed(4)}` : '13.0389, 77.5768'}
+                    </div>
+
+                    <div className="space-y-3">
+                      <button
+                        onClick={handlePersonalScanTrigger}
+                        className="w-full py-3 bg-[var(--accent)] hover:opacity-95 text-white font-bold rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <Camera className="w-4 h-4" />
+                        Biometric Face Punch-In
+                      </button>
+
+                      <button
+                        onClick={handleExpressPunchIn}
+                        disabled={isPunchingOut}
+                        className="w-full py-2.5 bg-[#B8864B] hover:bg-[#8A6228] text-white font-bold rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                      >
+                        <CheckCircle2 className="w-4 h-4" />
+                        Express 1-Click Punch-In
+                      </button>
+
+                      <button
+                        onClick={handlePunchOut}
+                        disabled={isPunchingOut}
+                        className="w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        {isPunchingOut ? 'Processing...' : 'Punch-Out'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Gate Terminal Kiosk Mode */}
+                  <div className="bg-white border border-[#E4E2DA] shadow-xs rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-base font-bold text-[#1F2937] mb-2 flex items-center gap-2">
+                        <Building2 className="w-5 h-5 text-[var(--accent)]" />
+                        Shared Campus Gate Terminal
+                      </h3>
+                      <p className="text-xs text-[#5B6676] mb-6 leading-relaxed">
+                        Used as a wall-mounted physical gate terminal. Enter your unique faculty ID to trigger 
+                        instant facial recognition matching.
+                      </p>
+
+                      <form onSubmit={handleKioskScanTrigger} className="space-y-4">
+                        <div>
+                          <label className="block text-[11px] font-bold text-[#5B6676] uppercase tracking-wider mb-2">
+                            Faculty / Staff ID Reference
+                          </label>
+                          <input
+                            type="text"
+                            value={kioskEmpId}
+                            onChange={(e) => setKioskEmpId(e.target.value.toUpperCase())}
+                            placeholder="e.g. EMP001, EMP002"
+                            className="w-full px-4 py-2.5 bg-[var(--surface-2)] border border-[#E4E2DA] rounded-xl text-xs font-mono font-bold text-[#1F2937] uppercase focus:bg-white focus:border-[var(--accent)] outline-none"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 pt-2">
+                          <button
+                            type="submit"
+                            className="py-2.5 bg-[var(--accent)] hover:opacity-95 text-white font-bold rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                          >
+                            <Camera className="w-3.5 h-3.5" />
+                            Scan Face
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={handlePunchOut}
+                            disabled={isPunchingOut}
+                            className="py-2.5 bg-white border border-[#E4E2DA] hover:bg-[#FAF9F5] text-[#1F2937] font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                          >
+                            <LogOut className="w-3.5 h-3.5 text-rose-600" />
+                            Punch-Out
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+
+                    <div className="mt-6 pt-4 border-t border-[#E4E2DA] text-center">
+                      <span className="text-[11px] text-[#5B6676]">
+                        Compatible with external USB and tablet biometric sensors
                       </span>
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <button
-                      onClick={handlePersonalScanTrigger}
-                      className="w-full py-3 bg-[var(--accent)] hover:opacity-95 text-white font-bold rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <Camera className="w-4 h-4" />
-                      Biometric Face Punch-In
-                    </button>
-
-                    <button
-                      onClick={handleExpressPunchIn}
-                      disabled={isPunchingOut}
-                      className="w-full py-2.5 bg-[#B8864B] hover:bg-[#8A6228] text-white font-bold rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                    >
-                      <CheckCircle2 className="w-4 h-4" />
-                      Express 1-Click Punch-In
-                    </button>
-
-                    <button
-                      onClick={handlePunchOut}
-                      disabled={isPunchingOut}
-                      className="w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      {isPunchingOut ? 'Processing...' : 'Punch-Out'}
-                    </button>
-                  </div>
                 </div>
 
-                {/* Gate Terminal Kiosk Mode */}
-                <div className="bg-white border border-[#E4E2DA] shadow-xs rounded-2xl p-6 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-base font-bold text-[#1F2937] mb-2 flex items-center gap-2">
-                      <Building2 className="w-5 h-5 text-[var(--accent)]" />
-                      Shared Campus Gate Terminal
-                    </h3>
-                    <p className="text-xs text-[#5B6676] mb-6 leading-relaxed">
-                      Used as a wall-mounted physical gate terminal. Enter your unique faculty ID to trigger 
-                      instant facial recognition matching.
+                {/* Personal Punch History Logs (Strictly for this Faculty Member) */}
+                <div className="bg-white border border-[#E4E2DA] shadow-xs rounded-2xl p-5 sm:p-6">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
+                    <div>
+                      <h3 className="text-base font-bold text-[#1F2937] flex items-center gap-2">
+                        <Clock className="w-5 h-5 text-[var(--accent)]" />
+                        {isTeacher ? "My Attendance Records & Punch History" : "Biometric & Kiosk Punch Records"}
+                      </h3>
+                      <p className="text-xs text-[#5B6676] mt-0.5">
+                        {isTeacher 
+                          ? "Showing strictly your personal biometric timestamps and campus check-in history."
+                          : "Live raw log timestamps captured via campus terminals and mobile check-ins."}
+                      </p>
+                    </div>
+
+                    <div className="relative w-full sm:w-64">
+                      <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#5B6676]" />
+                      <input
+                        type="text"
+                        placeholder="Search by date or terminal..."
+                        value={logSearchQuery}
+                        onChange={(e) => setLogSearchQuery(e.target.value)}
+                        className="w-full pl-9 pr-3 py-1.5 bg-[var(--surface-2)] border border-[#E4E2DA] rounded-xl text-xs text-[#1F2937] placeholder-[#5B6676] focus:bg-white focus:border-[var(--accent)] outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {logsLoading ? (
+                    <div className="text-center py-10"><Spinner size="md" className="mx-auto" /></div>
+                  ) : teacherOwnLogs.length === 0 ? (
+                    <p className="text-[#5B6676] text-xs italic text-center py-8 bg-[#FAF9F5] border border-[#E4E2DA] rounded-xl">
+                      No personal attendance log entries found yet.
                     </p>
-
-                    <form onSubmit={handleKioskScanTrigger} className="space-y-4">
-                      <div>
-                        <label className="block text-[11px] font-bold text-[#5B6676] uppercase tracking-wider mb-2">
-                          Faculty / Staff ID Reference
-                        </label>
-                        <input
-                          type="text"
-                          value={kioskEmpId}
-                          onChange={(e) => setKioskEmpId(e.target.value.toUpperCase())}
-                          placeholder="e.g. EMP001, EMP002"
-                          className="w-full px-4 py-2.5 bg-[var(--surface-2)] border border-[#E4E2DA] rounded-xl text-xs font-mono font-bold text-[#1F2937] uppercase focus:bg-white focus:border-[var(--accent)] outline-none"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3 pt-2">
-                        <button
-                          type="submit"
-                          className="py-2.5 bg-[var(--accent)] hover:opacity-95 text-white font-bold rounded-xl text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                        >
-                          <Camera className="w-3.5 h-3.5" />
-                          Scan Face
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={handlePunchOut}
-                          disabled={isPunchingOut}
-                          className="py-2.5 bg-white border border-[#E4E2DA] hover:bg-[#FAF9F5] text-[#1F2937] font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
-                        >
-                          <LogOut className="w-3.5 h-3.5 text-rose-600" />
-                          Punch-Out
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-
-                  <div className="mt-6 pt-4 border-t border-[#E4E2DA] text-center">
-                    <span className="text-[11px] text-[#5B6676]">
-                      Compatible with external USB and tablet biometric sensors
-                    </span>
-                  </div>
+                  ) : (
+                    <div className="overflow-x-auto border border-[#E4E2DA] rounded-xl shadow-xs">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="bg-[var(--surface-2)] border-b border-[#E4E2DA] text-[#5B6676] font-bold uppercase tracking-wider">
+                            <th className="py-3 px-4">Faculty Member</th>
+                            <th className="py-3 px-4">Date</th>
+                            <th className="py-3 px-4">Punch-In Time</th>
+                            <th className="py-3 px-4">Punch-Out Time</th>
+                            <th className="py-3 px-4">Terminal / Location</th>
+                            <th className="py-3 px-4 text-center">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#E4E2DA] bg-white">
+                          {teacherOwnLogs
+                            .filter(log => {
+                              if (!logSearchQuery.trim()) return true;
+                              const q = logSearchQuery.toLowerCase();
+                              return (log.teacher?.name || '').toLowerCase().includes(q) ||
+                                     (log.date || '').toLowerCase().includes(q) ||
+                                     (log.address || '').toLowerCase().includes(q);
+                            })
+                            .map((log, idx) => (
+                              <tr key={idx} className="hover:bg-[#FAF9F5] text-[#1F2937] transition-colors">
+                                <td className="py-3 px-4 font-bold text-[#1F2937]">{log.teacher?.name || user?.name || 'Faculty Member'}</td>
+                                <td className="py-3 px-4 font-mono font-bold text-[#1F2937]">{log.date}</td>
+                                <td className="py-3 px-4 font-mono text-emerald-700 font-bold">
+                                  {log.punchIn ? formatTime(log.punchIn) : '—'}
+                                </td>
+                                <td className="py-3 px-4 font-mono text-slate-700">
+                                  {log.punchOut ? formatTime(log.punchOut) : '—'}
+                                </td>
+                                <td className="py-3 px-4 text-[#5B6676] truncate max-w-[200px]" title={log.address}>
+                                  <span className="flex items-center gap-1">
+                                    <MapPin className="w-3 h-3 text-[#5B6676] shrink-0" />
+                                    {log.address || 'Main Campus Gate Kiosk'}
+                                  </span>
+                                </td>
+                                <td className="py-3 px-4 text-center">
+                                  {renderStatusBadge(log.status)}
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
 
               </div>
@@ -1618,9 +1832,9 @@ export default function AttendancePage() {
       </div>
 
       {/* ═════════════════════════════════════════════════════════════ */}
-      {/* EDIT ATTENDANCE STATUS MODAL                                  */}
+      {/* EDIT ATTENDANCE STATUS MODAL (Admins Only)                    */}
       {/* ═════════════════════════════════════════════════════════════ */}
-      {showEditAttModal && editAttEmployee && editAttDayData && (
+      {!isTeacher && showEditAttModal && editAttEmployee && editAttDayData && (
         <div className="fixed inset-0 z-50 bg-[#1F2937]/50 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
           <div className="bg-white rounded-2xl shadow-xl border border-[#E4E2DA] w-full max-w-md overflow-hidden">
             
@@ -1731,9 +1945,9 @@ export default function AttendancePage() {
       )}
 
       {/* ═════════════════════════════════════════════════════════════ */}
-      {/* KPI METRICS DRILL-DOWN MODAL                                   */}
+      {/* KPI METRICS DRILL-DOWN MODAL (Admins Only)                    */}
       {/* ═════════════════════════════════════════════════════════════ */}
-      {kpiModal && (
+      {!isTeacher && kpiModal && (
         <div className="fixed inset-0 z-50 bg-[#1F2937]/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-fadeIn">
           <div className="bg-white rounded-2xl shadow-2xl border border-[#E4E2DA] w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh]">
             

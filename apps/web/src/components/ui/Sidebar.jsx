@@ -372,36 +372,40 @@ const Sidebar = () => {
             <span>{t('dashboard')}</span>
           </Link>
 
-          {/* Admin Attendance & Kiosk Links */}
-          {(isAdmin || hasPermission('attendance')) && (
-            <>
-              <Link
-                to="/attendance"
-                onClick={handleLinkClick}
-                className={getLinkClass('/attendance')}
-              >
-                <ClipboardCheck className={`w-4 h-4 shrink-0 ${location.pathname === '/attendance' ? 'text-[var(--accent)]' : 'text-[#475569]'}`} />
-                <span>{t('attendance') || 'Attendance System'}</span>
-              </Link>
+          {/* Attendance Link (Visible to Admin, Privileged users, or Teachers) */}
+          {(isAdmin || isTeacher || hasPermission('attendance')) && (
+            <Link
+              to="/attendance"
+              onClick={handleLinkClick}
+              className={getLinkClass('/attendance')}
+            >
+              <ClipboardCheck className={`w-4 h-4 shrink-0 ${location.pathname === '/attendance' ? 'text-[var(--accent)]' : 'text-[#475569]'}`} />
+              <span>{t('attendance') || 'Attendance System'}</span>
+            </Link>
+          )}
 
-              <Link
-                to="/reports"
-                onClick={handleLinkClick}
-                className={getLinkClass('/reports', location.pathname === '/reports' || location.pathname === '/daily-reports')}
-              >
-                <FileSpreadsheet className={`w-4 h-4 shrink-0 ${location.pathname === '/reports' || location.pathname === '/daily-reports' ? 'text-[var(--accent)]' : 'text-[#475569]'}`} />
-                <span>{t('reports') || 'Reports'}</span>
-              </Link>
+          {/* Reports Link (Strictly Admin / Principal - NEVER for Teachers) */}
+          {!isTeacher && (isAdmin || hasPermission('reports')) && (
+            <Link
+              to="/reports"
+              onClick={handleLinkClick}
+              className={getLinkClass('/reports', location.pathname === '/reports' || location.pathname === '/daily-reports')}
+            >
+              <FileSpreadsheet className={`w-4 h-4 shrink-0 ${location.pathname === '/reports' || location.pathname === '/daily-reports' ? 'text-[var(--accent)]' : 'text-[#475569]'}`} />
+              <span>{t('reports') || 'Reports'}</span>
+            </Link>
+          )}
 
-              <Link
-                to="/ai-assist"
-                onClick={handleLinkClick}
-                className={getLinkClass('/ai-assist')}
-              >
-                <Sparkles className={`w-4 h-4 shrink-0 ${location.pathname === '/ai-assist' ? 'text-[var(--accent)]' : 'text-[#475569]'}`} />
-                <span>{t('ai_assist') || 'AI Assist'}</span>
-              </Link>
-            </>
+          {/* AI Assist Link (Strictly Admin / Principal - NEVER for Teachers) */}
+          {!isTeacher && (isAdmin || hasPermission('ai_assist')) && (
+            <Link
+              to="/ai-assist"
+              onClick={handleLinkClick}
+              className={getLinkClass('/ai-assist')}
+            >
+              <Sparkles className={`w-4 h-4 shrink-0 ${location.pathname === '/ai-assist' ? 'text-[var(--accent)]' : 'text-[#475569]'}`} />
+              <span>{t('ai_assist') || 'AI Assist'}</span>
+            </Link>
           )}
 
           {/* Teacher Quick Attendance Link */}

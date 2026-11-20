@@ -325,9 +325,26 @@ export default function GlobalAiAssistant() {
     });
   };
 
-  // Do not show on auth pages, unauthenticated users, or on dedicated /ai-assist page
+  // Role checking: Hide AI Assistant from teachers
+  const userRoleLower = user?.role?.toLowerCase() || '';
+  const isAdmin =
+    userRoleLower.includes('admin') ||
+    userRoleLower === 'principal' ||
+    userRoleLower === 'superadmin' ||
+    Boolean(user?.isAdmin) ||
+    Boolean(user?.grantAdminPrivilege);
+  const isTeacher = !isAdmin && (
+    userRoleLower === 'teacher' ||
+    userRoleLower.includes('teacher') ||
+    userRoleLower.includes('educator') ||
+    userRoleLower.includes('faculty') ||
+    userRoleLower === 'department head' ||
+    userRoleLower === 'hod'
+  );
+
+  // Do not show on auth pages, unauthenticated users, on dedicated /ai-assist page, or for teachers
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/profile-selection';
-  if (isAuthPage || !isAuthenticated || location.pathname === '/ai-assist') {
+  if (isAuthPage || !isAuthenticated || location.pathname === '/ai-assist' || isTeacher) {
     return null;
   }
 

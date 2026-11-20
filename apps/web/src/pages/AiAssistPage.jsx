@@ -65,7 +65,16 @@ export default function AiAssistPage() {
   const isPrincipalOrAdmin =
     userRoleLower.includes('admin') ||
     userRoleLower === 'principal' ||
-    Boolean(user?.isAdmin);
+    userRoleLower === 'superadmin' ||
+    Boolean(user?.isAdmin) ||
+    Boolean(user?.grantAdminPrivilege);
+
+  useEffect(() => {
+    if (user && !isPrincipalOrAdmin) {
+      toast.error('AI Assist is restricted to Administrators and Principals');
+      navigate('/dashboard');
+    }
+  }, [user, isPrincipalOrAdmin, navigate]);
 
   // Active View: 'chat' | 'settings' (Admin/Principal only)
   const [activeView, setActiveView] = useState('chat');

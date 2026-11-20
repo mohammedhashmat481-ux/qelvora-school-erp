@@ -50,7 +50,16 @@ export default function DailyReportsPage() {
   const isPrincipalOrAdmin =
     userRoleLower.includes('admin') ||
     userRoleLower === 'principal' ||
-    Boolean(user?.isAdmin);
+    userRoleLower === 'superadmin' ||
+    Boolean(user?.isAdmin) ||
+    Boolean(user?.grantAdminPrivilege);
+
+  useEffect(() => {
+    if (user && !isPrincipalOrAdmin) {
+      toast.error('Reports module is restricted to Administrators and Principals');
+      navigate('/dashboard');
+    }
+  }, [user, isPrincipalOrAdmin, navigate]);
 
   // Date selection state (Defaults to today YYYY-MM-DD)
   const getTodayStr = () => new Date().toISOString().split('T')[0];
