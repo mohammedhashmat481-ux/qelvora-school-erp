@@ -321,12 +321,6 @@ const Sidebar = () => {
     return false;
   };
 
-  const hasAnyAdminPermission =
-    isAdmin ||
-    (Array.isArray(user?.permissions) &&
-      user.permissions.some(p =>
-        ['admin_panel', 'student_attendance', 'fees_management', 'expense_management', 'student_promotion', 'examination', 'online_exam', 'safe_pickup', 'attendance'].includes(p)
-      ));
   const isTeacher =
     !isAdmin &&
     (userRoleLower === 'teacher' ||
@@ -335,6 +329,14 @@ const Sidebar = () => {
       userRoleLower.includes('faculty') ||
       userRoleLower === 'department head' ||
       userRoleLower === 'hod');
+
+  const hasAnyAdminPermission =
+    !isTeacher &&
+    (isAdmin ||
+      (Array.isArray(user?.permissions) &&
+        user.permissions.some(p =>
+          ['admin_panel', 'student_attendance', 'fees_management', 'expense_management', 'student_promotion', 'examination', 'online_exam', 'safe_pickup'].includes(p)
+        )));
   const isParentOrStudent =
     !isAdmin &&
     !isTeacher &&
@@ -575,8 +577,8 @@ const Sidebar = () => {
           </div>
         )}
 
-        {/* ── ADMIN & PRIVILEGED ROLES SECTION ── */}
-        {hasAnyAdminPermission && (
+        {/* ── ADMIN & PRIVILEGED ROLES SECTION (NEVER VISIBLE FOR TEACHERS) ── */}
+        {!isTeacher && hasAnyAdminPermission && (
           <div className="space-y-1 pt-2 border-t border-[#E4E2DA]">
             <span className="text-[11px] font-black text-[#92400E] uppercase tracking-wider block px-3 mb-2">
               ADMIN SYSTEM
