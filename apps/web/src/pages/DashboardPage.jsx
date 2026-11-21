@@ -154,14 +154,28 @@ const DashboardPage = () => {
   const [studentProfile, setStudentProfile] = useState(null);
   const [studentTimetable, setStudentTimetable] = useState([]);
 
-  // Unified dashboard state
-  const [loading, setLoading] = useState(true);
-  const [teacherData, setTeacherData] = useState(null);
-  const [adminData, setAdminData] = useState(null);
-  const [leaveRequests, setLeaveRequests] = useState([]);
+  // Client-side persistent cache helper for instant 0ms mount
+  const getCachedDash = (key) => {
+    try {
+      const item = localStorage.getItem(`qelvora_dash_${key}`);
+      return item ? JSON.parse(item) : null;
+    } catch (_) {
+      return null;
+    }
+  };
+
+  const initialAdmin = getCachedDash('admin');
+  const initialTeacher = getCachedDash('teacher');
+  const initialSettings = getCachedDash('settings');
+
+  // Unified dashboard state - Initialized from persistent cache for instant 0ms rendering
+  const [loading, setLoading] = useState(() => !initialAdmin && !initialTeacher);
+  const [teacherData, setTeacherData] = useState(() => initialTeacher);
+  const [adminData, setAdminData] = useState(() => initialAdmin);
+  const [leaveRequests, setLeaveRequests] = useState(() => getCachedDash('leaves') || []);
   const [notifications, setNotifications] = useState([]);
-  const [schoolSettings, setSchoolSettings] = useState(null);
-  const [calculatedPeriods, setCalculatedPeriods] = useState([]);
+  const [schoolSettings, setSchoolSettings] = useState(() => initialSettings);
+  const [calculatedPeriods, setCalculatedPeriods] = useState(() => initialSettings ? calculateTimeSlots(initialSettings) : []);
 
   // Leave Form State
   const [leaveDate, setLeaveDate] = useState('');
@@ -367,6 +381,9 @@ const DashboardPage = () => {
       const res = await getTeacherDashboard();
       if (res?.status && res.data) {
         setTeacherData(res.data);
+        try {
+          localStorage.setItem('qelvora_dash_teacher', JSON.stringify(res.data));
+        } catch (_) {}
         if (res.data.notifications) {
           setNotifications(res.data.notifications);
         }
@@ -432,6 +449,9 @@ const DashboardPage = () => {
         };
 
         setAdminData(mergedAdminData);
+        try {
+          localStorage.setItem('qelvora_dash_admin', JSON.stringify(mergedAdminData));
+        } catch (_) {}
         if (resolvedClasses.length > 0) {
           setAllClasses(resolvedClasses);
           setSelectedClassForGrid(prev => prev || resolvedClasses[0]._id || resolvedClasses[0].id);
@@ -446,6 +466,9 @@ const DashboardPage = () => {
       }
       if (leavesRes?.status && leavesRes.data) {
         setLeaveRequests(leavesRes.data);
+        try {
+          localStorage.setItem('qelvora_dash_leaves', JSON.stringify(leavesRes.data));
+        } catch (_) {}
       }
     } catch (err) {
       console.error('Failed to fetch admin dashboard:', err);
@@ -454,7 +477,10 @@ const DashboardPage = () => {
 
   // Main fetch loop
   const refreshDashboard = useCallback(async (showLoader = false) => {
-    if (showLoader) setLoading(true);
+    // Only show full-screen loader if NO cached data exists in memory
+    if (showLoader && !adminData && !teacherData && !studentProfile) {
+      setLoading(true);
+    }
     
     try {
       const promises = [];
@@ -463,6 +489,10 @@ const DashboardPage = () => {
         promises.push(
           getCompanySettings().then(res => {
             if (res?.status && res.data) {
+              setSchoolSettings(res.data);
+              try {
+                localStorage.setItem('qelvora_dash_settings', JSON.stringify(res.data));
+              } catch (_) {}
               setSchoolSettings(res.data);
               const slots = calculateTimeSlots(res.data);
               setCalculatedPeriods(slots);
@@ -1165,7 +1195,8 @@ Office of the Principal / Academic Administration`
     }
   };
 
-  if (loading) {
+  // Only display full-screen loading spinner if there is zero cached data to render
+  if (loading && !adminData && !teacherData && !studentProfile) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">

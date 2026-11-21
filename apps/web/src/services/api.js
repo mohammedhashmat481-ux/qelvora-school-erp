@@ -41,6 +41,8 @@ const inflightRequests = new Map();
 const CACHEABLE_PATTERNS = [
   /^\/auth\/settings/,
   /^\/settings\/company/,
+  /^\/dashboard\/admin/,
+  /^\/dashboard\/teacher/,
   /^\/classes/,
   /^\/subjects/,
   /^\/mappings/,
@@ -125,12 +127,13 @@ api.defaults.adapter = async (config) => {
         const cached = memoryCache.get(cacheKey);
         const now = Date.now();
 
-        // Default TTL: 3 minutes for master data, 5 minutes for settings/roles
-        const ttl = (url.includes('/auth/settings') || url.includes('/roles') || url.includes('/settings/company')) ? 300000 : 180000;
+        // Default TTL: 3 minutes for master data, 5 minutes for settings/roles, 30s for dashboard
+        const ttl = (url.includes('/auth/settings') || url.includes('/roles') || url.includes('/settings/company')) ? 300000 : (url.includes('/dashboard/') ? 30000 : 180000);
+        const staleThreshold = url.includes('/dashboard/') ? 10000 : 20000;
 
         if (cached && (now - cached.timestamp < ttl)) {
-          // Stale-while-revalidate: If older than 20 seconds, refresh quietly in background
-          if ((now - cached.timestamp > 20000) && !cached.isRevalidating) {
+          // Stale-while-revalidate: refresh quietly in background
+          if ((now - cached.timestamp > staleThreshold) && !cached.isRevalidating) {
             cached.isRevalidating = true;
             defaultAdapter(config)
               .then((freshResponse) => {

@@ -129,6 +129,12 @@ async function getFormattedTimetables(where = {}) {
 // GET /api/dashboard/teacher
 router.get('/teacher', protect, async (req, res) => {
   try {
+    const teacherCacheKey = `dashboard:teacher:${req.user?.id || 'demo'}`;
+    const cachedTeacher = cache.get(teacherCacheKey);
+    if (cachedTeacher) {
+      return res.json(cachedTeacher);
+    }
+
     const todayWeekday = WEEKDAYS[new Date().getDay()] || 'Monday';
     const user = req.user;
     const teacherId = req.user?.id;
@@ -208,7 +214,7 @@ router.get('/teacher', protect, async (req, res) => {
       currentPeriod = { period: teacherSlotsToday[0].period, timeSlot: teacherSlotsToday[0].timeSlot || '08:30-09:15' };
     }
 
-    res.json({
+    const payload = {
       status: true,
       data: {
         teacherId: effectiveTeacherId,
@@ -238,7 +244,9 @@ router.get('/teacher', protect, async (req, res) => {
           { id: "n1", title: "Faculty Notice", message: "Academic syllabus and period timetables updated.", time: "Today" }
         ]
       }
-    });
+    };
+    cache.set(teacherCacheKey, payload, 15000);
+    res.json(payload);
   } catch (err) {
     console.warn("⚠️ Database offline or tables missing in teacher dashboard — returning fallback demo data:", err.message);
     res.json({
@@ -275,6 +283,13 @@ router.get('/teacher', protect, async (req, res) => {
 // GET /api/dashboard/admin
 router.get('/admin', protect, async (req, res) => {
   try {
+    // 15-second fast aggregation cache for instantaneous dashboard responses
+    const adminCacheKey = 'dashboard:admin:aggregated';
+    const cachedAdmin = cache.get(adminCacheKey);
+    if (cachedAdmin) {
+      return res.json(cachedAdmin);
+    }
+
     const todayWeekday = WEEKDAYS[new Date().getDay()] || 'Wednesday';
 
     const [classes, teachers, subjects, mappings, weeklyTimetable] = await Promise.all([
@@ -361,7 +376,7 @@ router.get('/admin', protect, async (req, res) => {
       goldClasses: pendingLeaves.length > 0 ? 1 : 0
     };
 
-    res.json({
+    const payload = {
       status: true,
       data: {
         allClasses: formatLegacyId(classes),
@@ -382,7 +397,10 @@ router.get('/admin', protect, async (req, res) => {
         stats: statsObj,
         liveFeed
       }
-    });
+    };
+
+    cache.set(adminCacheKey, payload, 15000);
+    res.json(payload);
   } catch (err) {
     console.warn("⚠️ Database offline or tables missing in admin dashboard — returning fallback demo data:", err.message);
     res.json({
