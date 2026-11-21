@@ -116,6 +116,87 @@ const getPeriodStatus = (timeSlot) => {
   }
 };
 
+// Pure top-level dynamic time slot calculation helper (hoisted, safe from TDZ)
+const calculateTimeSlots = (settings) => {
+  const startStr = settings?.office_start_time || settings?.timings?.start || '09:00';
+  const endStr = settings?.office_end_time || settings?.timings?.end || '16:00';
+  const periodMins = settings?.period_duration_mins || 45;
+  
+  const smallBreakStart = settings?.small_break_start || '10:30';
+  const smallBreakMins = settings?.small_break_mins || 15;
+  
+  const lunchBreakStart = settings?.lunch_break_start || '12:00';
+  const lunchBreakMins = settings?.lunch_break_mins || 45;
+
+  const timeToMins = (str) => {
+    if (!str) return 0;
+    const [h, m] = str.split(':').map(Number);
+    return h * 60 + m;
+  };
+
+  const minsToTime = (m) => {
+    const h = Math.floor(m / 60) % 24;
+    const mins = m % 60;
+    return `${String(h).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+  };
+
+  const startMins = timeToMins(startStr);
+  const endMins = timeToMins(endStr);
+  const smallStartMins = timeToMins(smallBreakStart);
+  const smallEndMins = smallStartMins + smallBreakMins;
+  const lunchStartMins = timeToMins(lunchBreakStart);
+  const lunchEndMins = lunchStartMins + lunchBreakMins;
+
+  const periods = [];
+  let currentMins = startMins;
+  let periodIndex = 1;
+
+  while (currentMins + periodMins <= endMins) {
+    if (currentMins >= smallStartMins && currentMins < smallEndMins) {
+      currentMins = smallEndMins;
+      continue;
+    }
+    if (currentMins < smallStartMins && currentMins + periodMins > smallStartMins) {
+      currentMins = smallEndMins;
+      continue;
+    }
+
+    if (currentMins >= lunchStartMins && currentMins < lunchEndMins) {
+      currentMins = lunchEndMins;
+      continue;
+    }
+    if (currentMins < lunchStartMins && currentMins + periodMins > lunchStartMins) {
+      currentMins = lunchEndMins;
+      continue;
+    }
+
+    const slotStart = currentMins;
+    const slotEnd = currentMins + periodMins;
+    
+    periods.push({
+      period: periodIndex,
+      start: minsToTime(slotStart),
+      end: minsToTime(slotEnd),
+      timeSlot: `${minsToTime(slotStart)}-${minsToTime(slotEnd)}`
+    });
+
+    periodIndex++;
+    currentMins = slotEnd;
+  }
+
+  return periods;
+};
+
+// Client-side persistent cache helper for instant 0ms mount
+const getCachedDash = (key) => {
+  try {
+    const item = localStorage.getItem(`qelvora_dash_${key}`);
+    return item ? JSON.parse(item) : null;
+  } catch (_) {
+    return null;
+  }
+};
+
 const DashboardPage = () => {
   const { user, selectedProfile, logout } = useAuth();
   const navigate = useNavigate();
@@ -153,16 +234,6 @@ const DashboardPage = () => {
   // Student Profile Dashboard states
   const [studentProfile, setStudentProfile] = useState(null);
   const [studentTimetable, setStudentTimetable] = useState([]);
-
-  // Client-side persistent cache helper for instant 0ms mount
-  const getCachedDash = (key) => {
-    try {
-      const item = localStorage.getItem(`qelvora_dash_${key}`);
-      return item ? JSON.parse(item) : null;
-    } catch (_) {
-      return null;
-    }
-  };
 
   const initialAdmin = getCachedDash('admin');
   const initialTeacher = getCachedDash('teacher');
@@ -272,77 +343,6 @@ const DashboardPage = () => {
   const [editCellTeacherId, setEditCellTeacherId] = useState('');
   const [editCellEntryId, setEditCellEntryId] = useState('');
   const [isSavingCell, setIsSavingCell] = useState(false);
-
-  // Dynamic time slot calculation helper (replicates backend logic)
-  const calculateTimeSlots = (settings) => {
-    const startStr = settings?.office_start_time || settings?.timings?.start || '09:00';
-    const endStr = settings?.office_end_time || settings?.timings?.end || '16:00';
-    const periodMins = settings?.period_duration_mins || 45;
-    
-    const smallBreakStart = settings?.small_break_start || '10:30';
-    const smallBreakMins = settings?.small_break_mins || 15;
-    
-    const lunchBreakStart = settings?.lunch_break_start || '12:00';
-    const lunchBreakMins = settings?.lunch_break_mins || 45;
-
-    const timeToMins = (str) => {
-      if (!str) return 0;
-      const [h, m] = str.split(':').map(Number);
-      return h * 60 + m;
-    };
-
-    const minsToTime = (m) => {
-      const h = Math.floor(m / 60) % 24;
-      const mins = m % 60;
-      return `${String(h).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
-    };
-
-    const startMins = timeToMins(startStr);
-    const endMins = timeToMins(endStr);
-    const smallStartMins = timeToMins(smallBreakStart);
-    const smallEndMins = smallStartMins + smallBreakMins;
-    const lunchStartMins = timeToMins(lunchBreakStart);
-    const lunchEndMins = lunchStartMins + lunchBreakMins;
-
-    const periods = [];
-    let currentMins = startMins;
-    let periodIndex = 1;
-
-    while (currentMins + periodMins <= endMins) {
-      if (currentMins >= smallStartMins && currentMins < smallEndMins) {
-        currentMins = smallEndMins;
-        continue;
-      }
-      if (currentMins < smallStartMins && currentMins + periodMins > smallStartMins) {
-        currentMins = smallEndMins;
-        continue;
-      }
-
-      if (currentMins >= lunchStartMins && currentMins < lunchEndMins) {
-        currentMins = lunchEndMins;
-        continue;
-      }
-      if (currentMins < lunchStartMins && currentMins + periodMins > lunchStartMins) {
-        currentMins = lunchEndMins;
-        continue;
-      }
-
-      const slotStart = currentMins;
-      const slotEnd = currentMins + periodMins;
-      
-      periods.push({
-        period: periodIndex,
-        start: minsToTime(slotStart),
-        end: minsToTime(slotEnd),
-        timeSlot: `${minsToTime(slotStart)}-${minsToTime(slotEnd)}`
-      });
-
-      periodIndex++;
-      currentMins = slotEnd;
-    }
-
-    return periods;
-  };
 
   const getLocalDateString = () => {
     const d = new Date();
