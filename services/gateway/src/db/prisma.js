@@ -8,6 +8,7 @@ export const prisma = new PrismaClient();
  */
 export function formatLegacyId(data) {
   if (!data) return data;
+  if (data instanceof Date) return data;
 
   if (Array.isArray(data)) {
     return data.map((item) => formatLegacyId(item));

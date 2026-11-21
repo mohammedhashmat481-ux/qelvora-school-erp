@@ -49,12 +49,17 @@ async function resolveTeacher(user) {
 function isUserAdmin(user) {
   if (!user) return false;
   const role = (user.role || '').toLowerCase();
+  const permissions = Array.isArray(user.permissions) ? user.permissions : [];
   return (
     role.includes('admin') ||
+    role.includes('principal') ||
+    role.includes('superadmin') ||
+    role.includes('head') ||
     role === 'principal' ||
-    role === 'superadmin' ||
     Boolean(user.isAdmin) ||
-    Boolean(user.grantAdminPrivilege)
+    Boolean(user.grantAdminPrivilege) ||
+    permissions.includes('admin_panel') ||
+    permissions.includes('all')
   );
 }
 

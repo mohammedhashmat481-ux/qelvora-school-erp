@@ -110,7 +110,8 @@ export default function AdminTeachersWorkDonePage() {
       }
     } catch (err) {
       console.error('Error fetching admin reports:', err);
-      toast.error('Failed to load teacher work reports');
+      const msg = err.response?.data?.message || err.message || 'Failed to load teacher work reports';
+      toast.error(msg);
     } finally {
       setReportsLoading(false);
     }
@@ -593,7 +594,7 @@ export default function AdminTeachersWorkDonePage() {
                           {report.homeworkAssigned || '—'}
                         </td>
                         <td className="py-3 px-3 whitespace-nowrap text-[#64748B] text-[11px]">
-                          {report.submissionTime || new Date(report.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          {report.submissionTime || (report.createdAt && !(typeof report.createdAt === 'object' && Object.keys(report.createdAt).length === 0) ? new Date(report.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—')}
                         </td>
                         <td className="py-3 px-3 text-right whitespace-nowrap">
                           <button

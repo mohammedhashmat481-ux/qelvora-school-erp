@@ -721,7 +721,7 @@ export default function TeacherDailyWorkPage() {
                         {report.homeworkAssigned || '—'}
                       </td>
                       <td className="py-3 px-3 whitespace-nowrap text-[#64748B] text-[11px]">
-                        {report.submissionTime || new Date(report.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {report.submissionTime || (report.createdAt && !(typeof report.createdAt === 'object' && Object.keys(report.createdAt).length === 0) ? new Date(report.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—')}
                       </td>
                       <td className="py-3 px-3 whitespace-nowrap">
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
