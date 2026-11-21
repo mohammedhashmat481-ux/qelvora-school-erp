@@ -86,6 +86,11 @@ model Student {
   @@index([name])
   @@index([satsNumber])
   @@index([parentEmail])
+  @@index([parentPhone])
+  @@index([rollNumber])
+  @@index([studentStatus])
+  @@index([academicYear])
+  @@index([standard, section, rollNumber])
 }
 
 model Teacher {
@@ -230,6 +235,7 @@ model TeacherAttendance {
 
   @@unique([date, teacherName])
   @@index([date])
+  @@index([teacherName])
   @@index([teacherName, date])
 }
 

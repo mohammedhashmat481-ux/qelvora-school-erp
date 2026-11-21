@@ -388,15 +388,13 @@ const DashboardPage = () => {
     }
   }, []);
 
-  // Fetch Admin / Principal data
+  // Fetch Admin / Principal data - Optimized to eliminate redundant duplicate queries
   const fetchAdminData = useCallback(async () => {
     try {
-      const [dashRes, leavesRes, subjectsRes, timetablesRes, classesRes, sessionsRes, dailyAttRes] = await Promise.all([
+      // getAdminDashboard() already packages allClasses, allTeachers, allSubjects, allMappings, and weeklyTimetable
+      const [dashRes, leavesRes, sessionsRes, dailyAttRes] = await Promise.all([
         getAdminDashboard(),
-        getLeaveRequests(),
-        getSubjects().catch(() => ({ status: false, data: [] })),
-        getTimetables().catch(() => ({ status: false, data: [] })),
-        getClasses().catch(() => ({ status: false, data: [] })),
+        getLeaveRequests().catch(() => ({ status: false, data: [] })),
         getClassSessions().catch(() => ({ status: false, data: [] })),
         getDailyStatus().catch(() => ({ status: false, data: [] }))
       ]);
@@ -409,18 +407,14 @@ const DashboardPage = () => {
         setClassSessions(sessionsRes.data);
       }
 
-      if (subjectsRes?.status && Array.isArray(subjectsRes.data)) {
-        setAllSubjects(subjectsRes.data);
-      }
-
-      if (classesRes?.status && Array.isArray(classesRes.data) && classesRes.data.length > 0) {
-        setAllClasses(classesRes.data);
-      }
-
       if (dashRes?.status && dashRes.data) {
-        const liveWeekly = (timetablesRes?.status && Array.isArray(timetablesRes.data) && timetablesRes.data.length > 0)
-          ? timetablesRes.data
-          : (dashRes.data.weeklyTimetable || []);
+        const liveWeekly = Array.isArray(dashRes.data.weeklyTimetable) ? dashRes.data.weeklyTimetable : [];
+        const resolvedClasses = Array.isArray(dashRes.data.allClasses) ? dashRes.data.allClasses : [];
+        const resolvedSubjects = Array.isArray(dashRes.data.allSubjects) ? dashRes.data.allSubjects : [];
+
+        if (resolvedSubjects.length > 0) {
+          setAllSubjects(resolvedSubjects);
+        }
 
         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         const todayDay = days[new Date().getDay()] || 'Wednesday';
@@ -429,10 +423,6 @@ const DashboardPage = () => {
           todaySlots = liveWeekly.filter(e => e.day === 'Monday');
           if (todaySlots.length === 0) todaySlots = liveWeekly.slice(0, 30);
         }
-
-        const resolvedClasses = (classesRes?.status && Array.isArray(classesRes.data) && classesRes.data.length > 0)
-          ? classesRes.data
-          : (dashRes.data.allClasses || []);
 
         const mergedAdminData = {
           ...dashRes.data,
@@ -467,18 +457,22 @@ const DashboardPage = () => {
     if (showLoader) setLoading(true);
     
     try {
-      const promises = [
-        getCompanySettings().then(res => {
-          if (res?.status && res.data) {
-            setSchoolSettings(res.data);
-            const slots = calculateTimeSlots(res.data);
-            setCalculatedPeriods(slots);
-            if (res.data.board) {
-              setSchedBoard(res.data.board);
+      const promises = [];
+      // Only fetch company settings on initial mount or if not yet loaded
+      if (showLoader || !schoolSettings) {
+        promises.push(
+          getCompanySettings().then(res => {
+            if (res?.status && res.data) {
+              setSchoolSettings(res.data);
+              const slots = calculateTimeSlots(res.data);
+              setCalculatedPeriods(slots);
+              if (res.data.board) {
+                setSchedBoard(res.data.board);
+              }
             }
-          }
-        }).catch(e => console.error('Settings load error:', e))
-      ];
+          }).catch(e => console.error('Settings load error:', e))
+        );
+      }
 
       const roleLower = user?.role?.toLowerCase() || '';
       const isStudentOrParentRole = roleLower.includes('student') || roleLower.includes('parent');
@@ -540,7 +534,8 @@ const DashboardPage = () => {
 
   useEffect(() => {
     refreshDashboard(true);
-    const timer = setInterval(() => refreshDashboard(false), 45000);
+    // Background polling interval optimized to 90s (Socket.IO handles real-time events)
+    const timer = setInterval(() => refreshDashboard(false), 90000);
     const handleSettingsUpdate = () => {
       getCompanySettings().then(res => {
         if (res?.data) {

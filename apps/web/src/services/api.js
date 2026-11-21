@@ -34,10 +34,13 @@ const api = axios.create({
 
 // ── In-Memory Cache Layer for Instant Page Navigation ────────────────────────
 const memoryCache = new Map();
+// ── In-Flight Request Deduplication Registry ─────────────────────────────────
+const inflightRequests = new Map();
 
 // URL patterns that are safe and beneficial to cache across pages
 const CACHEABLE_PATTERNS = [
   /^\/auth\/settings/,
+  /^\/settings\/company/,
   /^\/classes/,
   /^\/subjects/,
   /^\/mappings/,
@@ -45,6 +48,8 @@ const CACHEABLE_PATTERNS = [
   /^\/options/,
   /^\/auth\/profile/,
   /^\/examination\/types/,
+  /^\/examination\/names/,
+  /^\/examination\/schedules/,
   /^\/fees\/heads/,
   /^\/fees\/quotas/,
   /^\/fees\/structures/
@@ -57,6 +62,7 @@ const CACHEABLE_PATTERNS = [
 export const clearApiCache = (pattern) => {
   if (!pattern) {
     memoryCache.clear();
+    inflightRequests.clear();
     return;
   }
   for (const key of memoryCache.keys()) {
@@ -102,51 +108,70 @@ api.defaults.adapter = async (config) => {
     return defaultAdapter(config);
   }
 
-  // 2. Check if GET request matches cacheable patterns
-  const shouldCache = method === 'get' && CACHEABLE_PATTERNS.some(p => p.test(url));
-
-  if (shouldCache) {
-    const cacheKey = `${url}:${JSON.stringify(config.params || {})}`;
-    const cached = memoryCache.get(cacheKey);
-    const now = Date.now();
-
-    // Default TTL: 3 minutes for master data, 5 minutes for settings/roles
-    const ttl = (url.includes('/auth/settings') || url.includes('/roles')) ? 300000 : 180000;
-
-    if (cached && (now - cached.timestamp < ttl)) {
-      // Stale-while-revalidate: If older than 20 seconds, refresh quietly in background
-      if ((now - cached.timestamp > 20000) && !cached.isRevalidating) {
-        cached.isRevalidating = true;
-        defaultAdapter(config)
-          .then((freshResponse) => {
-            memoryCache.set(cacheKey, {
-              response: freshResponse,
-              timestamp: Date.now(),
-              isRevalidating: false
-            });
-          })
-          .catch(() => {
-            cached.isRevalidating = false;
-          });
-      }
-      // Return cached copy immediately (0ms latency!)
-      return Promise.resolve(cached.response);
-    }
-
-    // Cache miss: execute network request and cache response
-    const freshResponse = await defaultAdapter(config);
-    if (freshResponse.status >= 200 && freshResponse.status < 300) {
-      memoryCache.set(cacheKey, {
-        response: freshResponse,
-        timestamp: Date.now(),
-        isRevalidating: false
-      });
-    }
-    return freshResponse;
+  // 2. In-flight request deduplication for concurrent GET requests
+  const flightKey = `${url}:${JSON.stringify(config.params || {})}`;
+  if (method === 'get' && inflightRequests.has(flightKey)) {
+    return inflightRequests.get(flightKey);
   }
 
-  // Non-cacheable GET request: execute directly
-  return defaultAdapter(config);
+  // Helper executor that cleans up inflightRequests on completion
+  const executeWithInflight = async () => {
+    try {
+      // 3. Check if GET request matches cacheable patterns
+      const shouldCache = method === 'get' && CACHEABLE_PATTERNS.some(p => p.test(url));
+
+      if (shouldCache) {
+        const cacheKey = flightKey;
+        const cached = memoryCache.get(cacheKey);
+        const now = Date.now();
+
+        // Default TTL: 3 minutes for master data, 5 minutes for settings/roles
+        const ttl = (url.includes('/auth/settings') || url.includes('/roles') || url.includes('/settings/company')) ? 300000 : 180000;
+
+        if (cached && (now - cached.timestamp < ttl)) {
+          // Stale-while-revalidate: If older than 20 seconds, refresh quietly in background
+          if ((now - cached.timestamp > 20000) && !cached.isRevalidating) {
+            cached.isRevalidating = true;
+            defaultAdapter(config)
+              .then((freshResponse) => {
+                memoryCache.set(cacheKey, {
+                  response: freshResponse,
+                  timestamp: Date.now(),
+                  isRevalidating: false
+                });
+              })
+              .catch(() => {
+                cached.isRevalidating = false;
+              });
+          }
+          // Return cached copy immediately (0ms latency!)
+          return cached.response;
+        }
+
+        // Cache miss: execute network request and cache response
+        const freshResponse = await defaultAdapter(config);
+        if (freshResponse.status >= 200 && freshResponse.status < 300) {
+          memoryCache.set(cacheKey, {
+            response: freshResponse,
+            timestamp: Date.now(),
+            isRevalidating: false
+          });
+        }
+        return freshResponse;
+      }
+
+      // Non-cacheable GET request: execute directly
+      return await defaultAdapter(config);
+    } finally {
+      inflightRequests.delete(flightKey);
+    }
+  };
+
+  const promise = executeWithInflight();
+  if (method === 'get') {
+    inflightRequests.set(flightKey, promise);
+  }
+  return promise;
 };
 
 // Response interceptor — handle errors globally

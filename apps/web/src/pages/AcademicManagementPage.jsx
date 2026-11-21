@@ -29,6 +29,7 @@ import {
   Bus,
   RefreshCw,
   Copy,
+  ChevronLeft,
   ChevronRight,
   ChevronDown,
   Layers,
@@ -117,6 +118,8 @@ export default function AcademicManagementPage() {
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [selectedStatus, setSelectedStatus] = useState('ALL');
   const [viewMode, setViewMode] = useState('table'); // 'table' | 'grid'
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
 
   // ── Modals State ──
   const [profileModalOpen, setProfileModalOpen] = useState(false);
@@ -666,6 +669,19 @@ export default function AcademicManagementPage() {
     });
   }, [students, searchQuery, selectedStandard, selectedSection, selectedGender, selectedCategory, selectedStatus, academicYear]);
 
+  // Reset to first page whenever search or filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedStandard, selectedSection, selectedGender, selectedCategory, selectedStatus, academicYear]);
+
+  // ── High-Performance Client Virtual Windowing / Pagination ──
+  const totalFiltered = filteredStudents.length;
+  const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
+  const paginatedStudents = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredStudents.slice(start, start + pageSize);
+  }, [filteredStudents, currentPage, pageSize]);
+
   // ── Dynamic Class Stats ──
   const classBreakdownMap = useMemo(() => {
     const map = new Map();
@@ -1092,7 +1108,7 @@ export default function AcademicManagementPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#E6ECF3]/70">
-                      {filteredStudents.map((student) => {
+                      {paginatedStudents.map((student) => {
                         const isTransferred = student.studentStatus === 'Transferred' || Boolean(student.leftSchoolStatus);
                         return (
                           <tr
@@ -1255,7 +1271,7 @@ export default function AcademicManagementPage() {
 
               {/* ── Mobile Responsive Cards (< md) ── */}
               <div className="block md:hidden space-y-3">
-                {filteredStudents.map((student) => {
+                {paginatedStudents.map((student) => {
                   const isTransferred = student.studentStatus === 'Transferred' || Boolean(student.leftSchoolStatus);
                   return (
                     <div
@@ -1358,7 +1374,7 @@ export default function AcademicManagementPage() {
           ) : (
             /* ── Card Grid View (Custom Toggle) ── */
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filteredStudents.map((student) => {
+              {paginatedStudents.map((student) => {
                 const isTransferred = student.studentStatus === 'Transferred' || Boolean(student.leftSchoolStatus);
                 return (
                   <div
@@ -1457,6 +1473,70 @@ export default function AcademicManagementPage() {
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          {/* ── High-Performance Responsive Pagination Toolbar ── */}
+          {filteredStudents.length > 0 && (
+            <div className="mt-4 bg-white rounded-2xl border border-[#E6ECF3] px-4 py-3 shadow-subtle flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-1.5 text-xs text-[#718096]">
+                <span>Showing</span>
+                <span className="font-bold text-[#253858]">
+                  {Math.min((currentPage - 1) * pageSize + 1, totalFiltered)}
+                </span>
+                <span>–</span>
+                <span className="font-bold text-[#253858]">
+                  {Math.min(currentPage * pageSize, totalFiltered)}
+                </span>
+                <span>of</span>
+                <span className="font-bold text-[#253858]">{totalFiltered}</span>
+                <span>records</span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 text-xs text-[#718096] mr-2">
+                  <span>Per page:</span>
+                  <select
+                    value={pageSize}
+                    onChange={(e) => {
+                      setPageSize(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="bg-[#F5F8FC] border border-[#E6ECF3] rounded-lg px-2 py-1 text-xs font-bold text-[#253858] outline-hidden cursor-pointer"
+                  >
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                    <option value={200}>200</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    className="p-1.5 rounded-lg border border-[#E6ECF3] bg-white text-[#253858] hover:bg-[#F5F8FC] disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+                    title="Previous Page"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  <span className="px-3 py-1 text-xs font-bold text-[#253858] select-none">
+                    Page {currentPage} of {totalPages}
+                  </span>
+
+                  <button
+                    type="button"
+                    disabled={currentPage >= totalPages}
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    className="p-1.5 rounded-lg border border-[#E6ECF3] bg-white text-[#253858] hover:bg-[#F5F8FC] disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+                    title="Next Page"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
