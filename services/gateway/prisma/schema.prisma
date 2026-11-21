@@ -1039,3 +1039,38 @@ model HomeworkSubmission {
   @@unique([homeworkId, studentId])
   @@index([studentId])
 }
+
+model TeacherDailyWork {
+  id               String   @id @default(uuid())
+  schoolId         String?  @default("")
+  teacherId        String?  @default("")
+  teacherName      String
+  employeeId       String?  @default("")
+  date             String   // Format YYYY-MM-DD
+  standard         String   // e.g. "10th"
+  section          String   // e.g. "A"
+  classId          String?  @default("")
+  subject          String   // e.g. "Mathematics"
+  subjectId        String?  @default("")
+  period           Int?     @default(1)
+  timeSlot         String?  @default("") // e.g. "09:00 AM - 09:45 AM"
+  topicTaught      String   // Topic / Chapter taught
+  workCompleted    String   // Description of classroom work completed
+  homeworkAssigned String?  @default("")
+  remarks          String?  @default("")
+  status           String   @default("Submitted") // "Submitted" | "Draft"
+  academicYear     String?  @default("2026-2027")
+  submissionTime   String?  @default("") // e.g. "10:30 AM"
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([date])
+  @@index([teacherId, date])
+  @@index([employeeId, date])
+  @@index([teacherName, date])
+  @@index([standard, section, date])
+  @@index([subject])
+  @@index([academicYear])
+  @@index([schoolId, date])
+}
+

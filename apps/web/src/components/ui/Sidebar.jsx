@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { getCompanySettings } from '../../services/authService';
 import {
   LayoutDashboard,
+  BookOpenCheck,
   ClipboardCheck,
   LogOut,
   Settings,
@@ -413,6 +414,17 @@ const Sidebar = () => {
           {/* Teacher Quick Attendance Link */}
           {isTeacher && (
             <Link
+              to="/teacher/daily-work"
+              onClick={handleLinkClick}
+              className={getLinkClass('/teacher/daily-work')}
+            >
+              <BookOpenCheck className={`w-4 h-4 shrink-0 ${location.pathname === '/teacher/daily-work' ? 'text-[var(--accent)]' : 'text-[#475569]'}`} />
+              <span>{t('daily_work_done') || 'Daily Work Done'}</span>
+            </Link>
+          )}
+
+          {isTeacher && (
+            <Link
               to="/teacher-section?tab=attendance"
               onClick={handleLinkClick}
               className={getTeacherSubLinkClass('attendance')}
@@ -448,6 +460,15 @@ const Sidebar = () => {
 
             {isTeacherOpen && (
               <div className="pl-3 space-y-1 mt-1 border-l-2 border-[#E4E2DA] ml-5 animate-fadeIn">
+                <Link
+                  to="/teacher/daily-work"
+                  onClick={handleLinkClick}
+                  className={getTeacherSubLinkClass(null, '/teacher/daily-work')}
+                >
+                  <BookOpenCheck className="w-3.5 h-3.5 shrink-0 text-emerald-600" />
+                  <span className="font-bold text-current">{t('daily_work_done') || 'Daily Work Done'}</span>
+                </Link>
+
                 <Link
                   to="/qelvora-ai"
                   onClick={handleLinkClick}
@@ -676,6 +697,15 @@ const Sidebar = () => {
                   <History className="w-3.5 h-3.5 shrink-0" />
                   <span>{t('class_sessions_logs') || 'Class Sessions Logs'}</span>
                 </Link>
+
+                <Link
+                  to="/admin/teachers-work-done"
+                  onClick={handleLinkClick}
+                  className={getSubLinkClass('teachers_work_done')}
+                >
+                  <BookOpenCheck className="w-3.5 h-3.5 shrink-0 text-emerald-600" />
+                  <span>Teachers Work Done</span>
+                </Link>
               </div>
             )}
 
@@ -692,6 +722,16 @@ const Sidebar = () => {
             >
               <ShieldCheck className={`w-4 h-4 shrink-0 ${location.pathname === '/access-privilege' || (location.pathname === '/admin' && tab === 'roles') ? 'text-[var(--accent)]' : 'text-[#475569]'}`} />
               <span>Access Privilege</span>
+            </Link>
+
+            {/* Teachers Work Done Menu */}
+            <Link
+              to="/admin/teachers-work-done"
+              onClick={handleLinkClick}
+              className={getLinkClass('/admin/teachers-work-done', location.pathname === '/admin/teachers-work-done' || location.pathname === '/teachers-work-done')}
+            >
+              <BookOpenCheck className={`w-4 h-4 shrink-0 ${location.pathname === '/admin/teachers-work-done' || location.pathname === '/teachers-work-done' ? 'text-[var(--accent)]' : 'text-[#475569]'}`} />
+              <span>Teachers Work Done</span>
             </Link>
 
             {/* Dedicated Academic Management Menu */}

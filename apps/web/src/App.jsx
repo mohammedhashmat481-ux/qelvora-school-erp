@@ -49,6 +49,8 @@ const StudentExamResultPage = lazy(() => import('./pages/student/StudentExamResu
 const StudentFeesPage       = lazy(() => import('./pages/student/StudentFeesPage'));
 const StudentSafePickupPage = lazy(() => import('./pages/student/StudentSafePickupPage'));
 const AccessPrivilegePage   = lazy(() => import('./pages/AccessPrivilegePage'));
+const TeacherDailyWorkPage  = lazy(() => import('./pages/TeacherDailyWorkPage'));
+const AdminTeachersWorkDonePage = lazy(() => import('./pages/AdminTeachersWorkDonePage'));
 
 // ─── Shared skeleton shown while any lazy page loads ──────────
 function PageLoader() {
@@ -165,6 +167,11 @@ function App() {
             <Route path="/access-privilege"      element={<AccessPrivilegePage />} />
             <Route path="/teacher"             element={<TeacherSectionPage />} />
             <Route path="/teacher-section"     element={<TeacherSectionPage />} />
+            <Route path="/teacher/daily-work"  element={<TeacherDailyWorkPage />} />
+            <Route path="/teacher-daily-work"  element={<TeacherDailyWorkPage />} />
+            <Route path="/daily-work-done"     element={<TeacherDailyWorkPage />} />
+            <Route path="/admin/teachers-work-done" element={<AdminTeachersWorkDonePage />} />
+            <Route path="/teachers-work-done"  element={<AdminTeachersWorkDonePage />} />
             
             {/* Student & Parents Dedicated Portal Pages */}
             <Route path="/student/profile"     element={<StudentProfilePage />} />
